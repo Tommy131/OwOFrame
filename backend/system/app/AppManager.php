@@ -1,0 +1,125 @@
+<?php
+
+/************************************************************************
+	 _____   _          __  _____   _____   _       _____   _____  
+	/  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___| 
+	| | | | | |  __   / /  | | | | | |_| | | |     | | | | | |     
+	| | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _  
+	| |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| | 
+	\_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/ 
+	
+	* Copyright (c) 2015-2019 OwOBlog-DGMT All Rights Reserevd.
+	* Developer: HanskiJay(Teaclon)
+	* Contact: (QQ-3385815158) E-Mail: support@owoblog.com
+
+************************************************************************/
+
+declare(strict_types=1);
+namespace backend\system\app;
+
+use backend\system\route\Router;
+use backend\system\exception\InvalidAppException;
+use backend\system\exception\ResourceMissedException;
+
+class AppManager
+{
+	/* @string AppBase basic namespace */
+	private static $basicAppClass = "backend\\system\\app\\AppBase";
+	/* @string Application路径 */
+	private static $appPath = "";
+	/* @array Application实例化池 */
+	// private static $appPool = [];
+
+	/**
+	 * @method      setPath
+	 * @description 设置App目录
+	 * @param       string[path|目录]
+	 * @return      void
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-09 18:03
+	*/
+	public static function setPath(string $path) : void
+	{
+		if(is_dir($path)) {
+			self::$appPath = $path;
+		} else {
+			throw new ResourceMissedException("Path", $path);
+		}
+	}
+
+	/**
+	 * @method      getPath
+	 * @description 获取App目录
+	 * @return      string
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-09 18:03
+	*/
+	public static function getPath() : string
+	{
+		return self::$appPath;
+	}
+
+	public static function hasApp(string $appName, &$class = null) : bool
+	{
+		$appName   = strtolower($appName);
+		$file      = self::$appPath . $appName . DIRECTORY_SEPARATOR;
+		$file      = $file . ucfirst($appName) . 'App.php';
+		$namespace = null;
+		$class     = null;
+		if(is_file($file)) {
+			$content = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+			foreach($content as $line) {
+				if(preg_match('/^namespace\s(.*);$/i', $line, $match)) {
+					$namespace = trim($match[1]);
+				}
+				elseif(preg_match('/^class\s(.*)$/i', $line, $match)) {
+					$class = @array_shift(explode(" ", trim($match[1])));
+					break;
+				}
+			}
+
+			include_once($file);
+			$class = "\\{$namespace}\\{$class}";
+			if(!class_exists($class)) {
+				throw new ResourceMissedException("Class", $class);
+			}
+			if((new \ReflectionClass($class))->getParentClass()->getName() !== self::$basicAppClass) {
+				throw new InvalidAppException($appName, "Parent class should be interfaced by ".self::$basicAppClass, $class);
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * @method      getDefaultApp
+	 * @description 获取默认端App
+	 * @return      null or AppBase
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-09 18:03
+	*/
+	public static function getDefaultApp() : ?AppBase
+	{
+		return self::getApp(DEFAULT_APP_NAME);
+	}
+
+	/**
+	 * @method      getApp
+	 * @description 获取指定App
+	 * @param       string[appName|App名称]
+	 * @return      null or AppBase
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-09 18:03
+	*/
+	public static function getApp(string $appName) : ?AppBase
+	{
+		if(self::hasApp($appName, $class)) {
+			return new $class($appName, Router::getCompleteUrl(), Router::getParameters());
+			// return self::$appPool[$appName];
+			
+		} else {
+			return null;
+		}
+	}
+}
