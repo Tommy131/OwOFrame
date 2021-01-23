@@ -11,6 +11,8 @@
 	* Copyright (c) 2015-2019 OwOBlog-DGMT All Rights Reserevd.
 	* Developer: HanskiJay(Teaclon)
 	* Contact: (QQ-3385815158) E-Mail: support@owoblog.com
+	*
+	* This File is from [PMMP-PocketMine](https://github.com/pmmp/PocketMine-MP)
 	
 ************************************************************************/
 
