@@ -42,7 +42,7 @@ namespace OwOBootstrap
 		writeLogExit("Your web environment is not secure, please disallowed the http protocol to get the files in the path 'backend'.");
 	}
 
-	foreach(["DEBUG_MODE", "LOG_ERROR" , "DEFAULT_APP_NAME", "DENY_APP_LIST", "TIME_ZONE", "USE_REDIS_SESSION", "REDIS_SERVER", "REDIS_SERVER_PASSWD"] as $define) {
+	foreach(["DEBUG_MODE", "LOG_ERROR" , "DEFAULT_APP_NAME", "DENY_APP_LIST", "USE_REDIS_SESSION", "REDIS_SERVER", "REDIS_SERVER_PASSWD"] as $define) {
 		if(!defined($define)) {
 			writeLogExit("Constant parameter '{$define}' not found!");
 		}
@@ -50,6 +50,8 @@ namespace OwOBootstrap
 	
 	// Define OwOFrame start time;
 	if(!defined("START_MICROTIME"))  define("START_MICROTIME",  microtime(true));
+	// Define Timezone;
+	if(!defined('TIME_ZONE'))        define('TIME_ZONE',        'Europe/Berlin');
 	// Define OwOFrame start time;
 	if(!defined("APP_VERSION"))      define("APP_VERSION",      "20210122@v1.0.0");
 	// Project root directory (absolute path);
@@ -70,6 +72,8 @@ namespace OwOBootstrap
 	if(!defined("LOG_PATH"))         define("LOG_PATH",         TMP_PATH . DIRECTORY_SEPARATOR . "log" . DIRECTORY_SEPARATOR);
 	// Check whether the current environment supports mbstring extension;
 	if(!defined("__MB_SUPPORTED__")) define('__MB_SUPPORTED__', function_exists('mb_get_info') && function_exists('mb_regex_encoding'));
+	// Define whether connect to database automaticly;
+	if(!defined("DEFAULT_DATABASE_CONNECT")) define("DEFAULT_DATABASE_CONNECT", false);
 	
 
 	/* System Widgets */;
@@ -82,14 +86,16 @@ namespace OwOBootstrap
 	// get_include_path: Get the current environment variables;
 	// PATH_SEPARATOR: 路径分隔符, include多个路径使用, WINNT使用 ";" 分离路径; LINUX使用 ":" 分离路径;
 	// PATH_SEPARATOR: Path separator, include multiple paths, WINNT uses ";" to separate paths; LINUX uses ":" to separate paths;
-	set_include_path(get_include_path() . PATH_SEPARATOR . __BACKEND__ . PATH_SEPARATOR . ROOT_PATH);
+	// set_include_path(get_include_path() . PATH_SEPARATOR . __BACKEND__ . PATH_SEPARATOR . ROOT_PATH);
 	
+	// Use ClassLoader.php;
 	if(!defined("__CLASS_LOADER__")) define("__CLASS_LOADER__", __BACKEND__ . 'system' . DIRECTORY_SEPARATOR . "utils" . DIRECTORY_SEPARATOR . "ClassLoader.php");
 	(!file_exists(__CLASS_LOADER__)) ? writeLogExit("Cannot find File ClassLoader.php!") : require_once(__CLASS_LOADER__);
 	
-	$classLoader = new \backend\system\utils\ClassLoader();
+	$classLoader = \OwOBootstrap\classLoader();
 	$classLoader->addPath(dirname(__BACKEND__));
 	$classLoader->register(true);
+	\backend\OwOFrame::init();
 
 	function writeLogExit($msg, $style = '')
 	{
@@ -113,6 +119,15 @@ namespace OwOBootstrap
 		return defined('GLOBAL_USE_JSON_FORMAT') && GLOBAL_USE_JSON_FORMAT;
 	}
 
+	function classLoader()
+	{
+		static $classLoader;
+		if(!$classLoader instanceof \backend\system\utils\ClassLoader) {
+			$classLoader = new \backend\system\utils\ClassLoader();
+		}
+		return $classLoader;
+	}
+
 	function request()
 	{
 		static $static;
@@ -127,7 +142,6 @@ namespace OwOBootstrap
 		if(defined('HAS_STARTED') && HAS_STARTED) return;
 		else define('HAS_STARTED', true);
 
-		if(!defined('TIME_ZONE')) define('TIME_ZONE', 'Europe/Berlin');
 		date_default_timezone_set(TIME_ZONE);
 		if(USE_REDIS_SESSION && (ini_get("session.save_handler") === "files") && extension_loaded("redis"))
 		{
@@ -143,16 +157,21 @@ namespace OwOBootstrap
 		require_once(__BACKEND__ . "vendor" . DIRECTORY_SEPARATOR . "autoload.php");
 		if(ob_get_level() == 0) ob_start();
 		@session_start();
-		\backend\OwOFrame::init();
-		\backend\system\app\AppManager::setPath(__BACKEND__ . "application" . DIRECTORY_SEPARATOR);
 		request()->checkValid();
-		\backend\system\db\DbConfig::init();
+		// Active PluginLoader;
+		\backend\system\plugin\PluginLoader::setPath(__BACKEND__ . "plugin" . DIRECTORY_SEPARATOR);
+		\backend\system\plugin\PluginLoader::autoLoad();
+		// Active AppManager;
+		\backend\system\app\AppManager::setPath(__BACKEND__ . "application" . DIRECTORY_SEPARATOR);
+		
+		if(DEFAULT_DATABASE_CONNECT) \backend\system\db\DbConfig::init();
+		// Start Listening from http uri;
 		\backend\system\route\Router::dispath();
 	}
 
-	function stop()
+	function stop($code = null)
 	{
-		exit();
+		exit($code);
 	}
 }
 ?>
