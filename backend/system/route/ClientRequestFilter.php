@@ -61,7 +61,7 @@ class ClientRequestFilter
 			OwOFrame::setStatus(403);
 			exit;
 		}
-		Logger::writeLog('[100] Client '.self::$currentIp. ' requested url ['.Router::getCompleteUrl().']', self::PREFIX);
+		Logger::writeLog('[200] Client '.self::$currentIp. ' requested url ['.Router::getCompleteUrl().']', self::PREFIX);
 	}
 
 	/**
