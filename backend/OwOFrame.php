@@ -397,8 +397,8 @@ final class OwOFrame
 			reset($_POST);
 			reset($_COOKIE);
 		}
-		set_error_handler([ExceptionOutput::class, "ErrorHandler"], E_ALL);
-		set_exception_handler([ExceptionOutput::class, "ExceptionHandler"]);
+		set_error_handler([ExceptionOutput::class, 'ErrorHandler'], E_ALL);
+		set_exception_handler([ExceptionOutput::class, 'ExceptionHandler']);
 	}
 
 	/**
@@ -413,6 +413,21 @@ final class OwOFrame
 		if(isset(self::HTTP_CODE[$code])) {
 			header((isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1') . ' ' . $code . ' ' . self::HTTP_CODE[$code], true, $code);
 		}
+	}
+
+	public static function getMode() : string
+	{
+		return !is_string(php_sapi_name()) ? 'error' : php_sapi_name();
+	}
+
+	public static function isRunningWithCLI() : bool
+	{
+		return preg_match('/cli/i', self::getMode());
+	}
+
+	public static function isRunningWithCGI() : bool
+	{
+		return preg_match('/cgi/i', self::getMode());
 	}
 
 	/**
