@@ -21,9 +21,10 @@ $prefix = '[ConfigParser] 全局配置文件加载失败:';
  * @author      HanskiJay
  * @doenIn      2021-01-09
  * @param       string[file|文件路径]
+ * @param       bool[toJson|以JSON对象格式输出(Default: false)]
  * @return      array
  */
-function loadConfig(string $file) : array
+function loadConfig(string $file, bool $toJson = false) : array
 {
 	global $prefix;
 	$config = [];
@@ -32,7 +33,7 @@ function loadConfig(string $file) : array
 	if(count($content) >= CFG_MAX_LIMIT_LINES) {
 		throwError("{$prefix}配置文件 '{$file}' 已超过最大可读取行数(".count($content)."/".CFG_MAX_LIMIT_LINES."), 若需继续执行, 请修改基础配置文件!", __FILE__, __LINE__);
 	}
-	$currentGroup = '';
+	$currentGroup = null;
 	foreach($content as $line) {
 		# ---* [识别组开始标签] *---
 		if(preg_match("/^\[(.*)\]$/", $line, $match)) {
@@ -46,12 +47,18 @@ function loadConfig(string $file) : array
 		}
 
 		# ---* [识别变量定义] *---
-		if(preg_match("/^([a-zA-Z0-9_\-\.]+)\s?=\s?([a-zA-Z0-9_\-\.]+)$/", $line, $match) && isset($match[1], $match[2])) {
+		// 先暴力获取一遍, 去除等号两边的空格;
+		if(preg_match("/^(.*)=(.*)$/", $line, $match)) {
+			$match[1] = trim($match[1]);
+			$match[2] = trim($match[2]);
+			$line = $match[1] . '=' . $match[2];
+		}
+		if(preg_match("/^([a-zA-Z0-9_\-\.]+)\s?=\s?([a-zA-Z0-9_\-\.\/\\\ \s@]+)$/", $line, $match) && isset($match[1], $match[2])) {
 			$match[2] = preg_match("/null/i", $match[2]) ? '' : trim($match[2]);
-			$config[$currentGroup][trim($match[1])] = $match[2];
+			$config[$currentGroup ?? '_'][trim($match[1])] = $match[2];
 		}
 	}
-	return $config;
+	return !$toJson ? $config : json_decode(json_encode($config));
 }
 
 /**
