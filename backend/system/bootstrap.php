@@ -124,6 +124,12 @@ namespace OwOBootstrap
 		}
 	}
 
+	function ask(string $output, $default = null)
+	{
+		logger($output . (!is_null($default) ? "[Default: {$default}]" : ''));
+		return trim(fgets(STDIN) ?? $default);
+	}
+
 	function runTime() 
 	{
 		return round(microtime(true) - START_MICROTIME, 7);
