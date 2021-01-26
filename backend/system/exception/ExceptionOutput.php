@@ -17,6 +17,7 @@
 declare(strict_types=1);
 namespace backend\system\exception;
 
+use backend\OwOFrame;
 use backend\system\utils\Logger;
 
 class ExceptionOutput
@@ -47,7 +48,7 @@ class ExceptionOutput
 		if(($pos = strpos($errstr, "\n")) !== false) $errstr = substr($errstr, 0, $pos);
 		if(defined("DEBUG_MODE") && DEBUG_MODE) {
 			if(!preg_match('/Cannot use "parent" when current class scope has no parent/i', $errstr)) {
-				echo "{$errno} happened: {$errstr} in {$errfile} at line {$errline} <br/><br/>";
+				echo "{$errno} happened: {$errstr} in {$errfile} at line {$errline}" . (OwOFrame::isRunningWithCGI() ? ' <br/><br/>' : PHP_EOL);
 			}
 		}
 	}
@@ -60,15 +61,15 @@ class ExceptionOutput
 		$debugMode = (defined("DEBUG_MODE") && DEBUG_MODE) ? '<span id="debugMode">DebugMode</span>' : '';
 		$runTime   = \OwOBootstrap\runTime();
 
-		if(defined('LOG_ERROR') && LOG_ERROR) {
-			$logged = '<span id="logged">--- Logged ---</span>';
-			Logger::setFileName("owoblog_error.log");
-			Logger::writeLog(\trim(mb_convert_encoding($exception->__toString(), "UTF-8", $encode)), "OwOBlogErrorHandler");
-		} else {
-			$logged = '';
-		}
-
-		echo
+		if(OwOFrame::isRunningWithCGI()) {
+			if(defined('LOG_ERROR') && LOG_ERROR) {
+				$logged = '<span id="logged">--- Logged ---</span>';
+				Logger::setFileName("owoblog_error.log");
+				Logger::writeLog(\trim(mb_convert_encoding($exception->__toString(), "UTF-8", $encode)), "OwOBlogErrorHandler");
+			} else {
+				$logged = '';
+			}
+			echo
 <<<EOF
 <!DOCTYPE html>
 <html lang="en">
@@ -178,7 +179,10 @@ class ExceptionOutput
 	</body>
 </html>
 EOF;
-		exit(1);
+			exit(1);
+		} else {
+			// TODO: Display Exception for CLI Mode;
+		}
 	}
 }
 ?>

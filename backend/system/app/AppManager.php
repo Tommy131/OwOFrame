@@ -56,9 +56,22 @@ class AppManager
 	*/
 	public static function getPath() : string
 	{
-		return self::$appPath;
+		if(is_dir(self::$appPath)) {
+			return self::$appPath;
+		} else {
+			throw new ResourceMissedException("Path", $path);
+		}
 	}
 
+	/**
+	 * @method      hasApp
+	 * @description 判断是否存在一个Application
+	 * @author      HanskiJay
+	 * @doenIn      2021-01-26
+	 * @param       string[appName|app名称]
+	 * @param       &$class[向上传递存在的应用对象]
+	 * @return      boolean
+	 */
 	public static function hasApp(string $appName, &$class = null) : bool
 	{
 		$appName   = strtolower($appName);

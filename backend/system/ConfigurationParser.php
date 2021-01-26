@@ -30,6 +30,7 @@ function loadConfig(string $file, bool $toJson = false) : array
 	$config = [];
 	if(!file_exists($file)) return [];
 	$content = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+	if(!defined('CFG_MAX_LIMIT_LINES')) define('CFG_MAX_LIMIT_LINES', 1000);
 	if(count($content) >= CFG_MAX_LIMIT_LINES) {
 		throwError("{$prefix}配置文件 '{$file}' 已超过最大可读取行数(".count($content)."/".CFG_MAX_LIMIT_LINES."), 若需继续执行, 请修改基础配置文件!", __FILE__, __LINE__);
 	}
