@@ -64,7 +64,11 @@ class Logger
 				rename($file, str_replace($ext, "", $file).date("_Y_m_d").$ext);
 			}
 		}
-		file_put_contents(self::$fileName, sprintf(self::LOG_PREFIX, date("Y-m-d"), date("H:i:s"), $prefix, $level, $msg . PHP_EOL), FILE_APPEND | LOCK_EX);
+		$msg = sprintf(self::LOG_PREFIX, date("Y-m-d"), date("H:i:s"), $prefix, $level, $msg . PHP_EOL);
+		file_put_contents(self::$fileName, $msg, FILE_APPEND | LOCK_EX);
+		if(\backend\OwOFrame::isRunningWithCLI()) {
+			echo $msg;
+		}
 		// file_put_contents(self::$fileName, str_replace(["{date}", "{time}", "{prefix}", "{level}", "{msg}"], [date("Y-m-d"), date("H:i:s"), $prefix, $level, $msg.PHP_EOL], self::LOG_PREFIX), FILE_APPEND | LOCK_EX);
 	}
 

@@ -17,7 +17,7 @@
 ************************************************************************/
 
 declare(strict_types=1);
-namespace backend\application;
+namespace backend\application\index;
 
 
 class IndexApp extends \backend\system\app\AppBase

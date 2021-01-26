@@ -37,16 +37,11 @@ namespace OwOBootstrap
 	 * 		deny all;             * 	Order Deny,Allow
 	 * 		return 403;           * 	Deny from all
 	 * 	}                         * </Directory>
+	 * 	TODO: 将此检测方法移至后续的安装脚本里;
 	 */
-	if(@file_get_contents($_SERVER["REQUEST_SCHEME"]."://".$_SERVER["HTTP_HOST"]."/backend/tmp/testfile.dist") === "test") {
+	/*if(@file_get_contents($_SERVER["REQUEST_SCHEME"]."://".$_SERVER["HTTP_HOST"]."/backend/tmp/testfile.dist") === "test") {
 		writeLogExit("Your web environment is not secure, please disallowed the http protocol to get the files in the path 'backend'.");
-	}
-
-	foreach(["DEBUG_MODE", "LOG_ERROR" , "DEFAULT_APP_NAME", "DENY_APP_LIST", "USE_REDIS_SESSION", "REDIS_SERVER", "REDIS_SERVER_PASSWD"] as $define) {
-		if(!defined($define)) {
-			writeLogExit("Constant parameter '{$define}' not found!");
-		}
-	}
+	}*/
 	
 	// Define OwOFrame start time;
 	if(!defined("START_MICROTIME"))  define("START_MICROTIME",  microtime(true));
@@ -74,6 +69,8 @@ namespace OwOBootstrap
 	if(!defined("__MB_SUPPORTED__")) define('__MB_SUPPORTED__', function_exists('mb_get_info') && function_exists('mb_regex_encoding'));
 	// Define whether connect to database automaticly;
 	if(!defined("DEFAULT_DATABASE_CONNECT")) define("DEFAULT_DATABASE_CONNECT", false);
+	// Define whether NO DEBUG_MODE then define it;
+	if(!defined("DEBUG_MODE"))       define("DEBUG_MODE", false);
 	
 
 	/* System Widgets */;
@@ -92,21 +89,39 @@ namespace OwOBootstrap
 	if(!defined("__CLASS_LOADER__")) define("__CLASS_LOADER__", __BACKEND__ . 'system' . DIRECTORY_SEPARATOR . "utils" . DIRECTORY_SEPARATOR . "ClassLoader.php");
 	(!file_exists(__CLASS_LOADER__)) ? writeLogExit("Cannot find File ClassLoader.php!") : require_once(__CLASS_LOADER__);
 	
-	$classLoader = \OwOBootstrap\classLoader();
-	$classLoader->addPath(dirname(__BACKEND__));
-	$classLoader->register(true);
-	\backend\OwOFrame::init();
+	classLoader()->addPath(dirname(__BACKEND__));
+	classLoader()->register(true);
 
-	function writeLogExit($msg, $style = '')
+	if(\backend\OwOFrame::isRunningWithCGI()) {
+		foreach(["DEBUG_MODE", "LOG_ERROR" , "DEFAULT_APP_NAME", "DENY_APP_LIST", "USE_REDIS_SESSION", "REDIS_SERVER", "REDIS_SERVER_PASSWD"] as $define) {
+			if(!defined($define)) {
+				writeLogExit("Constant parameter '{$define}' not found!");
+			}
+		}
+		\backend\OwOFrame::init();
+	}
+
+
+	function writeLogExit(string $msg, string $style = '')
 	{
-		echo "<div style='{$style}'>{$msg}</div><br/>";
-		if(defined('LOG_ERROR') && LOG_ERROR) {
-			$msg = str_replace(["<br/>", "<br>"], PHP_EOL, $msg);
-			if(defined('LOG_PATH') && is_dir(LOG_PATH)) {
-				file_put_contents(LOG_PATH . 'owoblog_error.log', date("[Y-m-d][H:i:s]")."[OwOSystemBootstrap|Error]: {$msg}", FILE_APPEND);
+		if(\backend\OwOFrame::isRunningWithCGI()) {
+			echo "<div style='{$style}'>{$msg}</div><br/>";
+			if(defined('LOG_ERROR') && LOG_ERROR) {
+				$msg = str_replace(["<br/>", "<br>"], PHP_EOL, $msg);
+				if(defined('LOG_PATH') && is_dir(LOG_PATH)) {
+					file_put_contents(LOG_PATH . 'owoblog_error.log', date("[Y-m-d][H:i:s]")."[OwOSystemBootstrap|Error]: {$msg}", FILE_APPEND);
+				}
 			}
 		}
 		exit();
+	}
+
+	function logger(string $msg, string $prefix = 'OwOCLI', string $level = 'INFO')
+	{
+		if(\backend\OwOFrame::isRunningWithCLI()) {
+			\backend\system\utils\Logger::setFileName('owoblog_cli_run.log');
+			\backend\system\utils\Logger::writeLog($msg, $prefix, $level);
+		}
 	}
 
 	function runTime() 
@@ -137,7 +152,7 @@ namespace OwOBootstrap
 		return $static;
 	}
 	
-	function start()
+	function start(bool $httpMode = true)
 	{
 		if(defined('HAS_STARTED') && HAS_STARTED) return;
 		else define('HAS_STARTED', true);
@@ -154,19 +169,26 @@ namespace OwOBootstrap
 		# ini_set('upload_max_filesize', '1000m');
 		# ini_set('post_max_size', '1000m');
 
+		if(\backend\OwOFrame::isRunningWithCLI()) {
+			logger('--------------------------------------------------------------');
+			logger('OwOFrame is running with CLI Mode now. Service is starting.');
+		}
+
 		require_once(__BACKEND__ . "vendor" . DIRECTORY_SEPARATOR . "autoload.php");
-		if(ob_get_level() == 0) ob_start();
-		@session_start();
-		request()->checkValid();
+		if(DEFAULT_DATABASE_CONNECT) \backend\system\db\DbConfig::init();
 		// Active PluginLoader;
 		\backend\system\plugin\PluginLoader::setPath(__BACKEND__ . "plugin" . DIRECTORY_SEPARATOR);
 		\backend\system\plugin\PluginLoader::autoLoad();
 		// Active AppManager;
 		\backend\system\app\AppManager::setPath(__BACKEND__ . "application" . DIRECTORY_SEPARATOR);
-		
-		if(DEFAULT_DATABASE_CONNECT) \backend\system\db\DbConfig::init();
-		// Start Listening from http uri;
-		\backend\system\route\Router::dispath();
+
+		if($httpMode) {
+			if(ob_get_level() == 0) ob_start();
+			@session_start();
+			request()->checkValid();
+			// Start Listening from http uri;
+			\backend\system\route\Router::dispath();
+		}
 	}
 
 	function stop($code = null)
