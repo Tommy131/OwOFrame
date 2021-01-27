@@ -10,18 +10,21 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 
 #### Basic System Components
 - [x] `AppManager`          本框架为多应用共存框架, 通过HTTP_URI识别当前的应用
+- [x] `CommandManager`      支持在CLI端通过CommandLine方法实现一些操作
 - [x] `ConfigurationParser` 配置文件解析器
 - [x] `Exception`           错误异常抓取及Stack输出(我知道高级的框架都拥有且比我的更好QAQ)
-- [ ] `PluginLoader`        插件加载器(独立于Application之外的可灵活更改的一种支持方法)
+- [x] `PluginLoader`        插件加载器(独立于Application之外的可灵活更改的一种支持方法)
+- [x] `LogWriter`           支持最基础的日志记录
 - [x] `RouterManager`       路由管理器
+- [ ] `BetterRouter`        更好的路由控制器(更加个性化的路由绑定设置)
 - [x] `Template`            后端渲染模板(基本功能已经完成, 龟速开发进阶功能o(*￣▽￣*)o)
-- [ ] `Terminal`            未来将支持CLI指令操作
+- [x] `TextFormat`          支持ANSI控制码在CMD&Shell输出色彩
 
 #### Basic Util Components
 - [x] `CookieClass`         一个普通的Cookie处理类
-- [ ] `EmptyAppGenerator`   一键生成新的Application模板
-- [ ] `FileUploadClass`     文件上传类支持
-- [ ] `OwOFrame`            一个集成化的方法类(具体请看源代码)
+- [x] `EmptyAppGenerator`   一键生成新的Application模板
+- [x] `FileUploadClass`     文件上传类支持
+- [x] `OwOFrame`            一个集成化的方法类(具体请看源代码)
 - [x] `SessionClass`        一个普通的Session处理类
 
 #### Third Party Resources
@@ -43,7 +46,10 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 - `/backend/common/` 此目录为系统的公共文件夹, 可存储静态资源文件, 默认的全局配置文件 `global.config` 将存放在此处.
 
 #### 是否需要修改Web环境?
-需要. 具体修改方法请参考文件 `/backend/bootstrap.php` 中第32~40行的注释.
+需要. 具体修改方法请参考文件 `/backend/bootstrap.php` 中第32\~40行的注释.
+
+#### 如何在CLI模式下运行OwOFrame?
+打开你的CMD或者Shell后, 进入OwOFrame的工程路径, 在控制台输入 `php owo [command]` 即可.
 
 ------
 
