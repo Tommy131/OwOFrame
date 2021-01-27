@@ -18,7 +18,7 @@ declare(strict_types=1);
 namespace backend\system\exception;
 
 use backend\OwOFrame;
-use backend\system\utils\Logger;
+use backend\system\utils\LogWriter;
 
 class ExceptionOutput
 {
@@ -64,8 +64,8 @@ class ExceptionOutput
 		if(OwOFrame::isRunningWithCGI()) {
 			if(defined('LOG_ERROR') && LOG_ERROR) {
 				$logged = '<span id="logged">--- Logged ---</span>';
-				Logger::setFileName("owoblog_error.log");
-				Logger::writeLog(\trim(mb_convert_encoding($exception->__toString(), "UTF-8", $encode)), "OwOBlogErrorHandler");
+				LogWriter::setFileName("owoblog_error.log");
+				LogWriter::write(\trim(mb_convert_encoding($exception->__toString(), "UTF-8", $encode)), "OwOBlogErrorHandler");
 			} else {
 				$logged = '';
 			}

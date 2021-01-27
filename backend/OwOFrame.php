@@ -16,8 +16,6 @@
 
 namespace backend;
 
-use backend\system\utils\Config;
-use backend\system\utils\Logger;
 use backend\system\exception\ExceptionOutput;
 
 final class OwOFrame

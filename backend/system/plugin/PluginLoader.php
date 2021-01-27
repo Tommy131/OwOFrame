@@ -18,7 +18,7 @@ declare(strict_types=1);
 namespace backend\system\plugin;
 
 use backend\OwOFrame;
-use backend\system\utils\Logger;
+use backend\system\utils\LogWriter;
 use backend\system\exception\ResourceMissedException;
 
 class PluginLoader
@@ -86,7 +86,7 @@ class PluginLoader
 			// TODO: 读取配置文件后加载插件(Method::existsPlugin);
 			foreach($path as $name => $dir) {
 				if(!self::loadPlugin($dir, $name)) {
-					Logger::writeLog("Load plugin '{$name}' failed!", 'PluginLoader', 'WARNING');
+					LogWriter::write("Load plugin '{$name}' failed!", 'PluginLoader', 'WARNING');
 				}
 			}
 		} catch(\Throwable $e) {
