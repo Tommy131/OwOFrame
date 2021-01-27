@@ -18,13 +18,13 @@ namespace backend\system\utils;
 
 use FilesystemIterator as FI;
 
-class Logger
+class LogWriter
 {
 	/* @string 默认日志记录文件名称 */
 	public const DEFAULT_LOG_NAME = "owoblog_run.log";
 	/* @string 日志记录格式 */
-	public const LOG_PREFIX       = "[%s][%s][%s/%s] > %s";
-	// const LOG_PREFIX       = "[{date}][{time}][{prefix}/{level}] > {msg}";
+	public const LOG_PREFIX = "[%s][%s][%s/%s] > %s";
+	// const LOG_PREFIX = "[{date}][{time}][{prefix}/{level}] > {msg}";
 	/* @string 日志记录文件名称 */
 	private static $fileName;
 	/* @int 最大文件大小(mb) */
@@ -53,7 +53,7 @@ class Logger
 	 * @param       string[prefix|记录称号(Default: OwOWeb)]
 	 * @param       string[level|日志等级(Default: INFO)]
 	 */
-	public static function writeLog(string $msg, string $prefix = 'OwOWeb', string $level = "INFO") : void
+	public static function write(string $msg, string $prefix = 'OwOWeb', string $level = "INFO") : void
 	{
 		if(is_null(self::$fileName)) self::$fileName = LOG_PATH . self::DEFAULT_LOG_NAME;
 		$files = iterator_to_array(new FI(LOG_PATH, FI::CURRENT_AS_PATHNAME | FI::SKIP_DOTS), false);
@@ -64,12 +64,12 @@ class Logger
 				rename($file, str_replace($ext, "", $file).date("_Y_m_d").$ext);
 			}
 		}
-		$msg = sprintf(self::LOG_PREFIX, date("Y-m-d"), date("H:i:s"), $prefix, $level, $msg . PHP_EOL);
-		file_put_contents(self::$fileName, $msg, FILE_APPEND | LOCK_EX);
+		$msg .= PHP_EOL;
 		if(\backend\OwOFrame::isRunningWithCLI()) {
-			echo $msg;
+			echo TextFormat::parse($msg);
+			$msg = TextFormat::clean($msg);
 		}
-		// file_put_contents(self::$fileName, str_replace(["{date}", "{time}", "{prefix}", "{level}", "{msg}"], [date("Y-m-d"), date("H:i:s"), $prefix, $level, $msg.PHP_EOL], self::LOG_PREFIX), FILE_APPEND | LOCK_EX);
+		file_put_contents(self::$fileName, sprintf(self::LOG_PREFIX, date("Y-m-d"), date("H:i:s"), $prefix, $level, $msg), FILE_APPEND | LOCK_EX);
 	}
 
 	/**
