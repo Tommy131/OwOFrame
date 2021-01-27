@@ -12,7 +12,7 @@
 	* Developer: HanskiJay(Teaclon)
 	* Contact: (QQ-3385815158) E-Mail: support@owoblog.com
 	*
-	* This File is from [PMMP-PocketMine](https://github.com/pmmp/PocketMine-MP)
+	* This File is from [PMMP-PocketMine](https://github.com/pmmp/PocketMine-MP) !WILL DELETE THIS FILE SOON!
 	
 ************************************************************************/
 
@@ -171,37 +171,26 @@ class Config {
 	 */
 	public function save(){
 		if($this->correct === true){
-			try{
-				$content = null;
-				switch($this->type){
-					case Config::PROPERTIES:
-					case Config::CNF:
-						$content = $this->writeProperties();
-						break;
-					case Config::JSON:
-						$content = json_encode($this->config, JSON_PRETTY_PRINT | JSON_BIGINT_AS_STRING | JSON_UNESCAPED_UNICODE);
-						break;
-					case Config::YAML:
-						$content = yaml_emit($this->config, YAML_UTF8_ENCODING);
-						break;
-					case Config::SERIALIZED:
-						$content = serialize($this->config);
-						break;
-					case Config::ENUM:
-						$content = implode("\r\n", array_keys($this->config));
-						break;
-				}
-
-				file_put_contents($this->file, $content);
-				
-			}catch(Throwable $e){
-				$logger = Server::getInstance()->getLogger();
-				$logger->critical("Could not save Config " . $this->file . ": " . $e->getMessage());
-				if(DEBUG > 1 and $logger instanceof MainLogger){
-					$logger->logException($e);
-				}
+			$content = null;
+			switch($this->type){
+				case Config::PROPERTIES:
+				case Config::CNF:
+					$content = $this->writeProperties();
+					break;
+				case Config::JSON:
+					$content = json_encode($this->config, JSON_PRETTY_PRINT | JSON_BIGINT_AS_STRING | JSON_UNESCAPED_UNICODE);
+					break;
+				case Config::YAML:
+					$content = yaml_emit($this->config, YAML_UTF8_ENCODING);
+					break;
+				case Config::SERIALIZED:
+					$content = serialize($this->config);
+					break;
+				case Config::ENUM:
+					$content = implode("\r\n", array_keys($this->config));
+					break;
 			}
-
+			file_put_contents($this->file, $content);
 			return true;
 		}else{
 			return false;
