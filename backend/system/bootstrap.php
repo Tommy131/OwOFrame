@@ -119,8 +119,8 @@ namespace OwOBootstrap
 	function logger(string $msg, string $prefix = 'OwOCLI', string $level = 'INFO')
 	{
 		if(\backend\OwOFrame::isRunningWithCLI()) {
-			\backend\system\utils\Logger::setFileName('owoblog_cli_run.log');
-			\backend\system\utils\Logger::writeLog($msg, $prefix, $level);
+			\backend\system\utils\LogWriter::setFileName('owoblog_cli_run.log');
+			\backend\system\utils\LogWriter::write($msg, $prefix, $level);
 		}
 	}
 
@@ -176,8 +176,8 @@ namespace OwOBootstrap
 		# ini_set('post_max_size', '1000m');
 
 		if(\backend\OwOFrame::isRunningWithCLI()) {
-			logger('--------------------------------------------------------------');
-			logger('OwOFrame is running with CLI Mode now. Service is starting.');
+			logger('§3--------------------------------------------------------------');
+			logger('§3OwOFrame is running with CLI Mode now. Service is starting.');
 		}
 
 		require_once(__BACKEND__ . "vendor" . DIRECTORY_SEPARATOR . "autoload.php");

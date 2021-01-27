@@ -52,8 +52,8 @@ require_once(dirname(__FILE__, 1) . DIRECTORY_SEPARATOR . 'backend' . DIRECTORY_
 $console = new \backend\system\console\Console;
 $console->monitor($argv);
 
-\OwOBootstrap\logger('Service stop here, bye bye :)');
-\OwOBootstrap\logger('--------------------------------------------------------------');
+\OwOBootstrap\logger('§3Service stop here, bye bye :)');
+\OwOBootstrap\logger('§3--------------------------------------------------------------');
 \OwOBootstrap\stop();
 
 ?>
