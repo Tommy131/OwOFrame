@@ -19,7 +19,7 @@ namespace backend\system\route;
 
 use backend\OwOFrame;
 use backend\system\utils\Config;
-use backend\system\utils\Logger;
+use backend\system\utils\LogWriter;
 use backend\system\exception\RouterException;
 use backend\system\exception\OwOFrameException;
 
@@ -57,11 +57,11 @@ class ClientRequestFilter
 		self::$currentIp  = OwOFrame::getClientIp();
 		self::$currentIpC = str_replace('.', '-', self::$currentIp);
 		if(in_array(self::$currentIp, self::$blacklist->getAll())) {
-			Logger::writeLog('[403] Client '.self::$currentIp.'\'s IP is in the blacklist, request deined.', self::PREFIX);
+			LogWriter::write('[403] Client '.self::$currentIp.'\'s IP is in the blacklist, request deined.', self::PREFIX);
 			OwOFrame::setStatus(403);
 			exit;
 		}
-		Logger::writeLog('[200] Client '.self::$currentIp. ' requested url ['.Router::getCompleteUrl().']', self::PREFIX);
+		LogWriter::write('[200] Client '.self::$currentIp. ' requested url ['.Router::getCompleteUrl().']', self::PREFIX);
 	}
 
 	/**
@@ -91,7 +91,7 @@ class ClientRequestFilter
 		}
 		if($this->isMaxRequestFrequency() && isset($banned) && ($banned['frequency'] >= self::$maxFrequencyTop) || self::isClientBannedFromCLI()) {
 			self::clientRequested();
-			Logger::writeLog('[403] Client '.self::$currentIp.'\'s IP was banned from OwOWebServer, request deined.', self::PREFIX);
+			LogWriter::write('[403] Client '.self::$currentIp.'\'s IP was banned from OwOWebServer, request deined.', self::PREFIX);
 			echo "当前客户端已被系统阻止进一步操作, 请在 ".self::getUnbanTime()." 后重试你的请求.";
 			OwOFrame::setStatus(403);
 			exit;
