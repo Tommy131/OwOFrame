@@ -19,6 +19,13 @@
 declare(strict_types=1);
 namespace OwOBootstrap
 {
+	use backend\OwOFrame;
+	use backend\system\exception\ExceptionOutput;
+	use backend\system\plugin\PluginLoader;
+	use backend\system\route\ClientRequestFilter;
+	use backend\system\utils\ClassLoader;
+	use backend\system\utils\LogWriter;
+
 	/* PHP Environment Checker */
 	if(version_compare(PHP_VERSION, "7.1.0") === -1) writeLogExit("OwOBlogWebFrame need to run at high PHP version, minimum 7.1.");
 
@@ -92,25 +99,26 @@ namespace OwOBootstrap
 	classLoader()->addPath(dirname(__BACKEND__));
 	classLoader()->register(true);
 
-	if(\backend\OwOFrame::isRunningWithCGI()) {
+	set_error_handler([ExceptionOutput::class, 'ErrorHandler'], E_ALL);
+	set_exception_handler([ExceptionOutput::class, 'ExceptionHandler']);
+
+	if(OwOFrame::isRunningWithCGI()) {
 		foreach(["DEBUG_MODE", "LOG_ERROR" , "DEFAULT_APP_NAME", "DENY_APP_LIST", "USE_REDIS_SESSION", "REDIS_SERVER", "REDIS_SERVER_PASSWD"] as $define) {
 			if(!defined($define)) {
 				writeLogExit("Constant parameter '{$define}' not found!");
 			}
 		}
-		\backend\OwOFrame::init();
 	}
 
 
 	function writeLogExit(string $msg, string $style = '')
 	{
-		if(\backend\OwOFrame::isRunningWithCGI()) {
+		if(OwOFrame::isRunningWithCGI()) {
 			echo "<div style='{$style}'>{$msg}</div><br/>";
 			if(defined('LOG_ERROR') && LOG_ERROR) {
 				$msg = str_replace(["<br/>", "<br>"], PHP_EOL, $msg);
-				if(defined('LOG_PATH') && is_dir(LOG_PATH)) {
-					file_put_contents(LOG_PATH . 'owoblog_error.log', date("[Y-m-d][H:i:s]")."[OwOSystemBootstrap|Error]: {$msg}", FILE_APPEND);
-				}
+				LogWriter::setFileName('owoblog_error.log');
+				LogWriter::write($msg, $prefix, $level);
 			}
 		}
 		exit();
@@ -118,10 +126,8 @@ namespace OwOBootstrap
 
 	function logger(string $msg, string $prefix = 'OwOCLI', string $level = 'INFO')
 	{
-		if(\backend\OwOFrame::isRunningWithCLI()) {
-			\backend\system\utils\LogWriter::setFileName('owoblog_cli_run.log');
-			\backend\system\utils\LogWriter::write($msg, $prefix, $level);
-		}
+		LogWriter::setFileName(OwOFrame::isRunningWithCLI() ? 'owoblog_cli_run.log' : 'owoblog_run.log');
+		LogWriter::write($msg, $prefix, $level);
 	}
 
 	function ask(string $output, $default = null)
@@ -143,8 +149,8 @@ namespace OwOBootstrap
 	function classLoader()
 	{
 		static $classLoader;
-		if(!$classLoader instanceof \backend\system\utils\ClassLoader) {
-			$classLoader = new \backend\system\utils\ClassLoader();
+		if(!$classLoader instanceof ClassLoader) {
+			$classLoader = new ClassLoader();
 		}
 		return $classLoader;
 	}
@@ -152,8 +158,8 @@ namespace OwOBootstrap
 	function request()
 	{
 		static $static;
-		if(!$static instanceof \backend\system\route\ClientRequestFilter) {
-			$static = new \backend\system\route\ClientRequestFilter;
+		if(!$static instanceof ClientRequestFilter) {
+			$static = new ClientRequestFilter;
 		}
 		return $static;
 	}
@@ -175,7 +181,7 @@ namespace OwOBootstrap
 		# ini_set('upload_max_filesize', '1000m');
 		# ini_set('post_max_size', '1000m');
 
-		if(\backend\OwOFrame::isRunningWithCLI()) {
+		if(OwOFrame::isRunningWithCLI()) {
 			logger('§3--------------------------------------------------------------');
 			logger('§3OwOFrame is running with CLI Mode now. Service is starting.');
 		}
@@ -183,8 +189,8 @@ namespace OwOBootstrap
 		require_once(__BACKEND__ . "vendor" . DIRECTORY_SEPARATOR . "autoload.php");
 		if(DEFAULT_DATABASE_CONNECT) \backend\system\db\DbConfig::init();
 		// Active PluginLoader;
-		\backend\system\plugin\PluginLoader::setPath(__BACKEND__ . "plugin" . DIRECTORY_SEPARATOR);
-		\backend\system\plugin\PluginLoader::autoLoad();
+		PluginLoader::setPath(__BACKEND__ . "plugin" . DIRECTORY_SEPARATOR);
+		PluginLoader::autoLoad();
 		// Active AppManager;
 		\backend\system\app\AppManager::setPath(__BACKEND__ . "application" . DIRECTORY_SEPARATOR);
 

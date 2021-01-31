@@ -28,21 +28,21 @@ class ExceptionOutput
 		if(error_reporting() === 0) return false;
 		$errorConversion = 
 		[
-			E_ERROR             => "E_ERROR",
-			E_WARNING           => "E_WARNING",
-			E_PARSE             => "E_PARSE",
-			E_NOTICE            => "E_NOTICE",
-			E_CORE_ERROR        => "E_CORE_ERROR",
-			E_CORE_WARNING      => "E_CORE_WARNING",
-			E_COMPILE_ERROR     => "E_COMPILE_ERROR",
-			E_COMPILE_WARNING   => "E_COMPILE_WARNING",
-			E_USER_ERROR        => "E_USER_ERROR",
-			E_USER_WARNING      => "E_USER_WARNING",
-			E_USER_NOTICE       => "E_USER_NOTICE",
-			E_STRICT            => "E_STRICT",
-			E_RECOVERABLE_ERROR => "E_RECOVERABLE_ERROR",
-			E_DEPRECATED        => "E_DEPRECATED",
-			E_USER_DEPRECATED   => "E_USER_DEPRECATED",
+			E_ERROR             => 'E_ERROR',
+			E_WARNING           => 'E_WARNING',
+			E_PARSE             => 'E_PARSE',
+			E_NOTICE            => 'E_NOTICE',
+			E_CORE_ERROR        => 'E_CORE_ERROR',
+			E_CORE_WARNING      => 'E_CORE_WARNING',
+			E_COMPILE_ERROR     => 'E_COMPILE_ERROR',
+			E_COMPILE_WARNING   => 'E_COMPILE_WARNING',
+			E_USER_ERROR        => 'E_USER_ERROR',
+			E_USER_WARNING      => 'E_USER_WARNING',
+			E_USER_NOTICE       => 'E_USER_NOTICE',
+			E_STRICT            => 'E_STRICT',
+			E_RECOVERABLE_ERROR => 'E_RECOVERABLE_ERROR',
+			E_DEPRECATED        => 'E_DEPRECATED',
+			E_USER_DEPRECATED   => 'E_USER_DEPRECATED',
 		];
 		$errno = isset($errorConversion[$errno]) ? $errorConversion[$errno] : $errno;
 		if(($pos = strpos($errstr, "\n")) !== false) $errstr = substr($errstr, 0, $pos);
@@ -55,7 +55,7 @@ class ExceptionOutput
 
 	public static function ExceptionHandler(\Throwable $exception)
 	{
-		$encode    = strtoupper(mb_detect_encoding($exception->getMessage(), ["ASCII",'UTF-8',"GB2312","GBK",'BIG5']));
+		$encode    = strtoupper(mb_detect_encoding($exception->getMessage(), ["ASCII", 'UTF-8', "GB2312", "GBK", 'BIG5']));
 		$type      = "[".((is_object($exception) && ($exception instanceof OwOFrameException)) ? "OwOError" : "PHPError")."] ";
 		$type     .= \backend\OwOFrame::getShortClassName($exception);
 		$debugMode = (defined("DEBUG_MODE") && DEBUG_MODE) ? '<span id="debugMode">DebugMode</span>' : '';
@@ -64,8 +64,8 @@ class ExceptionOutput
 		if(OwOFrame::isRunningWithCGI()) {
 			if(defined('LOG_ERROR') && LOG_ERROR) {
 				$logged = '<span id="logged">--- Logged ---</span>';
-				LogWriter::setFileName("owoblog_error.log");
-				LogWriter::write(\trim(mb_convert_encoding($exception->__toString(), "UTF-8", $encode)), "OwOBlogErrorHandler");
+				LogWriter::setFileName('owoblog_error.log');
+				LogWriter::write(\trim(mb_convert_encoding($exception->__toString(), 'UTF-8', $encode)), 'OwOBlogErrorHandler');
 			} else {
 				$logged = '';
 			}
