@@ -85,7 +85,7 @@ namespace OwOBootstrap
 	require_once(__BACKEND__ . "system" . DIRECTORY_SEPARATOR . "functions.php");
 
 	// Init Global Configuration;
-	if(!defined("GLOBAL_CONFIG")) define("GLOBAL_CONFIG", loadConfig(CONFIG_PATH . 'global.config'));
+	if(!defined("GLOBAL_CONFIG")) define("GLOBAL_CONFIG", loadConfig(CONFIG_PATH . 'global.ini'));
 
 	// get_include_path: Get the current environment variables;
 	// PATH_SEPARATOR: 路径分隔符, include多个路径使用, WINNT使用 ";" 分离路径; LINUX使用 ":" 分离路径;
