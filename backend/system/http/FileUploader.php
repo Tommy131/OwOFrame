@@ -14,12 +14,12 @@
 	
 ************************************************************************/
 
-namespace backend\system\utils;
+namespace backend\system\http;
 
 use backend\OwOFrame;
 use backend\system\exception\JSONException;
 
-class FileUploadClass
+class FileUploader
 {
 	/* @array 默认允许上传的文件类型集合 */
 	private const DEFAULT_ALLOWED_EXTS = ["mp4", "gif", "jpeg", "jpg", "png"];

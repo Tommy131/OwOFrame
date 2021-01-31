@@ -11,16 +11,16 @@
 	* Copyright (c) 2015-2019 OwOBlog-DGMT All Rights Reserevd.
 	* Developer: HanskiJay(Teaclon)
 	* Contact: (QQ-3385815158) E-Mail: support@owoblog.com
+	*
+	* 杂项方法公共存放类
 
 ************************************************************************/
 
 namespace backend;
 
-use backend\system\exception\ExceptionOutput;
-
 final class OwOFrame
 {
-
+	/* @array HTTO状态响应码常量数组 */
 	public const HTTP_CODE = 
 	[
 		100 => 'Continue',
@@ -64,7 +64,7 @@ final class OwOFrame
 		504 => 'Gateway Timeout',
 		505 => 'HTTP Version Not Supported'
 	];
-
+	/* @array MIME类型常量数组 */
 	public const MIMETYPE = 
 	[
 		'ez' => 'application/andrew-inset',
@@ -379,25 +379,9 @@ final class OwOFrame
 		'rar' => 'application/x-rar-compressed',
 		'cab' => 'application/vnd.ms-cab-compressed'
 	];
+
+	/* @string 默认的字符编码 */
 	public static $charset = 'utf-8';
-
-
-	public static function init()
-	{
-		/** 兼容php6 */
-		if(function_exists('get_magic_quotes_gpc') && @get_magic_quotes_gpc())
-		{
-			$_GET    = self::stripslashesDeep($_GET);
-			$_POST   = self::stripslashesDeep($_POST);
-			$_COOKIE = self::stripslashesDeep($_COOKIE);
-
-			reset($_GET);
-			reset($_POST);
-			reset($_COOKIE);
-		}
-		set_error_handler([ExceptionOutput::class, 'ErrorHandler'], E_ALL);
-		set_exception_handler([ExceptionOutput::class, 'ExceptionHandler']);
-	}
 
 	/**
 	 * @method      setStatus
@@ -413,16 +397,37 @@ final class OwOFrame
 		}
 	}
 
+	/**
+	 * @method      getMode
+	 * @description 获取当前PHP的运行模式
+	 * @author      HanskiJay
+	 * @doenIn      2021-01-30
+	 * @return      string
+	 */
 	public static function getMode() : string
 	{
 		return !is_string(php_sapi_name()) ? 'error' : php_sapi_name();
 	}
 
+	/**
+	 * @method      isRunningWithCLI
+	 * @description 判断当前的运行模式是否为CLI
+	 * @author      HanskiJay
+	 * @doenIn      2021-01-30
+	 * @return      boolean
+	 */
 	public static function isRunningWithCLI() : bool
 	{
 		return preg_match('/cli/i', self::getMode());
 	}
 
+	/**
+	 * @method      isRunningWithCGI
+	 * @description 判断当前的运行模式是否为CGI
+	 * @author      HanskiJay
+	 * @doenIn      2021-01-30
+	 * @return      boolean
+	 */
 	public static function isRunningWithCGI() : bool
 	{
 		return preg_match('/cgi/i', self::getMode());
@@ -526,7 +531,15 @@ final class OwOFrame
 		return $ip;
 	}
 
-	public static function is_serialized($data)
+	/**
+	 * @method      is_serialized
+	 * @description 判断传入的数据是否已序列化
+	 * @author      HanskiJay
+	 * @doenIn      2021-01-31
+	 * @param       string[data|需要判断的数据]
+	 * @return      boolean
+	 */
+	public static function is_serialized(string $data)
 	{
 		$data = trim($data);
 		if('N;' == $data) return true;
@@ -547,14 +560,31 @@ final class OwOFrame
 	}
 
 	/**
-	 * 宽字符串截字函数
-	 *
-	 * @access public
-	 * @param string $str 需要截取的字符串
-	 * @param integer $start 开始截取的位置
-	 * @param integer $length 需要截取的长度
-	 * @param string $trim 截取后的截断标示符
-	 * @return string
+	 * @method      str2UTF8
+	 * @description 字符串编码转码UTF-8
+	 * @author      HanskiJay
+	 * @doenIn      2021-01-31
+	 * @param       string[str|需要转码的字符串]
+	 * @return      string
+	 */
+	public static function str2UTF8(string $str) : string
+	{
+		if(__MB_SUPPORTED__) {
+			$encode = mb_detect_encoding($str, ["ASCII", "UTF-8", "GB2312", "GBK", "BIG5"]);
+			return ($encode === "UTF-8") ? $str : mb_convert_encoding($str, "UTF-8", $encode);
+		} else {
+			return $str;
+		}
+	}
+
+	/**
+	 * @method      subStr
+	 * @description 宽字符串截字函数
+	 * @param       string[str|需要截取的字符串]
+	 * @param       int[start|开始截取的位置]
+	 * @param       int[length|需要截取的长度]
+	 * @param       string[trim|截取后的截断标示符]
+	 * @return      string
 	 */
 	public static function subStr(string $str, int $start, int $length, string $trim = "...") : string
 	{
@@ -574,11 +604,10 @@ final class OwOFrame
 	}
 
 	/**
-	 * 获取宽字符串长度函数
-	 *
-	 * @access public
-	 * @param string $str 需要获取长度的字符串
-	 * @return integer
+	 * @method      strLen
+	 * @description 获取宽字符串长度函数
+	 * @param       string[str|需要截取的字符串]
+	 * @return      int
 	 */
 	public static function strLen(string $str) : int
 	{
@@ -587,16 +616,10 @@ final class OwOFrame
 		: (('UTF-8' == strtoupper(self::$charset)) ? strlen(utf8_decode($str)) : strlen($str));
 	}
 
-	public static function __strToUpper(array $matches) : ?string
-	{
-		return strtoupper($matches[0]);
-	}
-
 	/**
-	 * 获取大写字符串
-	 * 
-	 * @param string $str 
-	 * @access public
+	 * @method      strToUpper
+	 * @description 获取大写字符串
+	 * @param       string[str|字符串]
 	 * @return string
 	 */
 	public static function strToUpper(string $str) : string
@@ -607,12 +630,12 @@ final class OwOFrame
 	}
 
 	/**
-	 * 检查是否为合法的编码数据
-	 *
-	 * @param string|array $str
-	 * @return boolean
+	 * @method      checkStrEncoding
+	 * @description 检查是否为合法的编码数据
+	 * @param       string|array[str]
+	 * @return      boolean
 	 */
-	public static function checkStrEncoding(string $str) : bool
+	public static function checkStrEncoding($str) : bool
 	{
 		if(is_array($str)) return array_map([$this, 'checkStrEncoding'], $str);
 																			// just support utf-8;
@@ -620,10 +643,10 @@ final class OwOFrame
 	}
 
 	/**
-	 * 检查是否是一个安全的主机名
-	 *
-	 * @param $host
-	 * @return bool
+	 * @method      checkStrEncoding
+	 * @description 检查是否是一个安全的主机名
+	 * @param       string[host|主机名]
+	 * @return      boolean
 	 */
 	public static function isSafeHost(string $host) : bool
 	{
@@ -670,6 +693,15 @@ final class OwOFrame
 		return true;
 	}
 
+	/**
+	 * @method      isDomain
+	 * @description 判断字符串是否为域名
+	 * @author      HanskiJay
+	 * @doenIn      2021-01-30
+	 * @param       string[str|字符串]
+	 * @param       &$match
+	 * @return      boolean
+	 */
 	public static function isDomain(string $str, &$match = null) : bool
 	{
 		// return (strpos($str, '--') === false) && (bool) preg_match("/^([a-z0-9_\-]+[\.])?([a-z0-9_\-]+)[\.]([a-z]+)$/i", strtolower(trim($str)), $match);
@@ -677,11 +709,10 @@ final class OwOFrame
 	}
 
 	/**
-	 * 获取文件类型
-	 *
-	 * @access public
-	 * @param string $fileName 文件名
-	 * @return string
+	 * @method      mimeContentType
+	 * @description 获取文件类型
+	 * @param       string[fileName|文件名]
+	 * @return      string
 	 */
 	public static function mimeContentType(string $fileName) : string
 	{
@@ -710,11 +741,24 @@ final class OwOFrame
 		return 'application/octet-stream';
 	}
 
+	/**
+	 * @method      getMimeType
+	 * @description 获取所有的Mime类型
+	 * @author      HanskiJay
+	 * @return      array
+	 */
 	public static function getMimeType() : array
 	{
 		return self::MIMETYPE;
 	}
 
+	/**
+	 * @method      getShortClassName
+	 * @description 返回当前对象更好的类名
+	 * @author      HanskiJay
+	 * @param       object[class|实例化对象]
+	 * @return      string
+	 */
 	public static function getShortClassName(object $class) : string
 	{
 		return basename(str_replace('\\', '/', get_class($class)));

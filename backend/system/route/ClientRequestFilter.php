@@ -52,8 +52,8 @@ class ClientRequestFilter
 			throw new OwOFrameException('Class '.get_class($this).' was Initialized!');
 		}
 		self::$instance   = $this;
-		self::$banned     = new Config(TMP_PATH . 'banned.json', Config::JSON);
-		self::$blacklist  = new Config(TMP_PATH . 'blacklist.json', Config::JSON);
+		self::$banned     = new Config(TMP_PATH . 'banned');
+		self::$blacklist  = new Config(TMP_PATH . 'blacklist');
 		self::$currentIp  = OwOFrame::getClientIp();
 		self::$currentIpC = str_replace('.', '-', self::$currentIp);
 		if(in_array(self::$currentIp, self::$blacklist->getAll())) {

@@ -70,7 +70,7 @@ class TextFormat
 	 */
 	public static function split(string $str) : array
 	{
-		return preg_split("/(" . self::PREFIX . "[0-9birsu])/", $str, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+		return preg_split("/(" . self::PREFIX . "[0-9birsu]+)/", $str, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 	}
 
 	/**
@@ -83,7 +83,7 @@ class TextFormat
 	 */
 	public static function clean(string $str) : string
 	{
-		return str_replace(self::PREFIX, "", preg_replace("/" . self::PREFIX . "[0-9birsu]/", "", $str));
+		return str_replace(self::PREFIX, "", preg_replace("/" . self::PREFIX . "[0-9birsu]+/", "", $str));
 	}
 
 	/**

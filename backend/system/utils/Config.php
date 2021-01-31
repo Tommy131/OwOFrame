@@ -11,429 +11,198 @@
 	* Copyright (c) 2015-2019 OwOBlog-DGMT All Rights Reserevd.
 	* Developer: HanskiJay(Teaclon)
 	* Contact: (QQ-3385815158) E-Mail: support@owoblog.com
-	*
-	* This File is from [PMMP-PocketMine](https://github.com/pmmp/PocketMine-MP) !WILL DELETE THIS FILE SOON!
 	
 ************************************************************************/
 
 namespace backend\system\utils;
-/**
- * Config Class for simple config manipulation of multiple formats.
- */
-class Config {
-	const DETECT = -1; //Detect by file extension
-	const PROPERTIES = 0; // .properties
-	const CNF = Config::PROPERTIES; // .cnf
-	const JSON = 1; // .js, .json
-	const YAML = 2; // .yml, .yaml
-	//const EXPORT = 3; // .export, .xport
-	const SERIALIZED = 4; // .sl
-	const ENUM = 5; // .txt, .list, .enum
-	const ENUMERATION = Config::ENUM;
 
-	/** @var array */
-	private $config = [];
+class Config
+{
+	/* @array 配置文件数组 */
+	private $config;
+	/* @array 配置文件嵌套缓存数组 */
+	private $nestedCache;
+	/* @string 文件名 */
+	private $fileName;
+	/* @string 文件路径 */
+	private $filePath;
+	/* @bool 自动保存 */
+	public $autoSave;
 
-	private $nestedCache = [];
 
-	/** @var string */
-	private $file;
-	/** @var bool */
-	private $correct = false;
-	/** @var int */
-	private $type = Config::DETECT;
-
-	public static $formats = [
-		"properties" => Config::PROPERTIES,
-		"cnf" => Config::CNF,
-		"conf" => Config::CNF,
-		"config" => Config::CNF,
-		"json" => Config::JSON,
-		"js" => Config::JSON,
-		"yml" => Config::YAML,
-		"yaml" => Config::YAML,
-		//"export" => Config::EXPORT,
-		//"xport" => Config::EXPORT,
-		"sl" => Config::SERIALIZED,
-		"serialize" => Config::SERIALIZED,
-		"txt" => Config::ENUM,
-		"list" => Config::ENUM,
-		"enum" => Config::ENUM,
-	];
-
-	/**
-	 * @param string $file     Path of the file to be loaded
-	 * @param int    $type     Config type to load, -1 by default (detect)
-	 * @param array  $default  Array with the default values that will be written to the file if it did not exist
-	 * @param null   &$correct Sets correct to true if everything has been loaded correctly
-	 */
-	public function __construct($file, $type = Config::DETECT, $default = [], &$correct = null){
-		$this->load($file, $type, $default);
-		$correct = $this->correct;
-	}
-
-	/**
-	 * Removes all the changes in memory and loads the file again
-	 */
-	public function reload(){
-		$this->config = [];
-		$this->nestedCache = [];
-		$this->correct = false;
-		$this->load($this->file, $this->type);
-	}
-
-	/**
-	 * @param $str
-	 *
-	 * @return mixed
-	 */
-	public static function fixYAMLIndexes($str){
-		return preg_replace("#^([ ]*)([a-zA-Z_]{1}[ ]*)\\:$#m", "$1\"$2\":", $str);
-	}
-
-	/**
-	 * @param       $file
-	 * @param int   $type
-	 * @param array $default
-	 *
-	 * @return bool
-	 */
-	public function load($file, $type = Config::DETECT, $default = []){
-		$this->correct = true;
-		$this->type = (int) $type;
-		$this->file = $file;
-		if(!is_array($default)){
-			$default = [];
-		}
-		if(!file_exists($file)){
-			$this->config = $default;
+	public function __construct(string $file, array $defaultData = [], bool $autoSave = false)
+	{
+		$this->autoSave = $autoSave;
+		$this->filePath = dirname($file) . DIRECTORY_SEPARATOR;
+		$this->fileName = str_replace($this->filePath, '', $file) . '.json';
+		if(!file_exists($file)) {
+			$this->config = $defaultData;
 			$this->save();
-		}else{
-			if($this->type === Config::DETECT){
-				$extension = explode(".", basename($this->file));
-				$extension = strtolower(trim(array_pop($extension)));
-				if(isset(Config::$formats[$extension])){
-					$this->type = Config::$formats[$extension];
-				}else{
-					$this->correct = false;
-				}
-			}
-			if($this->correct === true){
-				$content = file_get_contents($this->file);
-				switch($this->type){
-					case Config::PROPERTIES:
-					case Config::CNF:
-						$this->parseProperties($content);
-						break;
-					case Config::JSON:
-						$this->config = json_decode($content, true);
-						break;
-					case Config::YAML:
-						$content = self::fixYAMLIndexes($content);
-						$this->config = yaml_parse($content);
-						break;
-					case Config::SERIALIZED:
-						$this->config = unserialize($content);
-						break;
-					case Config::ENUM:
-						$this->parseList($content);
-						break;
-					default:
-						$this->correct = false;
-
-						return false;
-				}
-				if(!is_array($this->config)){
-					$this->config = $default;
-				}
-				if($this->fillDefaults($default, $this->config) > 0){
-					$this->save();
-				}
-			}else{
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function check(){
-		return $this->correct === true;
-	}
-
-	/**
-	 * @param bool $async
-	 *
-	 * @return bool
-	 */
-	public function save(){
-		if($this->correct === true){
-			$content = null;
-			switch($this->type){
-				case Config::PROPERTIES:
-				case Config::CNF:
-					$content = $this->writeProperties();
-					break;
-				case Config::JSON:
-					$content = json_encode($this->config, JSON_PRETTY_PRINT | JSON_BIGINT_AS_STRING | JSON_UNESCAPED_UNICODE);
-					break;
-				case Config::YAML:
-					$content = yaml_emit($this->config, YAML_UTF8_ENCODING);
-					break;
-				case Config::SERIALIZED:
-					$content = serialize($this->config);
-					break;
-				case Config::ENUM:
-					$content = implode("\r\n", array_keys($this->config));
-					break;
-			}
-			file_put_contents($this->file, $content);
-			return true;
-		}else{
-			return false;
+		} else {
+			$this->config = json_decode(file_get_contents($this->file), true) ?? [];
 		}
 	}
 
 	/**
-	 * @param $k
-	 *
-	 * @return bool|mixed
+	 * @method      get
+	 * @description description
+	 * @author      HanskiJay
+	 * @doenIn      2021-01-30
+	 * @param       string[index|键值]
+	 * @param       mixed[default|默认返回值]
+	 * @return      mixed
 	 */
-	public function __get($k){
-		return $this->get($k);
-	}
+	public function get(string $index, $default = null)
+	{
+		$arr = explode('.', $index);
+		if(count($arr) > 1) {
+			if(isset($this->nestedCache[$index])) return $this->nestedCache[$index];
 
-	/**
-	 * @param $k
-	 * @param $v
-	 */
-	public function __set($k, $v){
-		$this->set($k, $v);
-	}
-
-	/**
-	 * @param $k
-	 *
-	 * @return bool
-	 */
-	public function __isset($k){
-		return $this->exists($k);
-	}
-
-	/**
-	 * @param $k
-	 */
-	public function __unset($k){
-		$this->remove($k);
-	}
-
-	/**
-	 * @param $key
-	 * @param $value
-	 */
-	public function setNested($key, $value){
-		$vars = explode(".", $key);
-		$base = array_shift($vars);
-
-		if(!isset($this->config[$base])){
-			$this->config[$base] = [];
-		}
-
-		$base =& $this->config[$base];
-
-		while(count($vars) > 0){
-			$baseKey = array_shift($vars);
-			if(!isset($base[$baseKey])){
-				$base[$baseKey] = [];
-			}
-			$base =& $base[$baseKey];
-		}
-
-		$base = $value;
-		$this->nestedCache[$key] = $value;
-	}
-
-	/**
-	 * @param       $key
-	 * @param mixed $default
-	 *
-	 * @return mixed
-	 */
-	public function getNested($key, $default = null){
-		if(isset($this->nestedCache[$key])){
-			return $this->nestedCache[$key];
-		}
-
-		$vars = explode(".", $key);
-		$base = array_shift($vars);
-		if(isset($this->config[$base])){
-			$base = $this->config[$base];
-		}else{
-			return $default;
-		}
-
-		while(count($vars) > 0){
-			$baseKey = array_shift($vars);
-			if(is_array($base) and isset($base[$baseKey])){
-				$base = $base[$baseKey];
-			}else{
+			$base = array_shift($arr);
+			if(isset($this->config[$base])) {
+				$base = $this->config[$base];
+			} else {
 				return $default;
 			}
-		}
 
-		return $this->nestedCache[$key] = $base;
-	}
-
-	/**
-	 * @param       $k
-	 * @param mixed $default
-	 *
-	 * @return bool|mixed
-	 */
-	public function get($k, $default = false){
-		return ($this->correct and isset($this->config[$k])) ? $this->config[$k] : $default;
-	}
-
-	/**
-	 * @param string $k key to be set
-	 * @param mixed  $v value to set key
-	 */
-	public function set($k, $v = true){
-		$this->config[$k] = $v;
-		foreach($this->nestedCache as $nestedKey => $nvalue){
-			if(substr($nestedKey, 0, strlen($k) + 1) === ($k . ".")){
-				unset($this->nestedCache[$nestedKey]);
-			}
-		}
-	}
-
-	/**
-	 * @param array $v
-	 */
-	public function setAll($v){
-		$this->config = $v;
-	}
-
-	/**
-	 * @param      $k
-	 * @param bool $lowercase If set, searches Config in single-case / lowercase.
-	 *
-	 * @return bool
-	 */
-	public function exists($k, $lowercase = false){
-		if($lowercase === true){
-			$k = strtolower($k); //Convert requested  key to lower
-			$array = array_change_key_case($this->config, CASE_LOWER); //Change all keys in array to lower
-			return isset($array[$k]); //Find $k in modified array
-		}else{
-			return isset($this->config[$k]);
-		}
-	}
-
-	/**
-	 * @param $k
-	 */
-	public function remove($k){
-		unset($this->config[$k]);
-	}
-
-	/**
-	 * @param bool $keys
-	 *
-	 * @return array
-	 */
-	public function getAll($keys = false){
-		return ($keys === true ? array_keys($this->config) : $this->config);
-	}
-
-	/**
-	 * @param array $defaults
-	 */
-	public function setDefaults(array $defaults){
-		$this->fillDefaults($defaults, $this->config);
-	}
-
-	/**
-	 * @param $default
-	 * @param $data
-	 *
-	 * @return int
-	 */
-	private function fillDefaults($default, &$data){
-		$changed = 0;
-		foreach($default as $k => $v){
-			if(is_array($v)){
-				if(!isset($data[$k]) or !is_array($data[$k])){
-					$data[$k] = [];
+			while(count($arr) > 0) {
+				$baseKey = array_shift($arr);
+				if(is_array($base) and isset($base[$baseKey])) {
+					$base = $base[$baseKey];
+				} else {
+					return $default;
 				}
-				$changed += $this->fillDefaults($v, $data[$k]);
-			}elseif(!isset($data[$k])){
-				$data[$k] = $v;
-				++$changed;
 			}
-		}
-
-		return $changed;
-	}
-
-	/**
-	 * @param $content
-	 */
-	private function parseList($content){
-		foreach(explode("\n", trim(str_replace("\r\n", "\n", $content))) as $v){
-			$v = trim($v);
-			if($v == ""){
-				continue;
-			}
-			$this->config[$v] = true;
+			return $this->nestedCache[$index] = $base;
+		} else {
+			return $this->config[$index] ?? null;
 		}
 	}
 
 	/**
-	 * @return string
+	 * @method      getAll
+	 * @description 返回配置文件
+	 * @author      HanskiJay
+	 * @doenIn      2021-01-30
+	 * @return      array
 	 */
-	private function writeProperties(){
-		$content = "#Properties Config file\r\n#" . date("D M j H:i:s T Y") . "\r\n";
-		foreach($this->config as $k => $v){
-			if(is_bool($v) === true){
-				$v = $v === true ? "on" : "off";
-			}elseif(is_array($v)){
-				$v = implode(";", $v);
-			}
-			$content .= $k . "=" . $v . "\r\n";
-		}
-
-		return $content;
+	public function getAll() : array
+	{
+		return $this->config;
 	}
 
 	/**
-	 * @param $content
+	 * @method      set
+	 * @description 向对象设置属性
+	 * @author      HanskiJay
+	 * @doenIn      2021-01-30
+	 * @param       string[index|键值]
+	 * @param       mixed[value|数据]
 	 */
-	private function parseProperties($content){
-		if(preg_match_all('/([a-zA-Z0-9\-_\.]*)=([^\r\n]*)/u', $content, $matches) > 0){ //false or 0 matches
-			foreach($matches[1] as $i => $k){
-				$v = trim($matches[2][$i]);
-				switch(strtolower($v)){
-					case "on":
-					case "true":
-					case "yes":
-						$v = true;
-						break;
-					case "off":
-					case "false":
-					case "no":
-						$v = false;
-						break;
-				}
-				if(isset($this->config[$k])){
-					MainLogger::getLogger()->debug("[Config] Repeated property " . $k . " on file " . $this->file);
-				}
-				$this->config[$k] = $v;
+	public function set(string $index, $value) : void
+	{
+		$arr = explode('.', $index);
+		if(count($arr) > 1) {
+			$this->config[(string) $arr[0]] = $arr[1];
+		} else {
+			$this->config[$index] = $value;
+		}
+		if($this->autoSave) $this->save();
+	}
+
+	/**
+	 * @method      setAll
+	 * @description 向对象设置属性
+	 * @author      HanskiJay
+	 * @doenIn      2021-01-30
+	 * @param       array[data|键值]
+	 */
+	public function setAll(array $data) : void
+	{
+		$this->config = $data;
+		if($this->autoSave) $this->save();
+	}
+
+	public function remove(string $index) : void
+	{
+		unset($this->config[$index]);
+		if($this->autoSave) $this->save();
+	}
+
+	/**
+	 * @method      exists
+	 * @description 判断键值是否存在
+	 * @author      HanskiJay
+	 * @doenIn      2021-01-30
+	 * @param       string[index|键值]
+	 * @return      boolean
+	 */
+	public function exists(string $index) : bool
+	{
+		return isset($this->config[$index]);
+	}
+
+	/**
+	 * @method      backup
+	 * @description 备份配置文件
+	 * @author      HanskiJay
+	 * @doenIn      2021-01-30
+	 * @param       string[backupPath|备份路径]
+	 * @return      void
+	 */
+	public function backup(string $backupPath = '') : void
+	{
+		$backupPath = strlen($backupPath === 0) ? $this->filePath : dirname($backupPath);
+		$this->save($backupPath . @array_shift(explode('.', $this->fileName)) . '_' . date('Y_m_d') . '.json');
+	}
+
+	/**
+	 * @method      save
+	 * @description 保存配置文件
+	 * @author      HanskiJay
+	 * @doenIn      2021-01-30
+	 * @param       string|null[file|文件]
+	 * @return      void
+	 */
+	public function save(?string $file = null) : void
+	{
+		if($file !== null) {
+			$filePath = dirname($file) . DIRECTORY_SEPARATOR;
+			$fileName = str_replace($filePath, '', $file);
+			if($filePath . $fileName !== $this->filePath . $this->fileName) {
+				$this->filePath = $filePath;
+				$this->fileName = $fileName;
 			}
+		}
+		file_put_contents($file ?? $this->filePath . $this->fileName, json_encode($this->config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+	}
+
+	/**
+	 * @method      reload
+	 * @description 重新读取配置文件
+	 * @author      HanskiJay
+	 * @doenIn      2021-01-30
+	 * @return      [type]      [description]
+	 */
+	public function reload() : void
+	{
+		if(is_file($this->filePath . $this->fileName)) {
+			$this->nestedCache = [];
+			$this->config = json_decode(file_get_contents($this->filePath . $this->fileName, true));
+		} else {
+			\OwOBootStrap\logger("Cannot reload Config::{$this->config} because the file does not exists!", 'Config', 'ERROR');
 		}
 	}
 
+	/**
+	 * @method      json
+	 * @description 将当前的数据转换成JSON对象 | Formating currently data($this->config) to JSON Object
+	 * @author      HanskiJay
+	 * @doenIn      2021-01-31
+	 * @return      object
+	 */
+	public function json() : object
+	{
+		return json_decode(json_encode($this->config));
+	}
 }
