@@ -10,7 +10,7 @@
 	
 	* Copyright (c) 2015-2019 OwOBlog-DGMT All Rights Reserevd.
 	* Developer: HanskiJay(Teaclon)
-	* Contact: (QQ-3385815158) E-Mail: support@owoblog.com
+	* Telegram: https://t.me/HanskiJay E-Mail: support@owoblog.com
 	*
 	* 入口 & 配置文件
 
