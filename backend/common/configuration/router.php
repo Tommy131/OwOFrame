@@ -10,7 +10,7 @@
 	
 	* Copyright (c) 2015-2019 OwOBlog-DGMT All Rights Reserevd.
 	* Developer: HanskiJay(Teaclon)
-	* Contact: (QQ-3385815158) E-Mail: support@owoblog.com
+	* Telegram: https://t.me/HanskiJay E-Mail: support@owoblog.com
 	*
 	* 此配置文件为域名绑定规则的配置文件.
 	* This configuration is for bind domain(s) to application.
