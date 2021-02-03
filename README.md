@@ -29,7 +29,6 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 - [x] `SessionClass`        一个普通的Session处理类
 
 #### Third Party Resources
-- [x] [`I18n`](https://typecho.org/) 由Typecho团队编写的国际化语言支持(未来可能会移除此类库支持)
 - [x] [`PasswordHash`](http://www.openwall.com/phpass/) 在此项目中包含/集成了该类库
 - [x] [`Think-ORM`](https://github.com/top-think/think-orm) 使用此项目达到了OwOFrame的ModelBase目的实现
 
