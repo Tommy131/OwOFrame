@@ -55,7 +55,7 @@ namespace OwOBootstrap
 	// Define Timezone;
 	if(!defined('TIME_ZONE'))        define('TIME_ZONE',        'Europe/Berlin');
 	// Define OwOFrame start time;
-	if(!defined("APP_VERSION"))      define("APP_VERSION",      "20210122@v1.0.0");
+	if(!defined("APP_VERSION"))      define("APP_VERSION",      "dev20210201@v1.0.0");
 	// Project root directory (absolute path);
 	if(!defined("ROOT_PATH"))        define("ROOT_PATH",        getcwd() . DIRECTORY_SEPARATOR);
 	// The Back-End source code is stored in the root directory (absolute path); here you need to check whether http can be accessed;

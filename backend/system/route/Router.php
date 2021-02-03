@@ -18,9 +18,9 @@ declare(strict_types=1);
 namespace backend\system\route;
 
 use backend\OwOFrame;
-use backend\system\utils\I18n\I18nAPI;
 
 use backend\system\app\AppManager;
+use backend\system\http\OutputFilter;
 use backend\system\route\RouteRule;
 use backend\system\exception\InvalidControllerException;
 use backend\system\exception\MethodMissedException;
@@ -42,7 +42,6 @@ final class Router
 	*/
 	public static function dispath() : void
 	{
-		$_I18nApi      = new I18nAPI;
 		$pathInfo      = array_filter(explode("/", self::getPathInfo()));
 		$primaryParser = array_shift($pathInfo); // 默认设置为App名称 | Default is to set for AppName;
 		$primaryParser = !empty($primaryParser) ? strtolower($primaryParser) : null;
@@ -159,7 +158,7 @@ final class Router
 			\OwOBootstrap\stop();
 		} else {
 			if($controller instanceof \Closure) {
-				$_I18nApi->_e($controller(new self));
+				echo $controller(new self);
 				\OwOBootstrap\stop();
 			} else {
 				$app->setParameters($pathInfo);
@@ -172,7 +171,7 @@ final class Router
 						$method = $controller::$methodNotFound_DefaultMethod;
 					}
 				}
-				$_I18nApi->_e($controller->callback($method));
+				echo $controller->callback($method);
 				if(!empty($controller::$goto)) {
 					header('Refresh:3; url='.self::getRootUrl().$controller::$goto);
 				}
