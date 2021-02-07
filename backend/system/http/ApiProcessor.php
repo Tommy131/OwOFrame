@@ -72,6 +72,18 @@ abstract class ApiProcessor
 	abstract public function start(array $params) : string;
 
 	/**
+	 * @method      requestDenied
+	 * @description 请求方法被拒绝的时候自动执行这个方法
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-07
+	 * @return      string
+	 */
+	public function requestDenied() : string
+	{
+		return 'Your HTTP requested mode is illegal for this API-Processor.';
+	}
+
+	/**
 	 * @method      getVersion
 	 * @description 返回API处理器版本
 	 * @author      HanskiJay
@@ -79,4 +91,20 @@ abstract class ApiProcessor
 	 * @return      string
 	 */
 	abstract public function getVersion() : string;
+
+	/**
+	 * @method      mode
+	 * @description Api处理器的允许请求方法
+	 * @description -1: 接受所有请求    | Accept all all http mode
+	 * @description 0:  仅GET请求       | Only Get Request allowed
+	 * @description 1:  仅POST请求      | Only POST Request allowed
+	 * @description 2:  仅POST请求      | Only POST Request allowed
+	 * @description 3:  仅AJAX请求      | Only Ajax Request allowed
+	 * @description 4:  AJAX + GET请求  | GET + Ajax Request allowed
+	 * @description 5:  AJAX + POST请求 | GET + Ajax Request allowed
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-07
+	 * @return      int
+	 */
+	abstract public static function mode() : int;
 }
