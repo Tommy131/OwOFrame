@@ -20,7 +20,7 @@ namespace backend\system\route;
 use backend\OwOFrame;
 
 use backend\system\app\AppManager;
-use backend\system\http\OutputFilter;
+use backend\system\http\RequestFilter;
 use backend\system\route\RouteRule;
 use backend\system\exception\InvalidControllerException;
 use backend\system\exception\MethodMissedException;
@@ -59,6 +59,17 @@ final class Router
 					$primaryParser = $v;
 					break;
 				}
+			}
+		}
+
+		// 判断当前路由是否为API实例;
+		if(!is_null($primaryParser) && (strtolower($primaryParser) === 'api')) {
+			$api = strtolower(array_shift($pathInfo) ?? 'unknown');
+			if(($api = RouteRule::getApiProcessor($api)) !== null) {
+				$api->filter(RequestFilter::getMerge());
+				$result = $api->start($pathInfo);
+				echo \OwObootStrap\useJsonFormat() ? json_encode($result, JSON_UNESCAPED_UNICODE) : $result;
+				exit;
 			}
 		}
 
