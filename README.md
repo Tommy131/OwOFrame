@@ -9,6 +9,7 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 > OwOFrame 是我利用个人的空闲时间以及数不尽多少天熬夜开发出来的小框架, 当然也有很多不足之处. 本框架目前支持的功能请参见下列:
 
 #### Basic System Components
+- [x] `ApiProcessor`        一个独立的API处理模块, 用于分离与AppManager的区别
 - [x] `AppManager`          本框架为多应用共存框架, 通过HTTP_URI识别当前的应用
 - [x] `CommandManager`      支持在CLI端通过CommandLine方法实现一些操作
 - [x] `ConfigurationParser` 配置文件解析器
@@ -35,7 +36,9 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 
 
 ## How to use me?
-先来介绍一下目录格式吧.
+打开命令行 `CMD` 或Linux的 `Shell` 之后, 进入到项目根目录并且输入指令 `cd backend && composer install`安装所需的依赖包.
+
+然后介绍一下目录格式吧.
 
 - 引导文件为根目录下的 `index.php`, 通过此文件初始化框架.
 - `/backend/OwOFrame.php` 此文件的解释参考上方.
@@ -56,7 +59,7 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 ## Statement
 &copy; 2016-2020 [`OwOBlog-DGMT`](https://www.owoblog.com) All Rights Reserved. Please comply with the open source license of this project for modification, derivative or commercial use of this project. The ultimate ownership of this project belongs to HanskiJay(Tommy131).
 
-> My Contact: 
+> My Contact:
 - Website: [`HanskiJay`](https://www.owoblog.com)
 - Telegram: [`HanskiJay`](https://t.me/HanskiJay)
 - E-Mail: [`HanskiJay`](mailto:support@owoblog.com)
