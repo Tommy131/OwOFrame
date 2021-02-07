@@ -33,20 +33,18 @@ class RouteRule
 	/* @array API处理器绑定池 */
 	private static $apiRule = [];
 
-
 	/**
-	 * @method      compareDomain
-	 * @description 比对域名是否相同
+	 * @method      bind
+	 * @description 绑定路由规则到控制器
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-16
-	 * @param       string[domain1|第一个域名]
-	 * @param       string[domain2|第二个域名]
-	 * @return      boolean
+	 * @doenIn      2021-02-07
+	 * @param       string[app_controllerName|Usage: -> AppName@ControllerName]
+	 * @param       string[rule|绑定规则]
+	 * @return      void
 	 */
-	public static function compareDomain(string $domain1, string $domain2) : bool
+	public static function bind(string $app_controllerName, string $rule) : void
 	{
-		// return (bool) (preg_match("/{$domain1}/i", $domain2) || preg_match("/{$domain2}/i", $domain1));
-		return $domain1 === $domain2;
+
 	}
 
 	/**
@@ -72,6 +70,21 @@ class RouteRule
 	public static function getNormalRules() : array
 	{
 		return self::$routeRule;
+	}
+
+	/**
+	 * @method      compareDomain
+	 * @description 比对域名是否相同
+	 * @author      HanskiJay
+	 * @doenIn      2021-01-16
+	 * @param       string[domain1|第一个域名]
+	 * @param       string[domain2|第二个域名]
+	 * @return      boolean
+	 */
+	public static function compareDomain(string $domain1, string $domain2) : bool
+	{
+		// return (bool) (preg_match("/{$domain1}/i", $domain2) || preg_match("/{$domain2}/i", $domain1));
+		return $domain1 === $domain2;
 	}
 
 	/**

@@ -66,9 +66,13 @@ final class Router
 		if(!is_null($primaryParser) && (strtolower($primaryParser) === 'api')) {
 			$api = strtolower(array_shift($pathInfo) ?? 'unknown');
 			if(($api = RouteRule::getApiProcessor($api)) !== null) {
-				$api->filter(RequestFilter::getMerge());
-				$result = $api->start($pathInfo);
-				echo \OwObootStrap\useJsonFormat() ? json_encode($result, JSON_UNESCAPED_UNICODE) : $result;
+				if(($api::mode() !== -1) && (requestMode() !== $api::mode())) {
+					$result = $api->requestDenied();
+				} else {
+					$api->filter(RequestFilter::getMerge());
+					$result = $api->start($pathInfo);
+				}
+				echo $result;
 				exit;
 			}
 		}
