@@ -36,16 +36,7 @@ namespace OwOBootstrap
 		}
 	}
 	
-	/**
-	 * 检测Web环境是否安全(下方是web环境配置方法);
-	 * Check whether the web environment is safe (the following is the web environment configuration method);
-	 *     --- NGINX ---          *     --- APACHE ---
-	 * location ^~ /backend/ {    * <Directory "/backend/">
-	 * 		deny all;             * 	Order Deny,Allow
-	 * 		return 403;           * 	Deny from all
-	 * 	}                         * </Directory>
-	 * 	TODO: 将此检测方法移至后续的安装脚本里;
-	 */
+	// TODO: 将此检测方法移至后续的安装脚本里;
 	/*if(@file_get_contents($_SERVER["REQUEST_SCHEME"]."://".$_SERVER["HTTP_HOST"]."/backend/tmp/testfile.dist") === "test") {
 		writeLogExit("Your web environment is not secure, please disallowed the http protocol to get the files in the path 'backend'.");
 	}*/

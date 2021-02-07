@@ -3,6 +3,8 @@
 
 OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模式开发, 框架的制定标准借鉴了 `ThinkPHP` 和 `Laravel`, 因此有部分方法的命名规则看起来与其有相似之处.
 
+如果您觉得本项目对您有帮助, 请给本项目一颗小小的 `Star` 呗QWQ
+
 ------
 
 ## What can I do?
