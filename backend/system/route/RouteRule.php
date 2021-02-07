@@ -19,6 +19,7 @@ namespace backend\system\route;
 
 use backend\OwOFrame;
 use backend\system\app\AppManager;
+use backend\system\http\ApiProcessor;
 use backend\system\exception\RouterException;
 
 class RouteRule
@@ -29,6 +30,8 @@ class RouteRule
 	private static $routeRule = [];
 	/* @array 域名绑定表 */
 	private static $domainRule = [];
+	/* @array API处理器绑定池 */
+	private static $apiRule = [];
 
 
 	/**
@@ -130,5 +133,44 @@ class RouteRule
 	public static function getDomainRules() : array
 	{
 		return self::$domainRule;
+	}
+
+	/**
+	 * @method      bindApiProcessor
+	 * @description 绑定API处理器
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-04
+	 * @param       class@ApiProcessor[api|绑定的实例对象]
+	 * @return      void
+	 */
+	public static function bindApiProcessor(ApiProcessor $api) : void
+	{
+		if(is_null(self::getApiProcessor($api->getName()))) {
+			self::$apiRule[$api->getName()] = $api;
+		}
+	}
+
+	/**
+	 * @method      getApiProcessor
+	 * @description 返回一个有效的api处理器
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-04
+	 * @return      array
+	 */
+	public static function getApiProcessor(string $apiName) : ?ApiProcessor
+	{
+		return self::$apiRule[$apiName] ?? null;
+	}
+
+	/**
+	 * @method      getApiProcessors
+	 * @description 返回所有的api处理器
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-04
+	 * @return      array
+	 */
+	public static function getApiProcessors() : array
+	{
+		return self::$apiRule;
 	}
 }
