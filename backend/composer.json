@@ -1,6 +1,7 @@
 {
     "require": {
         "topthink/think-orm": "^2.0",
-        "bshaffer/oauth2-server-php": "^1.11"
+        "bshaffer/oauth2-server-php": "^1.11",
+        "endroid/qr-code": "^3.9"
     }
 }
