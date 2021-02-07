@@ -21,6 +21,7 @@ use backend\system\route\RouteRule as RR;
 
 // 绑定域名 test.xxx.com 到 IndexApp;
 RR::domain('xxx.com', ['test' => 'index']);
+
 // 添加一个Api处理器;
 RR::bindApiProcessor(new class extends backend\system\http\ApiProcessor
 {
@@ -37,5 +38,10 @@ RR::bindApiProcessor(new class extends backend\system\http\ApiProcessor
 	public function getVersion() : string
 	{
 		return "v1.0.0";
+	}
+
+	public static function mode() : int
+	{
+		return -1; // For details, please see the comments of the parent class 
 	}
 });
