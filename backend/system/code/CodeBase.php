@@ -26,6 +26,21 @@ interface CodeBase
 	/* @int 服务器内部错误状态码 */
 	public const CODE_SERVER_INTERVAL_ERROR = 500;
 
+	# HTTP Request Mode Code #
+	
+	/* @int HTTP GET请求模式 */
+	public const CODE_GET_MODE = 0;
+	/* @int HTTP POST请求模式 */
+	public const CODE_POST_MODE = 1;
+	/* @int HTTP PUT请求模式 */
+	public const CODE_PUT_MODE = 2;
+	/* @int HTTP AJAX请求模式 */
+	public const CODE_AJAX_MODE = 3;
+	/* @int HTTP AJAX + GET请求模式 */
+	public const CODE_AJAX_P_GET_MODE = 4;
+	/* @int HTTP AJAX + POST请求模式 */
+	public const CODE_AJAX_P_POST_MODE = 5;
+
 
 	/*
 	 * @User Module

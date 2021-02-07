@@ -23,16 +23,56 @@ class RequestFilter
 {
 
 	/**
+	 * @method      xssFilter
+	 * @description XSS跨站请求过滤
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-07
+	 * @param       string[str|需要过滤的参数]
+	 * @param       string[allowedHTML|允许的HTML标签] e.g. "<a><b><div>" (将不会过滤这三个HTML标签)
+	 * @return      void
+	 */
+	public static function xssFilter(string &$str, string $allowedHTML = null) : void
+	{
+		$filter = 
+		[
+			"/<(\\/?)(script|i?frame|style|html|body|title|link|meta|object|\\?|\\%)([^>]*?)>/isU",
+			"/(<[^>]*)on[a-zA-Z]+\s*=([^>]*>)/isU",
+			"/select\b|insert\b|update\b|delete\b|drop\b|;|\"|\'|\/\*|\*|\.\.\/|\.\/|union|into|load_file|outfile|dump/is"
+		];
+		$str = preg_replace($filter, '', strip_tags($str, $allowedHTML));
+	}
+
+	/**
 	 * @method      getMerge
 	 * @description 返回整个的请求数据(默认返回原型)
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-06
+	 * @param       bool[useXssFilter|是否使用默认的XSS过滤函数(Default: true)]
 	 * @param       callable|null[callback|回调参数]
 	 * @return      array(开发者需注意在此返回参数时必须使回调参数返回数组)
 	 */
-	public static function getMerge(?callable $callback = null) : array
+	public static function getMerge(bool $useXssFilter = true, ?callable $callback = null) : array
 	{
-		$array = ['get' => get(owohttp), 'post' => post(owohttp)];
+		if($useXssFilter) {
+			$get = $post = [];
+			foreach(get(owohttp) as $k => $v) {
+				$k = trim($k);
+				$v = trim($v);
+				self::xssFilter($k);
+				self::xssFilter($v);
+				$get[$k] = $v;
+			}
+			foreach(post(owohttp) as $k => $v) {
+				$k = trim($k);
+				$v = trim($v);
+				self::xssFilter($k);
+				self::xssFilter($v);
+				$get[$k] = $v;
+			}
+			$array = ['get' => $get, 'post' => $post];
+		} else {
+			$array = ['get' => get(owohttp), 'post' => post(owohttp)];
+		}
 		return !is_null($callback) ? call_user_func_array($callback, $array) : $array;
 	}
 }

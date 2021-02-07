@@ -66,6 +66,33 @@ function check(string $index, bool $autoUpper = false, &$method = 'GET')
 	return $result;
 }
 
+function requestMode() : int
+{
+	$httpMode = strtolower(server('REQUEST_METHOD'));
+	$ajaxMode = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+
+	if($ajaxMode) {
+		if($httpMode === 'get') {
+			return \backend\system\CodeBase::CODE_AJAX_P_GET_MODE;
+		}
+		elseif($httpMode === 'post') {
+			return \backend\system\CodeBase::CODE_AJAX_P_POST_MODE;
+		}
+		return \backend\system\CodeBase::CODE_AJAX_MODE;
+	}
+	elseif($httpMode === 'get') {
+		return \backend\system\code\CodeBase::CODE_GET_MODE;
+	}
+	elseif($httpMode === 'post') {
+		return \backend\system\code\CodeBase::CODE_POST_MODE;
+	}
+	elseif($httpMode === 'put') {
+		return \backend\system\code\CodeBase::CODE_PUT_MODE;
+	} else {
+		return -1;
+	}
+}
+
 
 /**
  * @Session GET
