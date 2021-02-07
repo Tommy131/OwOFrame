@@ -49,7 +49,17 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 - `/backend/common/` 此目录为系统的公共文件夹, 可存储静态资源文件, 默认的全局配置文件 `global.config` 将存放在此处.
 
 #### 是否需要修改Web环境?
-需要. 具体修改方法请参考文件 `/backend/bootstrap.php` 中第32\~40行的注释.
+需要. 具体修改方法参考下方:
+
+```nginx
+# Check whether the web environment is safe (the following is the web environment configuration method);
+#   --- NGINX ---          *     --- APACHE ---
+
+location ^~ /backend/ {    *   <Directory "/backend/">
+    deny all;              *   	Order Deny,Allow
+    return 403;            *   	Deny from all
+}                          *   </Directory>
+```
 
 #### 如何在CLI模式下运行OwOFrame?
 打开你的CMD或者Shell后, 进入OwOFrame的工程路径, 在控制台输入 `php owo [command]` 即可.
@@ -57,7 +67,7 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 ------
 
 ## Statement
-&copy; 2016-2020 [`OwOBlog-DGMT`](https://www.owoblog.com) All Rights Reserved. Please comply with the open source license of this project for modification, derivative or commercial use of this project. The ultimate ownership of this project belongs to HanskiJay(Tommy131).
+&copy; 2016-2021 [`OwOBlog-DGMT`](https://www.owoblog.com) All Rights Reserved. Please comply with the open source license of this project for modification, derivative or commercial use of this project. The ultimate ownership of this project belongs to HanskiJay(Tommy131).
 
 > My Contact:
 - Website: [`HanskiJay`](https://www.owoblog.com)
