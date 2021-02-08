@@ -1,5 +1,15 @@
 {
+    "name": "Tommy131/OwOFrame",
+    "description": "A lightweight MVC frame for php",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "HanskiJay(Tommy131)",
+            "email": "hanskijay@owoblog.com"
+        }
+    ],
     "require": {
+        "php": ">=7.1.0",
         "topthink/think-orm": "^2.0",
         "bshaffer/oauth2-server-php": "^1.11",
         "endroid/qr-code": "^3.9"
