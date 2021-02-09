@@ -159,6 +159,7 @@ class RouteRule
 	public static function bindApiProcessor(ApiProcessor $api) : void
 	{
 		if(is_null(self::getApiProcessor($api->getName()))) {
+			$api->setPathParam(Router::getParameters(2));
 			self::$apiRule[$api->getName()] = $api;
 		}
 	}
