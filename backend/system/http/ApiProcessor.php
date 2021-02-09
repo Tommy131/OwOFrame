@@ -55,14 +55,34 @@ abstract class ApiProcessor
 	}
 
 	/**
+	 * @method      setPathParam
+	 * @description 设置URL路径访问解析参数组
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-09
+	 * @param       array[path|参数组]
+	 */
+	public function setPathParam(array $path) : void
+	{
+		$this->path = $path;
+	}
+
+
+	public function getPath() : array
+	{
+		return $this->path;
+	}
+
+	/**
 	 * @method      start
 	 * @description 启动API处理器进行流程
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-06
-	 * @param       array[params|传入的参数]
-	 * @return      string
+	 * @return      void
 	 */
-	abstract public function start(array $params) : string;
+	public function start() : void
+	{
+		
+	}
 
 	/**
 	 * @method      requestDenied
@@ -77,16 +97,13 @@ abstract class ApiProcessor
 	}
 
 	/**
-	 * @method      setPathParam
-	 * @description 设置URL路径访问解析参数组
+	 * @method      getOutput
+	 * @description 返回处理结果
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-09
-	 * @param       array[path|参数组]
+	 * @return      string
 	 */
-	public function setPathParam(array $path) : void
-	{
-		$this->path = $path;
-	}
+	abstract public function getOutput() : string;
 
 	/**
 	 * @method      getName
