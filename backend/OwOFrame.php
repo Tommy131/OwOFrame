@@ -173,6 +173,7 @@ final class OwOFrame
 		'ser' => 'application/x-java-serialized-object',
 		'class' => 'application/x-java-vm',
 		'js' => 'application/x-javascript',
+		'json' => 'application/json',
 		'chrt' => 'application/x-kchart',
 		'kil' => 'application/x-killustrator',
 		'kpr' => 'application/x-kpresenter',
