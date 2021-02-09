@@ -21,6 +21,7 @@ use backend\OwOFrame;
 
 use backend\system\app\AppManager;
 use backend\system\http\RequestFilter;
+use backend\system\http\Response;
 use backend\system\route\RouteRule;
 use backend\system\exception\InvalidControllerException;
 use backend\system\exception\MethodMissedException;
@@ -67,12 +68,13 @@ final class Router
 			$api = strtolower(array_shift($pathInfo) ?? 'unknown');
 			if(($api = RouteRule::getApiProcessor($api)) !== null) {
 				if(($api::mode() !== -1) && (requestMode() !== $api::mode())) {
-					$result = $api->requestDenied();
+					$response = new Response([$api, 'requestDenied']);
 				} else {
 					$api->filter(RequestFilter::getMerge());
-					$result = $api->start($pathInfo);
+					$api->start();
+					$response = new Response([$api, 'getOutput']);
 				}
-				echo $result;
+				$response->sendResponse();
 				exit;
 			}
 		}
@@ -173,7 +175,7 @@ final class Router
 			\OwOBootstrap\stop();
 		} else {
 			if($controller instanceof \Closure) {
-				echo $controller(new self);
+				$controller(new self);
 				\OwOBootstrap\stop();
 			} else {
 				$app->setParameters($pathInfo);
@@ -186,9 +188,10 @@ final class Router
 						$method = $controller::$methodNotFound_DefaultMethod;
 					}
 				}
-				echo $controller->callback($method);
+				$response = new Response([$controller, $method]);
+				$response->sendResponse();
 				if(!empty($controller::$goto)) {
-					header('Refresh:3; url='.self::getRootUrl().$controller::$goto);
+					header('Refresh:3; url='.self::getRootUrl() . $controller::$goto);
 				}
 				
 			}
@@ -316,5 +319,20 @@ EOF;
 	public static function getRootUrl() : string
 	{
 		return server('REQUEST_SCHEME').'://'.server('HTTP_HOST');
+	}
+
+	/**
+	 * @method      betterUrl
+	 * @description 返回自定义Url
+	 * @description Set HTTP_HEADER;
+	 * @param       string[name|名称]
+	 * @param       string[path|路径]
+	 * @return      string
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-10 18:49
+	*/
+	public static function betterUrl(string $name, string $path) : string
+	{
+		return trim($path, '/').'/'.str_replace('//', '/', ltrim(((0 === strpos($name, './')) ? substr($name, 2) : $name), '/'));
 	}
 }

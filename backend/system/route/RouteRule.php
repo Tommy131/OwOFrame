@@ -84,6 +84,16 @@ class RouteRule
 	public static function compareDomain(string $domain1, string $domain2) : bool
 	{
 		// return (bool) (preg_match("/{$domain1}/i", $domain2) || preg_match("/{$domain2}/i", $domain1));
+		if(stripos($domain1, '*') !== false) {
+			$domain1 = explode('.', $domain1);
+			array_shift($domain1);
+			$domain1 = implode('.', $domain1);
+		}
+		if(stripos($domain2, '*') !== false) {
+			$domain2 = explode('.', $domain2);
+			array_shift($domain);
+			$domain2 = implode('.', $domain2);
+		}
 		return $domain1 === $domain2;
 	}
 
