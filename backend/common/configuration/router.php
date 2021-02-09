@@ -25,18 +25,20 @@ RR::domain('xxx.com', ['test' => 'index']);
 // 添加一个Api处理器;
 RR::bindApiProcessor(new class extends backend\system\http\ApiProcessor
 {
-	public function start(array $params) : string
+	public function getOutput() : string
 	{
-		return 'ok';
+		return 'Currently this processor appears to be working well~';
 	}
 
 	public static function getName() : string
 	{
+		// The name for url to match;
 		return 'test';
 	}
 
 	public static function getVersion() : string
 	{
+		// api version;
 		return "v1.0.0";
 	}
 
