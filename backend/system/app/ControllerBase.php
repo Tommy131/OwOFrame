@@ -25,14 +25,6 @@ abstract class ControllerBase
 	private $app = null;
 	/* @bool Front-End开启或关闭UsedTimeDiv(Default:true) */
 	public static $showUsedTimeDiv = true;
-	/* @int HTTP响应代码(Default:200) */
-	protected $code = 200;
-	/* @array HTTP header参数设置 */
-	protected $header = 
-	[
-		"Content-Type" => "text/html; charset=utf-8"
-		// "Content-Type" => "application/json"
-	];
 	/* @string 若存在该Url, Router将会在执行完对应请求方法之后跳转到该地址 */
 	public static $goto = null;
 	/* @string 若请求的Url中包含无效的请求方法, 则默认执行该方法 */
@@ -46,7 +38,7 @@ abstract class ControllerBase
 
 	/**
 	 * @method      methodNotFound
-	 * @description 这只是一个示例, 参考上方注释;
+	 * @description 这只是一个示例, 参考上方注释
 	 * @return      mixed
 	 * @author      HanskiJay
 	 * @doneIn      2020-10-08 22:04
@@ -58,8 +50,8 @@ abstract class ControllerBase
 
 	/**
 	 * @method      getApp
-	 * @description 返回对应的App;
-	 * @description Return corresponding AppBase Object;
+	 * @description 返回对应的App
+	 * @description Return corresponding AppBase Object
 	 * @return      AppBase
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-10 18:49
@@ -71,7 +63,7 @@ abstract class ControllerBase
 
 	/**
 	 * @method      getCommonPath
-	 * @description 获取静态资源目录;
+	 * @description 获取静态资源目录
 	 * @param       string[index|文件/文件夹索引]
 	 * @return      string
 	 * Author:      HanskiJay
@@ -84,8 +76,8 @@ abstract class ControllerBase
 
 	/**
 	 * @method      getViewPath
-	 * @description 返回Views(V)显示层的路径;
-	 * @description Get the path for View(V) relativly;
+	 * @description 返回Views(V)显示层的路径
+	 * @description Get the path for View(V) relativly
 	 * @param       string[index|文件/文件夹索引]
 	 * @param       bool[selectMode|选择模式[True: 返回绝对路径|Return absolute path][False: 返回相对路径|Return relative path]](Default:true)
 	 * @return      null or string
@@ -99,8 +91,8 @@ abstract class ControllerBase
 
 	/**
 	 * @method      hasViewPath
-	 * @description 判断是否存在一个View(V)目录;
-	 * @description Determine whether there is a Views(V) directory;
+	 * @description 判断是否存在一个View(V)目录
+	 * @description Determine whether there is a Views(V) directory
 	 * @param       string[index|文件/文件夹索引]
 	 * @return      boolean
 	 * @author      HanskiJay
@@ -113,90 +105,12 @@ abstract class ControllerBase
 	}
 
 	/**
-	 * @method      setResponseCode
-	 * @description 设置HTTP响应代码;
-	 * @description Set the response code for HTTP;
-	 * @param       int[code|响应代码]
-	 * @return      boolean
+	 * @method      getName
+	 * @description 返回控制器类名
 	 * @author      HanskiJay
-	 * @doneIn      2020-09-10 18:49
-	*/
-	public function setResponseCode(int $code) : bool
-	{
-		if(!isset(OwOFrame::HTTP_CODE[$code])) return false;
-		$this->code = $code;
-		return true;
-	}
-
-	/**
-	 * @method      getResponseCode
-	 * @description 获取当前设置的HTTP响应代码;
-	 * @description Get the response code from HTTP;
-	 * @param       int[code|响应代码](Default:403)
-	 * @return      int
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10 18:49
-	*/
-	public function getResponseCode(int $code = 403) : int
-	{
-		return $this->code ?: $code;
-	}
-
-	/**
-	 * @method      header
-	 * @description 设置HTTP_HEADER;
-	 * @description Set HTTP_HEADER;
-	 * @param       string[index|文件/文件夹索引]
-	 * @return      mixed
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10 18:49
-	*/
-	public function header(string $name, string $val = "")
-	{
-		if(($name === "") && ($val === "")) return $this->header;
-		elseif(isset($this->header[$name])) return $this->header[$name];
-		$this->header[$name] = $val;
-	}
-
-	/**
-	 * @method      callback
-	 * @description 控制器结束后的回调函数;
-	 * @description Set HTTP_HEADER;
-	 * @param       string[index|文件/文件夹索引]
-	 * @return      mixed
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10 18:49
-	*/
-	public function callback(string $method = "")
-	{
-		if(($method !== "") && method_exists($this, $method)) {
-			$result = $this->{$method}();
-		}
-		if(!headers_sent() && !empty($this->header))
-		{
-			foreach($this->header as $name => $val) {
-				header($name . (!is_null($val) ? ':' . $val : ''));
-			}
-			http_response_code($this->code);
-		}
-		if(function_exists('fastcgi_finish_request')) fastcgi_finish_request();
-		return $result ?? '';
-	}
-
-	/**
-	 * @method      callback
-	 * @description 控制器结束后的回调函数;
-	 * @description Set HTTP_HEADER;
-	 * @param       string[index|文件/文件夹索引]
-	 * @return      mixed
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10 18:49
-	*/
-	public static function url(string $name, string $path) : string
-	{
-		return trim($path, '/').'/'.str_replace('//', '/', ltrim(((0 === strpos($name, './')) ? substr($name, 2) : $name), '/'));
-	}
-
+	 * @doenIn      2021-02-09
+	 * @return      string
+	 */
 	public function getName() : string
 	{
 		return OwOFrame::getShortClassName($this);
