@@ -20,6 +20,8 @@ namespace backend\system\app;
 use backend\system\module\DataEncoder;
 use backend\system\route\Router;
 use backend\system\route\RouteRule;
+use backend\system\plugin\PluginBase;
+use backend\system\plugin\PluginLoader;
 use backend\system\exception\OwOFrameException;
 use backend\system\exception\InvalidControllerException;
 use backend\system\exception\ParameterErrorException;
@@ -183,6 +185,20 @@ abstract class AppBase
 	{
 		$ns = explode("\\", get_class($this));
 		return implode("\\", array_slice($ns, 0, count($ns) - 1));
+	}
+
+	/**
+	 * @method      getPlugin
+	 * @access      protected
+	 * @description 获取插件实例化对象
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-08
+	 * @param       string[name|插件名称]
+	 * @return      null or PluginBase
+	 */
+	protected function getPlugin(string $name) : ?PluginBase
+	{
+		return PluginLoader::getPlugin($name);
 	}
 
 

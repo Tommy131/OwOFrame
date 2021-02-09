@@ -23,6 +23,8 @@ abstract class ApiProcessor
 {
 	/* @array 请求参数 */
 	protected $request = [];
+	/* @array URL路径解析参数组 */
+	protected $path = [];
 
 	/**
 	 * @method      filter
@@ -53,15 +55,6 @@ abstract class ApiProcessor
 	}
 
 	/**
-	 * @method      getName
-	 * @description 返回Api处理器的名称
-	 * @author      HanskiJay
-	 * @doenIn      2021-02-06
-	 * @return      string
-	 */
-	abstract public function getName() : string;
-
-	/**
 	 * @method      start
 	 * @description 启动API处理器进行流程
 	 * @author      HanskiJay
@@ -84,13 +77,34 @@ abstract class ApiProcessor
 	}
 
 	/**
+	 * @method      setPathParam
+	 * @description 设置URL路径访问解析参数组
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-09
+	 * @param       array[path|参数组]
+	 */
+	public function setPathParam(array $path) : void
+	{
+		$this->path = $path;
+	}
+
+	/**
+	 * @method      getName
+	 * @description 返回Api处理器的名称
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-06
+	 * @return      string
+	 */
+	abstract public static function getName() : string;
+
+	/**
 	 * @method      getVersion
 	 * @description 返回API处理器版本
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-06
 	 * @return      string
 	 */
-	abstract public function getVersion() : string;
+	abstract public static function getVersion() : string;
 
 	/**
 	 * @method      mode

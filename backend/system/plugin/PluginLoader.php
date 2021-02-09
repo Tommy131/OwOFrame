@@ -99,7 +99,6 @@ class PluginLoader
 	 * @description 判断插件是否存在
 	 * @author      HanskiJay
 	 * @doenIn      2021-01-23
-	 * @param       string[name|插件名称]
 	 * @return      boolean
 	 */
 	public static function existsPlugin(string $name, &$info = []) : bool
@@ -120,6 +119,19 @@ class PluginLoader
 		if(isset($info->onlyCLI) && $info->onlyCLI && !OwOFrame::isRunningWithCLI()) return false;
 		// End judgment;
 		return true;
+	}
+
+	/**
+	 * @method      getPlugin
+	 * @description 获取插件实例化对象
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-08
+	 * @param       string[name|插件名称]
+	 * @return      null or PluginBase
+	 */
+	public static function getPlugin(string $name) : ?PluginBase
+	{
+		return self::$pluginPool[$name] ?? null;
 	}
 
 	/**
