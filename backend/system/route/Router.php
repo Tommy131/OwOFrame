@@ -68,11 +68,11 @@ final class Router
 			$api = strtolower(array_shift($pathInfo) ?? 'unknown');
 			if(($api = RouteRule::getApiProcessor($api)) !== null) {
 				if(($api::mode() !== -1) && (requestMode() !== $api::mode())) {
-					$response = new Response([$api, 'requestDenied']);
+					$response = self::Response([$api, 'requestDenied']);
 				} else {
+					$response = self::Response([$api, 'getOutput']);
 					$api->filter(RequestFilter::getMerge());
-					$api->start();
-					$response = new Response([$api, 'getOutput']);
+					$api->start($response);
 				}
 				$response->sendResponse();
 				exit;
@@ -188,8 +188,7 @@ final class Router
 						$method = $controller::$methodNotFound_DefaultMethod;
 					}
 				}
-				$response = new Response([$controller, $method]);
-				$response->sendResponse();
+				self::Response([$controller, $method])->sendResponse();
 				if(!empty($controller::$goto)) {
 					header('Refresh:3; url='.self::getRootUrl() . $controller::$goto);
 				}
@@ -209,6 +208,15 @@ final class Router
 </div>
 EOF;
 		}
+	}
+
+	public static function Response(callable $callback) : Response
+	{
+		static $response;
+		if(!$response instanceof Response) {
+			$response = new Response($callback);
+		}
+		return $response;
 	}
 
 	/**
