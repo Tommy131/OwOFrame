@@ -1,8 +1,14 @@
 
-## OwOframe's CHANGELOG (Total `49` Commits)
+## OwOframe's CHANGELOG (Total `51` Commits)
 
 
 ↓ `[dev@v1.0.0, origin/dev@v1.0.0]` ↓
+
+------
+
+`dev20210210@v1.0.0` <= `dev20210210@v1.0.0`:
+- 增加了文件 `CHANGELOG.md`
+- 修改了路由处理Response的方法
 
 ------
 
@@ -11,8 +17,6 @@
 - 将其他代码对Response类支持
 - 修复了一些东西
 - 更新了版本号至 `dev20210210@v1.0.0`
-
-------
 
 `dev20210201@v1.0.0` <= `dev20210207@v1.0.0`:
 - 添加了基本的XSS过滤方法
