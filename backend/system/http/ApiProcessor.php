@@ -77,9 +77,10 @@ abstract class ApiProcessor
 	 * @description 启动API处理器进行流程
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-06
+	 * @param       object[response|Response实例]
 	 * @return      void
 	 */
-	public function start() : void
+	public function start(Response $response) : void
 	{
 		
 	}
