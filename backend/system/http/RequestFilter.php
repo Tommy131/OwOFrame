@@ -37,7 +37,9 @@ class RequestFilter
 		[
 			"/<(\\/?)(script|i?frame|style|html|body|title|link|meta|object|\\?|\\%)([^>]*?)>/isU",
 			"/(<[^>]*)on[a-zA-Z]+\s*=([^>]*>)/isU",
-			"/select\b|insert\b|update\b|delete\b|drop\b|;|\"|\'|\/\*|\*|\.\.\/|\.\/|union|into|load_file|outfile|dump/is"
+			"/select\b|insert\b|update\b|delete\b|drop\b|;|\"|\'|\/\*|\*|\.\.\/|\.\/|union|into|load_file|outfile|dump/is",
+			// "/(\\\(|\\\)| |\s|!|@|#|\\\$|%|\\\^|&|\\\*|\\\-|_|\\\+|\\\=|\\\||)/isU"
+			"/[`~!@#$%^&*()_\-+=<>?:\\\"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘'，。、]/im"
 		];
 		$str = preg_replace($filter, '', strip_tags($str, $allowedHTML));
 	}

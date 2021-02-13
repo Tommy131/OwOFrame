@@ -86,6 +86,51 @@ class DbConfig extends Db
 	{
 		return self::$dbConfig['connections'][self::$dbConfig['default']][$index] ?? $default;
 	}
+	
+	/**
+	 * @method      getIndex
+	 * @description 获取数据库配置中的某个元素
+	 * @description Get a element from global value $dbConfig
+	 * @param       string[index|配置索引]
+	 * @param       string[default|默认返回值]
+	 * @return      string
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-19 18:03
+	*/
+	public static function getIndex(string $index, string $default = '') : string
+	{
+		return self::$dbConfig[$index] ?? DbConfig::getDefault($index) ?? $default;
+	}
+
+	/**
+	 * @method      getAll
+	 * @description 获取数据库配置
+	 * @description Get global value $dbConfig
+	 * @return      string
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-19 18:03
+	*/
+	public static function getAll() : array
+	{
+		return self::$dbConfig;
+	}
+
+	/**
+	 * @method      setIndex
+	 * @description 设置数据库配置某项元素的值
+	 * @description Set the value into a element from global value $dbConfig
+	 * @param       string[index|配置索引]
+	 * @param       string[value|更新值]
+	 * @return      void
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-19 18:03
+	*/
+	public static function setIndex(string $index, string $value) : void
+	{
+		// if(isset(DbConfig::DEFAULT_DB_CONFIG[$index])) {
+			self::$dbConfig[$index] = $value;
+		// }
+	}
 
 	/**
 	 * @method      hasDbConfig

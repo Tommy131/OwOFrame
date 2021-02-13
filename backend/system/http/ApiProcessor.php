@@ -46,12 +46,13 @@ abstract class ApiProcessor
 	 * @doenIn      2021-02-06
 	 * @param       string[searchIndex|搜索索引]
 	 * @param       string[mode|选择模式]
+	 * @param       mixed[default|默认返回值]
 	 * @return      mixed
 	 */
-	public function get(string $searchIndex, string $mode = 'get')
+	public function get(string $searchIndex, string $mode = 'get', $default = null)
 	{
 		$mode = in_array($mode, ['get', 'post']) ? $mode : 'get';
-		return $this->request[$mode][$searchIndex] ?? null;
+		return $this->request[$mode][$searchIndex] ?? $default;
 	}
 
 	/**

@@ -163,11 +163,20 @@ class RouteRule
 	 * @description 绑定API处理器
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-04
-	 * @param       class@ApiProcessor[api|绑定的实例对象]
+	 * @param       string|class@ApiProcessor[api|绑定的实例对象]
 	 * @return      void
 	 */
-	public static function bindApiProcessor(ApiProcessor $api) : void
+	public static function bindApiProcessor($api) : void
 	{
+		if(is_string($api)) {
+			$ref = new \ReflectionClass($api);
+			if(($ref = $ref->getParentClass()) !== false) {
+				if(($ref = $ref->getName()) === ApiProcessor::class) {
+					$api = new $api;
+				}
+			}
+		}
+		if(!$api instanceof ApiProcessor) return;
 		if(is_null(self::getApiProcessor($api->getName()))) {
 			$api->setPathParam(Router::getParameters(2));
 			self::$apiRule[$api->getName()] = $api;
