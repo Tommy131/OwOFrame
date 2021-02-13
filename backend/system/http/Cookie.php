@@ -14,7 +14,7 @@
 	
 ************************************************************************/
 
-namespace backend\system\utils;
+namespace backend\system\http;
 
 class Cookie
 {

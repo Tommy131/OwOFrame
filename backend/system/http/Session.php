@@ -15,46 +15,108 @@
 	* !注意: 使用此方法需要自行使用session_start();
 ************************************************************************/
 
-namespace backend\system\utils;
+namespace backend\system\http;
 
 class Session
 {	
+	/* @bool 重写数据 */
 	public static $rewrite = false;
 
-	// Func: 检查是否存在单个Session数据;
+
+	/**
+	 * @method      has
+	 * @description 检查是否存在单个Session数据
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-13
+	 * @param       string[storeKey|存储名]
+	 * @return      boolean
+	 */
 	public static function has(string $storeKey) : bool
 	{
 		return isset($_SESSION[$storeKey]);
 	}
-	// Func: 新增一个Session数据;
+
+	/**
+	 * @method      has
+	 * @description 新增一个Session数据
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-13
+	 * @param       string[storeKey|存储名]
+	 * @return      boolean
+	 */
 	public static function set(string $storeKey, $data) : void
 	{
 		if(!self::has($storeKey) || self::$rewrite) {
 			$_SESSION[$storeKey] = $data;
 		}
 	}
-	// Func: 获取一个Session数据;
+
+	/**
+	 * @method      has
+	 * @description 获取一个Session数据
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-13
+	 * @param       string[storeKey|存储名]
+	 * @return      boolean
+	 */
 	public static function get(string $storeKey, $default = null)
 	{
 		return $_SESSION[$storeKey] ?? $default;
 	}
-	// Func: 获取全部的Session数据;
+
+	/**
+	 * @method      has
+	 * @description 获取全部的Session数据
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-13
+	 * @param       string[storeKey|存储名]
+	 * @return      boolean
+	 */
 	public static function getAll() : ?array
 	{
 		return $_SESSION ?? null;
 	}
-	// Func: 删除单个Session数据;
+
+	/**
+	 * @method      has
+	 * @description 删除单个Session数据
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-13
+	 * @param       string[storeKey|存储名]
+	 * @return      boolean
+	 */
 	public static function delete(string $storeKey) : void
 	{
 		if(self::has($storeKey)) {
 			unset($_SESSION[$storeKey]);
 		}
 	}
+
+	/**
+	 * @method      start
+	 * @description 启动Session
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-13
+	 * @return      void
+	 */
 	public static function start() : void
 	{
-		@session_start();
+		try {
+
+			session_start();
+		} catch(\Throwable $e) {
+			throwError($e->getMessage(), __FILE__, __LINE__);
+		}
 	}
-	// Func: 重置当前客户端的Session数据;
+
+	/**
+	 * @method      has
+	 * @description 重置当前客户端的Session数据
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-13
+	 * @param       string[storeKey|存储名]
+	 * @return      boolean
+	 */
 	public static function reset() : void
 	{
 		$_SESSION = [];
