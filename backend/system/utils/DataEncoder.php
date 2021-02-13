@@ -17,50 +17,117 @@
 declare(strict_types=1);
 namespace backend\system\utils;
 
-class DataEncoder
+class DataEncoder implements \JsonSerializable
 {
 	private static $data = "";
 
 	
-	// Func: 设置原始数据;
+	/**
+	 * @method      setData
+	 * @description 设置原始数据
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-11
+	 * @param       array[data|原始数据]
+	 * @return      void
+	 */
 	public static function setData(array $data) : void
 	{
 		self::$data = $data;
 	}
-	// Func: 使用JSON编码数据格式;
+
+	/**
+	 * @method      encode
+	 * @description 使用JSON编码数据格式
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-11
+	 * @return      string
+	 */
 	public static function encode() : string
 	{
-		self::$data = json_encode(self::$data, JSON_UNESCAPED_UNICODE);
+		self::$data = json_encode(new self, JSON_UNESCAPED_UNICODE);
 		return self::$data;
 	}
-	// Func: 解码JSON数据格式;
+
+	public function jsonSerialize()
+	{
+		return self::$data;
+	}
+
+	/**
+	 * @method      decode
+	 * @description 解码JSON数据格式
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-11
+	 * @return      void
+	 */
 	public static function decode() : void
 	{
 		self::$data = json_decode(self::$data);
 	}
-	// Func: 重置原始数据;
+
+	/**
+	 * @method      reset
+	 * @description 重置原始数据
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-11
+	 * @return      void
+	 */
 	public static function reset() : void
 	{
 		self::$data = [];
 	}
-	// Func: 获取一设置的键名的值;
+
+	/**
+	 * @method      getIndex
+	 * @description 获取一设置的键名的值
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-11
+	 * @param       array[key|键名]
+	 * @param       array[default|默认返回值(Default: null)]
+	 * @return      mixed
+	 */
 	public static function getIndex(string $key)
 	{
 		return self::$data[$key] ?? "";
 	}
-	// Func: 获取所有信息;
+
+	/**
+	 * @method      getAll
+	 * @description 获取所有信息
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-11
+	 * @return      array
+	 */
 	public static function getAll() : array
 	{
 		if(!is_array(self::$data)) self::$data = json_decode(self::$data, true);
 		if(!is_array(self::$data)) self::$data = (array) self::$data;
 		return self::$data;
 	}
-	// Func: 以键名方式添加数据;
+
+	/**
+	 * @method      setIndex
+	 * @description 以键名方式添加数据
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-11
+	 * @param       string[key|键名]
+	 * @param       mixed[val|键值]
+	 * @return      void
+	 */
 	public static function setIndex(string $key, $val) : void
 	{
 		self::$data[$key] = $val;
 	}
-	// Func: 合并自定义输出信息到全集;
+
+	/**
+	 * @method      mergeArr
+	 * @description 合并自定义输出信息到全集
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-11
+	 * @param       array[array|新的数据数组]
+	 * @param       array[ec|重试值?(我也不知道为啥会写一个这个东西, 先留着吧)]
+	 * @return      void
+	 */
 	public static function mergeArr(array $arr, int &$ec = 0) : void
 	{
 		if(is_array(self::$data)) self::$data = array_merge(self::$data, $arr);
@@ -71,7 +138,18 @@ class DataEncoder
 			self::mergeArr($arr, $ec);
 		}
 	}
-	// Func: 设置标准信息并且自动编码;
+
+	/**
+	 * @method      setStandardData
+	 * @description 设置标准信息并且自动编码
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-11
+	 * @param       int[code|状态码]
+	 * @param       bool[result|执行结果]
+	 * @param       string[msg|返回信息]
+	 * @param       bool[autoReturn|自动编码且返回编码后的信息串(Default: true)]
+	 * @return      null|string
+	 */
 	public static function setStandardData(int $code, bool $result, string $msg, bool $autoReturn = true) : ?string
 	{
 		self::reset();
@@ -81,5 +159,19 @@ class DataEncoder
 		self::setIndex("time",   date("Y-m-d H:i:s"));
 
 		return $autoReturn ? self::encode() : null;
+	}
+
+	/**
+	 * @method      isOnlyLettersAndNumbers
+	 * @description 判断传入的字符串是否仅为字母和数字
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-11
+	 * @param       string[str|传入的字符串]
+	 * @param       &match[匹配结果]
+	 * @return      boolean
+	 */
+	public static function isOnlyLettersAndNumbers(string $str, &$match) : bool
+	{
+		return (bool) preg_match("/^[A-Za-z0-9]+$/", $str, $match);
 	}
 }

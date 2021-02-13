@@ -21,10 +21,10 @@ namespace OwOBootstrap
 {
 	use backend\OwOFrame;
 	use backend\system\exception\ExceptionOutput;
+	use backend\system\http\Session;
 	use backend\system\plugin\PluginLoader;
 	use backend\system\route\ClientRequestFilter;
-	use backend\system\utils\ClassLoader;
-	use backend\system\utils\LogWriter;
+	use backend\system\utils\{ClassLoader, LogWriter};
 
 	/* PHP Environment Checker */
 	if(version_compare(PHP_VERSION, "7.1.0") === -1) writeLogExit("OwOBlogWebFrame need to run at high PHP version, minimum 7.1.");
@@ -187,7 +187,7 @@ namespace OwOBootstrap
 
 		if($httpMode) {
 			if(ob_get_level() == 0) ob_start();
-			@session_start();
+			Session::start();
 			request()->checkValid();
 			// Start Listening from http uri;
 			\backend\system\route\Router::dispath();
