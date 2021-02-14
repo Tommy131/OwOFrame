@@ -48,28 +48,55 @@ class ExceptionOutput
 		if(($pos = strpos($errstr, "\n")) !== false) $errstr = substr($errstr, 0, $pos);
 		if(defined("DEBUG_MODE") && DEBUG_MODE) {
 			if(!preg_match('/Cannot use "parent" when current class scope has no parent/i', $errstr)) {
-				echo "{$errno} happened: {$errstr} in {$errfile} at line {$errline}" . (OwOFrame::isRunningWithCGI() ? ' <br/><br/>' : PHP_EOL);
+				if(OwOFrame::isRunningWithCGI()) {
+					$msg = "{$errno} happened: {$errstr} in {$errfile} at line {$errline}";
+					if(defined('LOG_ERROR') && LOG_ERROR) {
+						$logged = '<span id="logged">--- Logged ---</span>';
+						self::log($msg);
+					} else {
+						$logged = '';
+					}
+					echo str_replace(
+						['{logged}', '{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'], 
+						[$logged, $errno, $msg, $errfile, $errline, null, \OwOBootstrap\runTime()],
+					self::getTemplate());
+				}
+				exit(1);
 			}
 		}
 	}
 
 	public static function ExceptionHandler(\Throwable $exception)
 	{
-		$encode    = strtoupper(mb_detect_encoding($exception->getMessage(), ["ASCII", 'UTF-8', "GB2312", "GBK", 'BIG5']));
 		$type      = "[".((is_object($exception) && ($exception instanceof OwOFrameException)) ? "OwOError" : "PHPError")."] ";
 		$type     .= \backend\OwOFrame::getShortClassName($exception);
-		$debugMode = (defined("DEBUG_MODE") && DEBUG_MODE) ? '<span id="debugMode">DebugMode</span>' : '';
-		$runTime   = \OwOBootstrap\runTime();
 
 		if(OwOFrame::isRunningWithCGI()) {
 			if(defined('LOG_ERROR') && LOG_ERROR) {
 				$logged = '<span id="logged">--- Logged ---</span>';
-				LogWriter::setFileName('owoblog_error.log');
-				LogWriter::write(\trim(mb_convert_encoding($exception->__toString(), 'UTF-8', $encode)), 'OwOBlogErrorHandler');
+				self::log($exception->__toString());
 			} else {
 				$logged = '';
 			}
-			echo
+			echo str_replace(
+				['{logged}', '{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'], 
+				[$logged, $type, $exception->getMessage(), $exception->getFile(), $exception->getLine(), $exception->getTraceAsString(), \OwOBootstrap\runTime()],
+			self::getTemplate());
+		}
+		exit(1);
+	}
+
+	private static function log(string $msg) : void
+	{
+		$encode = strtoupper(mb_detect_encoding($msg, ["ASCII", 'UTF-8', "GB2312", "GBK", 'BIG5']));
+		LogWriter::setFileName('owoblog_error.log');
+		LogWriter::write(\trim(mb_convert_encoding($msg, 'UTF-8', $encode)), 'OwOBlogErrorHandler');
+	}
+
+	public static function getTemplate() : string
+	{
+		$debugMode = (defined("DEBUG_MODE") && DEBUG_MODE) ? '<span id="debugMode">DebugMode</span>' : '';
+		return str_replace('{debugMode}', $debugMode,
 <<<EOF
 <!DOCTYPE html>
 <html lang="en">
@@ -163,26 +190,22 @@ class ExceptionOutput
 	</head>
 	<body>
 		<div class="container">
-			<p id="title">OwOBlog Exception Handler &nbsp;{$debugMode}</p>
+			<p id="title">OwOBlog Exception Handler &nbsp;{debugMode}</p>
 			<p>Status:
 				<span id="noPassed">--- NoPassed ---</span>
-				{$logged}
+				{logged}
 			</p>
 			
-			<div id="type">{$type}:</div>
-			<div id="message">{$exception->getMessage()}</div>
-			in <span id="class">{$exception->getFile()}</span> at line <span id="line">{$exception->getLine()}</span>
+			<div id="type">{type}:</div>
+			<div id="message">{message}</div>
+			in <span id="class">{file}</span> at line <span id="line">{line}</span>
 
-			<p><b>Stack Trace</b>: <br/><pre>{$exception->getTraceAsString()}</pre></p>
-			<div id="runTime"><b>Used Time:</b> <span>{$runTime}s</span></div>
+			<p><b>Stack Trace</b>: <br/><pre>{trace}</pre></p>
+			<div id="runTime"><b>Used Time:</b> <span>{runTime}s</span></div>
 		</div>
 	</body>
 </html>
-EOF;
-			exit(1);
-		} else {
-			// TODO: Display Exception for CLI Mode;
-		}
+EOF);
 	}
 }
 ?>

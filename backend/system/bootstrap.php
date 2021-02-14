@@ -105,12 +105,18 @@ namespace OwOBootstrap
 	function writeLogExit(string $msg, string $style = '')
 	{
 		if(OwOFrame::isRunningWithCGI()) {
-			echo "<div style='{$style}'>{$msg}</div><br/>";
 			if(defined('LOG_ERROR') && LOG_ERROR) {
-				$msg = str_replace(["<br/>", "<br>"], PHP_EOL, $msg);
+				$msg = str_replace(["<br/>", "<br>"], PHP_EOL, strip_tags($msg, '<br><br/>'));
 				LogWriter::setFileName('owoblog_error.log');
 				LogWriter::write($msg, $prefix, $level);
+				$logged = '<span id="logged">--- Logged ---</span>';
+			} else {
+				$logged = '';
 			}
+			echo str_replace(
+				['{logged}', '{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'],
+				[$logged, 'OwOError', $msg, '_CUSTOM_', '_CUSTOM_', '_CUSTOM_', runTime()],
+			ExceptionOutput::getTemplate());
 		}
 		exit();
 	}
@@ -160,37 +166,43 @@ namespace OwOBootstrap
 		if(defined('HAS_STARTED') && HAS_STARTED) return;
 		else define('HAS_STARTED', true);
 
-		date_default_timezone_set(TIME_ZONE);
-		if(USE_REDIS_SESSION && (ini_get("session.save_handler") === "files") && extension_loaded("redis"))
-		{
-			ini_set("session.save_handler", "redis");
-			ini_set("session.save_path", "tcp://" . REDIS_SERVER . ((REDIS_SERVER_PASSWD !== '') ? "?auth=" . REDIS_SERVER_PASSWD : ''));
-		}
+		try {
+			date_default_timezone_set(TIME_ZONE);
+			if(defined('USE_REDIS_SESSION') && USE_REDIS_SESSION && extension_loaded("redis"))
+			{
+				if(strtolower(ini_get("session.save_handler")) === "files") {
+					ini_set("session.save_handler", "redis");
+				}
+				ini_set("session.save_path", "tcp://" . REDIS_SERVER . ((REDIS_SERVER_PASSWD !== '') ? "?auth=" . REDIS_SERVER_PASSWD : ''));
+			}
 
-		// File Upload permission;
-		# ini_set('file_uploads', '1');
-		# ini_set('upload_max_filesize', '1000m');
-		# ini_set('post_max_size', '1000m');
+			// File Upload permission;
+			# ini_set('file_uploads', '1');
+			# ini_set('upload_max_filesize', '1000m');
+			# ini_set('post_max_size', '1000m');
 
-		if(OwOFrame::isRunningWithCLI()) {
-			logger('§3--------------------------------------------------------------');
-			logger('§3OwOFrame is running with CLI Mode now. Service is starting.');
-		}
+			if(OwOFrame::isRunningWithCLI()) {
+				logger('§3--------------------------------------------------------------');
+				logger('§3OwOFrame is running with CLI Mode now. Service is starting.');
+			}
 
-		require_once(__BACKEND__ . "vendor" . DIRECTORY_SEPARATOR . "autoload.php");
-		if(DEFAULT_DATABASE_CONNECT) \backend\system\db\DbConfig::init();
-		// Active PluginLoader;
-		PluginLoader::setPath(__BACKEND__ . "plugin" . DIRECTORY_SEPARATOR);
-		PluginLoader::autoLoad();
-		// Active AppManager;
-		\backend\system\app\AppManager::setPath(__BACKEND__ . "application" . DIRECTORY_SEPARATOR);
+			require_once(__BACKEND__ . "vendor" . DIRECTORY_SEPARATOR . "autoload.php");
+			if(DEFAULT_DATABASE_CONNECT) \backend\system\db\DbConfig::init();
+			// Active PluginLoader;
+			PluginLoader::setPath(__BACKEND__ . "plugin" . DIRECTORY_SEPARATOR);
+			PluginLoader::autoLoad();
+			// Active AppManager;
+			\backend\system\app\AppManager::setPath(__BACKEND__ . "application" . DIRECTORY_SEPARATOR);
 
-		if($httpMode) {
-			if(ob_get_level() == 0) ob_start();
-			Session::start();
-			request()->checkValid();
-			// Start Listening from http uri;
-			\backend\system\route\Router::dispath();
+			if($httpMode) {
+				if(ob_get_level() == 0) ob_start();
+				Session::start();
+				request()->checkValid();
+				// Start Listening from http uri;
+				\backend\system\route\Router::dispath();
+			}
+		} catch(\Throwable $e) {
+			ExceptionOutput::ExceptionHandler($e);
 		}
 	}
 
