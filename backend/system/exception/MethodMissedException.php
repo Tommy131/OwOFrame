@@ -19,8 +19,8 @@ namespace backend\system\exception;
 
 class MethodMissedException extends OwOFrameException
 {
-	public function __construct(string $appName, string $method, int $code = 0, \Throwable $previous = null)
+	public function __construct(string $className, string $method, int $code = 0, \Throwable $previous = null)
 	{
-		parent::__construct("Requested method '{$method}' in app '{$appName}' was not found!", $code, $previous);
+		parent::__construct("Called an undefined method '{$method}' in class '{$className}'!", $code, $previous);
 	}
 }

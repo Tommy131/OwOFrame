@@ -533,6 +533,19 @@ final class OwOFrame
 	}
 
 	/**
+	  * @method      isIp
+	  * @description 判断传入的字符串是否为有效IP地址
+	  * @author      HanskiJay
+	  * @doneIn      2020-10-24
+	  * @param       string[ip|字符串]
+	  * @return      bool
+	*/
+	public static function isIp(string $ip) : bool
+	{
+		return (bool) preg_match("/((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}/", $ip);
+	}
+
+	/**
 	 * @method      is_serialized
 	 * @description 判断传入的数据是否已序列化
 	 * @author      HanskiJay
@@ -705,7 +718,7 @@ final class OwOFrame
 	 */
 	public static function isDomain(string $str, &$match = null) : bool
 	{
-		// return (strpos($str, '--') === false) && (bool) preg_match("/^([a-z0-9_\-]+[\.])?([a-z0-9_\-]+)[\.]([a-z]+)$/i", strtolower(trim($str)), $match);
+		if(strtolower($str) === 'localhost') return true;
 		return (strpos($str, '--') === false) && preg_match('/^([a-z0-9]+([a-z0-9-]*(?:[a-z0-9]+))?\.)?[a-z0-9]+([a-z0-9-]*(?:[a-z0-9]+))?[\.]([a-z]+)$/i', $str, $match);
 	}
 

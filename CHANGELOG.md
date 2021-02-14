@@ -1,16 +1,27 @@
 
-## OwOframe's CHANGELOG (Total `51` Commits)
+## OwOframe's CHANGELOG (Total `56` Commits)
 
 
 ↓ `[dev@v1.0.0, origin/dev@v1.0.0]` ↓
 
 ------
 
+`dev20210210@v1.0.0` <= `dev20210214@v1.0.0`:
+- 开发了 `Redis` 基础工具类
+- 修复了Session使用redis连接存在的bug
+- 新增了一些工具方法
+- 更新了异常处理输出的逻辑
+- Updated CHANGELOG.md
+
+------
+
+`dev20210210@v1.0.0` <= `dev20210213@v1.0.0`:
+- 更改了 `Cookie`, `Session` 的文件路径
+- 对应修改了一些内容
+
 `dev20210210@v1.0.0` <= `dev20210210@v1.0.0`:
 - 增加了文件 `CHANGELOG.md`
 - 修改了路由处理Response的方法
-
-------
 
 `dev20210210@v1.0.0` <= `dev20210209@v1.0.0`:
 - 增加了一个Response处理类

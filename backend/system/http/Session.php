@@ -17,6 +17,9 @@
 
 namespace backend\system\http;
 
+use backend\system\exception\OwOFrameException;
+use backend\system\redis\RedisConnector;
+
 class Session
 {	
 	/* @bool 重写数据 */
@@ -102,7 +105,16 @@ class Session
 	public static function start() : void
 	{
 		try {
-
+			if(strtolower(ini_get("session.save_handler")) === 'redis') {
+				$connector = RedisConnector::getInstance();
+				$connector->cfg('host',     REDIS_SERVER, true);
+				$connector->cfg('password', REDIS_SERVER_PASSWD, true);
+				if($redis = $connector->getConnection()) {
+					$connector->forceUsePassword();
+				} else {
+					throw new OwOFrameException('Could not use Redis for Session saver!');
+				}
+			}
 			session_start();
 		} catch(\Throwable $e) {
 			throwError($e->getMessage(), __FILE__, __LINE__);

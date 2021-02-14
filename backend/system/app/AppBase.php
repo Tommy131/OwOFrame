@@ -17,6 +17,7 @@
 declare(strict_types=1);
 namespace backend\system\app;
 
+use backend\OwOFrame;
 use backend\system\module\DataEncoder;
 use backend\system\route\Router;
 use backend\system\route\RouteRule;
@@ -139,6 +140,7 @@ abstract class AppBase
 	*/
 	public static function renderPageNotFound() : void
 	{
+		OwOFrame::setStatus(404);
 		$sendMessage = '404 PAGE NOT FOUND';
 		if(\OwOBootstrap\useJsonFormat()) {
 			DataEncoder::reset();
