@@ -17,7 +17,6 @@
 
 namespace backend\system\redis;
 
-use Closure;
 use Redis;
 use backend\OwOFrame;
 use backend\system\exception\{OwOFrameException, MethodMissedException};
@@ -66,18 +65,6 @@ class RedisConnector
 			}
 		}
 		return $this->handler;
-	}
-
-	/**
-	 * @method      isAlive
-	 * @description 判断当前连接是否有效
-	 * @author      HanskiJay
-	 * @doenIn      2021-02-14
-	 * @return      boolean
-	 */
-	public function isAlive() : bool
-	{
-		return $this->handler instanceof Redis;
 	}
 
 	/**
@@ -153,6 +140,18 @@ class RedisConnector
 	}
 
 	/**
+	 * @method      isAlive
+	 * @description 判断当前连接是否有效
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-14
+	 * @return      boolean
+	 */
+	public function isAlive() : bool
+	{
+		return $this->handler instanceof Redis;
+	}
+
+	/**
 	 * @method      getInstance
 	 * @description 返回实例化对象
 	 * @author      HanskiJay
@@ -167,6 +166,28 @@ class RedisConnector
 		return self::$instance;
 	}
 
+	/**
+	 * @method      getHandler
+	 * @description 返回Redis实例化对象(若未正确配置则返回null)
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-14
+	 * @return      null or class@Redis
+	 */
+	public function getHandler() : ?Redis
+	{
+		if(!$this->handler instanceof Redis) {
+			$this->handler = null;
+		}
+		return $this->handler;
+	}
+
+	/**
+	 * @method      __call
+	 * @description 使用PHP的魔术方法回调Redis类中的方法
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-16
+	 * @return      mixed
+	 */
 	public function __call($name, $args)
 	{
 		if(($this->isAlive()) && method_exists($this->handler, $name)) {
@@ -175,4 +196,13 @@ class RedisConnector
 			throw new MethodMissedException(get_class($self), $name);
 		}
 	}
+
+	/**
+	 * @method      __construct
+	 * @access      private
+	 * @description 阻止外部调用者实例化此对象
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-16
+	 */
+	private function __construct() {}
 }

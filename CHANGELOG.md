@@ -1,8 +1,14 @@
 
-## OwOframe's CHANGELOG (Total `56` Commits)
+## OwOframe's CHANGELOG (Total `57` Commits)
 
 
 ↓ `[dev@v1.0.0, origin/dev@v1.0.0]` ↓
+
+------
+
+`dev20210210@v1.0.0` <= `dev20210216@v1.0.0`:
+- 修改了一部分有关Session的功能
+- Updated CHANGELOG.md
 
 ------
 
@@ -12,8 +18,6 @@
 - 新增了一些工具方法
 - 更新了异常处理输出的逻辑
 - Updated CHANGELOG.md
-
-------
 
 `dev20210210@v1.0.0` <= `dev20210213@v1.0.0`:
 - 更改了 `Cookie`, `Session` 的文件路径

@@ -168,13 +168,6 @@ namespace OwOBootstrap
 
 		try {
 			date_default_timezone_set(TIME_ZONE);
-			if(defined('USE_REDIS_SESSION') && USE_REDIS_SESSION && extension_loaded("redis"))
-			{
-				if(strtolower(ini_get("session.save_handler")) === "files") {
-					ini_set("session.save_handler", "redis");
-				}
-				ini_set("session.save_path", "tcp://" . REDIS_SERVER . ((REDIS_SERVER_PASSWD !== '') ? "?auth=" . REDIS_SERVER_PASSWD : ''));
-			}
 
 			// File Upload permission;
 			# ini_set('file_uploads', '1');

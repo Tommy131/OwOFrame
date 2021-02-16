@@ -105,7 +105,13 @@ class Session
 	public static function start() : void
 	{
 		try {
-			if(strtolower(ini_get("session.save_handler")) === 'redis') {
+			if(defined('USE_REDIS_SESSION') && USE_REDIS_SESSION && extension_loaded("redis"))
+			{
+				if(strtolower(ini_get("session.save_handler")) === "files") {
+					ini_set("session.save_handler", "redis");
+				}
+				ini_set("session.save_path", "tcp://" . REDIS_SERVER . ((REDIS_SERVER_PASSWD !== '') ? "?auth=" . REDIS_SERVER_PASSWD : ''));
+				
 				$connector = RedisConnector::getInstance();
 				$connector->cfg('host',     REDIS_SERVER, true);
 				$connector->cfg('password', REDIS_SERVER_PASSWD, true);
