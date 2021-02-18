@@ -36,19 +36,14 @@ namespace OwOBootstrap
 		}
 	}
 	
-	// TODO: 将此检测方法移至后续的安装脚本里;
-	/*if(@file_get_contents($_SERVER["REQUEST_SCHEME"]."://".$_SERVER["HTTP_HOST"]."/backend/tmp/testfile.dist") === "test") {
-		writeLogExit("Your web environment is not secure, please disallowed the http protocol to get the files in the path 'backend'.");
-	}*/
-	
 	// Define OwOFrame start time;
 	if(!defined("START_MICROTIME"))  define("START_MICROTIME",  microtime(true));
 	// Define Timezone;
 	if(!defined('TIME_ZONE'))        define('TIME_ZONE',        'Europe/Berlin');
 	// Define OwOFrame start time;
-	if(!defined("APP_VERSION"))      define("APP_VERSION",      "dev20210210@v1.0.0");
+	if(!defined("APP_VERSION"))      define("APP_VERSION",      "dev20210218@v1.0.0");
 	// Project root directory (absolute path);
-	if(!defined("ROOT_PATH"))        define("ROOT_PATH",        getcwd() . DIRECTORY_SEPARATOR);
+	if(!defined("ROOT_PATH"))        define("ROOT_PATH",        dirname(realpath(dirname(__FILE__)), 2) . DIRECTORY_SEPARATOR);
 	// The Back-End source code is stored in the root directory (absolute path); here you need to check whether http can be accessed;
 	if(!defined("__BACKEND__"))      define("__BACKEND__",      ROOT_PATH . "backend" . DIRECTORY_SEPARATOR);
 	// Define Common path(absolute path);
@@ -60,9 +55,9 @@ namespace OwOBootstrap
 	// Runtime directory for Back-End(relative path);
 	if(!defined("RUNTIME_PATH"))     define("RUNTIME_PATH",     "runtime" . DIRECTORY_SEPARATOR);
 	// Temp files directory for Back-End(relative path);
-	if(!defined("TMP_PATH"))         define("TMP_PATH",         "backend" . DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR);
+	if(!defined("TMP_PATH"))         define("TMP_PATH",         __BACKEND__ . "tmp" . DIRECTORY_SEPARATOR);
 	// Log file directory (relative path);
-	if(!defined("LOG_PATH"))         define("LOG_PATH",         TMP_PATH . DIRECTORY_SEPARATOR . "log" . DIRECTORY_SEPARATOR);
+	if(!defined("LOG_PATH"))         define("LOG_PATH",         TMP_PATH . "log" . DIRECTORY_SEPARATOR);
 	// Check whether the current environment supports mbstring extension;
 	if(!defined("__MB_SUPPORTED__")) define('__MB_SUPPORTED__', function_exists('mb_get_info') && function_exists('mb_regex_encoding'));
 	// Define whether connect to database automaticly;
@@ -89,7 +84,7 @@ namespace OwOBootstrap
 	
 	classLoader()->addPath(dirname(__BACKEND__));
 	classLoader()->register(true);
-
+	OwOFrame::checkEnvironment();
 	set_error_handler([ExceptionOutput::class, 'ErrorHandler'], E_ALL);
 	set_exception_handler([ExceptionOutput::class, 'ExceptionHandler']);
 
@@ -113,9 +108,10 @@ namespace OwOBootstrap
 			} else {
 				$logged = '';
 			}
+			$debug = @array_shift(debug_backtrace());
 			echo str_replace(
 				['{logged}', '{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'],
-				[$logged, 'OwOError', $msg, '_CUSTOM_', '_CUSTOM_', '_CUSTOM_', runTime()],
+				[$logged, 'OwOError', $msg, $debug['file'], $debug['line'], '[#null]', runTime()],
 			ExceptionOutput::getTemplate());
 		}
 		exit();
