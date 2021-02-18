@@ -52,20 +52,29 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 - `/backend/common/` 此目录为系统的公共文件夹, 可存储静态资源文件, 默认的全局配置文件 `global.config` 将存放在此处.
 
 #### 是否需要修改Web环境?
-需要. 具体修改方法参考下方:
+需要. Nginx的修改方法参考下方:
 
 ```nginx
 # Check whether the web environment is safe (the following is the web environment configuration method);
-#   --- NGINX ---          *     --- APACHE ---
 
-location ^~ /backend/ {    *   <Directory "/backend/">
-    deny all;              *   	Order Deny,Allow
-    return 403;            *   	Deny from all
-}                          *   </Directory>
+location / {
+	index index.php index.html;
+	try_files $uri $uri/ /index.php$is_args$query_string;
+}
+
+location ^~ /backend/ {
+    deny all;
+    return 403;
+}
+
+location ~ /(\.user\.ini|\.ht|\.git|\.svn|\.project|LICENSE|README\.md) {
+	deny all;
+  return 403;
+}
 ```
 
 #### 如何在CLI模式下运行OwOFrame?
-打开你的CMD或者Shell后, 进入OwOFrame的工程路径, 在控制台输入 `php owo [command]` 即可.
+打开你的CMD或者Shell并且进入 `backend` 文件夹后, 进入OwOFrame的工程路径, 在控制台输入 `php owo [command]` 即可.
 
 ------
 
