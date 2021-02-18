@@ -20,6 +20,19 @@ namespace backend;
 
 final class OwOFrame
 {
+	/* @string Android系统标识 */
+	public const OS_ANDROID = 'android';
+	/* @string Linux系统标识 */
+	public const OS_LINUX   = 'linux';
+	/* @string Windows系统标识 */
+	public const OS_WINDOWS = 'windows';
+	/* @string Mac系统标识 */
+	public const OS_MACOS   = 'mac';
+	/* @string BSD系统标识 */
+	public const OS_BSD     = 'bsd';
+	/* @string 未识别的系统标识 */
+	public const OS_UNKNOWN = 'unknown';
+
 	/* @array HTTO状态响应码常量数组 */
 	public const HTTP_CODE = 
 	[
@@ -383,6 +396,22 @@ final class OwOFrame
 
 	/* @string 默认的字符编码 */
 	public static $charset = 'utf-8';
+
+	public static function checkEnvironment() : void
+	{
+		if(!file_exists(TMP_PATH . 'check.lock')) {
+			if(@file_get_contents($_SERVER["REQUEST_SCHEME"]."://".$_SERVER["HTTP_HOST"]."/backend/tmp/testfile.dist") === "test") {
+				\OwOBootStrap\writeLogExit("Your web environment is not secure, please disallowed the http protocol to get the files in the path 'backend'.");
+			}
+			if(!file_exists(__BACKEND__ . 'composer.lock') && !is_dir(__BACKEND__ . 'vendor')) {
+				\OwOBootStrap\writeLogExit('Composer dependent package is not installed, please install dependent environment first! ');
+			}
+			if(!is_dir(LOG_PATH)) {
+				mkdir(LOG_PATH, 755, true);
+			}
+			file_put_contents(TMP_PATH . 'check.lock', 'true');
+		}
+	}
 
 	/**
 	 * @method      setStatus
@@ -776,6 +805,32 @@ final class OwOFrame
 	public static function getShortClassName(object $class) : string
 	{
 		return basename(str_replace('\\', '/', get_class($class)));
+	}
+
+	/**
+	 * @method      getOS
+	 * @description 返回当前系统类型
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-18
+	 * @return      string
+	 */
+	public static function getOS() : string
+	{
+		$r  = '';
+		$os = php_uname('s');
+		if(stripos($os, 'linux') !== false) {
+			$r = @file_exists("/system/build.prop") ? self::OS_ANDROID : self::LINUX;
+		}
+		elseif(stripos($os, 'windows')) {
+			$r = self::OS_WINDOWS;
+		}
+		elseif((stripos($os, 'mac') !== false) || (stripos($os, 'darwin') !== false)) {
+			$r = self::OS_MACOS;
+		}
+		elseif($stripos($os, 'bsd')) {
+			$r = self::OS_BSD;
+		}
+		return $r ?? self::OS_UNKNOWN;
 	}
 }
 ?>
