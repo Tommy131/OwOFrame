@@ -1,16 +1,22 @@
 
-## OwOframe's CHANGELOG (Total `57` Commits)
+## OwOframe's CHANGELOG (Total `62` Commits)
 
 
 ↓ `[dev@v1.0.0, origin/dev@v1.0.0]` ↓
 
 ------
 
-`dev20210210@v1.0.0` <= `dev20210216@v1.0.0`:
-- 修改了一部分有关Session的功能
+`dev20210210@v1.0.0` <= `dev20210218@v1.0.0`:
+- !修复了严重漏洞问题: HTTP访问 `owo` 文件直接被下载问题
+- 更新了 `README.md` 中的部分注释
+- 加入了系统环境初始化检测方法
 - Updated CHANGELOG.md
 
 ------
+
+`dev20210210@v1.0.0` <= `dev20210216@v1.0.0`:
+- 修改了一部分有关Session的功能
+- Updated CHANGELOG.md
 
 `dev20210210@v1.0.0` <= `dev20210214@v1.0.0`:
 - 开发了 `Redis` 基础工具类
