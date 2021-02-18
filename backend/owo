@@ -46,7 +46,7 @@ foreach($config as $define => $param) {
 }
 
 // 引入引导文件 | require bootstrap file;
-require_once(dirname(__FILE__, 1) . DIRECTORY_SEPARATOR . 'backend' . DIRECTORY_SEPARATOR . 'system' . DIRECTORY_SEPARATOR . 'bootstrap.php');
+require_once(dirname(__FILE__, 1) . DIRECTORY_SEPARATOR . 'system' . DIRECTORY_SEPARATOR . 'bootstrap.php');
 \OwOBootstrap\start(false);
 
 $console = new \backend\system\console\Console;
