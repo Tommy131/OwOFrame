@@ -153,6 +153,7 @@ class PluginLoader
 			if(class_exists($class)) {
 				$class = self::$pluginPool[$class] = new $class($dir, $info);
 				$class->onLoad();
+				$class->setEnabled();
 			}
 			return true;
 		}
