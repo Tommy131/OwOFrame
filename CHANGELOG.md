@@ -1,8 +1,13 @@
 
-## OwOframe's CHANGELOG (Total `64` Commits)
+## OwOframe's CHANGELOG (Total `67` Commits)
 
 
 ↓ `[dev@v1.0.0, origin/dev@v1.0.0]` ↓
+
+------
+
+`dev20210218@v1.0.0` <= `dev202100302@v1.0.0`:
+- 在 `PluginModule` 中添加了插件加载状态方法
 
 ------
 
@@ -10,8 +15,6 @@
 - 移除了自带的模型控制器抽象类
 - 更新了 `composer.json` 中的错误
 - Updated CHANGELOG.md
-
-------
 
 `dev20210218@v1.0.0`:
 - !修复了严重漏洞问题: HTTP访问 `owo` 文件直接被下载问题
