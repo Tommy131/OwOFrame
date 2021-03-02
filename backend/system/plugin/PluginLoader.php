@@ -160,6 +160,16 @@ class PluginLoader
 		return false;
 	}
 
+	public static function disablePlugin(string $name) : bool
+	{
+		if(($plugin = self::getPlugin($name)) !== null) {
+			self::$pluginPool[$name]->onDisable();
+			self::$pluginPool[$name]->setDisabled();
+			unset(self::$pluginPool[$name]);
+		}
+		return false;
+	}
+
 	/**
 	 * @method      checkInfo
 	 * @description 检查插件信息文件是否有效
