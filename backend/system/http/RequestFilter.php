@@ -21,6 +21,17 @@ use backend\system\exception\JSONException;
 
 class RequestFilter
 {
+	/* @array 默认的用于过滤的正则表达式 */
+	private static $defaultFilter =
+	[
+		"/<(\\/?)(script|i?frame|style|html|body|title|link|meta|object|\\?|\\%)([^>]*?)>/isU",
+		"/(<[^>]*)on[a-zA-Z]+\s*=([^>]*>)/isU",
+		"/select\b|insert\b|update\b|delete\b|drop\b|;|\"|\'|\/\*|\*|\.\.\/|\.\/|union|into|load_file|outfile|dump/is",
+		// "/(\\\(|\\\)| |\s|!|@|#|\\\$|%|\\\^|&|\\\*|\\\-|_|\\\+|\\\=|\\\||)/isU",
+		// "/[`~!@#$%^&*()_\-+=<>?:\\\"{}|,.\/;'\\[\]·~！#￥%……&*（）——\-+={}|《》？：“”【】、；‘'，。、]/im"
+	];
+	/* @array 自定义的用于过滤的正则表达式 */
+	public static $customFilter = [];
 
 	/**
 	 * @method      xssFilter
@@ -33,15 +44,7 @@ class RequestFilter
 	 */
 	public static function xssFilter(string &$str, string $allowedHTML = null) : void
 	{
-		$filter = 
-		[
-			"/<(\\/?)(script|i?frame|style|html|body|title|link|meta|object|\\?|\\%)([^>]*?)>/isU",
-			"/(<[^>]*)on[a-zA-Z]+\s*=([^>]*>)/isU",
-			"/select\b|insert\b|update\b|delete\b|drop\b|;|\"|\'|\/\*|\*|\.\.\/|\.\/|union|into|load_file|outfile|dump/is",
-			// "/(\\\(|\\\)| |\s|!|@|#|\\\$|%|\\\^|&|\\\*|\\\-|_|\\\+|\\\=|\\\||)/isU"
-			"/[`~!@#$%^&*()_\-+=<>?:\\\"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘'，。、]/im"
-		];
-		$str = preg_replace($filter, '', strip_tags($str, $allowedHTML));
+		$str = preg_replace(array_merge(self::$defaultFilter, self::$customFilter), '', strip_tags($str, $allowedHTML));
 	}
 
 	/**
@@ -69,7 +72,7 @@ class RequestFilter
 				$v = trim($v);
 				self::xssFilter($k);
 				self::xssFilter($v);
-				$get[$k] = $v;
+				$post[$k] = $v;
 			}
 			$array = ['get' => $get, 'post' => $post];
 		} else {
