@@ -23,7 +23,8 @@ abstract class PluginBase
 	private $loadPath;
 	/* @object 插件信息配置文件(JSON对象传入) | Plugin Information Configuration (Json Format Object) */
 	private $pluginInfo;
-	
+	/* @bool 插件已加载值 */
+	private $isEnabled = false;
 
 	/**
 	 * @method      __construct
@@ -73,5 +74,43 @@ abstract class PluginBase
 	public final function getPath() : string
 	{
 		return $this->loadPath;
+	}
+
+	/**
+	 * @method      isEnabled
+	 * @description 返回插件加载状态
+	 * @author      HanskiJay
+	 * @doenIn      2021-03-02
+	 * @return      boolean
+	 */
+	public function isEnabled() : bool
+	{
+		return $this->isEnabled;
+	}
+
+	/**
+	 * @method      setEnabled
+	 * @description 设置插件加载状态为已加载
+	 * @author      HanskiJay
+	 * @doenIn      2021-03-02
+	 */
+	public function setEnabled() : void
+	{
+		if(!$this->isEnabled()) {
+			$this->isEnabled = true;
+		}
+	}
+
+	/**
+	 * @method      setDisabled
+	 * @description 设置插件加载状态为禁用
+	 * @author      HanskiJay
+	 * @doenIn      2021-03-02
+	 */
+	public function setDisabled() : void
+	{
+		if($this->isEnabled()) {
+			$this->isEnabled = false;
+		}
 	}
 }
