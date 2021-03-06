@@ -17,6 +17,7 @@
     "minimum-stability": "dev",
     "autoload": {
         "files": [
+            "src/owoframe/helper/ConfigParser.php",
             "src/owoframe/helper/functions.php"
         ],
         "psr-4": {

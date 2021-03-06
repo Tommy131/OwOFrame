@@ -1,5 +1,5 @@
 
-## OwOframe's CHANGELOG (Total `78` Commits)
+## OwOframe's CHANGELOG (Total `83` Commits)
 
 
 ↓ `[dev@v1.0.1, origin/dev@v1.0.1]` ↓
@@ -17,6 +17,7 @@
 - 引入了 `Composer` 中的 `ClassLoader`
 - 修复了在CLI模式下无法抓取异常的BUG
 - 将部分代码从 `(dev@v1.0.0)` 迁移到新分支 `(dev@v1.0.1)`
+- 更新了版权信息(不影响开源许可使用)
 - Updated CHANGELOG.md
 
 ------
