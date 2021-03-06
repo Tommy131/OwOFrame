@@ -1,5 +1,5 @@
 
-## OwOframe's CHANGELOG (Total `69` Commits)
+## OwOframe's CHANGELOG (Total `78` Commits)
 
 
 ↓ `[dev@v1.0.1, origin/dev@v1.0.1]` ↓
@@ -13,6 +13,11 @@
 - 尝试将全部模块/类松耦合化
 - 第一次尝试将系统及外部的Application分离
 - 编写了新的 `Container`, `Bootstratper` 及 `Manager加载器` 作为系统底层
+- 修复了一些小BUG
+- 引入了 `Composer` 中的 `ClassLoader`
+- 修复了在CLI模式下无法抓取异常的BUG
+- 将部分代码从 `(dev@v1.0.0)` 迁移到新分支 `(dev@v1.0.1)`
+- Updated CHANGELOG.md
 
 ------
 
