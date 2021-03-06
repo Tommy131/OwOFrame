@@ -23,6 +23,13 @@ use owoframe\exception\ExceptionOutput;
 class BootStraper
 {
 
+	/**
+	 * @method      initializeSystem
+	 * @description 初始化系統需要
+	 * @author      HanskiJay
+	 * @doenIn      2021-03-06
+	 * @return      void
+	 */
 	public static function initializeSystem() : void
 	{
 		if(version_compare(PHP_VERSION, '7.1.0') === -1) {
@@ -31,8 +38,12 @@ class BootStraper
 
 		if(!self::isRunning()) {
 			define('OWO_INITIALIZED', true);
+			set_error_handler([ExceptionOutput::class, 'ErrorHandler'], E_ALL);
+			set_exception_handler([ExceptionOutput::class, 'ExceptionHandler']);
 			// Define OwOFrame start time;
 			if(!defined('START_MICROTIME'))  define('START_MICROTIME', microtime(true));
+			// Define Timezone;
+			if(!defined('TIME_ZONE'))        define('TIME_ZONE',       'Europe/Berlin');
 			// Define OwOFrame start time;
 			if(!defined('APP_VERSION'))      define('APP_VERSION',     '20210306_dev@v1.0.1');
 			// Check whether the current environment supports mbstring extension;
@@ -46,9 +57,11 @@ class BootStraper
 			// Define Module path(absolute path);
 			if(!defined('MODULE_PATH'))      define('MODULE_PATH',     ROOT_PATH . 'module' . DIRECTORY_SEPARATOR);
 			// Define Storage path(absolute path);
-			if(!defined('STORAGE_PATH'))     define('STORAGE_PATH',    ROOT_PATH . 'storage' . DIRECTORY_SEPARATOR);
+			if(!defined('STORAGE_PATH'))     define('STORAGE_PATH',    ROOT_PATH . 'storages' . DIRECTORY_SEPARATOR);
+			// Define Framework path(absolute path);
+			if(!defined('FRAMEWORK_PATH'))   define('FRAMEWORK_PATH',  STORAGE_PATH . 'framework' . DIRECTORY_SEPARATOR);
 			// Cache files directory for Back-End(absolute path);
-			if(!defined('CACHE_PATH'))       define('CACHE_PATH',      STORAGE_PATH . 'framework' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR);
+			if(!defined('CACHE_PATH'))       define('CACHE_PATH',      FRAMEWORK_PATH . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR);
 			// Log files directory (absolute path);
 			if(!defined('LOG_PATH'))         define('LOG_PATH',        STORAGE_PATH . 'logs' . DIRECTORY_SEPARATOR);
 			// Define Resource path for Front-End(absolute path);
@@ -56,9 +69,13 @@ class BootStraper
 			// Define Public path for Front-End(absolute path);
 			if(!defined('PUBLIC_PATH'))      define('PUBLIC_PATH',     ROOT_PATH . 'public' . DIRECTORY_SEPARATOR);
 
-			set_error_handler([ExceptionOutput::class, 'ErrorHandler'], E_ALL);
-			set_exception_handler([ExceptionOutput::class, 'ExceptionHandler']);
+			if(!is_dir(STORAGE_PATH))  mkdir(STORAGE_PATH, 755, true);
+			if(!is_dir(CACHE_PATH))    mkdir(CACHE_PATH, 755, true);
+			if(!is_dir(LOG_PATH))      mkdir(LOG_PATH, 755, true);
+			if(!is_dir(RESOURCE_PATH)) mkdir(RESOURCE_PATH, 755, true);
+			date_default_timezone_set(TIME_ZONE);
 		}
+		loadConfig(FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'global.ini');
 	}
 
 	/**
