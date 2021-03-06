@@ -11,6 +11,7 @@
 	* Copyright (c) 2015-2019 OwOBlog-DGMT All Rights Reserevd.
 	* Developer: HanskiJay(Teaclon)
 	* Telegram: https://t.me/HanskiJay E-Mail: support@owoblog.com
+	* GitHub: https://github.com/Tommy131
 
 ************************************************************************/
 
