@@ -1,6 +1,6 @@
 <?php
 
-namespace example;
+namespace module\example;
 
 class PHPIsTheBestProgrammingLanguageInTheWorld
 {
