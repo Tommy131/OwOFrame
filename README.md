@@ -1,7 +1,7 @@
 ## OwOFrame
 开源许可证: ![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg) [Learn More](https://opensource.org/licenses/Apache-2.0)
 
-OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模式开发, 框架的制定标准借鉴了 `ThinkPHP` 和 `Laravel`, 因此有部分方法的命名规则看起来与其有相似之处.
+OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模式开发, 框架的制定标准借鉴了 `ThinkPHP` ~~和 `Laravel`~~(框架太大了), 因此有部分方法的命名规则看起来与其有相似之处. 此项目仅为我个人的练习项目.
 
 如果您觉得本项目对您有帮助, 请给本项目一颗小小的 `Star` 呗QWQ
 
@@ -29,7 +29,7 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 - [x] `CookieClass`         一个普通的Cookie处理类
 - [x] `EmptyAppGenerator`   一键生成新的Application模板
 - [x] `FileUploadClass`     文件上传类支持
-- [x] `OwOFrame`            一个集成化的方法类(具体请看源代码)
+- [x] `Helper`              一个集成化的方法类(具体请看源代码)
 - [x] `SessionClass`        一个普通的Session处理类
 
 #### Third Party Resources
@@ -39,42 +39,28 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 
 
 ## How to use me?
-打开命令行 `CMD` 或Linux的 `Shell` 之后, 进入到项目根目录并且输入指令 `cd backend && composer install`安装所需的依赖包.
+打开命令行 `CMD` 或Linux的 `Shell` 之后, 进入到项目根目录并且输入指令 `cd owoframe && composer install`安装所需的依赖包.
 
 然后介绍一下目录格式吧.
 
-- 引导文件为根目录下的 `index.php`, 通过此文件初始化框架.
-- `/backend/OwOFrame.php` 此文件的解释参考上方.
-- `/backend/system/` 此目录为框架核心目录.
-- `/backend/application/` 此目录为Application目录(默认存在一个作为演示用途的IndexApp).
-- `/backend/utils/` 此目录为工具类, 需要时方便调用.
-- `/backend/tmp/` 此目录为系统存储的资源文件, 例如运行日志或者配置文件等.
-- `/backend/common/` 此目录为系统的公共文件夹, 可存储静态资源文件, 默认的全局配置文件 `global.config` 将存放在此处.
+- 引导文件为根目录下的 `/public/index.php`, 通过此文件初始化框架.
+- TODO
 
 #### 是否需要修改Web环境?
 需要. Nginx的修改方法参考下方:
 
 ```nginx
-# Check whether the web environment is safe (the following is the web environment configuration method);
+# Set your web root path to /public (Example);
+root /www/owoframe/public;
 
 location / {
 	index index.php index.html;
 	try_files $uri $uri/ /index.php$is_args$query_string;
 }
-
-location ^~ /backend/ {
-    deny all;
-    return 403;
-}
-
-location ~ /(\.user\.ini|\.ht|\.git|\.svn|\.project|LICENSE|README\.md) {
-	deny all;
-  return 403;
-}
 ```
 
 #### 如何在CLI模式下运行OwOFrame?
-打开你的CMD或者Shell并且进入 `backend` 文件夹后, 进入OwOFrame的工程路径, 在控制台输入 `php owo [command]` 即可.
+打开你的CMD或者Shell后, 进入OwOFrame的工程路径, 在控制台输入 `php owo [command]` 即可.
 
 ------
 

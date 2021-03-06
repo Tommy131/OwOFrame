@@ -1,0 +1,26 @@
+{
+    "name": "tommy131/owoframe",
+    "description": "A lightweight MVC frame for php application",
+    "type": "project",
+    "require": {
+        "topthink/think-orm": "^2.0",
+        "bshaffer/oauth2-server-php": "^1.11",
+        "endroid/qr-code": "^3.9"
+    },
+    "license": "Apache 2.0",
+    "authors": [
+        {
+            "name": "Tommy131",
+            "email": "entwicklerKuhler3579@outlook.de"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "files": [
+            "src/owoframe/helper/functions.php"
+        ],
+        "psr-4": {
+            "owoframe\\": "src/owoframe/"
+        }
+    }
+}
