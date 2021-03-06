@@ -11,6 +11,7 @@
 	* Copyright (c) 2015-2019 OwOBlog-DGMT All Rights Reserevd.
 	* Developer: HanskiJay(Teaclon)
 	* Telegram: https://t.me/HanskiJay E-Mail: support@owoblog.com
+	* GitHub: https://github.com/Tommy131
 	
 ************************************************************************/
 
@@ -39,7 +40,7 @@ function loadConfig(string $file, bool $toJson = false) : array
 				$currentGroup   = $group;
 				$config[$group] = [];
 			} else {
-				throwError("{$prefix}已存在组 '{$group}' !", __FILE__, __LINE__);
+				throw error("{$prefix}已存在组 '{$group}' !");
 			}
 		}
 
