@@ -18,25 +18,39 @@
 declare(strict_types=1);
 namespace owoframe;
 
+use Composer\Autoload\ClassLoader;
 use owoframe\contract\Manager;
+use owoframe\console\Console;
 use owoframe\helper\BootStraper as BS;
 use owoframe\http\HttpManager as Http;
+use owoframe\module\ModuleLoader;
+use owoframe\redis\RedisManager as Redis;
 
 final class MasterManager extends Container implements Manager
 {
-	/* @array */
+	/* @ClassLoader */
+	private $classLoader;
+	/* @array 绑定标签到类 */
 	protected $bind =
 	[
+		'console' => Console::class,
 		'http'    => Http::class,
+		'redis'   => Redis::class,
 		'unknown' => null
 	];
 
 
 
-	public function __construct()
+	public function __construct(?ClassLoader $classLoader = null)
 	{
 		if(!BS::isRunning()) {
 			BS::initializeSystem();
+			$this->bind('unknown', new class implements Manager {});
+			if($classLoader !== null) {
+				$this->classLoader = $classLoader;
+			}
+			ModuleLoader::setPath(MODULE_PATH);
+			ModuleLoader::autoLoad();
 		}
 	}
 
@@ -69,11 +83,12 @@ final class MasterManager extends Container implements Manager
 	 * @author      HanskiJay
 	 * @doenIn      2021-03-04
 	 * @param       string      $bindTag 绑定标识
+	 * @param       array       $params  传入参数
 	 * @return      @Manager
 	 */
-	public function getManager(string $bindTag) : Manager
+	public function getManager(string $bindTag, array $params = []) : Manager
 	{
-		return $this->make($bindTag ?? 'unknown');
+		return $this->make($bindTag ?? 'unknown', $params);
 	}
 
 	/**
@@ -86,5 +101,17 @@ final class MasterManager extends Container implements Manager
 	public function isRunning() : bool
 	{
 		return BS::isRunning();
+	}
+
+	/**
+	 * @method      getClassLoader
+	 * @description 返回类加载器
+	 * @author      HanskiJay
+	 * @doenIn      2021-03-06
+	 * @return      null|@ClassLoader
+	 */
+	public function getClassLoader() : ?ClassLoader
+	{
+		return $this->classLoader;
 	}
 }
