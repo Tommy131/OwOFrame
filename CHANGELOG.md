@@ -1,5 +1,20 @@
 
-## OwOframe's CHANGELOG (Total `67` Commits)
+## OwOframe's CHANGELOG (Total `69` Commits)
+
+
+↓ `[dev@v1.0.1, origin/dev@v1.0.1]` ↓
+
+------
+
+`dev20210218@v1.0.0` <= `20210306_dev@v1.0.1`:
+! 重大更新如下:
+- 重新构建了项目结构
+- 采用 `Composer包依赖` 模式及 `PSR-4` 进行重构
+- 尝试将全部模块/类松耦合化
+- 第一次尝试将系统及外部的Application分离
+- 编写了新的 `Container`, `Bootstratper` 及 `Manager加载器` 作为系统底层
+
+------
 
 
 ↓ `[dev@v1.0.0, origin/dev@v1.0.0]` ↓
@@ -8,8 +23,6 @@
 
 `dev20210218@v1.0.0` <= `dev202100302@v1.0.0`:
 - 在 `PluginModule` 中添加了插件加载状态方法
-
-------
 
 `dev20210218@v1.0.0` <= `dev20210219@v1.0.0`:
 - 移除了自带的模型控制器抽象类
@@ -80,6 +93,13 @@
 - 修改了一些地方的代码
 - 更新了版权信息
 - Changed branch name `origin/master` to `origin/dev@v1.0.0`
+
+------
+
+
+↓ `[master, origin/master]` ↓
+
+------
 
 `20210122@v1.0.0`:
 - 提交代码至GitHub仓库

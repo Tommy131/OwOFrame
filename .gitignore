@@ -1,0 +1,6 @@
+# path
+/pma/
+/vendor/
+
+#file
+composer.lock
