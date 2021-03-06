@@ -20,6 +20,7 @@ namespace owoframe\exception;
 use owoframe\helper\BootStraper as BS;
 use owoframe\helper\Helper;
 use owoframe\utils\LogWriter;
+use owoframe\utils\TextFormat;
 
 class ExceptionOutput
 {
@@ -49,8 +50,8 @@ class ExceptionOutput
 		if(($pos = strpos($errstr, "\n")) !== false) $errstr = substr($errstr, 0, $pos);
 		if(defined("DEBUG_MODE") && DEBUG_MODE) {
 			if(!preg_match('/Cannot use "parent" when current class scope has no parent/i', $errstr)) {
+				$msg = "{$errno} happened: {$errstr} in {$errfile} at line {$errline}";
 				if(Helper::isRunningWithCGI()) {
-					$msg = "{$errno} happened: {$errstr} in {$errfile} at line {$errline}";
 					if(defined('LOG_ERROR') && LOG_ERROR) {
 						$logged = '<span id="logged">--- Logged ---</span>';
 						self::log($msg);
@@ -61,6 +62,8 @@ class ExceptionOutput
 						['{logged}', '{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'], 
 						[$logged, $errno, $msg, $errfile, $errline, null, BS::getRunTime()],
 					self::getTemplate());
+				} else {
+					self::log($msg);
 				}
 				exit(1);
 			}
@@ -83,6 +86,8 @@ class ExceptionOutput
 				['{logged}', '{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'], 
 				[$logged, $type, $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString(), BS::getRunTime()],
 			self::getTemplate());
+		} else {
+			self::log($e->__toString());
 		}
 		exit(1);
 	}
