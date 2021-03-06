@@ -36,11 +36,10 @@ foreach($config as $define => $param) {
 	if(!defined($define)) define($define, $param);
 }
 
-// 引入引导文件 | require bootstrap file;
-require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . "vendor" . DIRECTORY_SEPARATOR . "autoload.php");
-
-$master = new owoframe\MasterManager();
-$http = $master->getManager('http');
+// 引入自动加载文件 | require autoload file;
+$classLoader = require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . "vendor" . DIRECTORY_SEPARATOR . "autoload.php");
+$master = new owoframe\MasterManager($classLoader);
+$http   = $master->getManager('http');
 $http->dispath();
 $http->response();
 $master->stop();
