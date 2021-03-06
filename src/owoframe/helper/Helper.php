@@ -11,6 +11,7 @@
 	* Copyright (c) 2015-2019 OwOBlog-DGMT All Rights Reserevd.
 	* Developer: HanskiJay(Teaclon)
 	* Telegram: https://t.me/HanskiJay E-Mail: support@owoblog.com
+	* GitHub: https://github.com/Tommy131
 	*
 	* 杂项方法公共存放类
 
@@ -194,18 +195,18 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	 */
 	public static function getOS() : string
 	{
-		$r  = '';
+		$r  = null;
 		$os = php_uname('s');
 		if(stripos($os, 'linux') !== false) {
 			$r = @file_exists('/system/build.prop') ? self::OS_ANDROID : self::LINUX;
 		}
-		elseif(stripos($os, 'windows')) {
+		elseif(stripos($os, 'windows') !== false) {
 			$r = self::OS_WINDOWS;
 		}
 		elseif((stripos($os, 'mac') !== false) || (stripos($os, 'darwin') !== false)) {
 			$r = self::OS_MACOS;
 		}
-		elseif($stripos($os, 'bsd')) {
+		elseif(stripos($os, 'bsd') !== false) {
 			$r = self::OS_BSD;
 		}
 		return $r ?? self::OS_UNKNOWN;
