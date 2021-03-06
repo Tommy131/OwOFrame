@@ -21,6 +21,7 @@ namespace owoframe\helper;
 
 use owoframe\contract\HTTPStatusCodeConstant;
 use owoframe\contract\MIMETypeConstant;
+use owoframe\utils\LogWriter;
 
 class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 {
@@ -253,6 +254,22 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	public static function getMimeType() : array
 	{
 		return self::MIMETYPE;
+	}
+
+	/**
+	 * @method      logger
+	 * @description 日志记录
+	 * @author      HanskiJay
+	 * @doenIn      2021-03-06
+	 * @param       string      $msg    信息
+	 * @param       string      $prefix 称号
+	 * @param       string      $level  等级
+	 * @return      void
+	 */
+	public static function logger(string $msg, string $prefix = 'OwOCLI', string $level = 'INFO') : void
+	{
+		LogWriter::setFileName(self::isRunningWithCLI() ? 'owoblog_cli_run.log' : 'owoblog_run.log');
+		LogWriter::write($msg, $prefix, $level);
 	}
 
 	/**
