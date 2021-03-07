@@ -65,9 +65,9 @@ location / {
 ------
 
 ## Statement
-&copy; 2016-2021 [`OwOBlog-DGMT`](https://www.owoblog.com) All Rights Reserved. Please comply with the open source license of this project for modification, derivative or commercial use of this project. The ultimate ownership of this project belongs to HanskiJay(Tommy131).
+&copy; 2016-2021 [`OwOBlog-DGMT`](https://www.owoblog.com). Please comply with the open source license of this project for modification, derivative or commercial use of this project.
 
-> My Contact:
+> My Contacts:
 - Website: [`HanskiJay`](https://www.owoblog.com)
 - Telegram: [`HanskiJay`](https://t.me/HanskiJay)
 - E-Mail: [`HanskiJay`](mailto:support@owoblog.com)
