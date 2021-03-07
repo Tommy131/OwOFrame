@@ -23,6 +23,7 @@ use owoframe\console\Console;
 use owoframe\contract\Manager;
 use owoframe\helper\BootStraper as BS;
 use owoframe\helper\Helper;
+use owoframe\http\FileUploader;
 use owoframe\http\HttpManager as Http;
 use owoframe\module\ModuleLoader;
 use owoframe\redis\RedisManager as Redis;
@@ -34,10 +35,11 @@ final class MasterManager extends Container implements Manager
 	/* @array 绑定标签到类 */
 	protected $bind =
 	[
-		'console' => Console::class,
-		'http'    => Http::class,
-		'redis'   => Redis::class,
-		'unknown' => null
+		'console'      => Console::class,
+		'fileuploader' => FileUploader::class,
+		'http'         => Http::class,
+		'redis'        => Redis::class,
+		'unknown'      => null
 	];
 
 
@@ -51,7 +53,12 @@ final class MasterManager extends Container implements Manager
 				$this->classLoader = $classLoader;
 			}
 
-			foreach(["DEBUG_MODE", "LOG_ERROR" , "DEFAULT_APP_NAME", "DENY_APP_LIST"] as $define) {
+			foreach(['DEBUG_MODE', 'LOG_ERROR', 'DEFAULT_APP_NAME', 'DENY_APP_LIST'] as $define) {
+				if(Helper::isRunningWithCLI()) {
+					if(($define === 'DEFAULT_APP_NAME') || ($define === 'DENY_APP_LIST')) {
+						continue;
+					}
+				}
 				if(!defined($define)) {
 					throw error("Constant parameter '{$define}' not found!");
 				}

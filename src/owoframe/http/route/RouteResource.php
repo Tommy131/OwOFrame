@@ -142,10 +142,10 @@ class RouteResource
 	*/
 	public static function getInstance() : RouteResource
 	{
-		if(!self::$instance instanceof RouteResource) {
-			self::$instance = new self;
+		if(!static::$instance instanceof RouteResource) {
+			static::$instance = new static;
 		}
-		return self::$instance;
+		return static::$instance;
 	}
 
 	/**
