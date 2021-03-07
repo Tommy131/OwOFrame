@@ -1,5 +1,5 @@
 
-## OwOframe's CHANGELOG (Total `83` Commits)
+## OwOframe's CHANGELOG (Total `88` Commits)
 
 
 ↓ `[dev@v1.0.1, origin/dev@v1.0.1]` ↓
@@ -18,6 +18,8 @@
 - 修复了在CLI模式下无法抓取异常的BUG
 - 将部分代码从 `(dev@v1.0.0)` 迁移到新分支 `(dev@v1.0.1)`
 - 更新了版权信息(不影响开源许可使用)
+- 更新了 `MasterManager` 的初始化检测流程
+- 修复了 `Config` 中的一个兼容性问题
 - Updated CHANGELOG.md
 
 ------
