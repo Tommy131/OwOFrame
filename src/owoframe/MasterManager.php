@@ -19,9 +19,10 @@ declare(strict_types=1);
 namespace owoframe;
 
 use Composer\Autoload\ClassLoader;
-use owoframe\contract\Manager;
 use owoframe\console\Console;
+use owoframe\contract\Manager;
 use owoframe\helper\BootStraper as BS;
+use owoframe\helper\Helper;
 use owoframe\http\HttpManager as Http;
 use owoframe\module\ModuleLoader;
 use owoframe\redis\RedisManager as Redis;
@@ -49,6 +50,13 @@ final class MasterManager extends Container implements Manager
 			if($classLoader !== null) {
 				$this->classLoader = $classLoader;
 			}
+
+			foreach(["DEBUG_MODE", "LOG_ERROR" , "DEFAULT_APP_NAME", "DENY_APP_LIST"] as $define) {
+				if(!defined($define)) {
+					throw error("Constant parameter '{$define}' not found!");
+				}
+			}
+
 			ModuleLoader::setPath(MODULE_PATH);
 			ModuleLoader::autoLoad();
 		}
