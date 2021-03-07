@@ -32,7 +32,7 @@ class Session
 	 * @description 检查是否存在单个Session数据
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-13
-	 * @param       string[storeKey|存储名]
+	 * @param       string      $storeKey 存储名
 	 * @return      boolean
 	 */
 	public static function has(string $storeKey) : bool
@@ -41,12 +41,13 @@ class Session
 	}
 
 	/**
-	 * @method      has
+	 * @method      set
 	 * @description 新增一个Session数据
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-13
-	 * @param       string[storeKey|存储名]
-	 * @return      boolean
+	 * @param       string      $storeKey 存储名
+	 * @param       mixed       $data     数据
+	 * @return      void
 	 */
 	public static function set(string $storeKey, $data) : void
 	{
@@ -56,12 +57,13 @@ class Session
 	}
 
 	/**
-	 * @method      has
+	 * @method      get
 	 * @description 获取一个Session数据
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-13
-	 * @param       string[storeKey|存储名]
-	 * @return      boolean
+	 * @param       string      $storeKey 存储名
+	 * @param       mixed       $default  默认返回结果
+	 * @return      mixed
 	 */
 	public static function get(string $storeKey, $default = null)
 	{
@@ -69,25 +71,25 @@ class Session
 	}
 
 	/**
-	 * @method      has
+	 * @method      getAll
 	 * @description 获取全部的Session数据
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-13
-	 * @param       string[storeKey|存储名]
-	 * @return      boolean
+	 * @param       string      $storeKey 存储名
+	 * @return      array
 	 */
-	public static function getAll() : ?array
+	public static function getAll() : array
 	{
-		return $_SESSION ?? null;
+		return $_SESSION ?? [];
 	}
 
 	/**
-	 * @method      has
+	 * @method      delete
 	 * @description 删除单个Session数据
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-13
-	 * @param       string[storeKey|存储名]
-	 * @return      boolean
+	 * @param       string      $storeKey 存储名
+	 * @return      void
 	 */
 	public static function delete(string $storeKey) : void
 	{
@@ -134,12 +136,11 @@ class Session
 	}
 
 	/**
-	 * @method      has
+	 * @method      reset
 	 * @description 重置当前客户端的Session数据
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-13
-	 * @param       string[storeKey|存储名]
-	 * @return      boolean
+	 * @return      void
 	 */
 	public static function reset() : void
 	{
