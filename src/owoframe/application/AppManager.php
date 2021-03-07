@@ -16,20 +16,18 @@
 ************************************************************************/
 
 declare(strict_types=1);
-namespace owoframe\app;
+namespace owoframe\application;
 
-use owoframe\route\Router;
+use owoframe\http\route\Router;
 use owoframe\exception\InvalidAppException;
 use owoframe\exception\ResourceMissedException;
 
-class AppManager
+class AppManager implements \owoframe\contract\Manager
 {
 	/* @string AppBase basic namespace */
-	private static $basicAppClass = "owoframe\\app\\AppBase";
+	private static $basicAppClass = "owoframe\\application\\AppBase";
 	/* @string Application路径 */
 	private static $appPath = "";
-	/* @array Application实例化池 */
-	// private static $appPool = [];
 
 	/**
 	 * @method      setPath
@@ -129,8 +127,7 @@ class AppManager
 	public static function getApp(string $appName) : ?AppBase
 	{
 		if(self::hasApp($appName, $class)) {
-			return new $class($appName, Router::getCompleteUrl(), Router::getParameters());
-			// return self::$appPool[$appName];
+			return new $class(Router::getCompleteUrl(), Router::getParameters());
 		} else {
 			return null;
 		}

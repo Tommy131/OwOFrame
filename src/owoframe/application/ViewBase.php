@@ -16,7 +16,7 @@
 ************************************************************************/
 
 declare(strict_types=1);
-namespace owoframe\app;
+namespace owoframe\application;
 
 use owoframe\route\RouteResource;
 
@@ -297,19 +297,6 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      getStaticPath
-	 * @description 获取静态资源目录
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $index 文件/文件夹索引]
-	 * @return      string
-	*/
-	public function getStaticPath(string $index) : string
-	{
-		return $this->getViewPath('static') . DIRECTORY_SEPARATOR . $index . DIRECTORY_SEPARATOR;
-	}
-
-	/**
 	 * @method      getCssPath
 	 * @description 获取CSS文件目录的指定文件
 	 * @author      HanskiJay
@@ -323,16 +310,16 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      getCommonCssPath
+	 * @method      getPublicCssPath
 	 * @description 获取公共目录下的CSS文件目录的指定文件
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-10
 	 * @param       string      $index 文件/文件夹索引
 	 * @return      string
 	*/
-	public function getCommonCssPath(string $index) : string
+	public function getPublicCssPath(string $index) : string
 	{
-		return $this->getCommonPath('static/css') . $index;
+		return $this->getResourcePath('css') . $index;
 	}
 
 	/**
@@ -349,16 +336,16 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      getCommonJsPath
+	 * @method      getPublicJsPath
 	 * @description 获取公共目录下的JS文件目录的指定文件
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-10
 	 * @param       string      $index 文件/文件夹索引
 	 * @return      string
 	*/
-	public function getCommonJsPath(string $index) : string
+	public function getPublicJsPath(string $index) : string
 	{
-		return $this->getCommonPath('static/js') . $index;
+		return $this->getResourcePath('js') . $index;
 	}
 
 	/**
@@ -375,21 +362,21 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      getCommonImgPath
+	 * @method      getPublicImgPath
 	 * @description 获取公共目录下的IMG文件目录的指定文件
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-10
 	 * @param       string      $index 文件/文件夹索引
 	 * @return      string
 	*/
-	public function getCommonImgPath(string $index) : string
+	public function getPublicImgPath(string $index) : string
 	{
-		return $this->getCommonPath('static/img') . $index;
+		return $this->getResourcePath('img') . $index;
 	}
 
 	/**
 	 * @method      existsStatic
-	 * @description 判断是否存在一个静态资源文件目录
+	 * @description 判断是否存在一个局部静态资源文件目录
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-10
 	 * @param       string      $index1 文件夹索引

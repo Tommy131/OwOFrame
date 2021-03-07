@@ -16,24 +16,18 @@
 ************************************************************************/
 
 declare(strict_types=1);
-namespace owoframe\app;
+namespace owoframe\application;
 
 use owoframe\exception\OwOFrameException;
 use owoframe\exception\InvalidControllerException;
 use owoframe\exception\ParameterErrorException;
 use owoframe\helper\Helper;
-use owoframe\http\route\{Router, RouteRule};
 use owoframe\module\{ModuleBase, ModuleLoader};
-use owoframe\utils\DataEncoder;
-
-use owoframe\db\DbConfig;
 
 abstract class AppBase
 {
-	/* @string App名称 */
-	private $appName = null;
 	/* @string 默认控制其名称 */
-	private $defaultController = "";
+	private $defaultController = '';
 	/* @string 当前的App访问地址 */
 	private $siteUrl = null;
 	/* @Array 从请求Url传入的原始get参数 */
@@ -42,17 +36,13 @@ abstract class AppBase
 	private static $instance = null;
 
 
-	public function __construct(string $appName, string $siteUrl, array $parameter = [])
+	public function __construct(string $siteUrl, array $parameter = [])
 	{
-		if(($appName === '') || ($appName === null)) {
-			throw new ParameterErrorException('appName', "String", get_class($this));
-		}
-		if(self::$instance === null) {
-			self::$instance = $this;
+		if(static::$instance === null) {
+			static::$instance = $this;
 		} else {
 			throw new OwOFrameException("App '{$appName}' has been initialized!");
 		}
-		$this->appName   = $appName;
 		$this->siteUrl   = $siteUrl;
 		$this->parameter = $parameter;
 		$this->initialize();
@@ -67,7 +57,7 @@ abstract class AppBase
 	 * @param       array      $parameter 需要设置的参数数组
 	 * @return      void
 	*/
-	final public function setParameters(array $parameter) : void
+	public function setParameters(array $parameter) : void
 	{
 		$this->parameter = $parameter;
 	}
@@ -80,10 +70,10 @@ abstract class AppBase
 	 * @param       string      $defaultController 默认控制器名称
 	 * @return      void
 	*/
-	final public function setDefaultController(string $defaultController) : void
+	public function setDefaultController(string $defaultController) : void
 	{
 		if($this->getController($defaultController) === null) {
-			throw new InvalidControllerException($this->getName(), $defaultController, get_class($this));
+			throw new InvalidControllerException(self::getName(), $defaultController, get_class($this));
 		}
 		$this->defaultController = $defaultController;
 	}
@@ -96,7 +86,7 @@ abstract class AppBase
 	 * @param       bool      $returnName 返回控制器名称
 	 * @return      string|@ControllerBase
 	*/
-	final public function getDefaultController(bool $returnName = false)
+	public function getDefaultController(bool $returnName = false)
 	{
 		return $returnName ? $this->defaultController : $this->getController($this->defaultController);
 	}
@@ -108,45 +98,12 @@ abstract class AppBase
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-09
 	 * @param       string      $controllerName 控制器名称
-	 * @return      string|@ControllerBase
+	 * @return      null|@ControllerBase
 	*/
-	final public function getController(string $controllerName) : ?ControllerBase
+	public function getController(string $controllerName) : ?ControllerBase
 	{
-		$controller = "\\application\\{$this->getName()}\\controller\\" . $controllerName;
+		$controller = '\\application\\' . self::getName() . '\\controller\\' . $controllerName;
 		return class_exists($controller) ? (new $controller($this)) : null;
-	}
-
-	/**
-	 * @method      getInstance
-	 * @description 返回本类实例
-	 * @description Return this class object
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09
-	 * @return      @AppBase
-	*/
-	final public static function getInstance() : AppBase
-	{
-		return self::$instance;
-	}
-
-	/**
-	 * @method      renderPageNotFound
-	 * @description 渲染404页面(未匹配有效的控制器时)
-	 * @description Render 404 page (when no valid controller is matched)
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09
-	 * @return      void
-	*/
-	public static function renderPageNotFound() : void
-	{
-		Helper::setStatus(404);
-		$sendMessage = '404 PAGE NOT FOUND';
-		if(\OwOBootstrap\useJsonFormat()) {
-			DataEncoder::reset();
-			die(DataEncoder::setStandardData(404, false, $sendMessage));
-		} else {
-			die($sendMessage);
-		}
 	}
 
 	/**
@@ -157,21 +114,9 @@ abstract class AppBase
 	 * @param       bool      $selectMode 选择模式[True: 返回绝对路径|Return absolute path][False: 返回相对路径|Return relative path]](Default:true)
 	 * @return      string
 	*/
-	final public function getAppPath(bool $selectMode = true) : string
+	final public static function getAppPath(bool $selectMode = true) : string
 	{
-		return (($selectMode) ? AppManager::getPath() : $this->getNameSpace()) . $this->getName() . DIRECTORY_SEPARATOR;
-	}
-
-	/**
-	 * @method      getName
-	 * @description 获取App名称
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09
-	 * @return      string
-	*/
-	final public function getName() : string
-	{
-		return $this->appName;
+		return (($selectMode) ? AppManager::getPath() : self::getNameSpace()) . self::getName() . DIRECTORY_SEPARATOR;
 	}
 
 	/**
@@ -182,9 +127,9 @@ abstract class AppBase
 	 * @doneIn      2020-09-09
 	 * @return      string
 	*/
-	final public function getNameSpace() : string
+	final public static function getNameSpace() : string
 	{
-		$ns = explode("\\", get_class($this));
+		$ns = explode("\\", __CLASS__);
 		return implode("\\", array_slice($ns, 0, count($ns) - 1));
 	}
 
@@ -197,9 +142,22 @@ abstract class AppBase
 	 * @param       string      $name 插件名称
 	 * @return      null|@ModuleBase
 	 */
-	protected function getModule(string $name) : ?ModuleBase
+	final protected function getModule(string $name) : ?ModuleBase
 	{
 		return ModuleLoader::getModule($name);
+	}
+
+	/**
+	 * @method      getInstance
+	 * @description 返回本类实例
+	 * @description Return this class instance
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-09
+	 * @return      null|@AppBase
+	*/
+	public static function getInstance() : ?AppBase
+	{
+		return static::$instance ?? null;
 	}
 
 
@@ -225,5 +183,14 @@ abstract class AppBase
 	 * @return      boolean
 	*/
 	abstract public static function autoTo404Page() : bool;
+
+	/**
+	 * @method      getName
+	 * @description 获取App名称
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-09
+	 * @return      string
+	*/
+	abstract public static function getName() : string;
 }
 ?>
