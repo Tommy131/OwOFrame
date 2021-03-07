@@ -1,8 +1,16 @@
 
-## OwOframe's CHANGELOG (Total `88` Commits)
+## OwOframe's CHANGELOG (Total `97` Commits)
 
 
 ↓ `[dev@v1.0.1, origin/dev@v1.0.1]` ↓
+
+------
+
+`20210306_dev@v1.0.1` <= `20210307_dev@v1.0.1`:
+- 重新命名了 `application`
+- 小部分代码功能更新
+- 初步重新编写了 `HttpManager`
+- Updated CHANGELOG.md
 
 ------
 
@@ -21,8 +29,6 @@
 - 更新了 `MasterManager` 的初始化检测流程
 - 修复了 `Config` 中的一个兼容性问题
 - Updated CHANGELOG.md
-
-------
 
 
 ↓ `[dev@v1.0.0, origin/dev@v1.0.0]` ↓
