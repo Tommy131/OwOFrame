@@ -94,8 +94,8 @@ class Console implements Manager
 	 * @description 获取指令
 	 * @author      HanskiJay
 	 * @doenIn      2021-01-26
-	 * @param       string[commandString|指令]
-	 * @return      null or class@CommandBase
+	 * @param       string      $commandString 指令
+	 * @return      null|@CommandBase
 	 */
 	public function getCommand(string $commandString) : ?CommandBase
 	{
