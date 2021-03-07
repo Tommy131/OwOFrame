@@ -18,16 +18,13 @@
 declare(strict_types=1);
 namespace owoframe\http;
 
-use owoframe\Helper;
+use owoframe\helper\Helper;
 use owoframe\exception\JSONException;
 
-class FileUploader
+class FileUploader implements \owoframe\contract\Manager
 {
 	/* @array 默认允许上传的文件类型集合 */
 	private const DEFAULT_ALLOWED_EXTS = ["mp4", "gif", "jpeg", "jpg", "png"];
-
-	/* @FileUploadClass 本类实例接口 */
-	private static $instance = null;
 	/* @array 自定义允许上传的文件类型集合 */
 	private $allowedExts = [];
 
@@ -70,8 +67,6 @@ class FileUploader
 		}
 		return $fileInfo;
 	}
-
-
 
 	/**
 	 * @method      addAllowedExt
@@ -128,21 +123,5 @@ class FileUploader
 	public function getAllowedExts() : array
 	{
 		return array_merge(self::DEFAULT_ALLOWED_EXTS, $this->allowedExts);
-	}
-
-
-	/**
-	 * @method      getInstance
-	 * @description 返回本类实例;
-	 * @return      FileUploadClass
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10 18:49
-	*/
-	public static function getInstance() : FileUploadClass
-	{
-		if(!self::$instance instanceof FileUploadClass) {
-			self::$instance = new self;
-		}
-		return self::$instance;
 	}
 }

@@ -107,7 +107,22 @@ class Config
 	{
 		$arr = explode('.', $index);
 		if(count($arr) > 1) {
-			$this->config[(string) $arr[0]] = $arr[1];
+			$base = array_shift($arr);
+			if(!isset($this->config[$base])){
+				$this->config[$base] = [];
+			}
+
+			$base =& $this->config[$base];
+
+			while(count($arr) > 0){
+				$baseKey = array_shift($arr);
+				if(!isset($base[$baseKey])){
+					$base[$baseKey] = [];
+				}
+				$base =& $base[$baseKey];
+			}
+			$base = $value;
+			$this->nestedCache[$index] = $value;
 		} else {
 			$this->config[$index] = $value;
 		}
@@ -199,14 +214,14 @@ class Config
 	}
 
 	/**
-	 * @method      json
-	 * @description 将当前的数据转换成JSON对象 | Formating currently data($this->config) to JSON Object
+	 * @method      obj
+	 * @description 将当前的数据转换成对象 | Formating currently data($this->config) to Object
 	 * @author      HanskiJay
 	 * @doenIn      2021-01-31
 	 * @return      object
 	 */
-	public function json() : object
+	public function obj() : object
 	{
-		return json_decode(json_encode($this->config));
+		return (object) $this->config;
 	}
 }

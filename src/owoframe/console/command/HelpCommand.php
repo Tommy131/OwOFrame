@@ -41,11 +41,11 @@ class HelpCommand extends \owoframe\console\CommandBase
 				Helper::logger(TF::RED . "Command " . TF::GOLD . $command . TF::RED . " does not exists!");
 			} else {
 				$command = $commands[$command];
-				Helper::logger(TF::WHITE . "---[" . TF::NORMAL_YELLOW . "Details" . TF::STRONG_RED . "@" . TF::GREEN . $command->getName() . TF::WHITE . "]---");
-				Helper::logger(TF::BLUE . "CommandName: " . TF::WHITE . $command->getName());
-				Helper::logger(TF::BLUE . "AliasName:   " . TF::WHITE . implode(', ', $command->getAliases()));
-				Helper::logger(TF::BLUE . "Usage:       " . TF::WHITE . $command->getUsage());
-				Helper::logger(TF::BLUE . "Description: " . TF::WHITE . $command->getDescription());
+				Helper::logger(TF::WHITE . "---[Details@" . TF::GREEN . $command->getName() . TF::WHITE . "]---");
+				Helper::logger(TF::WHITE . "CommandName: " . $command->getName());
+				Helper::logger(TF::WHITE . "AliasName:   " . implode(', ', $command->getAliases()));
+				Helper::logger(TF::WHITE . "Usage:       " . $command->getUsage());
+				Helper::logger(TF::WHITE . "Description: " . $command->getDescription());
 			}
 		}
 		return true;
@@ -68,6 +68,6 @@ class HelpCommand extends \owoframe\console\CommandBase
 
 	public static function getUsage() : string
 	{
-		return TF::LIGHT_RED . "php owo help " . TF::GOLD . "[" . TF::AQUA . "commandName" . TF::GOLD . "]";
+		return TF::AQUA . 'php owo help ' . TF::GOLD . '[<string> commandName]';
 	}
 }

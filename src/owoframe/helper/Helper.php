@@ -41,20 +41,6 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 
 
 	/**
-	 * @method      setStatusCode
-	 * @description 设置HTTP状态码
-	 * @author      HanskiJay
-	 * @doenIn      2021-01-10
-	 * @param       int      $code 状态码
-	 */
-	public static function setStatusCode(int $code) : void
-	{
-		if(isset(self::HTTP_CODE[$code])) {
-			header(((server('SERVER_PROTOCOL') !== null) ? server('SERVER_PROTOCOL') : 'HTTP/1.1') . " {$code} " . self::HTTP_CODE[$code], true, $code);
-		}
-	}
-
-	/**
 	 * @method      isMobile
 	 * @description 检测是否为移动设备访问
 	 * @author      HanskiJay
