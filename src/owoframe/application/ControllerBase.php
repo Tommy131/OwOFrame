@@ -16,7 +16,7 @@
 ************************************************************************/
 
 declare(strict_types=1);
-namespace owoframe\app;
+namespace owoframe\application;
 
 use owoframe\helper\Helper;
 
@@ -50,29 +50,29 @@ abstract class ControllerBase
 	}
 
 	/**
-	 * @method      getApp
-	 * @description 返回对应的App
-	 * @description Return corresponding AppBase Object
-	 * @return      AppBase
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10 18:49
-	*/
-	final public function getApp() : AppBase
-	{
-		return $this->app;
-	}
-
-	/**
-	 * @method      getCommonPath
-	 * @description 获取静态资源目录
+	 * @method      getResourcePath
+	 * @description 获取公共静态资源目录
 	 * Author:      HanskiJay
 	 * @doneIn      2020-09-10
 	 * @param       string      $index 文件/文件夹索引
 	 * @return      string
 	*/
-	public function getCommonPath(string $index) : string
+	public function getResourcePath(string $index) : string
 	{
-		return __BACKEND__ . 'common' . DIRECTORY_SEPARATOR . $index . DIRECTORY_SEPARATOR;
+		return RESOURCE_PATH . $index . DIRECTORY_SEPARATOR;
+	}
+
+	/**
+	 * @method      getStaticPath
+	 * @description 获取Application局部静态资源目录
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-10
+	 * @param       string      $index 文件/文件夹索引
+	 * @return      string
+	*/
+	public function getStaticPath(string $index) : string
+	{
+		return $this->getViewPath('static') . DIRECTORY_SEPARATOR . $index . DIRECTORY_SEPARATOR;
 	}
 
 	/**
@@ -83,11 +83,11 @@ abstract class ControllerBase
 	 * @doneIn      2020-09-10 18:49
 	 * @param       string      $index      文件/文件夹索引
 	 * @param       bool        $selectMode 选择模式[True: 返回绝对路径|Return absolute path][False: 返回相对路径|Return relative path]](Default:true)
-	 * @return      null|string
+	 * @return      string
 	*/
-	final public function getViewPath(string $index, bool $selectMode = true) : ?string
+	final public function getViewPath(string $index, bool $selectMode = true) : string
 	{
-		return (($selectMode) ? $this->getApp()->getAppPath() : $this->getApp()->getAppPath($selectMode)) . "view" . DIRECTORY_SEPARATOR . $index ?? null;
+		return $this->getApp()::getAppPath($selectMode) . "view" . DIRECTORY_SEPARATOR . $index;
 	}
 
 	/**
@@ -115,6 +115,19 @@ abstract class ControllerBase
 	public function getName() : string
 	{
 		return Helper::getShortClassName($this);
+	}
+
+	/**
+	 * @method      getApp
+	 * @description 返回对应的App
+	 * @description Return corresponding AppBase Object
+	 * @return      AppBase
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-10 18:49
+	*/
+	final public function getApp() : AppBase
+	{
+		return $this->app;
 	}
 }
 ?>
