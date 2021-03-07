@@ -36,6 +36,8 @@ class Config
 	{
 		$this->autoSave = $autoSave;
 		$this->filePath = dirname($file) . DIRECTORY_SEPARATOR;
+		$file = explode('.', $file); // e.g. abc.json | abc;
+		$file = array_shift($file);  // if yes, then shift 'abc' to $file;
 		$this->fileName = str_replace($this->filePath, '', $file) . '.json';
 		if(!file_exists($file)) {
 			$this->config = $defaultData;
