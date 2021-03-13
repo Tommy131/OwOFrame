@@ -79,7 +79,7 @@ class Config
 			}
 			return $this->nestedCache[$index] = $base;
 		} else {
-			return $this->config[$index] ?? null;
+			return $this->config[$index] ?? $default;
 		}
 	}
 
