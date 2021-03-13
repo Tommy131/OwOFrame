@@ -36,14 +36,14 @@ class Config
 	{
 		$this->autoSave = $autoSave;
 		$this->filePath = dirname($file) . DIRECTORY_SEPARATOR;
-		$file = explode('.', $file); // e.g. abc.json | abc;
-		$file = array_shift($file);  // if yes, then shift 'abc' to $file;
-		$this->fileName = str_replace($this->filePath, '', $file) . '.json';
+		$fileName = explode('.', $file); // e.g. abc.json | abc;
+		$fileName = array_shift($fileName);  // if yes, then shift 'abc' to $file;
+		$this->fileName = str_replace($this->filePath, '', $fileName) . '.json';
 		if(!file_exists($file)) {
 			$this->config = $defaultData;
 			$this->save();
 		} else {
-			$this->config = json_decode(file_get_contents($this->file), true) ?? [];
+			$this->config = json_decode(file_get_contents($file), true) ?? [];
 		}
 	}
 
