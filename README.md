@@ -54,8 +54,8 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 root /www/owoframe/public;
 
 location / {
-	index index.php index.html;
-	try_files $uri $uri/ /index.php$is_args$query_string;
+    index index.php index.html;
+    try_files $uri $uri/ /index.php$is_args$query_string;
 }
 ```
 
