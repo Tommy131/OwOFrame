@@ -53,14 +53,21 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	public function start() : void
 	{
 		// TODO: 将ClientRequestFilter中的方法移植过来;
-		if(self::isForeverBanned(Helper::getClientIp())) {
-			LogWriter::write('[403] Client '.self::$currentIp.'\'s IP is in the blacklist, request deined.', self::LOG_PREFIX);
+		$ip = Helper::getClientIp();
+		if(!self::checkValid($ip)) {
+			LogWriter::write('[403@Banned] Client ' . $ip . '\'s IP is banned, request deined.', self::LOG_PREFIX);
 			self::setStatusCode(403);
 			return;
 		}
-		LogWriter::write('[200@' . server('REQUEST_METHOD') . '] Client ' . Helper::getClientIp() . ' requested url [' . Router::getCompleteUrl() . ']', self::LOG_PREFIX);
+		LogWriter::write('[200@' . server('REQUEST_METHOD') . '] Client ' . $ip . ' requested url [' . Router::getCompleteUrl() . ']', self::LOG_PREFIX);
 	}
 
+
+	/******************************
+	 *
+	 * HTTP 参数操作方法
+	 * 
+	******************************/
 	/**
 	 * @method      setStatusCode
 	 * @description 设置HTTP状态码
@@ -135,6 +142,41 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 		return !is_null($callback) ? call_user_func_array($callback, $array) : $array;
 	}
 
+
+	/******************************
+	 *
+	 * ClientIp 操作方法
+	 * 
+	******************************/
+	/**
+	 * @method      banIp
+	 * @description 封禁一个IP
+	 * @author      HanskiJay
+	 * @doenIn      2021-03-09
+	 * @param       string      $ip     IP地址
+	 * @param       int|integer $toTime 封禁到时间(默认10分钟)
+	 * @param       string      $reason 封禁理由
+	 * @return      void
+	 */
+	public static function banIp(string $ip, int $toTime = 10, string $reason = '') : void
+	{
+		if(Helper::isIp($ip)) {
+			$encodedIp = base64_encode($ip);
+		}
+		$toTime = microtime(true) + $toTime * 60;
+		if(!self::isBanned($ip)) {
+			self::ipList()->set($encodedIp, 
+			[
+				'origin'  => $ip,
+				'banTime' => $toTime,
+				'reason'  => $reason
+			]);
+		} else {
+			self::ipList()->set($encodedIp.'.banTime', $toTime);
+		}
+		self::ipList()->save();
+	}
+
 	/**
 	 * @method      isBanned
 	 * @description 判断IP地址是否被带时间封禁
@@ -145,7 +187,11 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 */
 	public static function isBanned(string $ip) : bool
 	{
-		return self::ipList()->exists(base64_encode($ip));
+		if(Helper::isIp($ip)) {
+			$ip = base64_encode($ip);
+		}
+		$ipData = self::ipList()->get($ip);
+		return ($ipData !== null) && isset($ipData['banTime']);
 	}
 
 	/**
@@ -158,10 +204,57 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 */
 	public static function isForeverBanned(string $ip) : bool
 	{
+		if(Helper::isIp($ip)) {
+			$ip = base64_encode($ip);
+		}
 		if(!self::isBanned($ip)) {
 			return false;
 		}
-		return self::ipList()->get(base64_encode($ip).'.banTime') == true;
+		return self::ipList()->get($ip.'.banTime') == true;
+	}
+
+	/**
+	 * @method      setIpData
+	 * @description 设置IP信息集
+	 * @author      HanskiJay
+	 * @doenIn      2021-03-09
+	 * @param       string      $ip   IP地址
+	 * @param       array       $data 自定义设置信息集
+	 */
+	public static function setIpData(string $ip, array $data) : Config
+	{
+		if(Helper::isIp($ip)) {
+			$encodedIp = base64_encode($ip);
+		}
+		$ipData    = self::ipList()->get($encodedIp) ?? [];
+		$ipData    = array_merge($ipData, $data);
+		if(!isset($ipData['origin'])) {
+			$ipData['origin'] = $ip;
+		}
+		self::ipList()->set($encodedIp, $ipData);
+		self::ipList()->save();
+		return self::ipList();
+	}
+
+	/**
+	 * @method      checkValid
+	 * @description 判断当前IP的访问有效性
+	 * @author      HanskiJay
+	 * @doenIn      2021-03-13
+	 * @param       string      $ip IP地址
+	 * @return      boolean
+	 */
+	private static function checkValid(string $ip) : bool
+	{
+		if(Helper::isIp($ip)) {
+			$encodedIp = base64_encode($ip);
+		}
+		if(!self::isBanned($ip)) {
+			return true;
+		}
+		if(self::isForeverBanned($ip) || (microtime(true) - self::ipList()->get($encodedIp.'.banTime') > 0)) {
+			return false;
+		}
 	}
 
 	/**
@@ -174,7 +267,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	public static function ipList() : Config
 	{
 		if(!self::$ipList instanceof Config) {
-			self::$ipList = new Config(LOG_PATH . 'ipList.json');
+			self::$ipList = new Config(FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'ipList.json');
 		}
 		return self::$ipList;
 	}
