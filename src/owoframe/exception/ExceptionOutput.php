@@ -82,9 +82,11 @@ class ExceptionOutput
 			} else {
 				$logged = '';
 			}
+			$fileName = method_exists($e, 'getRealFile') ? $e->getRealFile() : $e->getFile();
+			$realName = method_exists($e, 'getRealLine') ? $e->getRealLine() : $e->getLine();
 			echo str_replace(
 				['{logged}', '{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'], 
-				[$logged, $type, $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString(), BS::getRunTime()],
+				[$logged, $type, $e->getMessage(),  $fileName, $realName, $e->getTraceAsString(), BS::getRunTime()],
 			self::getTemplate());
 		} else {
 			self::log($e->__toString());

@@ -20,8 +20,9 @@ namespace owoframe\http\route;
 
 use ReflectionMethod;
 use owoframe\MasterManager;
-use owoframe\app\AppManager;
+use owoframe\application\AppManager;
 use owoframe\helper\{BootStraper, Helper};
+use owoframe\http\Response;
 use owoframe\exception\{InvalidControllerException, MethodMissedException, RouterException, UnknownErrorException};
 
 final class Router
@@ -43,7 +44,7 @@ final class Router
 		$primaryParser = array_shift($pathInfo); // 默认设置为App名称 | Default is to set for AppName;
 		$primaryParser = !empty($primaryParser) ? strtolower($primaryParser) : null;
 		if(empty($primaryParser)) {
-			// $primaryParser = DEFAULT_APP_NAME;
+			$primaryParser = DEFAULT_APP_NAME;
 			self::setPathInfo(DEFAULT_APP_NAME);
 		}
 
@@ -88,6 +89,7 @@ final class Router
 		if(in_array($app->getName(), DENY_APP_LIST)) {
 			Helper::setStatus(404);
 			MasterManager::getInstance()->stop();
+			return;
 		}
 
 		// [0] 若存在HTTP_GET请求时, 通过解析全路径并通过解析的数量来判断正确的Method;
@@ -169,6 +171,7 @@ final class Router
 			}
 			// Stop continue routing while the Router doesn't match a valid Page Controller;
 			MasterManager::getInstance()->stop();
+			return;
 		} else {
 			if($controller instanceof \Closure) {
 				$controller(new self);

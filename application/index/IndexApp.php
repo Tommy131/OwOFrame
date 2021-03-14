@@ -20,11 +20,16 @@ declare(strict_types=1);
 namespace application\index;
 
 
-class IndexApp extends \owoframe\app\AppBase
+class IndexApp extends \owoframe\application\AppBase
 {
 	public function initialize() : void
 	{
 		// $this->setDefaultController("Index");
+	}
+	
+	public static function getName() : string
+	{
+		return 'index';
 	}
 	
 	public static function autoTo404Page() : bool

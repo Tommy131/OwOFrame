@@ -50,7 +50,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 * @doenIn      2021-03-07
 	 * @return      void
 	 */
-	public function start() : void
+	public function start(bool $autoDispath = true) : void
 	{
 		// TODO: 将ClientRequestFilter中的方法移植过来;
 		$ip = Helper::getClientIp();
@@ -59,7 +59,10 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 			self::setStatusCode(403);
 			return;
 		}
-		LogWriter::write('[200@' . server('REQUEST_METHOD') . '] Client ' . $ip . ' requested url [' . Router::getCompleteUrl() . ']', self::LOG_PREFIX);
+		if($autoDispath) {
+			Router::dispath();
+		}
+		LogWriter::write('[B200@' . server('REQUEST_METHOD') . '] ' . $ip . ' -> ' . Router::getCompleteUrl(), self::LOG_PREFIX);
 	}
 
 

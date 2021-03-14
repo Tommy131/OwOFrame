@@ -18,6 +18,7 @@
 declare(strict_types=1);
 namespace owoframe\application;
 
+use owoframe\helper\Helper;
 use owoframe\route\RouteResource;
 
 class ViewBase extends ControllerBase
@@ -219,7 +220,7 @@ class ViewBase extends ControllerBase
 	{
 		if(empty(self::$viewTemplate)) return;
 		// self::parse(self::$viewTemplate);
-		RouteResource::bindResources(self::$bindResources, $routeUrls);
+		self::bindResources($routeUrls);
 		foreach($routeUrls as $type => $urls) {
 			$type = strtoupper($type);
 			foreach($urls as $name => $url) {
@@ -249,6 +250,35 @@ class ViewBase extends ControllerBase
 					}
 					self::$viewTemplate = str_replace($matches[0][$key], $matches[1][$key], self::$viewTemplate);
 				}
+			}
+		}
+	}
+
+	private static function bindResources(&$handled) : void
+	{
+		$handled = [];
+		foreach(self::$bindResources as $group => $resources) {
+			foreach($resources as $tag => $resource) {
+				if(!is_file($resource)) {
+					throw new RouterException("Resource path '{$resource}' doesn't exists!");
+				}
+				/*$finfo    = finfo_open(FILEINFO_MIME);
+				$mimetype = finfo_file($finfo, $resource);
+				finfo_close($finfo);*/
+				$type = @end(explode('.', $resource));
+				if(!isset(Helper::MIMETYPE[$type])) {
+					throw new UnknownErrorException('No file mimetype');
+				}
+				// $handled[$group][$tag] = $newTag;
+				$basePath = CACHE_PATH . $group . DIRECTORY_SEPARATOR;
+				if(!is_dir($basePath)) mkdir($basePath, 755, true);
+				$hashTag  = md5($resource);
+				$basePath = "{$basePath}{$hashTag}.php";
+				if(!file_exists($basePath)) {
+					// TODO: Cache static files;
+					file_put_contents($basePath, '<?php /* Cached in '.date("Y-m-d H:i:s").'@'.$hashTag.' */ header("Content-Type: '.Helper::MIMETYPE[$type].';"); echo file_get_contents(\''.$resource.'\'); ?>');
+				}
+				$handled[$group][$tag] = "/static.php/{$group}/{$hashTag}.{$type}";
 			}
 		}
 	}
