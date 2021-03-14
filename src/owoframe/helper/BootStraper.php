@@ -65,7 +65,7 @@ class BootStraper
 			// Log files directory (absolute path);
 			if(!defined('LOG_PATH'))         define('LOG_PATH',        STORAGE_PATH . 'logs' . DIRECTORY_SEPARATOR);
 			// Define Resource path for Front-End(absolute path);
-			if(!defined('RESOURCE_PATH'))    define('RESOURCE_PATH',   ROOT_PATH . 'resources' . DIRECTORY_SEPARATOR);
+			if(!defined('RESOURCE_PATH'))    define('RESOURCE_PATH',   STORAGE_PATH . 'application' . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR);
 			// Define Public path for Front-End(absolute path);
 			if(!defined('PUBLIC_PATH'))      define('PUBLIC_PATH',     ROOT_PATH . 'public' . DIRECTORY_SEPARATOR);
 
