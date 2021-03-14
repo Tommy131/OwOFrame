@@ -87,7 +87,7 @@ final class Router
 		}
 		
 		if(in_array($app->getName(), DENY_APP_LIST)) {
-			Helper::setStatus(404);
+			HttpManager::setStatusCode(404);
 			MasterManager::getInstance()->stop();
 			return;
 		}
@@ -167,7 +167,7 @@ final class Router
 				if($app->autoTo404Page()) {
 					$app->renderPageNotFound();
 				}
-				Helper::setStatus(404);
+				HttpManager::setStatusCode(404);
 			}
 			// Stop continue routing while the Router doesn't match a valid Page Controller;
 			MasterManager::getInstance()->stop();

@@ -271,7 +271,7 @@ class ViewBase extends ControllerBase
 					throw new UnknownErrorException('No file mimetype');
 				}
 				// $handled[$group][$tag] = $newTag;
-				$basePath = CACHE_PATH . $group . DIRECTORY_SEPARATOR;
+				$basePath = F_CACHE_PATH . $group . DIRECTORY_SEPARATOR;
 				if(!is_dir($basePath)) mkdir($basePath, 755, true);
 				$hashTag  = md5($resource);
 				$basePath = "{$basePath}{$hashTag}.php";

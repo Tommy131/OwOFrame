@@ -141,6 +141,19 @@ abstract class AppBase
 	}
 
 	/**
+	 * @method      getCachePath
+	 * @description 返回本Application的Cache目录
+	 * @author      HanskiJay
+	 * @doenIn      2021-03-14
+	 * @param       string     $option 可选参数(文件/文件夹路径)
+	 * @return      string
+	 */
+	public static function getCachePath(string $option = '') : string
+	{
+		return A_CACHE_PATH . static::getName() . DIRECTORY_SEPARATOR . $option;
+	}
+
+	/**
 	 * @method      getNameSpace
 	 * @description 自动解析并返回当前App的命名空间
 	 * @description Automatically parse and return the namespace of the current App

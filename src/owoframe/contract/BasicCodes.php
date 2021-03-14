@@ -50,6 +50,8 @@ interface BasicCodes
 	public const USER_LOGGED_IN_SUCCESSFULLY  = 200;
 	/* @int 用户已登录状态码 */
 	public const USER_HAS_LOGGED_IN = 201;
+	/* @int 用户已登出状态码 */
+	public const USER_LOGGED_OUT_SUCCESSFULLY = 202;
 	/* @int 用户密码未验证状态码 */
 	public const USER_PASSWORD_NOT_VERIFIED = 400;
 	/* @int 用户操作状态码: 验证码错误 */
@@ -60,6 +62,8 @@ interface BasicCodes
 	public const USER_ACCESS_DENIED = 403;
 	/* @int 用户操作状态码: 用户信息未找到 */
 	public const USER_NOT_FOUND = 404;
+	/* @int 用户操作状态码: 用户未登录 */
+	public const USER_HAS_NOT_LOGGED_IN = 405;
 	/* @int 用户操作状态码: 账号被封禁 */
 	public const USER_WAS_BANNED = 10403;
 }
