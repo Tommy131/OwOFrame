@@ -22,7 +22,7 @@ use ReflectionMethod;
 use owoframe\MasterManager;
 use owoframe\application\AppManager;
 use owoframe\helper\{BootStraper, Helper};
-use owoframe\http\Response;
+use owoframe\http\{HttpManager, Response};
 use owoframe\exception\{InvalidControllerException, MethodMissedException, RouterException, UnknownErrorException};
 
 final class Router
@@ -68,7 +68,7 @@ final class Router
 					$response = self::Response([$api, 'requestDenied']);
 				} else {
 					$response = self::Response([$api, 'getOutput']);
-					$api->filter(RequestFilter::getMerge());
+					$api->filter(HttpManager::getMerge());
 					$api->start($response);
 				}
 				$response->sendResponse();

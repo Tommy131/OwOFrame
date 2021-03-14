@@ -108,7 +108,7 @@ class Session
 	public static function start() : void
 	{
 		try {
-			if(_global('redis@enable', false) && extension_loaded("redis"))
+			if(_global('redis@enable', true) && extension_loaded("redis"))
 			{
 				if(strtolower(ini_get("session.save_handler")) === "files") {
 					ini_set("session.save_handler", "redis");
@@ -116,18 +116,20 @@ class Session
 				$server = _global('redis@server', '127.0.0.1');
 				$port   = _global('redis@port', 6379);
 				$auth   = _global('redis@auth', null);
-				$auth   = ($auth !== null) ? "?auth={$auth}" : '';
-				ini_set("session.save_path", "tcp://{$server}:{$port}" . $auth);
 				
 				$connector = RedisConnector::getInstance();
 				$connector->cfg('host',     $server, true);
 				$connector->cfg('port',     $port,   true);
 				$connector->cfg('password', $auth,   true);
+				
 				if($redis = $connector->getConnection()) {
 					$connector->forceUsePassword();
 				} else {
 					throw new OwOFrameException('Could not use Redis for Session saver!');
 				}
+
+				$auth   = ($auth !== null) ? "?auth={$auth}" : '';
+				ini_set("session.save_path", "tcp://{$server}:{$port}{$auth}");
 			}
 			session_start();
 		} catch(\Throwable $e) {
