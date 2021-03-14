@@ -50,7 +50,7 @@ $parser = Router::getParameters(-1);
 if(count($parser) === 2) {
 	$type    = array_shift($parser);
 	$hashTag = @array_shift(explode('.', array_shift($parser)));
-	$file    = CACHE_PATH . $type . DIRECTORY_SEPARATOR . $hashTag . '.php';
+	$file    = F_CACHE_PATH . $type . DIRECTORY_SEPARATOR . $hashTag . '.php';
 	if(is_file($file)) {
 		$tempData = require_once($file);
 		if(is_array($tempData)) {

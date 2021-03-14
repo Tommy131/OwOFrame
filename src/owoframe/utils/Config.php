@@ -36,8 +36,11 @@ class Config
 	{
 		$this->autoSave = $autoSave;
 		$this->filePath = dirname($file) . DIRECTORY_SEPARATOR;
-		$fileName = explode('.', $file); // e.g. abc.json | abc;
-		$fileName = array_shift($fileName);  // if yes, then shift 'abc' to $file;
+		if(!is_dir($this->filePath)) {
+			mkdir($this->filePath, 755, true);
+		}
+		$fileName       = explode('.', $file); // e.g. abc.json | abc;
+		$fileName       = array_shift($fileName);  // if yes, then shift 'abc' to $file;
 		$this->fileName = str_replace($this->filePath, '', $fileName) . '.json';
 		if(!file_exists($file)) {
 			$this->config = $defaultData;
@@ -186,12 +189,7 @@ class Config
 	public function save(?string $file = null) : void
 	{
 		if($file !== null) {
-			$filePath = dirname($file) . DIRECTORY_SEPARATOR;
-			$fileName = str_replace($filePath, '', $file);
-			if($filePath . $fileName !== $this->filePath . $this->fileName) {
-				$this->filePath = $filePath;
-				$this->fileName = $fileName;
-			}
+			$this->__construct($file, $this->config, $this->autoSave);
 		}
 		file_put_contents($file ?? $this->filePath . $this->fileName, json_encode($this->config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 	}

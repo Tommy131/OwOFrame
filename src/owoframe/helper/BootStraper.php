@@ -60,8 +60,10 @@ class BootStraper
 			if(!defined('STORAGE_PATH'))     define('STORAGE_PATH',    ROOT_PATH . 'storages' . DIRECTORY_SEPARATOR);
 			// Define Framework path(absolute path);
 			if(!defined('FRAMEWORK_PATH'))   define('FRAMEWORK_PATH',  STORAGE_PATH . 'framework' . DIRECTORY_SEPARATOR);
-			// Cache files directory for Back-End(absolute path);
-			if(!defined('CACHE_PATH'))       define('CACHE_PATH',      FRAMEWORK_PATH . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR);
+			// Cache files directory for Framework(absolute path);
+			if(!defined('F_CACHE_PATH'))     define('F_CACHE_PATH',    FRAMEWORK_PATH . 'cache' . DIRECTORY_SEPARATOR);
+			// Cache files directory for Application(absolute path);
+			if(!defined('A_CACHE_PATH'))     define('A_CACHE_PATH',    STORAGE_PATH . 'application' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR);
 			// Log files directory (absolute path);
 			if(!defined('LOG_PATH'))         define('LOG_PATH',        STORAGE_PATH . 'logs' . DIRECTORY_SEPARATOR);
 			// Define Resource path for Front-End(absolute path);
@@ -70,7 +72,8 @@ class BootStraper
 			if(!defined('PUBLIC_PATH'))      define('PUBLIC_PATH',     ROOT_PATH . 'public' . DIRECTORY_SEPARATOR);
 
 			if(!is_dir(STORAGE_PATH))  mkdir(STORAGE_PATH,  755, true);
-			if(!is_dir(CACHE_PATH))    mkdir(CACHE_PATH,    755, true);
+			if(!is_dir(F_CACHE_PATH))  mkdir(F_CACHE_PATH,  755, true);
+			if(!is_dir(A_CACHE_PATH))  mkdir(A_CACHE_PATH,  755, true);
 			if(!is_dir(LOG_PATH))      mkdir(LOG_PATH,      755, true);
 			if(!is_dir(RESOURCE_PATH)) mkdir(RESOURCE_PATH, 755, true);
 			date_default_timezone_set(TIME_ZONE);
