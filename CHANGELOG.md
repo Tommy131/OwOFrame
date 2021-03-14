@@ -1,8 +1,18 @@
 
-## OwOframe's CHANGELOG (Total `97` Commits)
+## OwOframe's CHANGELOG (Total `112` Commits)
 
 
 ↓ `[dev@v1.0.1, origin/dev@v1.0.1]` ↓
+
+------
+
+`dev@v1.0.1-ALPHA15`[20210314]:
+- 更新了版本号
+- 删除了一些不必要的代码
+- 修复了许多历史遗留问题
+- 新增了 `static.php` 文件作为静态资源路由回调
+- 更改了资源文件夹存储位置
+- 更新了Session缓存写入机制
 
 ------
 
@@ -11,8 +21,6 @@
 - 小部分代码功能更新
 - 初步重新编写了 `HttpManager`
 - Updated CHANGELOG.md
-
-------
 
 `dev20210218@v1.0.0` <= `20210306_dev@v1.0.1`:
 ! 重大更新如下:
