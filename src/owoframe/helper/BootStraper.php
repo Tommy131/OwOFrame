@@ -18,6 +18,7 @@
 declare(strict_types=1);
 namespace owoframe\helper;
 
+use owoframe\MasterManager;
 use owoframe\exception\ExceptionOutput;
 
 class BootStraper
@@ -37,7 +38,6 @@ class BootStraper
 		}
 
 		if(!self::isRunning()) {
-			define('OWO_INITIALIZED', true);
 			set_error_handler([ExceptionOutput::class, 'ErrorHandler'], E_ALL);
 			set_exception_handler([ExceptionOutput::class, 'ExceptionHandler']);
 			// Define OwOFrame start time;
@@ -69,11 +69,13 @@ class BootStraper
 			// Define Public path for Front-End(absolute path);
 			if(!defined('PUBLIC_PATH'))      define('PUBLIC_PATH',     ROOT_PATH . 'public' . DIRECTORY_SEPARATOR);
 
-			if(!is_dir(STORAGE_PATH))  mkdir(STORAGE_PATH, 755, true);
-			if(!is_dir(CACHE_PATH))    mkdir(CACHE_PATH, 755, true);
-			if(!is_dir(LOG_PATH))      mkdir(LOG_PATH, 755, true);
+			if(!is_dir(STORAGE_PATH))  mkdir(STORAGE_PATH,  755, true);
+			if(!is_dir(CACHE_PATH))    mkdir(CACHE_PATH,    755, true);
+			if(!is_dir(LOG_PATH))      mkdir(LOG_PATH,      755, true);
 			if(!is_dir(RESOURCE_PATH)) mkdir(RESOURCE_PATH, 755, true);
 			date_default_timezone_set(TIME_ZONE);
+			MasterManager::getClassLoader()->addPsr4('application\\', APP_PATH);
+			MasterManager::getClassLoader()->addPsr4('module\\',      MODULE_PATH);
 		}
 		loadConfig(FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'global.ini');
 	}
