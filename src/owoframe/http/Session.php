@@ -28,6 +28,64 @@ class Session
 
 
 	/**
+	 * @method      start
+	 * @description 启动Session
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-13
+	 * @return      void
+	 */
+	public static function start() : void
+	{
+		try {
+			if(!self::isStarted()) {
+				if(_global('redis@enable', true) && extension_loaded("redis"))
+				{
+					if(strtolower(ini_get("session.save_handler")) === "files") {
+						ini_set("session.save_handler", "redis");
+					}
+					$server = _global('redis@server', '127.0.0.1');
+					$port   = _global('redis@port', 6379);
+					$auth   = _global('redis@auth', null);
+					
+					$connector = RedisConnector::getInstance();
+					$connector->cfg('host',     $server, true);
+					$connector->cfg('port',     $port,   true);
+					$connector->cfg('password', $auth,   true);
+					
+					if($redis = $connector->getConnection()) {
+						$connector->forceUsePassword();
+					} else {
+						throw new OwOFrameException('Could not use Redis for Session saver!');
+					}
+
+					$auth   = ($auth !== null) ? "?auth={$auth}" : '';
+					ini_set("session.save_path", "tcp://{$server}:{$port}{$auth}");
+				}
+				session_start();
+			}
+		} catch(\Throwable $e) {
+			throw error($e->getMessage());
+		}
+	}
+
+	/**
+	 * @method      isStarted
+	 * @description 判断Session启动状态
+	 * 
+	 * @consatant   PHP_SESSION_DISABLED 会话是被禁用的
+	 * @consatant   PHP_SESSION_NONE     会话是启用的, 但不存在当前会话
+	 * @consatant   PHP_SESSION_ACTIVE   会话是启用的, 而且存在当前会话
+	 * 
+	 * @author      HanskiJay
+	 * @doenIn      2021-03-14
+	 * @return      boolean
+	 */
+	public static function isStarted() : bool
+	{
+		return session_status() === PHP_SESSION_ACTIVE;
+	}
+
+	/**
 	 * @method      has
 	 * @description 检查是否存在单个Session数据
 	 * @author      HanskiJay
@@ -95,45 +153,6 @@ class Session
 	{
 		if(self::has($storeKey)) {
 			unset($_SESSION[$storeKey]);
-		}
-	}
-
-	/**
-	 * @method      start
-	 * @description 启动Session
-	 * @author      HanskiJay
-	 * @doenIn      2021-02-13
-	 * @return      void
-	 */
-	public static function start() : void
-	{
-		try {
-			if(_global('redis@enable', true) && extension_loaded("redis"))
-			{
-				if(strtolower(ini_get("session.save_handler")) === "files") {
-					ini_set("session.save_handler", "redis");
-				}
-				$server = _global('redis@server', '127.0.0.1');
-				$port   = _global('redis@port', 6379);
-				$auth   = _global('redis@auth', null);
-				
-				$connector = RedisConnector::getInstance();
-				$connector->cfg('host',     $server, true);
-				$connector->cfg('port',     $port,   true);
-				$connector->cfg('password', $auth,   true);
-				
-				if($redis = $connector->getConnection()) {
-					$connector->forceUsePassword();
-				} else {
-					throw new OwOFrameException('Could not use Redis for Session saver!');
-				}
-
-				$auth   = ($auth !== null) ? "?auth={$auth}" : '';
-				ini_set("session.save_path", "tcp://{$server}:{$port}{$auth}");
-			}
-			session_start();
-		} catch(\Throwable $e) {
-			throw error($e->getMessage());
 		}
 	}
 
