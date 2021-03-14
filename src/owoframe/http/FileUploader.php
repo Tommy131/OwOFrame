@@ -42,7 +42,7 @@ class FileUploader implements \owoframe\contract\Manager
 	 *
 	 * !注意! ==> 如果有必要的话, 数据返回可以使用JSON;
 	 */
-	public function checkUploadFile(string $uploadId, ?string $savedPath = RUNTIME_PATH . 'upload/', int $maxSize = 10) : array
+	public function checkUploadFile(string $uploadId, ?string $savedPath = STORAGE_PATH . 'upload/', int $maxSize = 10) : array
 	{
 		$fileInfo = files($uploadId);
 		$fileInfo = empty($fileInfo)
@@ -109,7 +109,7 @@ class FileUploader implements \owoframe\contract\Manager
 	*/
 	public function canUpload(string $ext) : bool
 	{
-		return isset(Helper::getMimeType()[$ext]) && in_array($ext, $this->getAllowedExts());
+		return isset(Helper::MIMETYPE[$ext]) && in_array($ext, $this->getAllowedExts());
 	}
 
 	/**
