@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace owoframe\http\route;
 
 use owoframe\helper\Helper;
+use owoframe\http\ApiProcessor;
 use owoframe\application\AppManager;
 use owoframe\exception\RouterException;
 

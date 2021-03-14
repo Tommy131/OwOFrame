@@ -20,6 +20,7 @@ namespace owoframe\http;
 
 use owoframe\contract\{HTTPStatusCodeConstant, Manager};
 use owoframe\helper\Helper;
+use owoframe\http\Session;
 use owoframe\http\route\Router;
 use owoframe\utils\{Config, LogWriter};
 
@@ -60,6 +61,8 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 			return;
 		}
 		if($autoDispath) {
+			if(ob_get_level() === 0) ob_start();
+			Session::start();
 			Router::dispath();
 		}
 		LogWriter::write('[B200@' . server('REQUEST_METHOD') . '] ' . $ip . ' -> ' . Router::getCompleteUrl(), self::LOG_PREFIX);
