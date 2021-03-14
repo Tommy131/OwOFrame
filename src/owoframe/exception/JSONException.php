@@ -17,7 +17,7 @@
 declare(strict_types=1);
 namespace owoframe\exception;
 
-use owoframe\module\DataEncoder;
+use owoframe\utils\DataEncoder;
 
 class JSONException extends OwOFrameException
 {

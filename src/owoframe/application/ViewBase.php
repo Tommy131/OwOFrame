@@ -20,6 +20,7 @@ namespace owoframe\application;
 
 use owoframe\helper\Helper;
 use owoframe\route\RouteResource;
+use owoframe\exception\InvalidRouterException;
 
 class ViewBase extends ControllerBase
 {
@@ -260,7 +261,7 @@ class ViewBase extends ControllerBase
 		foreach(self::$bindResources as $group => $resources) {
 			foreach($resources as $tag => $resource) {
 				if(!is_file($resource)) {
-					throw new RouterException("Resource path '{$resource}' doesn't exists!");
+					throw new InvalidRouterException("Resource path '{$resource}' doesn't exists!");
 				}
 				/*$finfo    = finfo_open(FILEINFO_MIME);
 				$mimetype = finfo_file($finfo, $resource);
