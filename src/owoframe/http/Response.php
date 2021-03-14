@@ -18,7 +18,6 @@
 declare(strict_types=1);
 namespace owoframe\http;
 
-use owoframe\Helper;
 use owoframe\exception\JSONException;
 
 class Response
@@ -56,7 +55,7 @@ class Response
 				header($name . (!is_null($val) ? ": {$val}"  : ''));
 			}
 			// http_response_code($this->code);
-			Helper::setStatus($this->code);
+			HttpManager::setStatusCode($this->code);
 		}
 		if(function_exists('fastcgi_finish_request')) fastcgi_finish_request();
 	}

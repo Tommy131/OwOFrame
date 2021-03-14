@@ -17,7 +17,7 @@
 namespace application\index\controller;
 
 
-class Index extends \owoframe\app\ControllerBase
+class Index extends \owoframe\application\ControllerBase
 {
 	public function Index()
 	{

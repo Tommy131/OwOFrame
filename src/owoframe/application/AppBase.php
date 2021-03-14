@@ -23,6 +23,7 @@ use owoframe\exception\InvalidControllerException;
 use owoframe\exception\ParameterErrorException;
 use owoframe\helper\Helper;
 use owoframe\module\{ModuleBase, ModuleLoader};
+use owoframe\utils\DataEncoder;
 
 abstract class AppBase
 {
@@ -46,6 +47,26 @@ abstract class AppBase
 		$this->siteUrl   = $siteUrl;
 		$this->parameter = $parameter;
 		$this->initialize();
+	}
+
+	/**
+	 * @method      renderPageNotFound
+	 * @description 渲染404页面(未匹配有效的控制器时)
+	 * @description Render 404 page (when no valid controller is matched)
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-09
+	 * @return      void
+	*/
+	public static function renderPageNotFound() : void
+	{
+		Helper::setStatusCode(404);
+		$sendMessage = (isset(static::$renderPageNotFound) && is_string(static::$renderPageNotFound)) ? static::$renderPageNotFound : '404 PAGE NOT FOUND';
+		if(isset(static::$renderWithJSON)) {
+			DataEncoder::reset();
+			die(DataEncoder::setStandardData(404, false, $sendMessage));
+		} else {
+			die($sendMessage);
+		}
 	}
 
 	/**
@@ -73,7 +94,7 @@ abstract class AppBase
 	public function setDefaultController(string $defaultController) : void
 	{
 		if($this->getController($defaultController) === null) {
-			throw new InvalidControllerException(self::getName(), $defaultController, get_class($this));
+			throw new InvalidControllerException(static::getName(), $defaultController, get_class($this));
 		}
 		$this->defaultController = $defaultController;
 	}
@@ -102,7 +123,7 @@ abstract class AppBase
 	*/
 	public function getController(string $controllerName) : ?ControllerBase
 	{
-		$controller = '\\application\\' . self::getName() . '\\controller\\' . $controllerName;
+		$controller = '\\application\\' . static::getName() . '\\controller\\' . $controllerName;
 		return class_exists($controller) ? (new $controller($this)) : null;
 	}
 
@@ -116,7 +137,7 @@ abstract class AppBase
 	*/
 	final public static function getAppPath(bool $selectMode = true) : string
 	{
-		return (($selectMode) ? AppManager::getPath() : self::getNameSpace()) . self::getName() . DIRECTORY_SEPARATOR;
+		return (($selectMode) ? AppManager::getPath() : static::getNameSpace()) . static::getName() . DIRECTORY_SEPARATOR;
 	}
 
 	/**

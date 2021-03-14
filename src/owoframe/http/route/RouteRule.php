@@ -18,8 +18,8 @@
 declare(strict_types=1);
 namespace owoframe\http\route;
 
-use owoframe\Helper;
-use owoframe\app\AppManager;
+use owoframe\helper\Helper;
+use owoframe\application\AppManager;
 use owoframe\exception\RouterException;
 
 class RouteRule
@@ -109,16 +109,16 @@ class RouteRule
 	public static function domain(string $domain, ...$args) : void
 	{
 		if(!Helper::isDomain($domain)) {
-			throwError('Method '.__CLASS__.'::domain parameter 1 expected string domain, but there was incorrect domain given.', __FILE__, __LINE__);
+			throw error('Method '.__CLASS__.'::domain parameter 1 expected string domain, but there was incorrect domain given.');
 		}
 
 		if(count($args) <= 0) {
-			throwError('Method '.__CLASS__.'::domain parameter 2 expected an application name or a prefix domain name, but nothing is given.', __FILE__, __LINE__);
+			throw error('Method '.__CLASS__.'::domain parameter 2 expected an application name or a prefix domain name, but nothing is given.');
 		}
 
 		if(is_string($args[0])) {
 			if(!AppManager::hasApp($args[0])) {
-				throwError("Cannot find application '{$args[0]}'!", __FILE__, __LINE__);
+				throw error("Cannot find application '{$args[0]}'!");
 			}
 			self::$domainRule[$domain] = $args[0];
 		}
@@ -126,7 +126,7 @@ class RouteRule
 		if(is_array($args[0])) {
 			foreach($args[0] as $prefix => $appName) {
 				if(!AppManager::hasApp($appName)) {
-					throwError("Cannot find application '{$appName}'!", __FILE__, __LINE__);
+					throw error("Cannot find application '{$appName}'!");
 				}
 				self::$domainRule[$prefix.'.'.$domain] = $appName;
 			}

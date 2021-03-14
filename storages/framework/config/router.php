@@ -17,7 +17,7 @@
 
 ************************************************************************/
 
-use owoframe\route\RouteRule as RR;
+use owoframe\http\route\RouteRule as RR;
 
 // 绑定域名 test.xxx.com 到 IndexApp;
 RR::domain('xxx.com', ['test' => 'index']);
