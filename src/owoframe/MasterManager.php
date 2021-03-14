@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace owoframe;
 
 use Composer\Autoload\ClassLoader;
+use owoframe\application\AppManager;
 use owoframe\console\Console;
 use owoframe\contract\Manager;
 use owoframe\helper\BootStraper as BS;
@@ -31,7 +32,7 @@ use owoframe\redis\RedisManager as Redis;
 final class MasterManager extends Container implements Manager
 {
 	/* @ClassLoader */
-	private $classLoader;
+	private static $classLoader;
 	/* @array 绑定标签到类 */
 	protected $bind =
 	[
@@ -47,11 +48,11 @@ final class MasterManager extends Container implements Manager
 	public function __construct(?ClassLoader $classLoader = null)
 	{
 		if(!BS::isRunning()) {
+			if($classLoader !== null) {
+				self::$classLoader = $classLoader;
+			}
 			BS::initializeSystem();
 			$this->bind('unknown', new class implements Manager {});
-			if($classLoader !== null) {
-				$this->classLoader = $classLoader;
-			}
 
 			foreach(['DEBUG_MODE', 'LOG_ERROR', 'DEFAULT_APP_NAME', 'DENY_APP_LIST'] as $define) {
 				if(Helper::isRunningWithCLI()) {
@@ -63,9 +64,10 @@ final class MasterManager extends Container implements Manager
 					throw error("Constant parameter '{$define}' not found!");
 				}
 			}
-
+			AppManager::setPath(APP_PATH);
 			ModuleLoader::setPath(MODULE_PATH);
 			ModuleLoader::autoLoad();
+			define('OWO_INITIALIZED', true); // Define this constant to let the system know that OwOFrame has been initialized;
 		}
 	}
 
@@ -113,7 +115,7 @@ final class MasterManager extends Container implements Manager
 	 * @doenIn      2021-03-04
 	 * @return      boolean
 	 */
-	public function isRunning() : bool
+	public static function isRunning() : bool
 	{
 		return BS::isRunning();
 	}
@@ -125,8 +127,8 @@ final class MasterManager extends Container implements Manager
 	 * @doenIn      2021-03-06
 	 * @return      null|@ClassLoader
 	 */
-	public function getClassLoader() : ?ClassLoader
+	public static function getClassLoader() : ?ClassLoader
 	{
-		return $this->classLoader;
+		return self::$classLoader;
 	}
 }
