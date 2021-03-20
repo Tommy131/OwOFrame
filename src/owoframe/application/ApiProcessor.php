@@ -16,7 +16,7 @@
 ************************************************************************/
 
 declare(strict_types=1);
-namespace owoframe\http;
+namespace owoframe\application;
 
 abstract class ApiProcessor
 {

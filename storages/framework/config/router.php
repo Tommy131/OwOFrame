@@ -23,7 +23,7 @@ use owoframe\http\route\RouteRule as RR;
 RR::domain('xxx.com', ['test' => 'index']);
 
 // 添加一个Api处理器;
-RR::bindApiProcessor(new class extends owoframe\http\ApiProcessor
+RR::bindApiProcessor(new class extends owoframe\application\ApiProcessor
 {
 	public function getOutput() : string
 	{

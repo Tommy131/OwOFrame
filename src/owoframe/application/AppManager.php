@@ -18,6 +18,7 @@
 declare(strict_types=1);
 namespace owoframe\application;
 
+use owoframe\http\HttpManager as Http;
 use owoframe\http\route\Router;
 use owoframe\exception\InvalidAppException;
 use owoframe\exception\ResourceMissedException;
@@ -127,7 +128,7 @@ class AppManager implements \owoframe\contract\Manager
 	public static function getApp(string $appName) : ?AppBase
 	{
 		if(self::hasApp($appName, $class)) {
-			return new $class(Router::getCompleteUrl(), Router::getParameters());
+			return new $class(Http::getCompleteUrl(), Router::getParameters());
 		} else {
 			return null;
 		}

@@ -65,7 +65,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 			Session::start();
 			Router::dispath();
 		}
-		LogWriter::write('[B200@' . server('REQUEST_METHOD') . '] ' . $ip . ' -> ' . Router::getCompleteUrl(), self::LOG_PREFIX);
+		LogWriter::write('[B200@' . server('REQUEST_METHOD') . '] ' . $ip . ' -> ' . self::getCompleteUrl(), self::LOG_PREFIX);
 	}
 
 
@@ -86,6 +86,22 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 		if(isset(self::HTTP_CODE[$code])) {
 			header(((server('SERVER_PROTOCOL') !== null) ? server('SERVER_PROTOCOL') : 'HTTP/1.1') . " {$code} " . self::HTTP_CODE[$code], true, $code);
 		}
+	}
+
+	/**
+	 * @method      Response
+	 * @description 新建响应头实例
+	 * @author      HanskiJay
+	 * @doenIn      2021-03-18
+	 * @param       callable    $callback 可回调参数
+	 */
+	public static function Response(callable $callback) : Response
+	{
+		static $response;
+		if(!$response instanceof Response) {
+			$response = new Response($callback);
+		}
+		return $response;
 	}
 
 	/**
@@ -276,5 +292,66 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 			self::$ipList = new Config(FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'ipList.json');
 		}
 		return self::$ipList;
+	}
+
+
+	/******************************
+	 *
+	 * URI/URL 方法
+	 * 
+	******************************/
+	/**
+	 * @method      isSecure
+	 * @description 判断是否为HTTPS协议
+	 * @description Check if HTTP Protocol has used SSL
+	 * @return      boolean
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-09 18:03
+	*/
+	public static function isSecure() : bool
+	{
+		return (!empty(server('HTTPS')) && 'off' != strtolower(server('HTTPS'))) 
+			|| (!empty(server('SERVER_PORT')) && 443 == server('SERVER_PORT'));
+	}
+
+	/**
+	 * @method      getCompleteUrl
+	 * @description 获取完整请求HTTP地址
+	 * @description Get complete http requested url
+	 * @return      string
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-09 18:03
+	*/
+	public static function getCompleteUrl() : string
+	{
+		return server('REQUEST_SCHEME').'://'.server('HTTP_HOST').server('SCRIPT_NAME').server('REQUEST_URI');
+	}
+
+	/**
+	 * @method      getRootUrl
+	 * @description 获取根地址
+	 * @description Get root url
+	 * @return      string
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-09 18:03
+	*/
+	public static function getRootUrl() : string
+	{
+		return server('REQUEST_SCHEME').'://'.server('HTTP_HOST');
+	}
+
+	/**
+	 * @method      betterUrl
+	 * @description 返回自定义Url
+	 * @description Set HTTP_HEADER;
+	 * @param       string[name|名称]
+	 * @param       string[path|路径]
+	 * @return      string
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-10 18:49
+	*/
+	public static function betterUrl(string $name, string $path) : string
+	{
+		return trim($path, '/').'/'.str_replace('//', '/', ltrim(((0 === strpos($name, './')) ? substr($name, 2) : $name), '/'));
 	}
 }

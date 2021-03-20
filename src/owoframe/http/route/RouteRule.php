@@ -19,7 +19,7 @@ declare(strict_types=1);
 namespace owoframe\http\route;
 
 use owoframe\helper\Helper;
-use owoframe\http\ApiProcessor;
+use owoframe\application\ApiProcessor;
 use owoframe\application\AppManager;
 use owoframe\exception\RouterException;
 
@@ -172,7 +172,7 @@ class RouteRule
 		if(is_string($api)) {
 			$ref = new \ReflectionClass($api);
 			if(($ref = $ref->getParentClass()) !== false) {
-				if(($ref = $ref->getName()) === ApiProcessor::class) {
+				if($ref->getName() === ApiProcessor::class) {
 					$api = new $api;
 				}
 			}
