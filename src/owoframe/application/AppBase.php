@@ -20,7 +20,6 @@ namespace owoframe\application;
 
 use owoframe\exception\OwOFrameException;
 use owoframe\exception\InvalidControllerException;
-use owoframe\exception\ParameterErrorException;
 use owoframe\helper\Helper;
 use owoframe\module\{ModuleBase, ModuleLoader};
 use owoframe\utils\DataEncoder;
@@ -94,7 +93,7 @@ abstract class AppBase
 	public function setDefaultController(string $defaultController) : void
 	{
 		if($this->getController($defaultController) === null) {
-			throw new InvalidControllerException(static::getName(), $defaultController, get_class($this));
+			throw new InvalidControllerException(static::getName(), $defaultController);
 		}
 		$this->defaultController = $defaultController;
 	}

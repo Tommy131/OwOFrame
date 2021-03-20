@@ -21,7 +21,6 @@ namespace owoframe\http\route;
 use owoframe\helper\Helper;
 use owoframe\application\ApiProcessor;
 use owoframe\application\AppManager;
-use owoframe\exception\RouterException;
 
 class RouteRule
 {

@@ -97,7 +97,7 @@ class AppManager implements \owoframe\contract\Manager
 				throw new ResourceMissedException("Class", $class);
 			}
 			if((new \ReflectionClass($class))->getParentClass()->getName() !== self::$basicAppClass) {
-				throw new InvalidAppException($appName, "Parent class should be interfaced by ".self::$basicAppClass, $class);
+				throw new InvalidAppException($appName, "Parent class should be interfaced by ".self::$basicAppClass);
 			}
 			return true;
 		} else {
