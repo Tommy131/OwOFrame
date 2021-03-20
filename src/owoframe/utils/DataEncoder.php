@@ -171,7 +171,7 @@ class DataEncoder implements \JsonSerializable
 	 * @param       &match      $match 匹配结果
 	 * @return      boolean
 	 */
-	public static function isOnlyLettersAndNumbers(string $str, &$match) : bool
+	public static function isOnlyLettersAndNumbers(string $str, &$match = null) : bool
 	{
 		return (bool) preg_match("/^[A-Za-z0-9]+$/", $str, $match);
 	}

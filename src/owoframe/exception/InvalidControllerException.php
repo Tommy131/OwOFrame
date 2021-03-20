@@ -11,6 +11,7 @@
 	* Copyright (c) 2015-2019 OwOBlog-DGMT All Rights Reserevd.
 	* Developer: HanskiJay(Teaclon)
 	* Telegram: https://t.me/HanskiJay E-Mail: support@owoblog.com
+	* GitHub: https://github.com/Tommy131
 
 ************************************************************************/
 
@@ -19,8 +20,8 @@ namespace owoframe\exception;
 
 class InvalidControllerException extends OwOFrameException
 {
-	public function __construct(string $appName, string $controller, string $class, int $code = 0, \Throwable $previous = null)
+	public function __construct(string $appName, string $controller, int $code = 0, \Throwable $previous = null)
 	{
-		parent::__construct("Matched app '{$appName}' is failed to load, cannot find requested controller '{$controller}'! Caused by App {$class}::Class", $code, $previous);
+		parent::__construct("Matched app '{$appName}' is failed to load, cannot find requested controller '{$controller}'!", $code, $previous);
 	}
 }
