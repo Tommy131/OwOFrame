@@ -157,7 +157,7 @@ final class Router
 				// TODO: 完成响应后执行的回调(callback);
 			} else {
 				if($app->autoTo404Page()) {
-					Http::Response([$app, renderPageNotFound()])->sendResponse();
+					Http::Response([$app, 'renderPageNotFound'])->sendResponse();
 				}
 			}
 		}
