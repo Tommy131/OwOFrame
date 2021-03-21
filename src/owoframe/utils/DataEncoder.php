@@ -18,10 +18,20 @@
 declare(strict_types=1);
 namespace owoframe\utils;
 
-class DataEncoder implements \JsonSerializable
-{
-	private static $data = "";
+use JsonSerializable;
 
+class DataEncoder implements JsonSerializable
+{
+	/* @array 原始数据 */
+	protected $originData = [];
+	/* @string 最终输出数据*/
+	protected $output = '';
+
+
+	public function __construct(array $data = [])
+	{
+		$this->setData($data);
+	}
 	
 	/**
 	 * @method      setData
@@ -29,11 +39,61 @@ class DataEncoder implements \JsonSerializable
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-11
 	 * @param       array      $data 原始数据
-	 * @return      void
+	 * @return      DataEncoder
 	 */
-	public static function setData(array $data) : void
+	public function setData(array $data) : DataEncoder
 	{
-		self::$data = $data;
+		$this->originData = $data;
+		return $this;
+	}
+
+	/**
+	 * @method      setIndex
+	 * @description 以键名方式添加数据
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-11
+	 * @param       mixed      $key 键名
+	 * @param       mixed       $val 键值
+	 * @return      DataEncoder
+	 */
+	public function setIndex($key, $val) : DataEncoder
+	{
+		$this->originData[$key] = $val;
+		return $this;
+	}
+
+	/**
+	 * @method      mergeData
+	 * @description 合并自定义输出信息到全集
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-11
+	 * @param       array      $array 新的数据数组
+	 * @return      DataEncoder
+	 */
+	public function mergeData(array $array) : DataEncoder
+	{
+		$this->originData = array_merge($this->originData, $array);
+		return $this;
+	}
+
+	/**
+	 * @method      setStandardData
+	 * @description 设置标准信息并且自动返回实例(此方法将会清空原本存在的数据)
+	 * @author      HanskiJay
+	 * @doenIn      2021-02-11
+	 * @param       int      $code       状态码
+	 * @param       string   $msg        返回信息
+	 * @param       bool     $result     执行结果
+	 * @return      array
+	 */
+	public function setStandardData(int $code, string $msg, bool $result) : array
+	{
+		$this->reset();
+		$this->setIndex('code',   $code);
+		$this->setIndex('msg',    $msg);
+		$this->setIndex('result', $result);
+		$this->setIndex('time',   date("Y-m-d H:i:s"));
+		return $this->originData;
 	}
 
 	/**
@@ -43,15 +103,9 @@ class DataEncoder implements \JsonSerializable
 	 * @doenIn      2021-02-11
 	 * @return      string
 	 */
-	public static function encode() : string
+	public function encode() : string
 	{
-		self::$data = json_encode(new self, JSON_UNESCAPED_UNICODE);
-		return self::$data;
-	}
-
-	public function jsonSerialize()
-	{
-		return self::$data;
+		return $this->output = json_encode($this, JSON_UNESCAPED_UNICODE);
 	}
 
 	/**
@@ -59,107 +113,75 @@ class DataEncoder implements \JsonSerializable
 	 * @description 解码JSON数据格式
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-11
-	 * @return      void
+	 * @return      array
 	 */
-	public static function decode() : void
+	public function decode() : array
 	{
-		self::$data = json_decode(self::$data);
-	}
-
-	/**
-	 * @method      reset
-	 * @description 重置原始数据
-	 * @author      HanskiJay
-	 * @doenIn      2021-02-11
-	 * @return      void
-	 */
-	public static function reset() : void
-	{
-		self::$data = [];
+		return json_decode($this->originData);
 	}
 
 	/**
 	 * @method      getIndex
-	 * @description 获取一设置的键名的值
+	 * @description 返回查找的键名的值
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-11
-	 * @param       array      $key     键名
-	 * @param       array      $default 默认返回值
+	 * @param       mixed      $key     键名
+	 * @param       mixed      $default 默认返回值
 	 * @return      mixed
 	 */
-	public static function getIndex(string $key)
+	public function getIndex($key, $default = '')
 	{
-		return self::$data[$key] ?? "";
+		return $this->originData[$key] ?? $default;
 	}
 
 	/**
-	 * @method      getAll
-	 * @description 获取所有信息
+	 * @method      getOriginData
+	 * @description 获取原始数据
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-11
 	 * @return      array
 	 */
-	public static function getAll() : array
+	public function getOriginData() : array
 	{
-		if(!is_array(self::$data)) self::$data = json_decode(self::$data, true);
-		if(!is_array(self::$data)) self::$data = (array) self::$data;
-		return self::$data;
+		return $this->originData;
 	}
 
 	/**
-	 * @method      setIndex
-	 * @description 以键名方式添加数据
+	 * @method      getOutput
+	 * @description 获取输出数据
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-11
-	 * @param       string      $key 键名
-	 * @param       mixed       $val 键值
-	 * @return      void
+	 * @return      string
 	 */
-	public static function setIndex(string $key, $val) : void
+	public function getOutput() : string
 	{
-		self::$data[$key] = $val;
+		return $this->output;
 	}
 
 	/**
-	 * @method      mergeArr
-	 * @description 合并自定义输出信息到全集
+	 * @method      reset
+	 * @description 重置数据
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-11
-	 * @param       array      $array 新的数据数组
-	 * @param       array      $ec    重试值?(我也不知道为啥会写一个这个东西, 先留着吧)
-	 * @return      void
+	 * @return      DataEncoder
 	 */
-	public static function mergeArr(array $arr, int &$ec = 0) : void
+	public function reset() : DataEncoder
 	{
-		if(is_array(self::$data)) self::$data = array_merge(self::$data, $arr);
-		else {
-			if($ec >= 3) return;
-			++$ec;
-			self::decode();
-			self::mergeArr($arr, $ec);
-		}
+		$this->originData = [];
+		$this->output     = '';
+		return $this;
 	}
 
 	/**
-	 * @method      setStandardData
-	 * @description 设置标准信息并且自动编码
+	 * @method      jsonSerialize
+	 * @description JsonSerializable接口规定方法
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-11
-	 * @param       int      $code       状态码
-	 * @param       bool     $result     执行结果
-	 * @param       string   $msg        返回信息
-	 * @param       bool     $autoReturn 自动编码且返回编码后的信息串
-	 * @return      null|string
+	 * @doenIn      2021-03-21
+	 * @return      mixed
 	 */
-	public static function setStandardData(int $code, bool $result, string $msg, bool $autoReturn = true) : ?string
+	public function jsonSerialize()
 	{
-		self::reset();
-		self::setIndex("code",   $code);
-		self::setIndex("msg",    $msg);
-		self::setIndex("result", $result);
-		self::setIndex("time",   date("Y-m-d H:i:s"));
-
-		return $autoReturn ? self::encode() : null;
+		return $this->originData;
 	}
 
 	/**
