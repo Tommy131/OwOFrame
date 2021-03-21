@@ -22,6 +22,7 @@ use JsonSerializable;
 use owoframe\contract\MIMETypeConstant;
 use owoframe\exception\JSONException;
 use owoframe\http\HttpManager;
+use owoframe\utils\DataEncoder;
 
 class Response
 {
@@ -50,14 +51,19 @@ class Response
 	public function sendResponse() : void
 	{
 		$call = call_user_func($this->callback);
-		if(is_string($call)) {
-			if($this->callback[0] instanceof JsonSerializable) {
-				$call = json_encode($call);
-				$this->header['Content-Type'] = MIMETypeConstant::MIMETYPE['json'];
+
+		if(($this->callback[0] instanceof JsonSerializable)) {
+			if(is_array($call)) {
+				$call = new DataEncoder($call);
+				$call = $call->encode();
 			}
+			$this->header['Content-Type'] = MIMETypeConstant::MIMETYPE['json'];
+		}
+		
+		if(is_string($call)) {
 			echo $call;
 		}
-
+		// TODO: 添加一个回调钩子;
 		if(!headers_sent() && !empty($this->header)) {
 			foreach($this->header as $name => $val) {
 				header($name . (!is_null($val) ? ": {$val}"  : ''));

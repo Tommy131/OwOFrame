@@ -120,9 +120,9 @@ abstract class ApiProcessor implements JsonSerializable
 	 * @description 返回处理结果
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-09
-	 * @return      string
+	 * @return      array
 	 */
-	abstract public function getOutput() : string;
+	abstract public function getOutput() : array;
 
 	/**
 	 * @method      getName
