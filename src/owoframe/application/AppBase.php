@@ -20,6 +20,7 @@ namespace owoframe\application;
 
 use owoframe\exception\OwOFrameException;
 use owoframe\exception\InvalidControllerException;
+use owoframe\http\HttpManager;
 use owoframe\helper\Helper;
 use owoframe\module\{ModuleBase, ModuleLoader};
 use owoframe\utils\DataEncoder;
@@ -54,17 +55,17 @@ abstract class AppBase
 	 * @description Render 404 page (when no valid controller is matched)
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-09
-	 * @return      void
+	 * @return      string
 	*/
-	public static function renderPageNotFound() : void
+	public static function renderPageNotFound() : string
 	{
-		Helper::setStatusCode(404);
+		HttpManager::setStatusCode(404);
 		$sendMessage = (isset(static::$renderPageNotFound) && is_string(static::$renderPageNotFound)) ? static::$renderPageNotFound : '404 PAGE NOT FOUND';
 		if(isset(static::$renderWithJSON)) {
 			DataEncoder::reset();
-			die(DataEncoder::setStandardData(404, false, $sendMessage));
+			return DataEncoder::setStandardData(404, false, $sendMessage);
 		} else {
-			die($sendMessage);
+			return $sendMessage;
 		}
 	}
 

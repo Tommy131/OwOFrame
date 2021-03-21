@@ -26,10 +26,8 @@ abstract class ControllerBase
 	private $app = null;
 	/* @bool Front-End开启或关闭UsedTimeDiv(Default:true) */
 	public static $showUsedTimeDiv = true;
-	/* @string 若存在该Url, Router将会在执行完对应请求方法之后跳转到该地址 */
-	public static $goto = null;
 	/* @string 若请求的Url中包含无效的请求方法, 则默认执行该方法 */
-	public static $methodNotFound_DefaultMethod = 'methodNotFound';
+	public static $autoInvoke_methodNotFound = 'methodNotFound';
 
 
 	public function __construct(AppBase $app)
