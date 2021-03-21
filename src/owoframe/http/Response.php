@@ -99,10 +99,10 @@ class Response
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-10 18:49
 	*/
-	public function header(string $name, string $val = '')
+	public function &header(string $name, string $val = '')
 	{
 		if(($name === "") && ($val === "")) return $this->header;
 		elseif(isset($this->header[$name]) && ($val === '')) return $this->header[$name];
-		$this->header[$name] = $val;
+		return $this->header[$name] = $val;
 	}
 }
