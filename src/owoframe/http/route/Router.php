@@ -24,7 +24,8 @@ use ReflectionFunction;
 use ReflectionMethod;
 use owoframe\application\AppManager;
 use owoframe\helper\{BootStraper, Helper};
-use owoframe\http\{HttpManager, Response};
+use owoframe\http\HttpManager as Http;
+use owoframe\http\Response;
 use owoframe\exception\{InvalidControllerException, MethodMissedException, InvalidRouterException, UnknownErrorException};
 use owoframe\utils\DataEncoder;
 
@@ -50,7 +51,7 @@ final class Router
 			$appName = DEFAULT_APP_NAME;
 		}
 		$appName = strtolower($appName);
-		
+
 		if(is_file($file = FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'router.php')) {
 			include_once($file);
 			$nrules = RouteRule::getNormalRules();
@@ -66,6 +67,22 @@ final class Router
 		if(in_array($appName, DENY_APP_LIST)) {
 			HttpManager::setStatusCode(404);
 			return;
+		}
+
+		// Judgment whether the current url can match ApiProsessor;
+		if($appName === 'api') {
+			$api = strtolower(array_shift($pathInfo) ?? 'unknown');
+			if(($api = RouteRule::getApiProcessor($api)) !== null) {
+				if(($api::mode() !== -1) && (requestMode() !== $api::mode())) {
+					$response = Http::Response([$api, 'requestDenied']);
+				} else {
+					$response = Http::Response([$api, 'getOutput']);
+					$api->filter(Http::getRequestMerge());
+					$api->start($response);
+				}
+				$response->sendResponse();
+				return;
+			}
 		}
 
 		$app = AppManager::getDefaultApp() ?? AppManager::getApp($appName);
@@ -118,7 +135,7 @@ final class Router
 			$controller = $app->getController($controllerName);
 		}
 		if($controller === null) {
-			HttpManager::setStatusCode(404);
+			Http::setStatusCode(404);
 			throw new InvalidControllerException($app->getName(), $controllerName);
 			// TODO: 增加一个未找到Controller的回调方法(callback);
 		}
@@ -134,11 +151,11 @@ final class Router
 				throw new MethodMissedException(get_class($controller), $requestMethod);
 			}
 			if($reflect->getMethod($requestMethod)->isPublic()) {
-				HttpManager::Response([$controller, $requestMethod])->sendResponse();
+				Http::Response([$controller, $requestMethod])->sendResponse();
 				// TODO: 完成响应后执行的回调(callback);
 			} else {
 				if($app->autoTo404Page()) {
-					HttpManager::Response([$app, renderPageNotFound()])->sendResponse();
+					Http::Response([$app, renderPageNotFound()])->sendResponse();
 				}
 			}
 		}
