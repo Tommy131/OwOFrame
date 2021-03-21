@@ -1,8 +1,17 @@
 
-## OwOframe's CHANGELOG (Total `112` Commits)
+## OwOframe's CHANGELOG (Total `118` Commits)
 
 
 ↓ `[dev@v1.0.1, origin/dev@v1.0.1]` ↓
+
+------
+
+`dev@v1.0.1-ALPHA20`[20210321]:
+- 更新了版本号
+- 删除了一些不必要的代码
+- 重写了 `Router` 组件, 使代码看起来更加可读化
+- 修复了一些小BUG
+- Updated CHANGELOG.md
 
 ------
 
@@ -13,8 +22,6 @@
 - 新增了 `static.php` 文件作为静态资源路由回调
 - 更改了资源文件夹存储位置
 - 更新了Session缓存写入机制
-
-------
 
 `20210306_dev@v1.0.1` <= `20210307_dev@v1.0.1`:
 - 重新命名了 `application`
