@@ -62,8 +62,9 @@ abstract class AppBase
 		HttpManager::setStatusCode(404);
 		$sendMessage = (isset(static::$renderPageNotFound) && is_string(static::$renderPageNotFound)) ? static::$renderPageNotFound : '404 PAGE NOT FOUND';
 		if(isset(static::$renderWithJSON)) {
-			DataEncoder::reset();
-			return DataEncoder::setStandardData(404, false, $sendMessage);
+			$render = new DataEncoder;
+			$render->setStandardData(404, $sendMessage, false);
+			return $render->encode();
 		} else {
 			return $sendMessage;
 		}

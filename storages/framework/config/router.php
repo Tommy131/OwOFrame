@@ -18,6 +18,7 @@
 ************************************************************************/
 
 use owoframe\http\route\RouteRule as RR;
+use owoframe\utils\DataEncoder;
 
 // 绑定域名 test.xxx.com 到 IndexApp;
 RR::domain('xxx.com', ['test' => 'index']);
@@ -25,9 +26,10 @@ RR::domain('xxx.com', ['test' => 'index']);
 // 添加一个Api处理器;
 RR::bindApiProcessor(new class extends owoframe\application\ApiProcessor
 {
-	public function getOutput() : string
+	public function getOutput() : array
 	{
-		return 'Currently this processor appears to be working well~';
+		$output = new DataEncoder(['msg' => 'Currently this processor appears to be working well~']);
+		return $output->getOriginData();
 	}
 
 	public static function getName() : string
