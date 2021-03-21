@@ -85,7 +85,7 @@ final class Router
 			}
 		}
 
-		$app = AppManager::getDefaultApp() ?? AppManager::getApp($appName);
+		$app = AppManager::getApp($appName) ?? AppManager::getDefaultApp();
 		if($app === null) {
 			HttpManager::setStatusCode(404);
 			throw new InvalidRouterException("Cannot find any valid Application!");
@@ -103,7 +103,7 @@ final class Router
 			}
 			$requestMethod = $controllerName;
 
-			if(count($pathInfo) >= 2) { // If $pathInfo still more than 2;
+			if(count($pathInfo) >= 1) { // If $pathInfo still more than 2;
 				$requestMethod = array_shift($pathInfo);
 				if(!DataEncoder::isOnlyLettersAndNumbers($requestMethod)) {
 					$requestMethod = $controllerName;
@@ -113,18 +113,20 @@ final class Router
 					$tmps[] = array_shift($pathInfo);
 				}
 				$rest = array_shift($pathInfo);
-				if(($s = stripos($rest, '?')) !== false) {
-					if($s > 0) {
-						$tmps[] = substr($rest, 0, $s);
-						$rest   = substr($rest, ++$s);
+				if($rest !== null) {
+					if(($s = stripos($rest, '?')) !== false) {
+						if($s > 0) {
+							$tmps[] = substr($rest, 0, $s);
+							$rest   = substr($rest, ++$s);
+						}
+						$rest = explode('&', substr($rest, 1));
+						$_get = [];
+						foreach($rest as $var) {
+							$var = explode('=', $var);
+							$_get[$var[0]] =$var[1];
+						}
+						array_merge($_GET, $_get);
 					}
-					$rest = explode('&', substr($rest, 1));
-					$_get = [];
-					foreach($rest as $var) {
-						$var = explode('=', $var);
-						$_get[$var[0]] =$var[1];
-					}
-					array_merge($_GET, $_get);
 				}
 			}
 		}
