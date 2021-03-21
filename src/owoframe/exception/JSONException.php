@@ -18,9 +18,10 @@
 declare(strict_types=1);
 namespace owoframe\exception;
 
+use JsonSerializable;
 use owoframe\utils\DataEncoder;
 
-class JSONException extends OwOFrameException
+class JSONException extends OwOFrameException implements JsonSerializable
 {
 	public function __construct(array $messages = [], int $code = 0, \Throwable $previous = null)
 	{

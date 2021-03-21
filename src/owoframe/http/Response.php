@@ -18,7 +18,10 @@
 declare(strict_types=1);
 namespace owoframe\http;
 
+use JsonSerializable;
+use owoframe\contract\MIMETypeConstant;
 use owoframe\exception\JSONException;
+use owoframe\http\HttpManager;
 
 class Response
 {
@@ -27,8 +30,9 @@ class Response
 	/* @array HTTP header参数设置 */
 	protected $header = 
 	[
-		"Content-Type" => "text/html; charset=utf-8"
+		'Content-Type' => 'text/html; charset=utf-8'
 	];
+	private $hasSent = false;
 
 
 	public function __construct(callable $callback)
@@ -47,6 +51,10 @@ class Response
 	{
 		$call = call_user_func($this->callback);
 		if(is_string($call)) {
+			if($this->callback[0] instanceof JsonSerializable) {
+				$call = json_encode($call);
+				$this->header['Content-Type'] = MIMETypeConstant::MIMETYPE['json'];
+			}
 			echo $call;
 		}
 
@@ -54,10 +62,10 @@ class Response
 			foreach($this->header as $name => $val) {
 				header($name . (!is_null($val) ? ": {$val}"  : ''));
 			}
-			// http_response_code($this->code);
 			HttpManager::setStatusCode($this->code);
 		}
 		if(function_exists('fastcgi_finish_request')) fastcgi_finish_request();
+		$this->hasSent = true;
 	}
 
 	/**
@@ -104,5 +112,17 @@ class Response
 		if(($name === "") && ($val === "")) return $this->header;
 		elseif(isset($this->header[$name]) && ($val === '')) return $this->header[$name];
 		return $this->header[$name] = $val;
+	}
+
+	/**
+	 * @method      hasSent
+	 * @description 返回响应状态
+	 * @author      HanskiJay
+	 * @doenIn      2021-03-21
+	 * @return      boolean
+	 */
+	public function hasSent() : bool
+	{
+		return $this->hasSent;
 	}
 }

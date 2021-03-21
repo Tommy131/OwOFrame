@@ -18,7 +18,11 @@
 declare(strict_types=1);
 namespace owoframe\application;
 
-abstract class ApiProcessor
+use JsonSerializable;
+use owoframe\http\HttpManager as Http;
+use owoframe\http\Response;
+
+abstract class ApiProcessor implements JsonSerializable
 {
 	/* @array 请求参数 */
 	protected $request = [];
@@ -94,7 +98,21 @@ abstract class ApiProcessor
 	 */
 	public function requestDenied() : string
 	{
+		Http::setStatusCode(403);
 		return 'Your HTTP requested mode is illegal for this API-Processor.';
+	}
+
+
+	/**
+	 * @method      jsonSerialize
+	 * @description json_encode() 时触发的方法
+	 * @author      HanskiJay
+	 * @doenIn      2021-03-21
+	 * @return      mixed
+	 */
+	public function jsonSerialize()
+	{
+		return $this->getOutput();
 	}
 
 	/**
