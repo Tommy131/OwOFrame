@@ -15,7 +15,6 @@
 	
 ************************************************************************/
 
-$prefix = '[ConfigParser] 配置文件加载失败:';
 /**
  * @method      loadConfig
  * @description 加载配置文件
@@ -27,7 +26,7 @@ $prefix = '[ConfigParser] 配置文件加载失败:';
  */
 function loadConfig(string $file, bool $toJson = false) : array
 {
-	global $prefix;
+	$prefix = '[ConfigParser] 配置文件加载失败:';
 	$config = [];
 	if(!file_exists($file)) return [];
 	$content = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -71,7 +70,7 @@ function loadConfig(string $file, bool $toJson = false) : array
  */
 function _global(string $str, $default = null)
 {
-	static $_global;
+	global $_global;
 	static $groupName;
 	if($_global === null) {
 		$file = FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'global.ini';

@@ -90,7 +90,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 
 	/**
 	 * @method      Response
-	 * @description 新建响应头实例
+	 * @description 快速新建响应头实例
 	 * @author      HanskiJay
 	 * @doenIn      2021-03-18
 	 * @param       callable    $callback 可回调参数

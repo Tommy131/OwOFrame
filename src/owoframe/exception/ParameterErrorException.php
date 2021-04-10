@@ -20,9 +20,9 @@ namespace owoframe\exception;
 
 class ParameterErrorException extends OwOFrameException
 {
-	public function __construct(string $param, string $needType, int $code = 0, \Throwable $previous = null)
+	public function __construct(string $param, string $needType, $currType, int $code = 0, \Throwable $previous = null)
 	{
-		$currType = gettype($param);
+		$currType = gettype($currType);
 		parent::__construct("Parameter '{$param}' should be '{$needType}', '{$currType}' is given!", $code, $previous);
 	}
 }
