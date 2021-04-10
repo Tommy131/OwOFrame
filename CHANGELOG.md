@@ -1,8 +1,15 @@
 
-## OwOframe's CHANGELOG (Total `118` Commits)
+## OwOframe's CHANGELOG (Total `128` Commits)
 
 
 ↓ `[dev@v1.0.1, origin/dev@v1.0.1]` ↓
+
+------
+
+`dev@v1.0.1-ALPHA21`[20210411]:
+- 增加了事件管理器模块
+- 修复了一些小BUG
+- Updated CHANGELOG.md
 
 ------
 
@@ -12,8 +19,6 @@
 - 重写了 `Router` 组件, 使代码看起来更加可读化
 - 修复了一些小BUG
 - Updated CHANGELOG.md
-
-------
 
 `dev@v1.0.1-ALPHA15`[20210314]:
 - 更新了版本号
@@ -45,6 +50,7 @@
 - 修复了 `Config` 中的一个兼容性问题
 - Updated CHANGELOG.md
 
+------
 
 ↓ `[dev@v1.0.0, origin/dev@v1.0.0]` ↓
 
@@ -124,7 +130,6 @@
 - Changed branch name `origin/master` to `origin/dev@v1.0.0`
 
 ------
-
 
 ↓ `[master, origin/master]` ↓
 
