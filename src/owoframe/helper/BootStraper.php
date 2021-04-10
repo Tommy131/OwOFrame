@@ -47,7 +47,7 @@ class BootStraper
 			// Define OwOFrame start time;
 			if(!defined('APP_VERSION'))      define('APP_VERSION',     'dev@v1.0.1-ALPHA20');
 			// Check whether the current environment supports mbstring extension;
-			if(!defined('MB_SUPPORTED'))     define('MB_SUPPORTED',    function_exists('mb_get_info') && function_exists('mb_regex_encoding'));
+			if(!defined('MB_SUPPORTED'))     define('MB_SUPPORTED',    extension_loaded('mbstring'));
 			// Project root directory (absolute path);
 			if(!defined('ROOT_PATH'))        define('ROOT_PATH',       dirname(realpath(dirname(__FILE__)), 3) . DIRECTORY_SEPARATOR);
 			// Project source directory (absolute path);
@@ -80,7 +80,8 @@ class BootStraper
 			MasterManager::getClassLoader()->addPsr4('application\\', APP_PATH);
 			MasterManager::getClassLoader()->addPsr4('module\\',      MODULE_PATH);
 		}
-		loadConfig(FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'global.ini');
+		global $_global;
+		$_global = loadConfig(FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'global.ini');
 	}
 
 	/**
