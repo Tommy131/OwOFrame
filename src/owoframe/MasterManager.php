@@ -22,6 +22,7 @@ use Composer\Autoload\ClassLoader;
 use owoframe\application\AppManager;
 use owoframe\console\Console;
 use owoframe\contract\Manager;
+use owoframe\event\EventManager;
 use owoframe\helper\BootStraper as BS;
 use owoframe\helper\Helper;
 use owoframe\http\FileUploader;
@@ -37,6 +38,7 @@ final class MasterManager extends Container implements Manager
 	protected $bind =
 	[
 		'console'      => Console::class,
+		'event'        => EventManager::class,
 		'fileuploader' => FileUploader::class,
 		'http'         => Http::class,
 		'redis'        => Redis::class,
@@ -76,23 +78,6 @@ final class MasterManager extends Container implements Manager
 	public function stop() : void
 	{
 		// TODO: 结束任务相关;
-	}
-
-	/**
-	 * @method      bind
-	 * @description 绑定到容器绑定标识
-	 * @author      HanskiJay
-	 * @doenIn      2021-03-05
-	 * @param       string      $bindTag  绑定标识
-	 * @param       mixed       $concrete interface@Manager
-	 * @return      void
-	 */
-	public function bind(string $bindTag, $concrete) : void
-	{
-		if(!$concrete instanceof Manager) {
-			return;
-		}
-		parent::bind($bindTag, $concrete);
 	}
 
 	/**
