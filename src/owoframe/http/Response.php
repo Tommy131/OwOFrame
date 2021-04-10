@@ -19,13 +19,22 @@ declare(strict_types=1);
 namespace owoframe\http;
 
 use JsonSerializable;
+
 use owoframe\contract\MIMETypeConstant;
 use owoframe\exception\JSONException;
 use owoframe\http\HttpManager;
 use owoframe\utils\DataEncoder;
 
+use owoframe\event\http\{BeforeResponseEvent, AfterResponseEvent};
+use owoframe\event\system\OutputEvent;
+
 class Response
 {
+	/* @bool 响应 & 数据发送状态 */
+	private $hasSent = false;
+	/* @array 回调参数(可以输出数据的回调方法) */
+	private $callback;
+
 	/* @int HTTP响应代码(Default:200) */
 	protected $code = 200;
 	/* @array HTTP header参数设置 */
@@ -33,7 +42,6 @@ class Response
 	[
 		'Content-Type' => 'text/html; charset=utf-8'
 	];
-	private $hasSent = false;
 
 
 	public function __construct(callable $callback)
@@ -50,20 +58,24 @@ class Response
 	 */
 	public function sendResponse() : void
 	{
-		$call = call_user_func($this->callback);
+		$eventManager = \owoframe\MasterManager::getInstance()->getManager('event');
+		$eventManager->trigger(BeforeResponseEvent::class);
 
+		$called = call_user_func($this->callback);
 		if(($this->callback[0] instanceof JsonSerializable)) {
-			if(is_array($call)) {
-				$call = new DataEncoder($call);
-				$call = $call->encode();
+			if(is_array($called)) {
+				$called = new DataEncoder($called);
+				$called = $called->encode();
 			}
 			$this->header['Content-Type'] = MIMETypeConstant::MIMETYPE['json'];
 		}
-		
-		if(is_string($call)) {
-			echo $call;
+		if(is_string($called)) {
+			$event = new OutputEvent($called);
+			$eventManager->trigger($event);
+			$event->output();
+			unset($event);
 		}
-		// TODO: 添加一个回调钩子;
+		
 		if(!headers_sent() && !empty($this->header)) {
 			foreach($this->header as $name => $val) {
 				header($name . (!is_null($val) ? ": {$val}"  : ''));
@@ -72,6 +84,7 @@ class Response
 		}
 		if(function_exists('fastcgi_finish_request')) fastcgi_finish_request();
 		$this->hasSent = true;
+		$eventManager->trigger(AfterResponseEvent::class);
 	}
 
 	/**
