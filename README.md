@@ -15,6 +15,7 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 - [x] `AppManager`          本框架为多应用共存框架, 通过HTTP_URI识别当前的应用
 - [x] `CommandManager`      支持在CLI端通过CommandLine方法实现一些操作
 - [x] `ConfigurationParser` 配置文件解析器
+- [x] `EventManager`        事件管理器(钩子方法)
 - [x] `Exception`           错误异常抓取及Stack输出(我知道高级的框架都拥有且比我的更好QAQ)
 - [x] `PluginLoader`        插件加载器(独立于Application之外的可灵活更改的一种支持方法)
 - [x] `Language`            自定义语言包支持
