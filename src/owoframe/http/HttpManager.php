@@ -324,7 +324,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	*/
 	public static function getCompleteUrl() : string
 	{
-		return server('REQUEST_SCHEME').'://'.server('HTTP_HOST').server('SCRIPT_NAME').server('REQUEST_URI');
+		return server('REQUEST_SCHEME').'://'.server('HTTP_HOST').server('REQUEST_URI');
 	}
 
 	/**

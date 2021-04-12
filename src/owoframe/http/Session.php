@@ -23,8 +23,6 @@ use owoframe\redis\RedisConnector;
 
 class Session
 {	
-	/* @bool 重写数据 */
-	public static $rewrite = false;
 
 
 	/**
@@ -61,6 +59,7 @@ class Session
 					$auth   = ($auth !== null) ? "?auth={$auth}" : '';
 					ini_set("session.save_path", "tcp://{$server}:{$port}{$auth}");
 				}
+				ini_set('session.gc_maxlifetime', (string) (defined('SESSION_EXPIRE_TIME') ? SESSION_EXPIRE_TIME : '10800')); // 设置PHP_SESSION自动过期时间;
 				session_start();
 			}
 		} catch(\Throwable $e) {
@@ -103,13 +102,14 @@ class Session
 	 * @description 新增一个Session数据
 	 * @author      HanskiJay
 	 * @doenIn      2021-02-13
-	 * @param       string      $storeKey 存储名
-	 * @param       mixed       $data     数据
+	 * @param       string      $storeKey       存储名
+	 * @param       mixed       $data           数据
+	 * @param       boolean     $rewriteAllowed 是否允许重写
 	 * @return      void
 	 */
-	public static function set(string $storeKey, $data) : void
+	public static function set(string $storeKey, $data, bool $rewriteAllowed = false) : void
 	{
-		if(!self::has($storeKey) || self::$rewrite) {
+		if(!self::has($storeKey) || $rewriteAllowed) {
 			$_SESSION[$storeKey] = $data;
 		}
 	}
