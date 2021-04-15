@@ -11,7 +11,7 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 > OwOFrame 是我利用个人的空闲时间以及数不尽多少天熬夜开发出来的小框架, 当然也有很多不足之处. 本框架目前支持的功能请参见下列:
 
 #### Basic System Components
-- [x] `ApiProcessor`        一个独立的API处理模块, 用于分离与AppManager的区别
+- ~~[x] `ApiProcessor`        一个独立的API处理模块, 用于分离与AppManager的区别~~ (在 `dev@v1.0.0-ALPHA27` 中已被移除)
 - [x] `AppManager`          本框架为多应用共存框架, 通过HTTP_URI识别当前的应用
 - [x] `CommandManager`      支持在CLI端通过CommandLine方法实现一些操作
 - [x] `ConfigurationParser` 配置文件解析器
