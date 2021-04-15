@@ -55,7 +55,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	{
 		// TODO: 将ClientRequestFilter中的方法移植过来;
 		$ip = Helper::getClientIp();
-		if(!self::checkValid($ip)) {
+		if(!self::isIpValid($ip)) {
 			LogWriter::write('[403@Banned] Client ' . $ip . '\'s IP is banned, request deined.', self::LOG_PREFIX);
 			self::setStatusCode(403);
 			return;
@@ -259,14 +259,14 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	}
 
 	/**
-	 * @method      checkValid
+	 * @method      isIpValid
 	 * @description 判断当前IP的访问有效性
 	 * @author      HanskiJay
 	 * @doenIn      2021-03-13
 	 * @param       string      $ip IP地址
 	 * @return      boolean
 	 */
-	private static function checkValid(string $ip) : bool
+	private static function isIpValid(string $ip) : bool
 	{
 		if(Helper::isIp($ip)) {
 			$encodedIp = base64_encode($ip);
