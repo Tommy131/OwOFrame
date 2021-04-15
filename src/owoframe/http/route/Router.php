@@ -69,22 +69,6 @@ final class Router
 			return;
 		}
 
-		// Judgment whether the current url can match ApiProsessor;
-		if($appName === 'api') {
-			$api = strtolower(array_shift($pathInfo) ?? 'unknown');
-			if(($api = RouteRule::getApiProcessor($api)) !== null) {
-				if(($api::mode() !== -1) && (requestMode() !== $api::mode())) {
-					$response = Http::Response([$api, 'requestDenied']);
-				} else {
-					$response = Http::Response([$api, 'getOutput']);
-					$api->filter(Http::getRequestMerge());
-					$api->start($response);
-				}
-				$response->sendResponse();
-				return;
-			}
-		}
-
 		$app = AppManager::getApp($appName) ?? AppManager::getDefaultApp();
 		if($app === null) {
 			HttpManager::setStatusCode(404);
@@ -133,8 +117,8 @@ final class Router
 		$app->setParameters($tmps);
 
 		$controllerName = ucfirst($controllerName);
-		if(($controller = $app->getDefaultController()) === null) {
-			$controller = $app->getController($controllerName);
+		if(($controller = $app->getController($controllerName)) === null) {
+			$controller = $app->getDefaultController();
 		}
 		if($controller === null) {
 			Http::setStatusCode(404);
