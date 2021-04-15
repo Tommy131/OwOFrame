@@ -277,7 +277,7 @@ class ViewBase extends ControllerBase
 				$basePath = "{$basePath}{$hashTag}.php";
 				if(!file_exists($basePath)) {
 					// TODO: Cache static files;
-					file_put_contents($basePath, '<?php /* Cached in '.date("Y-m-d H:i:s").'@'.$hashTag.' */ header("Content-Type: '.Helper::MIMETYPE[$type].';"); echo file_get_contents(\''.$resource.'\'); ?>');
+					file_put_contents($basePath, "<?php /* Cached in " . date("Y-m-d H:i:s") . "@{$hashTag} */ header('Content-Type: " . Helper::MIMETYPE[$type] . "'); echo file_get_contents('{$resource}'); ?>");
 				}
 				$handled[$group][$tag] = "/static.php/{$group}/{$hashTag}.{$type}";
 			}
