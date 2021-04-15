@@ -22,30 +22,3 @@ use owoframe\utils\DataEncoder;
 
 // 绑定域名 test.xxx.com 到 IndexApp;
 RR::domain('xxx.com', ['test' => 'index']);
-
-// 添加一个Api处理器;
-RR::bindApiProcessor(new class extends owoframe\application\ApiProcessor
-{
-	public function getOutput() : array
-	{
-		$output = new DataEncoder(['msg' => 'Currently this processor appears to be working well~']);
-		return $output->getOriginData();
-	}
-
-	public static function getName() : string
-	{
-		// The name for url to match;
-		return 'test';
-	}
-
-	public static function getVersion() : string
-	{
-		// api version;
-		return "v1.0.0";
-	}
-
-	public static function mode() : int
-	{
-		return -1; // For details, please see the comments of the parent class 
-	}
-});
