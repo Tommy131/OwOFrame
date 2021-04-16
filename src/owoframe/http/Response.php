@@ -25,6 +25,7 @@ use owoframe\contract\MIMETypeConstant;
 use owoframe\contract\StandardOutput;
 use owoframe\exception\JSONException;
 use owoframe\http\HttpManager;
+use owoframe\http\route\Router;
 use owoframe\utils\DataEncoder;
 
 use owoframe\event\http\{BeforeResponseEvent, AfterResponseEvent};
@@ -44,9 +45,11 @@ class Response
 	[
 		'Content-Type' => 'text/html; charset=utf-8'
 	];
+	/* @string 默认响应信息 */
+	public $defaultResponseMsg = '[OwOResponseError] Keine Ahnung...';
 
 
-	public function __construct(callable $callback, array $params = [])
+	public function __construct(?callable $callback, array $params = [])
 	{
 		$this->callback   = $callback;
 		$this->callParams = $params;
@@ -57,11 +60,11 @@ class Response
 	 * @description 设置回调
 	 * @author      HanskiJay
 	 * @doenIn      2021-04-16
-	 * @param       callable    $callback 回调方法
-	 * @param       array       $params   回调参数传递
+	 * @param       null|callable    $callback 可回调参数
+	 * @param       array            $params   回调参数传递
 	 * @return      object@Response
 	 */
-	public function setCallback(callable $callback, array $params = []) : Response
+	public function setCallback(?callable $callback, array $params = []) : Response
 	{
 		$this->__construct($callback, $params);
 		return $this;
@@ -79,7 +82,12 @@ class Response
 		$eventManager = \owoframe\MasterManager::getInstance()->getManager('event');
 		$eventManager->trigger(BeforeResponseEvent::class, [$this]);
 
-		$called = call_user_func_array($this->callback, $this->callParams);
+		if(!is_callable($this->callback)) {
+			$this->callback = !is_null($app = Router::getCurrentApp()) ? [$app, 'renderPageNotFound'] : [$this, 'defaultResponseMsg'];
+			$called = call_user_func_array($this->callback);
+		} else {
+			$called = call_user_func_array($this->callback, $this->callParams);
+		}
 
 		if(is_array($called)) {
 			if($this->callback[0] instanceof DataEncoder) {
@@ -191,5 +199,10 @@ class Response
 	public function hasSent() : bool
 	{
 		return $this->hasSent;
+	}
+
+	public function defaultResponseMsg() : string
+	{
+		return $this->defaultResponseMsg;
 	}
 }
