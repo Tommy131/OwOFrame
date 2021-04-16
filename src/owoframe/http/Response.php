@@ -19,8 +19,10 @@ declare(strict_types=1);
 namespace owoframe\http;
 
 use JsonSerializable;
+use ReflectionClass;
 
 use owoframe\contract\MIMETypeConstant;
+use owoframe\contract\StandardOutput;
 use owoframe\exception\JSONException;
 use owoframe\http\HttpManager;
 use owoframe\utils\DataEncoder;
@@ -44,9 +46,25 @@ class Response
 	];
 
 
-	public function __construct(callable $callback)
+	public function __construct(callable $callback, array $params = [])
 	{
-		$this->callback = $callback;
+		$this->callback   = $callback;
+		$this->callParams = $params;
+	}
+
+	/**
+	 * @method      setCallback
+	 * @description 设置回调
+	 * @author      HanskiJay
+	 * @doenIn      2021-04-16
+	 * @param       callable    $callback 回调方法
+	 * @param       array       $params   回调参数传递
+	 * @return      object@Response
+	 */
+	public function setCallback(callable $callback, array $params = []) : Response
+	{
+		$this->__construct($callback, $params);
+		return $this;
 	}
 
 	/**
@@ -59,21 +77,30 @@ class Response
 	public function sendResponse() : void
 	{
 		$eventManager = \owoframe\MasterManager::getInstance()->getManager('event');
-		$eventManager->trigger(BeforeResponseEvent::class);
+		$eventManager->trigger(BeforeResponseEvent::class, [$this]);
 
-		$called = call_user_func($this->callback);
-		if(($this->callback[0] instanceof JsonSerializable)) {
-			if(is_array($called)) {
-				$called = new DataEncoder($called);
+		$called = call_user_func_array($this->callback, $this->callParams);
+
+		if(is_array($called)) {
+			if($this->callback[0] instanceof DataEncoder) {
 				$called = $called->encode();
 			}
-			$this->header['Content-Type'] = MIMETypeConstant::MIMETYPE['json'];
+			elseif($this->callback[0] instanceof JsonSerializable) {
+				$called = json_encode($called);
+			}
+			$this->header('Content-Type', MIMETypeConstant::MIMETYPE['json']);
 		}
-		if(is_string($called)) {
-			$event = new OutputEvent($called);
-			$eventManager->trigger($event);
-			$event->output();
-			unset($event);
+
+		if(!is_string($called)) {
+			$reflect = new ReflectionClass($this->callback[0]);
+			if($reflect->implementsInterface(StandardOutput::class)) {
+				$called = $this->callback[0]->getOutput();
+			} else {
+				$called = new DataEncoder();
+				$called->setStandardData(403, '[OwOResponseError] Cannot callback method ' . get_class($this->callback[0]) . '::' . $this->callback[1] . ' for response! (Method must be return string, ' . gettype($called) . ' is returned!', false);
+				$called = $called->encode();
+				$this->header('Content-Type', MIMETypeConstant::MIMETYPE['json']);
+			}
 		}
 		
 		if(!headers_sent() && !empty($this->header)) {
@@ -82,9 +109,15 @@ class Response
 			}
 			HttpManager::setStatusCode($this->code);
 		}
+
+		$event = new OutputEvent($called);
+		$eventManager->trigger($event);
+		$event->output();
+		unset($event);
+
 		if(function_exists('fastcgi_finish_request')) fastcgi_finish_request();
+		$eventManager->trigger(AfterResponseEvent::class, [$this]);
 		$this->hasSent = true;
-		$eventManager->trigger(AfterResponseEvent::class);
 	}
 
 	/**
@@ -128,9 +161,24 @@ class Response
 	*/
 	public function &header(string $name, string $val = '')
 	{
-		if(($name === "") && ($val === "")) return $this->header;
-		elseif(isset($this->header[$name]) && ($val === '')) return $this->header[$name];
-		return $this->header[$name] = $val;
+		if(($name === '') && ($val === '')) {
+			return $this->header;
+		}
+		elseif(isset($this->header[$name])) {
+			$splitStr = '@';
+			$vars     = explode($splitStr, $val);
+			$val      = array_shift($vars);
+			$mode     = strtolower(array_shift($vars) ?? 'set');
+			if(($mode === 'set') || ($mode === 'update')) {
+				$this->header[$name] = $val;
+				return $this->header[$name];
+			} else {
+				return $this->header[$name];
+			}
+		} else {
+			$this->header[$name] = $val;
+			return $this->header[$name];
+		}
 	}
 
 	/**
