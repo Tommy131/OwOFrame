@@ -20,5 +20,10 @@ namespace owoframe\event\http;
 
 class AfterResponseEvent extends \owoframe\event\Event
 {
-	
+	private $response;
+
+	public function __construct(Response $response)
+	{
+		$this->response = $response;
+	}
 }

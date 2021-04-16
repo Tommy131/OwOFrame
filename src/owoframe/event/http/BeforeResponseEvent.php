@@ -18,12 +18,14 @@
 declare(strict_types=1);
 namespace owoframe\event\http;
 
+use owoframe\http\Response;
+
 class BeforeResponseEvent extends \owoframe\event\Event
 {
-	private $callback;
+	private $response;
 
-	public function __construct(callable $callback)
+	public function __construct(Response $response)
 	{
-		$this->callback = $callback;
+		$this->response = $response;
 	}
 }

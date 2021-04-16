@@ -20,7 +20,9 @@ namespace owoframe\utils;
 
 use JsonSerializable;
 
-class DataEncoder implements JsonSerializable
+use owoframe\contract\StandardOutput;
+
+class DataEncoder implements JsonSerializable, StandardOutput
 {
 	/* @array 原始数据 */
 	protected $originData = [];

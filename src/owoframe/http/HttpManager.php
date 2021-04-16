@@ -94,12 +94,18 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 * @author      HanskiJay
 	 * @doenIn      2021-03-18
 	 * @param       callable    $callback 可回调参数
+	 * @param       array       $params   回调参数传递
+	 * @param       bool        $reload   重新生成响应实例
 	 */
-	public static function Response(callable $callback) : Response
+	public static function Response(callable $callback, array $params = [], bool $reload = false) : Response
 	{
 		static $response;
+
+		if($reload) {
+			$response = null;
+		}
 		if(!$response instanceof Response) {
-			$response = new Response($callback);
+			$response = new Response($callback, $params);
 		}
 		return $response;
 	}

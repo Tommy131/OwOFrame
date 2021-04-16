@@ -18,7 +18,9 @@
 declare(strict_types=1);
 namespace owoframe\event\system;
 
-class OutputEvent extends \owoframe\event\Event
+use owoframe\contract\StandardOutput;
+
+class OutputEvent extends \owoframe\event\Event implements StandardOutput
 {
 	/* @string 输出内容 */
 	protected $output;
