@@ -22,6 +22,7 @@ use Closure;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
+use owoframe\application\AppBase;
 use owoframe\application\AppManager;
 use owoframe\helper\{BootStraper, Helper};
 use owoframe\http\HttpManager as Http;
@@ -33,6 +34,9 @@ final class Router
 {
 	/* @string 路由全路径 */
 	private static $_pathInfo = null;
+
+	/* object@AppBase 当前Application实例 */
+	private static $currentApp;
 
 
 	/**
@@ -74,6 +78,8 @@ final class Router
 			HttpManager::setStatusCode(404);
 			throw new InvalidRouterException("Cannot find any valid Application!");
 			// TODO: 增加一个未找到App的回调方法(callback);
+		} else {
+			self::$currentApp = $app;
 		}
 		
 		// Judgment $pathInfo for ControllerName and RequestMethodName;
@@ -153,6 +159,18 @@ final class Router
 		if(defined('DEBUG_MODE') && DEBUG_MODE && $controller::$showUsedTimeDiv) {
 			echo str_replace('{runTime}', BootStraper::getRunTime(), base64_decode('PGRpdiBzdHlsZT0icG9zaXRpb246IGFic29sdXRlOyB6LWluZGV4OiA5OTk5OTk7IGJvdHRvbTogMDsgcmlnaHQ6IDA7IG1hcmdpbjogNXB4OyBwYWRkaW5nOiA1cHg7IGJhY2tncm91bmQtY29sb3I6ICNhYWFhYWE7IGJvcmRlci1yYWRpdXM6IDVweDsiPgoJPGRpdj5Vc2VkVGltZTogPGI+e3J1blRpbWV9czwvYj48L2Rpdj4KPC9kaXY+'));
 		}
+	}
+
+	/**
+	 * @method      getCurrentApp
+	 * @description 返回当前Application实例
+	 * @author      HanskiJay
+	 * @doenIn      2021-04-17
+	 * @return      null|object@AppBase
+	 */
+	public static function getCurrentApp() : ?AppBase
+	{
+		return self::$currentApp;
 	}
 
 	/**
