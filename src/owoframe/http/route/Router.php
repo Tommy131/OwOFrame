@@ -130,20 +130,24 @@ final class Router
 			// TODO;
 		} else {
 			$reflect = new ReflectionClass($controller);
-			if(!$reflect->hasMethod($requestMethod)) {
-				$requestMethod = $controller::$autoInvoke_methodNotFound;
-			}
-			if(!$reflect->hasMethod($requestMethod)) {
-				throw new MethodMissedException(get_class($controller), $requestMethod);
-			}
-			if($reflect->getMethod($requestMethod)->isPublic()) {
-				Http::Response([$controller, $requestMethod])->sendResponse();
-				// TODO: 完成响应后执行的回调(callback);
+			if($reflect->hasMethod($requestMethod) && $reflect->getMethod($requestMethod)->isPublic()) {
+				$callback = [$controller, $requestMethod];
 			} else {
-				if($app->autoTo404Page()) {
-					Http::Response([$app, 'renderPageNotFound'])->sendResponse();
+				$requestMethod = $controller::$autoInvoke_methodNotFound;
+				if(!$reflect->hasMethod($requestMethod)) {
+					if(defined('DEBUG_MODE') && DEBUG_MODE) {
+						throw new MethodMissedException(get_class($controller), $requestMethod);
+					} else {
+						if($app->autoTo404Page()) {
+							$callback = [$app, 'renderPageNotFound'];
+						}
+					}
+					// TODO: 增加一个请求方法无效的事件回调;
 				}
 			}
+
+			$response = Http::Response($callback);
+			$response->sendResponse();
 		}
 
 		if(defined('DEBUG_MODE') && DEBUG_MODE && $controller::$showUsedTimeDiv) {
