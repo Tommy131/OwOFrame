@@ -1,17 +1,30 @@
 
-## OwOframe's CHANGELOG (Total `128` Commits)
+## OwOframe's CHANGELOG (Total `142` Commits)
 
 
 ↓ `[dev@v1.0.1, origin/dev@v1.0.1]` ↓
 
 ------
 
+`dev@v1.0.1-ALPHA27`[20210417]:
+- 新增了标准输出 (`StandardOutput`) 接口
+- 优化了 `Router` 中的控制器方法回调写法
+- 加强了 `Response` 中回调方法的值的类型判断
+- Updated CHANGELOG.md
+
+------
+
+`dev@v1.0.1-ALPHA27`[20210415]:
+- 修复了一个BUG
+- 修改了方法名 `HttpManager::checkValid` -> `HttpManager::isIpValid`
+- 移除了 `ApiProsessor` 用法	
+- Update issue templates
+- Created `CONTRIBUTING.md`
+
 `dev@v1.0.1-ALPHA21`[20210411]:
 - 增加了事件管理器模块
 - 修复了一些小BUG
 - Updated CHANGELOG.md
-
-------
 
 `dev@v1.0.1-ALPHA20`[20210321]:
 - 更新了版本号
