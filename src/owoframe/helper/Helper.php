@@ -20,6 +20,7 @@
 declare(strict_types=1);
 namespace owoframe\helper;
 
+use FilesystemIterator as FI;
 use owoframe\contract\HTTPStatusCodeConstant;
 use owoframe\contract\MIMETypeConstant;
 use owoframe\utils\LogWriter;
@@ -257,6 +258,32 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	{
 		LogWriter::setFileName(self::isRunningWithCLI() ? 'owoblog_cli_run.log' : 'owoblog_run.log');
 		LogWriter::write($msg, $prefix, $level);
+	}
+
+	/**
+	 * @method      removeDir
+	 * @description 删除文件夹
+	 * @author      HanskiJay
+	 * @doenIn      2021-04-17
+	 * @param       string      $path 文件夹路径
+	 * @return      void
+	 */
+	public static function removeDir(string $path) : void
+	{
+		if(!is_dir($path)) {
+			return;
+		}
+		$files = iterator_to_array(new FI($path, FI::CURRENT_AS_PATHNAME | FI::SKIP_DOTS), false);
+
+		foreach($files as $file) {
+			if(is_file($file)) {
+				unlink($file);
+			}
+			elseif(is_dir($file)) {
+				self::removeDir($file);
+				rmdir($file);
+			}
+		}
 	}
 
 	/**

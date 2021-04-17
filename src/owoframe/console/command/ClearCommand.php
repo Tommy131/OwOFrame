@@ -42,9 +42,9 @@ class ClearCommand extends \owoframe\console\CommandBase
 						$param = 'owoblog_' . $param . '.log';
 						if(is_file(LOG_PATH . $param)) {
 							unlink(LOG_PATH . $param);
-							$param = TF::GREEN . "Removed log file " . TF::GOLD . "'{$param}'" . TF::GREEN . " successfully.";
+							$param = TF::GREEN . 'Removed log file ' . TF::GOLD . $param . TF::GREEN . ' successfully.';
 						} else {
-							$param = TF::LIGHT_RED . "Cannot find log file " . TF::GOLD . "'{$param}'" . TF::LIGHT_RED . "!";
+							$param = TF::LIGHT_RED . 'Cannot find log file ' . TF::GOLD . $param . TF::LIGHT_RED . '!';
 						}
 						Helper::logger($param);
 					} else {
@@ -54,9 +54,33 @@ class ClearCommand extends \owoframe\console\CommandBase
 							$ext = @end(explode('.', $baseName));
 							if(strtolower($ext) === 'log') {
 								unlink($file);
-								Helper::logger(TF::GREEN . "Removed log file" . TF::GOLD . " '{$baseName}' " . TF::GREEN . "successfully.");
+								Helper::logger(TF::GREEN . 'Removed log file ' . TF::GOLD . $baseName . TF::GREEN . ' successfully.');
 							}
 						}
+					}
+				break;
+
+				case 'cache':
+					if(($path = array_shift($params)) !== null) {
+						$path = strtolower($path);
+						$path = ($path === 'app') ? A_CACHE_PATH : F_CACHE_PATH;
+
+						if(($next = array_shift($params)) !== null) {
+							if(is_dir($path . $next)) {
+								Helper::removeDir($path . $next);
+								Helper::logger(TF::GREEN . 'Removed Cache path ' . TF::GOLD . $path . $next . TF::GREEN . ' successfully.');
+							}
+							elseif(is_file($path . $next)) {
+								unlink($path . $next);
+								Helper::logger(TF::GREEN . 'Removed Cache file ' . TF::GOLD . $path . $next . TF::GREEN . ' successfully.');
+							}
+						} else {
+							Helper::removeDir($path);
+							file_put_contents($path . '.gitignore', base64_decode('KgohLmdpdGlnbm9yZQ=='));
+							Helper::logger(TF::GREEN . 'Removed Cache path ' . TF::GOLD . $path . TF::GREEN . ' successfully.');
+						}
+					} else {
+						Helper::logger(TF::LIGHT_RED . 'Please choose a cache folder to delete: ' . TF::GOLD . '(app|framework)');
 					}
 				break;
 			}
