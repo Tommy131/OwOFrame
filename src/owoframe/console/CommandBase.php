@@ -66,7 +66,7 @@ abstract class CommandBase
 	 */
 	public static function getUsage() : string
 	{
-		return 'php owo ' . self::getName();
+		return 'php owo ' . static::getName();
 	}
 
 	/**
