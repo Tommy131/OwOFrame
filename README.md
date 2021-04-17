@@ -72,3 +72,7 @@ location / {
 - Website: [`HanskiJay`](https://www.owoblog.com)
 - Telegram: [`HanskiJay`](https://t.me/HanskiJay)
 - E-Mail: [`HanskiJay`](mailto:support@owoblog.com)
+
+
+## Stargazers over time
+[![Stargazers over time](https://starchart.cc/Tommy131/OwOFrame.svg)](https://starchart.cc/Tommy131/OwOFrame)
