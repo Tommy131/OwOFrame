@@ -21,13 +21,14 @@ namespace owoframe\redis;
 use Redis;
 use owoframe\helper\Helper;
 use owoframe\exception\{OwOFrameException, MethodMissedException};
+use owoframe\utils\Config;
 
 class RedisConnector
 {
 	/* class@RedisConnector RedisConnector实例 */
-	private static $instance = null;
+	protected static $instance = null;
 	/* class@Redis Redis实例 */
-	private $handler = null;
+	protected $handler = null;
 	/* @array 配置文件 */
 	protected $config = 
 	[
@@ -39,6 +40,8 @@ class RedisConnector
 		'persistent' => false,
 		'prefix'     => '',
 	];
+	/* @string Redis容器名称 */
+	protected $name = '';
 
 	/**
 	 * @method      getConnection
@@ -109,7 +112,7 @@ class RedisConnector
 					$this->config['port'] = (int) array_shift($split);
 				} else {
 					$this->config['host'] = array_shift($split);
-					$this->config['port'] = 6379;
+					$this->config['port'] = 5300;
 				}
 			} else {
 				$this->config[$index] = $val;
@@ -138,6 +141,20 @@ class RedisConnector
 			}
 		}
 		return $proxy ?? $val;
+	}
+
+	/**
+	 * @method      saveCfg
+	 * @description 保存当前设置的Redis配置文件
+	 * @author      HanskiJay
+	 * @doenIn      2021-04-17
+	 * @return      [type]      [description]
+	 */
+	public function saveCfg() : void
+	{
+		$cfg = new Config(FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'redis.json');
+		$cfg->set($this->name ?? spl_object_hash($this), $this->cfg);
+		$cfg->save();
 	}
 
 	/**
@@ -180,6 +197,18 @@ class RedisConnector
 			$this->handler = null;
 		}
 		return $this->handler;
+	}
+
+	/**
+	 * @method      getName
+	 * @description 返回当前Redis容器名称
+	 * @author      HanskiJay
+	 * @doenIn      2021-04-17
+	 * @return      string
+	 */
+	public function &getName() : string
+	{
+		return $this->name;
 	}
 
 	/**
