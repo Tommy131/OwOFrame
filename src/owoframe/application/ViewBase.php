@@ -235,19 +235,33 @@ class ViewBase extends ControllerBase
 		{
 			foreach($matches[1] as $k => $v) {
 				$match = $matches[2][$k];
-				$def   = (strpos($match, ":null") === 0) ? '' : $match;
+				$def   = (strpos($match, ':null') === 0) ? '' : $match;
 				self::$viewTemplate = str_replace("{\${$v}.def[{$match}]}", self::$bindValues[$v] ?? $def, self::$viewTemplate);
 			}
 		}
 		// 替换html-link标签(当owoLink中的actived属性为false时, 删除该标签);
-		if(preg_match_all("/<owoLink (.*)>/", self::$viewTemplate, $matches))
+		if(preg_match_all("/<owoLink (.*)>/im", self::$viewTemplate, $matches))
 		{
 			foreach($matches[1] as $key => $sub) {
-				if(preg_match("/actived=\"([^ ]*)\"/", $sub, $match)) {
+				if(preg_match("/actived=\"([^ ]*)\"/im", $sub, $match)) {
 					if(strtolower($match[1]) === "false") {
 						$matches[1][$key] = '';
 					} else {
-						$matches[1][$key] = "<link ".trim(str_replace($match[0], "", $matches[1][$key])).">";
+						$matches[1][$key] = "<link " . trim(str_replace($match[0], '', $matches[1][$key])) . '>';
+					}
+					self::$viewTemplate = str_replace($matches[0][$key], $matches[1][$key], self::$viewTemplate);
+				}
+			}
+		}
+		// 替换html-script标签(当owoScript中的actived属性为false时, 删除该标签);
+		if(preg_match_all("/<owoScript (.*)>/im", self::$viewTemplate, $matches))
+		{
+			foreach($matches[1] as $key => $sub) {
+				if(preg_match("/actived=\"([^ ]*)\"/im", $sub, $match)) {
+					if(strtolower($match[1]) === "false") {
+						$matches[1][$key] = '';
+					} else {
+						$matches[1][$key] = "<script " . trim(str_replace($match[0], '', $matches[1][$key])) . '>';
 					}
 					self::$viewTemplate = str_replace($matches[0][$key], $matches[1][$key], self::$viewTemplate);
 				}
