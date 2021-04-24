@@ -11,7 +11,7 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 > OwOFrame 是我利用个人的空闲时间以及数不尽多少天熬夜开发出来的小框架, 当然也有很多不足之处. 本框架目前支持的功能请参见下列:
 
 #### Basic System Components
-- ~~[x] `ApiProcessor`        一个独立的API处理模块, 用于分离与AppManager的区别~~ (在 `dev@v1.0.0-ALPHA27` 中已被移除)
+- [x] ~~`ApiProcessor`        一个独立的API处理模块, 用于分离与AppManager的区别~~ (在 [`dev@v1.0.1-ALPHA27`](https://github.com/Tommy131/OwOFrame/commit/317ec78fa53b5a684a899cb664e486d1fc8ae971) 中已被移除)
 - [x] `AppManager`          本框架为多应用共存框架, 通过HTTP_URI识别当前的应用
 - [x] `CommandManager`      支持在CLI端通过CommandLine方法实现一些操作
 - [x] `ConfigurationParser` 配置文件解析器
@@ -25,6 +25,7 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 - [ ] `BetterRouter`        更好的路由控制器(更加个性化的路由绑定设置)
 - [x] `Template`            后端渲染模板(基本功能已经完成, 龟速开发进阶功能o(*￣▽￣*)o)
 - [x] `TextFormat`          支持ANSI控制码在CMD&Shell输出色彩
+- [x] `WMI`                 针对Windows系统编写的WMI操作类
 
 #### Basic Util Components
 - [x] `CookieClass`         一个普通的Cookie处理类
