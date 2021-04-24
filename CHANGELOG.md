@@ -1,8 +1,17 @@
 
-## OwOframe's CHANGELOG (Total `142` Commits)
+## OwOframe's CHANGELOG (Total `153` Commits)
 
 
 ↓ `[dev@v1.0.1, origin/dev@v1.0.1]` ↓
+
+------
+
+`dev@v1.0.1-ALPHA27`[20210424]:
+- 在 `ViewBase` 中添加了标签 `<owoScript>` 解析方法
+- 增加了 `WMI`(Windows Management Instrumentation) 操作类
+- 新增 `ExtensionMiddesException` 异常类
+- Updated README.md
+- Updated CHANGELOG.md
 
 ------
 
@@ -11,8 +20,6 @@
 - 优化了 `Router` 中的控制器方法回调写法
 - 加强了 `Response` 中回调方法的值的类型判断
 - Updated CHANGELOG.md
-
-------
 
 `dev@v1.0.1-ALPHA27`[20210415]:
 - 修复了一个BUG
