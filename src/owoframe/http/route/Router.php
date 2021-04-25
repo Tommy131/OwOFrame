@@ -149,6 +149,8 @@ final class Router
 						}
 					}
 					// TODO: 增加一个请求方法无效的事件回调;
+				} else {
+					$callback = [$controller, $requestMethod];
 				}
 			}
 
