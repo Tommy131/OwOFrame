@@ -39,7 +39,9 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	];
 
 	/* @Config 黑名单配置文件 */
-	private static $ipList;
+	protected static $ipList;
+	/* @array 不记录日志的路由 */
+	protected static $notLogUrl = [];
 	/* @array 自定义的用于过滤的正则表达式 */
 	public static $customFilter = [];
 
@@ -65,7 +67,12 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 			Session::start();
 			Router::dispath();
 		}
-		LogWriter::write('[B200@' . server('REQUEST_METHOD') . '] ' . $ip . ' -> ' . self::getCompleteUrl(), self::LOG_PREFIX);
+		if(!in_array(server('REQUEST_URI'), self::$notLogUrl)) LogWriter::write('[B200@' . server('REQUEST_METHOD') . '] ' . $ip . ' -> ' . self::getCompleteUrl(), self::LOG_PREFIX);
+	}
+
+	public static function pushInLogFilter(string $uri) : void
+	{
+		self::$notLogUrl[] = $uri;
 	}
 
 
