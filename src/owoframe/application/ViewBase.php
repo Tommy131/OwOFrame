@@ -327,31 +327,31 @@ class ViewBase extends ControllerBase
 				self::$viewTemplate = str_replace("{\${$v}.def[{$match}]}", self::$bindValues[$v] ?? $def, self::$viewTemplate);
 			}
 		}
-		// 替换html-link标签(当owoLink中的actived属性为false时, 删除该标签);
-		if(preg_match_all("/<owoLink (.*)>/im", self::$viewTemplate, $matches))
+		// 替换成html-link和html-script标签(当owoLink|owoScript中的actived属性为false时, 删除该标签);
+		if(preg_match_all("/<(owoLink|owoScript) (.*)>/m", self::$viewTemplate, $matches))
 		{
-			foreach($matches[1] as $key => $sub) {
-				if(preg_match("/actived=\"([^ ]*)\"/im", $sub, $match)) {
-					if(strtolower($match[1]) === "false") {
-						$matches[1][$key] = '';
-					} else {
-						$matches[1][$key] = "<link " . trim(str_replace($match[0], '', $matches[1][$key])) . '>';
+			foreach($matches[0] as $key => $found) {
+				$found   = trim($found);
+				$newLine = '';
+				if(preg_match("/actived=\"([^ ]*)\"[ ]?/im", $found, $match)) {
+					if(strtolower($match[1]) === "true") {
+						$matchedTag = $matches[1][$key];
+						switch($matchedTag) {
+							default:
+								$tag = 'div';
+							break;
+
+							case 'owoScript':
+								$tag = 'script';
+							break;
+							
+							case 'owoLink':
+								$tag = 'link';
+							break;
+						}
+						$newLine = str_replace([$matchedTag, $match[0]], [$tag, ''], $found);
 					}
-					self::$viewTemplate = str_replace($matches[0][$key], $matches[1][$key], self::$viewTemplate);
-				}
-			}
-		}
-		// 替换html-script标签(当owoScript中的actived属性为false时, 删除该标签);
-		if(preg_match_all("/<owoScript (.*)>/im", self::$viewTemplate, $matches))
-		{
-			foreach($matches[1] as $key => $sub) {
-				if(preg_match("/actived=\"([^ ]*)\"/im", $sub, $match)) {
-					if(strtolower($match[1]) === "false") {
-						$matches[1][$key] = '';
-					} else {
-						$matches[1][$key] = "<script " . trim(str_replace($match[0], '', $matches[1][$key])) . '>';
-					}
-					self::$viewTemplate = str_replace($matches[0][$key], $matches[1][$key], self::$viewTemplate);
+					self::$viewTemplate = str_replace($found, $newLine, self::$viewTemplate);
 				}
 			}
 		}
