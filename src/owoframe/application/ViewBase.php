@@ -21,6 +21,7 @@ namespace owoframe\application;
 use owoframe\helper\Helper;
 use owoframe\route\RouteResource;
 use owoframe\exception\InvalidRouterException;
+use owoframe\exception\ParameterErrorException;
 
 class ViewBase extends ControllerBase
 {
@@ -57,6 +58,25 @@ class ViewBase extends ControllerBase
 		}
 		return true;
 	}
+
+	/**
+	 * @method      removeValue
+	 * @description 删除模板中的变量定义
+	 * @author      HanskiJay
+	 * @doenIn      2021-04-26
+	 * @param       string      $searched 需要替换的变量名
+	 * @return      void
+	 */
+	public function removeValue(string $searched) : void
+	{
+		if(!$this->isValid()) {
+			return;
+		}
+		if(isset(self::$bindValues[$searched])) {
+			unset(self::$bindValues[$searched]);
+		}
+	}
+
 	/**
 	 * @method      bindComponent
 	 * @description 将View(V)模板中某个指定的变量中的原始变量按照第二参数替换掉
@@ -179,22 +199,6 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      parse
-	 * @description 解析前端模板存在的基本语法
-	 * @author      HanskiJay
-	 * @doenIn      2021-01-03
-	 * @param       string      $text 需要解析的文本
-	 * @return      void
-	 */
-	public static function parse(string &$text) : void
-	{
-		$regexArray =
-		[
-
-		];
-	}
-
-	/**
 	 * @method      getView
 	 * @description 返回当前视图模板(原始数据)
 	 * @author      HanskiJay
@@ -211,6 +215,90 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
+	 * @method      parseLoopArea
+	 * @description 解析前端模板存在的循环语法
+	 * @author      HanskiJay
+	 * @doenIn      2021-01-03
+	 * @param       string      $loopArea 需要解析的文本
+	 * @return      void
+	 */
+	public function parseLoopArea(string &$loopArea) : void
+	{
+		// $bindElement = "\\\$";
+		$bindElement = '@';
+		$loopHead    = "\{loop {$bindElement}([a-zA-Z0-9]+) in \\\$([a-zA-Z0-9]+)\}";
+		$loopBetween = "([\s\S]*)";
+		$loopEnd     = "\{\/loop\}";
+		$loopRegex   = "/{$loopHead}{$loopBetween}{$loopEnd}/mU";
+
+		if(!preg_match_all($loopRegex, $loopArea, $matched, PREG_SET_ORDER, 0)) {
+			return;
+		}
+		foreach($matched as $loopGroup) {
+			$bindTag  = trim($loopGroup[2]);                // 绑定的数组变量到模板;
+			$defined  = trim($loopGroup[1]);                // 定义的变量到模板;
+			// $loopArea = trim(preg_replace("/{$loopEnd}/im", '', preg_replace("/{$loopHead}/im", '', $loopArea)));
+			// $loopArea = explode("\n", trim($loopArea));      // 匹配到的循环语句;
+			$loop     = explode("\n", trim($loopGroup[0]));      // 匹配到的循环语句;
+
+			$data = $this->getValue($bindTag);
+			if(!$data || ($data && !is_array($data))) {
+				// TODO: 增加一个是否为 DEBUG_MODE 模式, 根据情况扔出异常;
+				throw new ParameterErrorException("Cannot find bindTag {{$bindElement}{$bindTag}} !");
+			}
+
+			$data = array_filter($data);
+			$complied = [];
+			$finaly   = '';
+			foreach($data as $k => $v) {
+				if(!is_array($v)) {
+					throw new ParameterErrorException('不合法的使用方法!');
+				}
+
+				foreach($loop as $n => $line) {
+					if(preg_match("/({$loopEnd}|{$loopHead})/im", $line)) {
+						continue;
+					}
+					$line   = trim($line);
+					$length = strlen($line);
+					if(preg_match_all("/{$defined}?([\\\.]?[a-zA-Z0-9]){0,$length}/", $line, $match)) {
+						$matchedTags = array_shift($match);    // 获取到的原始绑定标签集;
+						foreach($matchedTags as $matchedTag) {
+							$parseArray = explode('.', $matchedTag); // 解析并分级绑定标签;
+							array_shift($parseArray);                // 去除第一级原始绑定标签;
+
+							if((count($parseArray) === 0) && (($num = count($data)) > 1)) {
+								$complied[$k][$n] = str_replace($bindElement . $matchedTag . '@', "Array(n:{$bindElement}{$bindTag})[{$num}]", $line);
+							} else {
+								$current = $v;
+								while($parseArray) {
+									$next = array_shift($parseArray);
+									if(is_array($current)) {
+										if(isset($current[$next])) {
+											$current = $current[$next];
+										} else {
+											$current = "Array(undefined:{$bindElement}{$bindTag}.{$next})";
+										}
+									}
+								}
+								$complied[$k][$n] = str_replace($bindElement . $matchedTag . '@', $current, $complied[$k][$n] ?? $line);
+							}
+						}
+					} else {
+						$complied[$k][$n] = $line;
+					}
+				}
+				ksort($complied[$k]);
+				foreach($complied[$k] as $result) {
+					$finaly .= $result . PHP_EOL;
+				}
+			}
+		}
+		$this->removeValue($bindTag);
+		$loopArea = preg_replace($loopRegex, $finaly, $loopArea);
+	}
+
+	/**
 	 * @method      render
 	 * @description 渲染视图到前端
 	 * @author      HanskiJay
@@ -220,7 +308,7 @@ class ViewBase extends ControllerBase
 	public function render() : void
 	{
 		if(empty(self::$viewTemplate)) return;
-		// self::parse(self::$viewTemplate);
+		$this->parseLoopArea(self::$viewTemplate);
 		self::bindResources($routeUrls);
 		foreach($routeUrls as $type => $urls) {
 			$type = strtoupper($type);
@@ -291,7 +379,9 @@ class ViewBase extends ControllerBase
 				$basePath = "{$basePath}{$hashTag}.php";
 				if(!file_exists($basePath)) {
 					// TODO: Cache static files;
-					file_put_contents($basePath, "<?php /* Cached in " . date("Y-m-d H:i:s") . "@{$hashTag} */ header('Content-Type: " . Helper::MIMETYPE[$type] . "'); echo file_get_contents('{$resource}'); ?>");
+					$charset = ((stripos(Helper::MIMETYPE[$type], 'application') !== false) || (stripos(Helper::MIMETYPE[$type], 'text') !== false))
+								? '; charset=utf-8' : null;
+					file_put_contents($basePath, "<?php /* Cached in " . date("Y-m-d H:i:s") . "@{$hashTag} */ header('Content-Type: " . Helper::MIMETYPE[$type] . "" . $charset . "'); header('X-Content-Type-Options: nosniff'); header('Cache-Control: max-age=31536000, immutable'); echo file_get_contents('{$resource}'); ?>");
 				}
 				$handled[$group][$tag] = "/static.php/{$group}/{$hashTag}.{$type}";
 			}
