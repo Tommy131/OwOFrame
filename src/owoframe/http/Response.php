@@ -43,7 +43,9 @@ class Response
 	/* @array HTTP header参数设置 */
 	protected $header = 
 	[
-		'Content-Type' => 'text/html; charset=utf-8'
+		'Content-Type'           => 'text/html; charset=utf-8',
+		'X-Content-Type-Options' => 'nosniff',
+		'Pragma'                 => 'HTTP/1.0'
 	];
 	/* @string 默认响应信息 */
 	public $defaultResponseMsg = '[OwOResponseError] Keine Ahnung...';
