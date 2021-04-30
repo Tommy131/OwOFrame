@@ -113,9 +113,9 @@ final class Router
 						$_get = [];
 						foreach($rest as $var) {
 							$var = explode('=', $var);
-							$_get[$var[0]] =$var[1];
+							$_get[$var[0]] = $var[1];
 						}
-						array_merge($_GET, $_get);
+						$_GET = array_merge($_GET, $_get); // ?Bewilderment;
 					}
 				}
 			}
@@ -123,10 +123,10 @@ final class Router
 		$app->setParameters($tmps);
 
 		$controllerName = ucfirst($controllerName);
-		if(($controller = $app->getController($controllerName)) === null) {
+		if(!($controller = $app->getController($controllerName))) {
 			$controller = $app->getDefaultController();
 		}
-		if($controller === null) {
+		if(!$controller) {
 			Http::setStatusCode(404);
 			throw new InvalidControllerException($app->getName(), $controllerName);
 			// TODO: 增加一个未找到Controller的回调方法(callback);
@@ -137,18 +137,19 @@ final class Router
 		} else {
 			$reflect = new ReflectionClass($controller);
 			if($reflect->hasMethod($requestMethod) && $reflect->getMethod($requestMethod)->isPublic()) {
-				$callback = [$controller, $requestMethod];
+				if(!$app->isControllerMethodBanned($requestMethod, $controller->getName())) {
+					$callback = [$controller, $requestMethod];
+				} else {
+					throw new InvalidRouterException("Requested method '{$requestMethod}' is banned, cannot be requested!");
+				}
 			} else {
 				$requestMethod = $controller::$autoInvoke_methodNotFound;
 				if(!$reflect->hasMethod($requestMethod)) {
-					if(defined('DEBUG_MODE') && DEBUG_MODE) {
-						throw new MethodMissedException(get_class($controller), $requestMethod);
-					} else {
-						if($app->autoTo404Page()) {
-							$callback = [$app, 'renderPageNotFound'];
-						}
-					}
+					$exception = new MethodMissedException(get_class($controller), $requestMethod);
+					$exception->setJudgement($app->autoTo404Page());
+					$exception->setAlternativeCall([$app, 'renderPageNotFound']);
 					// TODO: 增加一个请求方法无效的事件回调;
+					throw $exception;
 				} else {
 					$callback = [$controller, $requestMethod];
 				}
@@ -157,8 +158,19 @@ final class Router
 			$response = Http::Response($callback);
 			$response->sendResponse();
 		}
+		self::getRunTimeDiv($controller::$showUsedTimeDiv);
+	}
 
-		if(defined('DEBUG_MODE') && DEBUG_MODE && $controller::$showUsedTimeDiv) {
+	/**
+	 * @method      getRunTimeDiv
+	 * @description 输出运行时间框
+	 * @author      HanskiJay
+	 * @doenIn      2021-04-30
+	 * @return      void
+	 */
+	public static function getRunTimeDiv(bool $condition = true) : void
+	{
+		if(defined('DEBUG_MODE') && DEBUG_MODE && $condition) {
 			echo str_replace('{runTime}', BootStraper::getRunTime(), base64_decode('PGRpdiBzdHlsZT0icG9zaXRpb246IGFic29sdXRlOyB6LWluZGV4OiA5OTk5OTk7IGJvdHRvbTogMDsgcmlnaHQ6IDA7IG1hcmdpbjogNXB4OyBwYWRkaW5nOiA1cHg7IGJhY2tncm91bmQtY29sb3I6ICNhYWFhYWE7IGJvcmRlci1yYWRpdXM6IDVweDsiPgoJPGRpdj5Vc2VkVGltZTogPGI+e3J1blRpbWV9czwvYj48L2Rpdj4KPC9kaXY+'));
 		}
 	}
