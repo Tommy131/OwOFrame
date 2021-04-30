@@ -159,14 +159,14 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      setName
+	 * @method      setViewName
 	 * @description 设置当前视图名称
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-10
 	 * @param       string      $viewName 视图名称
 	 * @return      void
 	*/
-	public function setName(string $viewName, ...$args) : void
+	public function setViewName(string $viewName, ...$args) : void
 	{
 		$this->viewName = $viewName;
 		if(count($args) > 0) {
@@ -175,13 +175,13 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      getName
+	 * @method      getViewName
 	 * @description 返回当前视图名称
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-10
 	 * @return      string
 	*/
-	public function getName() : string
+	public function getViewName() : string
 	{
 		return $this->viewName;
 	}
@@ -195,7 +195,7 @@ class ViewBase extends ControllerBase
 	*/
 	public function getCompleteName() : string
 	{
-		return $this->getName() . "." . $this->getFileExtension();
+		return $this->getViewName() . "." . $this->getFileExtension();
 	}
 
 	/**

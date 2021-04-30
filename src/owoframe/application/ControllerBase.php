@@ -110,7 +110,7 @@ abstract class ControllerBase
 	 * @doenIn      2021-02-09
 	 * @return      string
 	 */
-	public function getName() : string
+	final public function getName() : string
 	{
 		return Helper::getShortClassName($this);
 	}
