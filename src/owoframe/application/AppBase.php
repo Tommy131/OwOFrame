@@ -27,14 +27,16 @@ use owoframe\utils\DataEncoder;
 
 abstract class AppBase
 {
-	/* @string 默认控制其名称 */
-	private $defaultController = '';
-	/* @string 当前的App访问地址 */
-	private $siteUrl = null;
-	/* @Array 从请求Url传入的原始get参数 */
-	protected $parameter = [];
 	/* @AppBase 返回本类实例 */
 	private static $instance = null;
+	/* @string 当前的App访问地址 */
+	private $siteUrl = null;
+	/* @string 默认控制其名称 */
+	protected $defaultController = '';
+	/* @Array 从请求Url传入的原始get参数 */
+	protected $parameter = [];
+	/* @array 不允许通过路由请求的控制器(方法)组 */
+	protected $contronllerFilter = [];
 
 
 	public function __construct(string $siteUrl, array $parameter = [])
@@ -85,6 +87,65 @@ abstract class AppBase
 	}
 
 	/**
+	 * @method      isControllerMethodBanned
+	 * @description 判断控制器的方法是否不允许直接访问
+	 * @author      HanskiJay
+	 * @doenIn      2021-04-30
+	 * @param       string                   $methodName     方法名
+	 * @param       string                   $controllerName 控制器名
+	 * @return      boolean
+	 */
+	public function isControllerMethodBanned(string $methodName, string $controllerName) : bool
+	{
+		$controllerName =ucfirst(strtolower($controllerName));
+		return isset($this->contronllerFilter[$controllerName]) && in_array($methodName, $this->contronllerFilter[$controllerName]);
+	}
+
+	/**
+	 * @method      banControllerMethod
+	 * @description 禁止通过路由请求此控制器的方法
+	 * @author      HanskiJay
+	 * @doenIn      2021-04-29
+	 * @param       string              $controllerName 控制器名
+	 * @param       array               $args           多选方法名组
+	 * @return      void
+	 */
+	public function banControllerMethod(string $controllerName, array $args) : void
+	{
+		$controllerName = ucfirst(strtolower($controllerName));
+		if(!$this->getController($controllerName)) {
+			throw new InvalidControllerException(static::getName(), $controllerName);
+		}
+		if(!isset($this->contronllerFilter[$controllerName])) {
+			$this->contronllerFilter[$controllerName] = [];
+		}
+		$this->contronllerFilter[$controllerName] = array_merge($this->contronllerFilter[$controllerName], $args);
+	}
+
+	/**
+	 * @method      allowControllerMethod
+	 * @description 允许通过路由请求此控制器的方法
+	 * @author      HanskiJay
+	 * @doenIn      2021-04-29
+	 * @param       string              $controllerName 控制器名
+	 * @param       array               $args           多选方法名组
+	 * @return      void
+	 */
+	public function allowControllerMethod(string $controllerName, array $args) : void
+	{
+		$controllerName =ucfirst(strtolower($controllerName));
+		if(!$this->getController($controllerName)) {
+			throw new InvalidControllerException(static::getName(), $controllerName);
+		}
+		foreach($args as $key => $methodName) {
+			if($this->isControllerMethodBanned($controllerName, $methodName)) {
+				unset($this->contronllerFilter[$controllerName][$key]);
+			}
+		}
+		ksort($this->contronllerFilter);
+	}
+
+	/**
 	 * @method      setDefaultController
 	 * @description 设置默认控制器
 	 * @author      HanskiJay
@@ -94,7 +155,7 @@ abstract class AppBase
 	*/
 	public function setDefaultController(string $defaultController) : void
 	{
-		if($this->getController($defaultController) === null) {
+		if(!$this->getController($defaultController)) {
 			throw new InvalidControllerException(static::getName(), $defaultController);
 		}
 		$this->defaultController = $defaultController;
@@ -120,25 +181,16 @@ abstract class AppBase
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-09
 	 * @param       string      $controllerName 控制器名称
-	 * @return      null|@ControllerBase
+	 * @return      boolean|@ControllerBase
 	*/
-	public function getController(string $controllerName) : ?ControllerBase
+	public function getController(string $controllerName, bool $autoMake = true)
 	{
 		$controller = '\\application\\' . static::getName() . '\\controller\\' . $controllerName;
-		return class_exists($controller) ? (new $controller($this)) : null;
-	}
-
-	/**
-	 * @method      getAppPath
-	 * @description 获取当前App目录
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09
-	 * @param       bool      $selectMode 选择模式[True: 返回绝对路径|Return absolute path][False: 返回相对路径|Return relative path]](Default:true)
-	 * @return      string
-	*/
-	final public static function getAppPath(bool $selectMode = true) : string
-	{
-		return (($selectMode) ? AppManager::getPath() : static::getNameSpace()) . static::getName() . DIRECTORY_SEPARATOR;
+		if(class_exists($controller)) {
+			return ($autoMake) ? new $controller($this) : true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -152,6 +204,19 @@ abstract class AppBase
 	public static function getCachePath(string $option = '') : string
 	{
 		return A_CACHE_PATH . static::getName() . DIRECTORY_SEPARATOR . $option;
+	}
+
+	/**
+	 * @method      getAppPath
+	 * @description 获取当前App目录
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-09
+	 * @param       bool      $selectMode 选择模式[True: 返回绝对路径|Return absolute path][False: 返回相对路径|Return relative path]](Default:true)
+	 * @return      string
+	*/
+	final public static function getAppPath(bool $selectMode = true) : string
+	{
+		return (($selectMode) ? AppManager::getPath() : static::getNameSpace()) . static::getName() . DIRECTORY_SEPARATOR;
 	}
 
 	/**
