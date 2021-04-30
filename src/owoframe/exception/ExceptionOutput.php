@@ -20,6 +20,8 @@ namespace owoframe\exception;
 
 use owoframe\helper\BootStraper as BS;
 use owoframe\helper\Helper;
+use owoframe\http\HttpManager as Http;
+use owoframe\http\route\Router;
 use owoframe\utils\LogWriter;
 use owoframe\utils\TextFormat;
 
@@ -77,6 +79,13 @@ class ExceptionOutput
 		$type .= Helper::getShortClassName($e);
 
 		if(Helper::isRunningWithCGI()) {
+			if(($e instanceof MethodMissedException) && $e->getJudgement()) {
+				$response = Http::Response($e->getAlternativeCall());
+				$response->sendResponse();
+				Router::getRunTimeDiv($e::toggleRunTimeDivOutput(false));
+				return;
+			}
+
 			if(defined('LOG_ERROR') && LOG_ERROR) {
 				$logged = '<span id="logged">--- Logged ---</span>';
 				self::log($e->__toString());
