@@ -26,9 +26,7 @@ use owoframe\exception\ParameterErrorException;
 class ViewBase extends ControllerBase
 {
 	/* @string 视图名称 */
-	private $viewName = '';
-	/* @string 视图文件扩展 */
-	private $fileExt = 'html';
+	private $viewTplName = '';
 	/* @string 视图模板 */
 	protected static $viewTemplate = null;
 	/* @array 模板绑定的变量 */
@@ -133,69 +131,28 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      setFileExtension
-	 * @description 设置当前视图文件扩展
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $fileExt 视图文件扩展
-	 * @return      void
-	*/
-	public function setFileExtension(string $fileExt) : void
-	{
-		$fileExt = array_filter(explode(".", $fileExt));
-		$this->fileExt = array_shift($fileExt);
-	}
-
-	/**
-	 * @method      getFileExtension
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @description 获取当前视图文件扩展
-	 * @return      string
-	*/
-	public function getFileExtension() : string
-	{
-		return $this->fileExt;
-	}
-
-	/**
-	 * @method      setViewName
+	 * @method      setViewTplName
 	 * @description 设置当前视图名称
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-10
 	 * @param       string      $viewName 视图名称
 	 * @return      void
 	*/
-	public function setViewName(string $viewName, ...$args) : void
+	public function setViewTplName(string $viewTplName) : void
 	{
-		$this->viewName = $viewName;
-		if(count($args) > 0) {
-			$this->fileExt = array_shift($args);
-		}
+		$this->viewTplName = $viewTplName;
 	}
 
 	/**
-	 * @method      getViewName
+	 * @method      getViewTplName
 	 * @description 返回当前视图名称
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-10
 	 * @return      string
 	*/
-	public function getViewName() : string
+	public function getViewTplName() : string
 	{
-		return $this->viewName;
-	}
-
-	/**
-	 * @method      getCompleteName
-	 * @description 返回当前视图完整文件名称
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @return      string
-	*/
-	public function getCompleteName() : string
-	{
-		return $this->getViewName() . "." . $this->getFileExtension();
+		return $this->viewTplName;
 	}
 
 	/**
@@ -209,7 +166,7 @@ class ViewBase extends ControllerBase
 	public function getView(bool $updateCached = false) : ?string
 	{
 		if(empty(self::$viewTemplate) || $updateCached) {
-			self::$viewTemplate = $this->hasViewPath($this->getCompleteName()) ? file_get_contents($this->getViewPath($this->getCompleteName())) : null;
+			self::$viewTemplate = $this->hasViewPath($this->getViewTplName()) ? file_get_contents($this->getViewPath($this->getViewTplName())) : null;
 		}
 		return self::$viewTemplate;
 	}
