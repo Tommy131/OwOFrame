@@ -1,10 +1,27 @@
 
-## OwOframe's CHANGELOG (Total `153` Commits)
+## OwOframe's CHANGELOG (Total `165` Commits)
 
 
 ↓ `[dev@v1.0.1, origin/dev@v1.0.1]` ↓
 
 ------
+
+`dev@v1.0.1-ALPHA27`[20210430-0502]:
+- 在 `ViewBase` 中添加了模板语句 `{loop}` 循环的解析方法
+- 优化了 `HTTPManager` 中的一些问题
+- 优化了标签 `<owoScript>` 和 `<owoLink>` 的解析方法
+- 新增了方法名过滤器
+- 修复了 `ViewBase` 和  `ControllerBase` 的 `getName` 方法冲突BUG
+- 优化了 `MethodMissedException` 错误异常处理
+- 修复了兼容性和删除了一些无用的代码
+- Updated CHANGELOG.md
+
+------
+
+`dev@v1.0.1-ALPHA27`[20210425]:
+- 增加了根据路由过滤日志方法
+- 修改了 `WMI` 中的方法名
+- 修复了 `Router` 中存在的一个BUG
 
 `dev@v1.0.1-ALPHA27`[20210424]:
 - 在 `ViewBase` 中添加了标签 `<owoScript>` 解析方法
@@ -12,8 +29,6 @@
 - 新增 `ExtensionMiddesException` 异常类
 - Updated README.md
 - Updated CHANGELOG.md
-
-------
 
 `dev@v1.0.1-ALPHA27`[20210417]:
 - 新增了标准输出 (`StandardOutput`) 接口
