@@ -1,0 +1,20 @@
+<?php
+
+/************************************************************************
+	 _____   _          __  _____   _____   _       _____   _____  
+	/  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___| 
+	| | | | | |  __   / /  | | | | | |_| | | |     | | | | | |     
+	| | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _  
+	| |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| | 
+	\_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/ 
+	
+	* Copyright (c) 2015-2019 OwOBlog-DGMT All Rights Reserevd.
+	* Developer: HanskiJay(Teaclon)
+	* Telegram: https://t.me/HanskiJay E-Mail: support@owoblog.com
+	* GitHub: https://github.com/Tommy131
+	
+************************************************************************/
+
+// File Drafted;
+// The code has been Base64 encoded;
+// DQovKioNCiAqIEBtZXRob2QgICAgICBsb2FkQ29uZmlnDQogKiBAZGVzY3JpcHRpb24g5Yqg6L296YWN572u5paH5Lu2DQogKiBAYXV0aG9yICAgICAgSGFuc2tpSmF5DQogKiBAZG9lbkluICAgICAgMjAyMS0wMS0wOQ0KICogQHBhcmFtICAgICAgIHN0cmluZ1tmaWxlfOaWh+S7tui3r+W+hF0NCiAqIEBwYXJhbSAgICAgICBib29sW3RvSnNvbnzku6VKU09O5a+56LGh5qC85byP6L6T5Ye6KERlZmF1bHQ6IGZhbHNlKV0NCiAqIEByZXR1cm4gICAgICBhcnJheQ0KICovDQpmdW5jdGlvbiBsb2FkQ29uZmlnKHN0cmluZyAkZmlsZSwgYm9vbCAkdG9Kc29uID0gZmFsc2UpIDogYXJyYXkNCnsNCgkkcHJlZml4ID0gJiMzOTtbQ29uZmlnUGFyc2VyXSDphY3nva7mlofku7bliqDovb3lpLHotKU6JiMzOTs7DQoJJGNvbmZpZyA9IFtdOw0KCWlmKCFmaWxlX2V4aXN0cygkZmlsZSkpIHJldHVybiBbXTsNCgkkY29udGVudCA9IGZpbGUoJGZpbGUsIEZJTEVfSUdOT1JFX05FV19MSU5FUyB8IEZJTEVfU0tJUF9FTVBUWV9MSU5FUyk7DQoJJGN1cnJlbnRHcm91cCA9IG51bGw7DQoJZm9yZWFjaCgkY29udGVudCBhcyAkbGluZSkgew0KCQkjIC0tLSogW+ivhuWIq+e7hOW8gOWni+agh+etvl0gKi0tLQ0KCQlpZihwcmVnX21hdGNoKCIvXlxbKC4qKVxdJC8iLCAkbGluZSwgJG1hdGNoKSkgew0KCQkJJGdyb3VwID0gdHJpbSgkbWF0Y2hbMV0pOw0KCQkJaWYoIWlzc2V0KCRjb25maWdbJGdyb3VwXSkpIHsNCgkJCQkkY3VycmVudEdyb3VwICAgPSAkZ3JvdXA7DQoJCQkJJGNvbmZpZ1skZ3JvdXBdID0gW107DQoJCQl9IGVsc2Ugew0KCQkJCXRocm93IGVycm9yKCJ7JHByZWZpeH3lt7LlrZjlnKjnu4QgJiMzOTt7JGdyb3VwfSYjMzk7ICEiKTsNCgkJCX0NCgkJfQ0KDQoJCSMgLS0tKiBb6K+G5Yir5Y+Y6YeP5a6a5LmJXSAqLS0tDQoJCS8vIOWFiOaatOWKm+iOt+WPluS4gOmBjSwg5Y676Zmk562J5Y+35Lik6L6555qE56m65qC8Ow0KCQlpZihwcmVnX21hdGNoKCIvXiguKik9KC4qKSQvIiwgJGxpbmUsICRtYXRjaCkpIHsNCgkJCSRtYXRjaFsxXSA9IHRyaW0oJG1hdGNoWzFdKTsNCgkJCSRtYXRjaFsyXSA9IHRyaW0oJG1hdGNoWzJdKTsNCgkJCSRsaW5lID0gJG1hdGNoWzFdIC4gJiMzOTs9JiMzOTsgLiAkbWF0Y2hbMl07DQoJCX0NCgkJaWYocHJlZ19tYXRjaCgiL14oW2EtekEtWjAtOV9cLVwuXSspXHM/PVxzPyhbYS16QS1aMC05X1wtXC5cL1xcXCBcc0BdKykkLyIsICRsaW5lLCAkbWF0Y2gpICYmIGlzc2V0KCRtYXRjaFsxXSwgJG1hdGNoWzJdKSkgew0KCQkJJG1hdGNoWzJdID0gcHJlZ19tYXRjaCgiL251bGwvaSIsICRtYXRjaFsyXSkgPyAmIzM5OyYjMzk7IDogdHJpbSgkbWF0Y2hbMl0pOw0KCQkJJGNvbmZpZ1skY3VycmVudEdyb3VwID8/ICYjMzk7XyYjMzk7XVt0cmltKCRtYXRjaFsxXSldID0gJG1hdGNoWzJdOw0KCQl9DQoJfQ0KCS8vICRjb25maWcgPSBwYXJzZV9pbmlfZmlsZSgkZmlsZSk7DQoJcmV0dXJuICEkdG9Kc29uID8gJGNvbmZpZyA6IGpzb25fZGVjb2RlKGpzb25fZW5jb2RlKCRjb25maWcpKTsNCn0NCg0KLyoqDQogKiBAbWV0aG9kICAgICAgX2dsb2JhbA0KICogQGRlc2NyaXB0aW9uIOivu+WPluWFqOWxgOmFjee9ruaWh+S7tiB8IGdldCBnbG9iYWwgY29uZmlndXJhdGlvbjsNCiAqIEBhdXRob3IgICAgICBIYW5za2lKYXkNCiAqIEBkb2VuSW4gICAgICAyMDIxLTAxLTA5DQogKiBAcGFyYW0gICAgICAgc3RyaW5nW3N0cl0NCiAqIEBwYXJhbSAgICAgICBtaXhlZFtkZWZhdWx0fOm7mOiupOi/lOWbnuWAvF0NCiAqIEByZXR1cm4gICAgICBtaXhlZA0KICovDQpmdW5jdGlvbiBfZ2xvYmFsKHN0cmluZyAkc3RyLCAkZGVmYXVsdCA9IG51bGwpDQp7DQoJZ2xvYmFsICRfZ2xvYmFsOw0KCXN0YXRpYyAkZ3JvdXBOYW1lOw0KCWlmKCRfZ2xvYmFsID09PSBudWxsKSB7DQoJCSRmaWxlID0gRlJBTUVXT1JLX1BBVEggLiAmIzM5O2NvbmZpZyYjMzk7IC4gRElSRUNUT1JZX1NFUEFSQVRPUiAuICYjMzk7Z2xvYmFsLmluaSYjMzk7Ow0KCQlpZighZmlsZV9leGlzdHMoJGZpbGUpKSByZXR1cm4gJGRlZmF1bHQ7DQoJCSRfZ2xvYmFsID0gbG9hZENvbmZpZygkZmlsZSk7CQ0KCX0NCg0KCSRhcnJheSA9IGV4cGxvZGUoJiMzOTtAJiMzOTssICRzdHIpOw0KCWlmKChjb3VudCgkYXJyYXkpID09PSAyKSAmJiAoaXNzZXQoJF9nbG9iYWxbJGFycmF5WzBdXSkpKSB7DQoJCWlmKCRhcnJheVswXSAhPT0gJGdyb3VwTmFtZSkgJGdyb3VwTmFtZSA9ICRhcnJheVswXTsNCgkJJHN0ciA9ICRhcnJheVsxXTsNCgl9DQoJdW5zZXQoJGFycmF5KTsNCg0KCWlmKCFpc3NldCgkZ3JvdXBOYW1lKSAmJiBpc3NldCgkX2dsb2JhbFskc3RyXSkpIHsNCgkJJGdyb3VwTmFtZSA9ICRzdHI7DQoJCXJldHVybiAmIzM5O+aIkOWKn+iuvue9rue7hOWQjSwg546w5Y+v5Lul5p+l55yL5a2Q5Y+Y6YePJiMzOTs7DQoJfQ0KDQoJcmV0dXJuICRfZ2xvYmFsWyRncm91cE5hbWVdWyRzdHJdID8/ICRkZWZhdWx0Ow0KfQ0KDQo=
