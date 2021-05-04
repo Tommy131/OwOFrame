@@ -22,7 +22,8 @@ use owoframe\contract\{HTTPStatusCodeConstant, Manager};
 use owoframe\helper\Helper;
 use owoframe\http\Session;
 use owoframe\http\route\Router;
-use owoframe\utils\{Config, LogWriter};
+use owoframe\object\JSON;
+use owoframe\utils\LogWriter;
 
 class HttpManager implements HTTPStatusCodeConstant, Manager
 {
@@ -255,8 +256,9 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 * @doenIn      2021-03-09
 	 * @param       string      $ip   IP地址
 	 * @param       array       $data 自定义设置信息集
+	 * @return      object@JSON
 	 */
-	public static function setIpData(string $ip, array $data) : Config
+	public static function setIpData(string $ip, array $data) : JSON
 	{
 		if(Helper::isIp($ip)) {
 			$encodedIp = base64_encode($ip);
@@ -297,12 +299,12 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 * @description 返回黑名单配置文件实例
 	 * @author      HanskiJay
 	 * @doenIn      2021-03-07
-	 * @return      @Config
+	 * @return      object@JSON
 	 */
-	public static function ipList() : Config
+	public static function ipList() : JSON
 	{
-		if(!self::$ipList instanceof Config) {
-			self::$ipList = new Config(FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'ipList.json');
+		if(!self::$ipList instanceof JSON) {
+			self::$ipList = new JSON(FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'ipList.json');
 		}
 		return self::$ipList;
 	}

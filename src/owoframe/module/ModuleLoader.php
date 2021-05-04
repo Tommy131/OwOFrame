@@ -19,13 +19,14 @@ declare(strict_types=1);
 namespace owoframe\module;
 
 use owoframe\helper\Helper;
+use owoframe\object\INI;
 use owoframe\utils\LogWriter;
 use owoframe\exception\ResourceMissedException;
 
 class ModuleLoader
 {
 	/* @string 模块信息识别文件名称 */
-	public const IDENTIFY_FILE_NAME = 'info.conf';
+	public const IDENTIFY_FILE_NAME = 'info.ini';
 
 	/* @string 模块加载路径 */
 	private static $loadPath = '';
@@ -106,9 +107,9 @@ class ModuleLoader
 		$hisPath = self::getPath() . $name . DIRECTORY_SEPARATOR;
 		if(!is_dir($hisPath)) return false;
 		if(!file_exists($ic = $hisPath . self::IDENTIFY_FILE_NAME)) return false;
-		$info = @array_shift(loadConfig($ic));
-		if(!self::checkInfo($info)) return false;
-		$info = json_decode(json_encode($info)); // Format to JSON Object;
+		$info = new INI($ic);
+		if(!self::checkInfo($info->getAll())) return false;
+		$info = $info->obj(); // Format to JSON Object;
 		if(!file_exists($hisPath .$info->className . '.php')) return false;
 		/*$info->className = str_replace('/', '\\', trim($info->className));
 		if(!class_exists($info->className)) return false;

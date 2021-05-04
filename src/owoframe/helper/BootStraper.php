@@ -20,6 +20,7 @@ namespace owoframe\helper;
 
 use owoframe\MasterManager;
 use owoframe\exception\ExceptionOutput;
+use owoframe\object\INI;
 
 class BootStraper
 {
@@ -80,8 +81,7 @@ class BootStraper
 			MasterManager::getClassLoader()->addPsr4('application\\', APP_PATH);
 			MasterManager::getClassLoader()->addPsr4('module\\',      MODULE_PATH);
 		}
-		global $_global;
-		$_global = loadConfig(FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'global.ini');
+		INI::globalLoad(FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'global.ini');
 	}
 
 	/**

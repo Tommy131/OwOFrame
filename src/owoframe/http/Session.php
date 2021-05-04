@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace owoframe\http;
 
 use owoframe\exception\OwOFrameException;
+use owoframe\object\INI;
 use owoframe\redis\RedisConnector;
 
 class Session
@@ -36,14 +37,14 @@ class Session
 	{
 		try {
 			if(!self::isStarted()) {
-				if(_global('redis@enable', true) && extension_loaded("redis"))
+				if(INI::_global('redis.enable', true) && extension_loaded("redis"))
 				{
 					if(strtolower(ini_get("session.save_handler")) === "files") {
 						ini_set("session.save_handler", "redis");
 					}
-					$server = _global('redis@server', '127.0.0.1');
-					$port   = _global('redis@port', 6379);
-					$auth   = _global('redis@auth', null);
+					$server = INI::_global('redis.server', '127.0.0.1');
+					$port   = INI::_global('redis.port', 6379);
+					$auth   = INI::_global('redis.auth', null);
 					
 					$connector = RedisConnector::getInstance();
 					$connector->cfg('host',     $server, true);
