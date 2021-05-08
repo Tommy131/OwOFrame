@@ -69,7 +69,6 @@ final class MasterManager extends Container implements Manager
 			AppManager::setPath(APP_PATH);
 			ModuleLoader::setPath(MODULE_PATH);
 			ModuleLoader::autoLoad();
-			\owoframe\db\DbConfig::init();
 			define('OWO_INITIALIZED', true); // Define this constant to let the system know that OwOFrame has been initialized;
 		}
 	}
