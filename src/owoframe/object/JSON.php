@@ -77,7 +77,7 @@ class JSON extends Config
 	{
 		if(is_file($this->filePath . $this->fileName)) {
 			$this->nestedCache = [];
-			$this->config = json_decode(file_get_contents($this->filePath . $this->fileName, true)) ?? [];
+			$this->config = json_decode(file_get_contents($this->filePath . $this->fileName), true) ?? [];
 		} else {
 			Helper::logger("Cannot reload Config::{$this->fileName} because the file does not exists!");
 		}
