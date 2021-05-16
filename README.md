@@ -1,55 +1,52 @@
 ## OwOFrame
-开源许可证: ![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg) [Learn More](https://opensource.org/licenses/Apache-2.0)
+Open source license : ![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg) [Learn More](https://opensource.org/licenses/Apache-2.0)
 
-OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模式开发, 框架的制定标准借鉴了 `ThinkPHP` ~~和 `Laravel`~~(框架太大了), 因此有部分方法的命名规则看起来与其有相似之处. 此项目仅为我个人的练习项目.
+OwO! `OwOFrame` is developed based on the `MVC (Model-Views-Controller)` model. The framework's standard formulation draws on `ThinkPHP`, so the naming rules for some methods seem There are similarities. This repository is just my personal practice repository.
 
-如果您觉得本项目对您有帮助, 请给本项目一颗小小的 `Star` 呗QWQ
+If you think this repository is helpful to you, please give this repository a `Star` QWQ 
+
+
+[中文版简介请点这里](https://github.com/Tommy131/OwOFrame)
 
 ------
 
 ## What can I do?
-> OwOFrame 是我利用个人的空闲时间以及数不尽多少天熬夜开发出来的小框架, 当然也有很多不足之处. 本框架目前支持的功能请参见下列:
+> OwOFrame is a small framework that I developed using my free time. Of course, there are many shortcomings. The functions currently supported by this framework are listed below: 
 
 #### Basic System Components
-- [x] ~~`ApiProcessor`        一个独立的API处理模块, 用于分离与AppManager的区别~~ (在 [`dev@v1.0.1-ALPHA27`](https://github.com/Tommy131/OwOFrame/commit/317ec78fa53b5a684a899cb664e486d1fc8ae971) 中已被移除)
-- [x] `AppManager`          本框架为多应用共存框架, 通过HTTP_URI识别当前的应用
-- [x] `CommandManager`      支持在CLI端通过CommandLine方法实现一些操作
-- [x] `ConfigurationParser` 配置文件解析器
-- [x] `EventManager`        事件管理器(钩子方法)
-- [x] `Exception`           错误异常抓取及Stack输出(我知道高级的框架都拥有且比我的更好QAQ)
-- [x] `PluginLoader`        插件加载器(独立于Application之外的可灵活更改的一种支持方法)
-- [x] `Language`            自定义语言包支持
-- [x] `LogWriter`           支持最基础的日志记录
-- [x] `Redis`               支持基本Redis操作
-- [x] `RouterManager`       路由管理器
-- [ ] `BetterRouter`        更好的路由控制器(更加个性化的路由绑定设置)
-- [x] `Template`            后端渲染模板(基本功能已经完成, 龟速开发进阶功能o(*￣▽￣*)o)
-- [x] `TextFormat`          支持ANSI控制码在CMD&Shell输出色彩
-- [x] `WMI`                 针对Windows系统编写的WMI操作类
+- [x] `AppManager`          Judge the corresponding routing controller by identifying `HTTP_URI` and assign it to the corresponding Application 
+- [x] `CommandManager`      Support some operations through the Command Line method on the CLI 
+- [x] `ConfigurationParser` Configuration Parser
+- [x] `EventManager`        Event Manager(Hooks Module)
+- [x] `Exception`           Error capture and Stack output (I know that advanced frameworks have them and are better than mine QAQ)
+- [x] `PluginLoader`        Plug-in loader (a support method that can be flexibly changed independent of Application)
+- [x] `Language`            Custom languages packages supported
+- [x] `LogWriter`           Support the most basic logging 
+- [x] `Redis`               Support basic Redis operations 
+- [x] `RouterManager`       Router Manager
+- [ ] `BetterRouter`        Better Router (More personalized routing binding settings)
+- [x] `Template`            Back-end rendering template (basic functions have been completed, turtle speed development advanced functions o(*￣▽￣*)o)
+- [x] `TextFormat`          Support ANSI control code output color in CMD & Shell
+- [x] `WMI`                 WMI operation class written for Windows system
 
 #### Basic Util Components
-- [x] `CookieClass`         一个普通的Cookie处理类
-- [x] `EmptyAppGenerator`   一键生成新的Application模板
-- [x] `FileUploadClass`     文件上传类支持
-- [x] `Helper`              一个集成化的方法类(具体请看源代码)
-- [x] `SessionClass`        一个普通的Session处理类
+- [x] `CookieClass`         A common Cookie class
+- [x] `EmptyAppGenerator`   Generate a new Application template with one click
+- [x] `FileUploadClass`     File upload support
+- [x] `Helper`              An integrated method class (see the source code for details)
+- [x] `SessionClass`        An common Session class
 
 #### Third Party Resources
-- [x] [`PasswordHash`](http://www.openwall.com/phpass/) 在此项目中包含/集成了该类库
-- [x] [`Think-ORM`](https://github.com/top-think/think-orm) 使用此项目达到了OwOFrame的ModelBase目的实现
-
+- [x] [`PasswordHash`](http://www.openwall.com/phpass/)
+- [x] [`Think-ORM`](https://github.com/top-think/think-orm)
 
 
 ## How to use me?
-打开命令行 `CMD` 或Linux的 `Shell` 之后, 进入到项目根目录并且输入指令 `cd owoframe && composer install`安装所需的依赖包.
+At first you need to open `CMD` or `Shell` and get in to the root path then use command `cd owoframe && composer install` to install environment.
 
-然后介绍一下目录格式吧.
 
-- 引导文件为根目录下的 `/public/index.php`, 通过此文件初始化框架.
-- TODO
-
-#### 是否需要修改Web环境?
-需要. Nginx的修改方法参考下方:
+#### Do I need modify my Web configuration (e.g. for Nginx) ?
+Yes. The step(s) please see the below:
 
 ```nginx
 # Set your web root path to /public (Example);
@@ -61,8 +58,8 @@ location / {
 }
 ```
 
-#### 如何在CLI模式下运行OwOFrame?
-打开你的CMD或者Shell后, 进入OwOFrame的工程路径, 在控制台输入 `php owo [command]` 即可.
+#### How to running my Application in CLI-Mode with OwOFrame?
+In the OwOFrame, I built the Command Manager. You can customize the registration management of the implementation Commands, and you can also modify the entry file in the CLI-Mode to touch your project requirements. The basically usage will be called in the root path like `php owo [command]`.
 
 ------
 
