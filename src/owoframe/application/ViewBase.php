@@ -25,14 +25,50 @@ use owoframe\exception\ParameterErrorException;
 
 class ViewBase extends ControllerBase
 {
-	/* @string 视图名称 */
-	protected $viewName = '';
+	/* @string 视图文件路径 */
+	protected $filePath = '';
 	/* @string 视图模板 */
 	protected $viewTemplate = '';
 	/* @array 模板绑定的变量 */
 	protected $bindValues = [];
 	/* @array 模板绑定变量到静态资源状态 */
 	protected $resourcesStatus = [];
+
+
+	public function init(string $filePath = '', bool $update = false) : void
+	{
+		if(!empty($this->viewTemplate) && !$update) {
+			return;
+		}
+		if(!file_exists($filePath)) {
+			$controllerName = Router::getParameters(-1);
+			switch(count($controllerName)) {
+				case 0:
+					$controllerName = DEFAULT_APP_NAME;
+				break;
+
+				case 1:
+					$controllerName = array_shift($controllerName);
+				break;
+
+				case 2:
+					$controllerName = end($controllerName);
+				break;
+
+				default:
+				case 3:
+					$controllerName = array_slice($controllerName, 1, 1);
+					$controllerName = array_shift($controllerName);
+				break;
+			}
+			$controllerName = ucfirst(strtolower($controllerName));
+			$this->filePath = $this->getViewPath($controllerName . '.html');
+		} else {
+			$this->filePath = $filePath;
+		}
+
+		$this->viewTemplate = file_get_contents($this->filePath);
+	}
 
 	/**
 	 * @method      assign
@@ -94,13 +130,13 @@ class ViewBase extends ControllerBase
 	 * @param       string            &$str 传入模板
 	 * @return      void
 	 */
-	public function parseResourcePath(string &$str) : void
+	protected function parseResourcePath(string &$str) : void
 	{
 		$regex = 
 		[
 			'/<(img|script|link) (.*)>/imU',
 			'/@(src|href)="{\$(\w*)\|(.*)}"/imU',
-			'/@name="(\w*)"[\s]+?/imU',
+			'/@name="(\w*)"[\s]+?/mU',
 			'/@actived="(\w*)"[\s]+?/imU'
 		];
 
@@ -125,12 +161,11 @@ class ViewBase extends ControllerBase
 			}
 
 			if(is_bool($actived) && !$actived) {
-				$_ = $matches[1][$key];
-				if($_ === 'script') {
-					$str = str_replace($tag.'</script>', '', $str);
-				} else {
-					$str = str_replace($tag, '', $str);
+				if($matches[1][$key] === 'script') {
+					$tag = "{$tag}</script>";
 				}
+				$tag = str_replace(['.', '/', '|', '$'], ["\.", '\/', '\|', '\$'], $tag);
+				$str = preg_replace("/(\s*?){1}{$tag}/i", '', $str);
 			} else {
 				$newTag = preg_replace($regex[3], '', preg_replace($regex[2], '', $tag));
 				$str    = str_replace($tag, $newTag, $str);
@@ -189,7 +224,7 @@ class ViewBase extends ControllerBase
 	 * @param       string      $loopArea 需要解析的文本
 	 * @return      void
 	 */
-	public function parseLoopArea(string &$loopArea) : void
+	protected function parseLoopArea(string &$loopArea) : void
 	{
 		// $bindElement = "\\\$";
 		$bindElement = '@';
@@ -269,33 +304,44 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
+	 * @method      replaceBindValue
+	 * @description 替换绑定变量
+	 * @author      HanskiJay
+	 * @doenIn      2021-05-29
+	 * @param       string                     $key   变量名
+	 * @param       int|integer|string|boolean $value 变量值
+	 * @param       string                     &$str  原始字符串
+	 * @return      void
+	 */
+	protected function replaceBindValue(string $key, $value, string &$str) : void
+	{
+		if(!is_int($value) && !is_string($value) && !is_bool($value)) {
+			return;
+		}
+		if(preg_match('/{\$' . $key . '\|def\[(.*)\]}/mU', $str, $match)) {
+			$str = str_replace($match[0], $value ?? $match[1], $str);
+		}
+		$str = str_replace("{\${$key}}", $value, $str);
+	}
+
+	/**
 	 * @method      render
 	 * @description 渲染视图到前端
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-10
 	 * @return      string
 	*/
-	public function render() : string
+	protected function render() : string
 	{
-		if(!empty($this->viewTemplate)) {
-			return $this->viewTemplate;
-		}
-		$controllerName = strtolower(@array_shift(Router::getParameters(-1)));
-		$controllerName = ucfirst($controllerName);
-
-		// 初始化模板;
-		$template = $this->getViewPath($controllerName . '.html');
-		if(!file_exists($template)) {
-			// TODO: 根据DEBUG_MODE输出模板错误信息
-			return '';
-		}
-		$this->viewTemplate = file_get_contents($template);
+		// 获取模板;
+		$this->init();
 
 		/* 开始解析模板组件 */
 		$regex = '/{require (.*)}/imU';
 		while(preg_match_all($regex, $this->viewTemplate, $matches)) {
 			foreach($matches[1] as $key => $path) {
-				$path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $this->getViewPath($path));
+				$path = $this->getViewPath($path);
+				Helper::escapeSlash($path);
 				if(is_file($path)) {
 					$this->viewTemplate = str_replace($matches[0][$key], file_get_contents($path), $this->viewTemplate);
 				}
@@ -305,20 +351,19 @@ class ViewBase extends ControllerBase
 		$this->parseLoopArea($this->viewTemplate);
 		// 绑定资源路径到路由;
 		$this->parseResourcePath($this->viewTemplate);
-
+		// 绑定变量;
 		foreach($this->bindValues as $k => $v) {
-			if(is_array($v)) continue;
-			$this->viewTemplate = str_replace("{\${$k}}", $v, $this->viewTemplate);
+			$this->replaceBindValue($k, $v, $this->viewTemplate);
 		}
-		
-		if(preg_match_all('/{\$(.*)\.def\[(.*)\]}/', $this->viewTemplate, $matches))
+		if(preg_match_all('/{\$(.*)\|def\[(.*)\]}/mU', $this->viewTemplate, $matches))
 		{
 			foreach($matches[1] as $k => $v) {
 				$match = $matches[2][$k];
 				$def   = (strpos($match, ':null') === 0) ? '' : $match;
-				$this->viewTemplate = str_replace("{\${$v}.def[{$match}]}", $this->bindValues[$v] ?? $def, $this->viewTemplate);
+				$this->viewTemplate = str_replace("{\${$v}|def[{$match}]}", $this->getValue($v) ?? $def, $this->viewTemplate);
 			}
 		}
+
 		return $this->viewTemplate;
 	}
 
@@ -332,7 +377,7 @@ class ViewBase extends ControllerBase
 	 */
 	protected function generateStaticUrl(string $filePath) : string
 	{
-		$filePath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $filePath);
+		Helper::escapeSlash($filePath);
 		$type     = explode('.', $filePath);
 		$type     = strtolower(end($type));
 
@@ -362,16 +407,17 @@ class ViewBase extends ControllerBase
 	 * @method 静态资源相对/绝对路径获取方法
 	 */
 	/**
-	 * @method      getComponentPath
-	 * @description 获取组件资源目录
+	 * @method      getComponent
+	 * @description 获取组件资源
 	 * @return      string
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-10
 	 * @param       string      $index 文件/文件夹索引
 	*/
-	public function getComponentPath(string $index) : string
+	public function getComponent(string $index, int $mode = 0) : string
 	{
-		return $this->getViewPath('component') . DIRECTORY_SEPARATOR . $index . DIRECTORY_SEPARATOR;
+		$path = $this->getViewPath('component') . DIRECTORY_SEPARATOR . Helper::escapeSlash($index);
+		return ($mode === 0) ? $path : (is_file($path) ? file_get_contents($path) : "[VIEW-COMPONENT] File '{$path}' Not Found");
 	}
 
 	/**
@@ -384,7 +430,7 @@ class ViewBase extends ControllerBase
 	*/
 	public function getCssPath(string $index) : string
 	{
-		return $this->getStaticPath('css') . $index;
+		return $this->getStaticPath('css') . Helper::escapeSlash($index);
 	}
 
 	/**
@@ -397,7 +443,7 @@ class ViewBase extends ControllerBase
 	*/
 	public function getPublicCssPath(string $index) : string
 	{
-		return $this->getResourcePath('css') . $index;
+		return $this->getResourcePath('css') . Helper::escapeSlash($index);
 	}
 
 	/**
@@ -410,7 +456,7 @@ class ViewBase extends ControllerBase
 	*/
 	public function getJsPath(string $index) : string
 	{
-		return $this->getStaticPath('js') . $index;
+		return $this->getStaticPath('js') . Helper::escapeSlash($index);
 	}
 
 	/**
@@ -423,7 +469,7 @@ class ViewBase extends ControllerBase
 	*/
 	public function getPublicJsPath(string $index) : string
 	{
-		return $this->getResourcePath('js') . $index;
+		return $this->getResourcePath('js') . Helper::escapeSlash($index);
 	}
 
 	/**
@@ -436,7 +482,7 @@ class ViewBase extends ControllerBase
 	*/
 	public function getImgPath(string $index) : string
 	{
-		return $this->getStaticPath('img') . $index;
+		return $this->getStaticPath('img') . Helper::escapeSlash($index);
 	}
 
 	/**
@@ -449,7 +495,7 @@ class ViewBase extends ControllerBase
 	*/
 	public function getPublicImgPath(string $index) : string
 	{
-		return $this->getResourcePath('img') . $index;
+		return $this->getResourcePath('img') . Helper::escapeSlash($index);
 	}
 
 	/**
@@ -482,7 +528,19 @@ class ViewBase extends ControllerBase
 
 			case 'compo':
 			case 'component':
-			return is_dir($this->getComponentPath($index2));
+			return is_dir($this->getComponent($index2));
 		}
+	}
+
+	/**
+	 * @method      getTemplate
+	 * @description 返回模板
+	 * @author      HanskiJay
+	 * @doenIn      2021-05-29
+	 * @return      null|string
+	 */
+	protected function &getTemplate() : ?string
+	{
+		return $this->viewTemplate;
 	}
 }
