@@ -333,4 +333,17 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	{
 		return basename(str_replace('\\', '/', get_class($class)));
 	}
+
+	/**
+	 * @method      escapeSlash
+	 * @description 转义字符串中的斜杠
+	 * @author      HanskiJay
+	 * @doenIn      2021-05-29
+	 * @param       string      &$str 所需字符串
+	 * @return      string
+	 */
+	public static function escapeSlash(string &$str) : string
+	{
+		return $str = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $str);
+	}
 }
