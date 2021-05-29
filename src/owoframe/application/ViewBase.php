@@ -19,20 +19,20 @@ declare(strict_types=1);
 namespace owoframe\application;
 
 use owoframe\helper\Helper;
-use owoframe\route\RouteResource;
+use owoframe\http\route\Router;
 use owoframe\exception\InvalidRouterException;
 use owoframe\exception\ParameterErrorException;
 
 class ViewBase extends ControllerBase
 {
 	/* @string 视图名称 */
-	private $viewTplName = '';
+	protected $viewName = '';
 	/* @string 视图模板 */
-	protected static $viewTemplate = null;
+	protected $viewTemplate = '';
 	/* @array 模板绑定的变量 */
-	protected static $bindValues = [];
-	/* @array 模板绑定变量到静态资源路径 */
-	protected static $bindResources = [];
+	protected $bindValues = [];
+	/* @array 模板绑定变量到静态资源状态 */
+	protected $resourcesStatus = [];
 
 	/**
 	 * @method      assign
@@ -42,19 +42,15 @@ class ViewBase extends ControllerBase
 	 * @doneIn      2020-09-10
 	 * @param       string|array      $searched 需要替换的变量名
 	 * @param       mixed             $val      替换的值
-	 * @return      boolean
+	 * @return      void
 	*/
-	public function assign($searched, $val = null) : bool
+	public function assign($searched, $val = null) : void
 	{
-		if(!$this->isValid()) {
-			return false;
-		}
 		if(is_array($searched)) {
-			self::$bindValues = array_merge(self::$bindValues, $searched);
+			$this->bindValues = array_merge($this->bindValues, $searched);
 		} else {
-			self::$bindValues[$searched] = $val;
+			$this->bindValues[$searched] = $val;
 		}
-		return true;
 	}
 
 	/**
@@ -67,34 +63,9 @@ class ViewBase extends ControllerBase
 	 */
 	public function removeValue(string $searched) : void
 	{
-		if(!$this->isValid()) {
-			return;
+		if(isset($this->bindValues[$searched])) {
+			unset($this->bindValues[$searched]);
 		}
-		if(isset(self::$bindValues[$searched])) {
-			unset(self::$bindValues[$searched]);
-		}
-	}
-
-	/**
-	 * @method      bindComponent
-	 * @description 将View(V)模板中某个指定的变量中的原始变量按照第二参数替换掉
-	 * @description Change the value in View(V) template
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $searched 需要替换的变量名
-	 * @param       mixed       $val      替换的值
-	 * @return      boolean
-	*/
-	public function bindComponent(string $searched, string $val) : bool
-	{
-		if(!$this->isValid()) {
-			return false;
-		}
-		if(preg_match("/{\\\$COMPONENT\.{$searched}\.def\[(.*)\]}/", self::$viewTemplate, $match)) {
-			$def = (strpos($match[1], ":null") === 0) ? '' : $match[1];
-			self::$viewTemplate = str_replace($match[0], $val ?? $def, self::$viewTemplate);
-		}
-		return true;
 	}
 
 	/**
@@ -107,68 +78,107 @@ class ViewBase extends ControllerBase
 	*/
 	public function getValue(string $searched)
 	{
-		return self::$bindValues[$searched] ?? null;
+		return $this->bindValues[$searched] ?? null;
 	}
 
-	/**
-	 * @method      setStatic
-	 * @description 将View(V)模板中的变量替换掉
-	 * @description Change the value in View(V) template
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $type     静态资源类型 (css,js,img)
-	 * @param       string      $searched 需要替换的变量名
-	 * @param       mixed       $val      替换的值
-	 * @return      boolean
-	*/
-	public function setStatic(string $type, string $searched, string $val) : bool
-	{
-		if(!$this->isValid()) {
-			return false;
-		}
-		self::$bindResources[strtolower($type)][$searched] = $val;
-		return true;
-	}
+
 
 	/**
-	 * @method      setViewTplName
-	 * @description 设置当前视图名称
+	 * @method 模板渲染核心方法
+	 */
+	/**
+	 * @method      parseResourcePath
+	 * @description 解析模板中的资源路径绑定
 	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $viewName 视图名称
+	 * @doenIn      2021-05-25
+	 * @param       string            &$str 传入模板
 	 * @return      void
-	*/
-	public function setViewTplName(string $viewTplName) : void
+	 */
+	public function parseResourcePath(string &$str) : void
 	{
-		$this->viewTplName = $viewTplName;
-	}
+		$regex = 
+		[
+			'/<(img|script|link) (.*)>/imU',
+			'/@(src|href)="{\$(\w*)\|(.*)}"/imU',
+			'/@name="(\w*)"[\s]+?/imU',
+			'/@actived="(\w*)"[\s]+?/imU'
+		];
 
-	/**
-	 * @method      getViewTplName
-	 * @description 返回当前视图名称
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @return      string
-	*/
-	public function getViewTplName() : string
-	{
-		return $this->viewTplName;
-	}
-
-	/**
-	 * @method      getView
-	 * @description 返回当前视图模板(原始数据)
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       bool      $updateCached 更新缓存
-	 * @return      null|string
-	*/
-	public function getView(bool $updateCached = false) : ?string
-	{
-		if(empty(self::$viewTemplate) || $updateCached) {
-			self::$viewTemplate = $this->hasViewPath($this->getViewTplName()) ? file_get_contents($this->getViewPath($this->getViewTplName())) : null;
+		if(!preg_match_all($regex[0], $str, $matches)) {
+			return;
 		}
-		return self::$viewTemplate;
+		
+		foreach($matches[0] as $key => $tag) {
+			if(preg_match($regex[2], $tag, $match)) {
+				$name = $match[1];
+			} else {
+				$name = '';
+			}
+
+			if(($actived = $this->getValue($name)) !== null) {
+				$actived = (($actived === true) || ($actived === 'true')) ? true : false;
+			}
+			elseif(preg_match($regex[3], $tag, $match)) {
+				$actived = ($match[1] === 'true') ? true : (($match[1] === 'false') ? false : null);
+			} else {
+				$actived = null;
+			}
+
+			if(is_bool($actived) && !$actived) {
+				$_ = $matches[1][$key];
+				if($_ === 'script') {
+					$str = str_replace($tag.'</script>', '', $str);
+				} else {
+					$str = str_replace($tag, '', $str);
+				}
+			} else {
+				$newTag = preg_replace($regex[3], '', preg_replace($regex[2], '', $tag));
+				$str    = str_replace($tag, $newTag, $str);
+
+				if(preg_match($regex[1], $tag, $match)) {
+					$type = strtoupper($match[2] ?? 'unknown');
+					$file = $match[3];
+					$path = '';
+					switch($type)
+					{
+						case 'CSS':
+						case 'CSSPATH':
+							$path .= $this->getStaticPath('css');
+						break;
+						case 'RCSS':
+						case 'RCSSPATH':
+							$path .= $this->getResourcePath('css');
+						break;
+
+						case 'JS':
+						case 'JSPATH':
+							$path .= $this->getStaticPath('js');
+						break;
+						case 'RJS':
+						case 'RJSPATH':
+							$path .= $this->getResourcePath('js');
+						break;
+
+						case 'IMG':
+						case 'IMGPATH':
+							$path .= $this->getStaticPath('img');
+						break;
+						case 'RIMG':
+						case 'RIMGPATH':
+							$path .= $this->getResourcePath('img');
+						break;
+
+						case 'PACKAGE':
+						case 'PKGPATH':
+							$path .= $this->getStaticPath('package');
+						break;
+					}
+
+					$src = $this->generateStaticUrl($path . $file);
+					$str = str_replace($match[0], $match[1] . "=\"{$src}\"", $str);
+				}
+			}
+		}
 	}
 
 	/**
@@ -201,7 +211,10 @@ class ViewBase extends ControllerBase
 			$data = $this->getValue($bindTag);
 			if(!$data || ($data && !is_array($data))) {
 				// TODO: 增加一个是否为 DEBUG_MODE 模式, 根据情况扔出异常;
-				throw new ParameterErrorException("Cannot find bindTag {{$bindElement}{$bindTag}} !");
+				if(DEBUG_MODE) {
+					throw new ParameterErrorException("Cannot find bindTag {{$bindElement}{$bindTag}} !");
+				}
+				return;
 			}
 
 			$data = array_filter($data);
@@ -260,103 +273,94 @@ class ViewBase extends ControllerBase
 	 * @description 渲染视图到前端
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-10
-	 * @return      void
+	 * @return      string
 	*/
-	public function render() : void
+	public function render() : string
 	{
-		if(empty(self::$viewTemplate)) return;
-		$this->parseLoopArea(self::$viewTemplate);
-		self::bindResources($routeUrls);
-		foreach($routeUrls as $type => $urls) {
-			$type = strtoupper($type);
-			foreach($urls as $name => $url) {
-				self::$viewTemplate = str_replace("{\${$type}.{$name}}", $url, self::$viewTemplate);
+		if(!empty($this->viewTemplate)) {
+			return $this->viewTemplate;
+		}
+		$controllerName = strtolower(@array_shift(Router::getParameters(-1)));
+		$controllerName = ucfirst($controllerName);
+
+		// 初始化模板;
+		$template = $this->getViewPath($controllerName . '.html');
+		if(!file_exists($template)) {
+			// TODO: 根据DEBUG_MODE输出模板错误信息
+			return '';
+		}
+		$this->viewTemplate = file_get_contents($template);
+
+		/* 开始解析模板组件 */
+		$regex = '/{require (.*)}/imU';
+		while(preg_match_all($regex, $this->viewTemplate, $matches)) {
+			foreach($matches[1] as $key => $path) {
+				$path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $this->getViewPath($path));
+				if(is_file($path)) {
+					$this->viewTemplate = str_replace($matches[0][$key], file_get_contents($path), $this->viewTemplate);
+				}
 			}
 		}
-		foreach(self::$bindValues as $k => $v) {
-			self::$viewTemplate = str_replace("{\${$k}}", $v, self::$viewTemplate);
+		// 解析循环语句;
+		$this->parseLoopArea($this->viewTemplate);
+		// 绑定资源路径到路由;
+		$this->parseResourcePath($this->viewTemplate);
+
+		foreach($this->bindValues as $k => $v) {
+			if(is_array($v)) continue;
+			$this->viewTemplate = str_replace("{\${$k}}", $v, $this->viewTemplate);
 		}
-		if(preg_match_all("/{\\\$(.*)\.def\[(.*)\]}/", self::$viewTemplate, $matches))
+		
+		if(preg_match_all('/{\$(.*)\.def\[(.*)\]}/', $this->viewTemplate, $matches))
 		{
 			foreach($matches[1] as $k => $v) {
 				$match = $matches[2][$k];
 				$def   = (strpos($match, ':null') === 0) ? '' : $match;
-				self::$viewTemplate = str_replace("{\${$v}.def[{$match}]}", self::$bindValues[$v] ?? $def, self::$viewTemplate);
+				$this->viewTemplate = str_replace("{\${$v}.def[{$match}]}", $this->bindValues[$v] ?? $def, $this->viewTemplate);
 			}
 		}
-		// 替换成html-link和html-script标签(当owoLink|owoScript中的actived属性为false时, 删除该标签);
-		if(preg_match_all("/<(owoLink|owoScript) (.*)>/m", self::$viewTemplate, $matches))
-		{
-			foreach($matches[0] as $key => $found) {
-				$found   = trim($found);
-				$newLine = '';
-				if(preg_match("/actived=\"([^ ]*)\"[ ]?/im", $found, $match)) {
-					if(strtolower($match[1]) === "true") {
-						$matchedTag = $matches[1][$key];
-						switch($matchedTag) {
-							default:
-								$tag = 'div';
-							break;
-
-							case 'owoScript':
-								$tag = 'script';
-							break;
-							
-							case 'owoLink':
-								$tag = 'link';
-							break;
-						}
-						$newLine = str_replace([$matchedTag, $match[0]], [$tag, ''], $found);
-					}
-					self::$viewTemplate = str_replace($found, $newLine, self::$viewTemplate);
-				}
-			}
-		}
-	}
-
-	private static function bindResources(&$handled) : void
-	{
-		$handled = [];
-		foreach(self::$bindResources as $group => $resources) {
-			foreach($resources as $tag => $resource) {
-				if(!is_file($resource)) {
-					throw new InvalidRouterException("Resource path '{$resource}' doesn't exists!");
-				}
-				/*$finfo    = finfo_open(FILEINFO_MIME);
-				$mimetype = finfo_file($finfo, $resource);
-				finfo_close($finfo);*/
-				$type = @end(explode('.', $resource));
-				if(!isset(Helper::MIMETYPE[$type])) {
-					throw new UnknownErrorException('No file mimetype');
-				}
-				// $handled[$group][$tag] = $newTag;
-				$basePath = F_CACHE_PATH . $group . DIRECTORY_SEPARATOR;
-				if(!is_dir($basePath)) mkdir($basePath, 755, true);
-				$hashTag  = md5($resource);
-				$basePath = "{$basePath}{$hashTag}.php";
-				if(!file_exists($basePath)) {
-					// TODO: Cache static files;
-					$charset = ((stripos(Helper::MIMETYPE[$type], 'application') !== false) || (stripos(Helper::MIMETYPE[$type], 'text') !== false))
-								? '; charset=utf-8' : null;
-					file_put_contents($basePath, "<?php /* Cached in " . date("Y-m-d H:i:s") . "@{$hashTag} */ header('Content-Type: " . Helper::MIMETYPE[$type] . "" . $charset . "'); header('X-Content-Type-Options: nosniff'); header('Cache-Control: max-age=31536000, immutable'); echo file_get_contents('{$resource}'); ?>");
-				}
-				$handled[$group][$tag] = "/static.php/{$group}/{$hashTag}.{$type}";
-			}
-		}
+		return $this->viewTemplate;
 	}
 
 	/**
-	 * @method      isValid
-	 * @description 判断当前是否存在一个有效的视图模板
+	 * @method      generateStaticUrl
+	 * @description 生成静态资源路由地址
 	 * @author      HanskiJay
-	 * @doneIn      2020-09-10 18:49
-	 * @return      boolean
-	*/
-	public function isValid() : bool
+	 * @doenIn      2021-05-29
+	 * @param       string            $filePath 静态资源文件路径
+	 * @return      string
+	 */
+	protected function generateStaticUrl(string $filePath) : string
 	{
-		return !empty(self::$viewTemplate);
+		$filePath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $filePath);
+		$type     = explode('.', $filePath);
+		$type     = strtolower(end($type));
+
+		if(is_file($filePath) && isset(Helper::MIMETYPE[$type]))
+		{
+			$basePath = F_CACHE_PATH . $type . DIRECTORY_SEPARATOR;
+			if(!is_dir($basePath)) mkdir($basePath, 755, true);
+			$hashTag  = md5($filePath);
+			$basePath = "{$basePath}{$hashTag}.php";
+
+			if(!file_exists($basePath)) {
+				// TODO: Cache static files;
+				$charset = ((stripos(Helper::MIMETYPE[$type], 'application') !== false) || (stripos(Helper::MIMETYPE[$type], 'text') !== false))
+							? '; charset=utf-8' : null;
+				file_put_contents($basePath, "<?php /* Cached in " . date("Y-m-d H:i:s") . "@{$hashTag} */ header('Content-Type: " . Helper::MIMETYPE[$type] . "" . $charset . "'); header('X-Content-Type-Options: nosniff'); header('Cache-Control: max-age=31536000, immutable'); echo file_get_contents('" . $filePath . "'); ?>");
+			}
+			$filePath = "/static.php/{$type}/{$hashTag}.{$type}";
+		} else {
+			$filePath = null;
+		}
+		return $filePath ?? '(unknown)';
 	}
 
+
+
+	/**
+	 * @method 静态资源相对/绝对路径获取方法
+	 */
 	/**
 	 * @method      getComponentPath
 	 * @description 获取组件资源目录
@@ -368,24 +372,6 @@ class ViewBase extends ControllerBase
 	public function getComponentPath(string $index) : string
 	{
 		return $this->getViewPath('component') . DIRECTORY_SEPARATOR . $index . DIRECTORY_SEPARATOR;
-	}
-
-	/**
-	 * @method      getComponent
-	 * @description 获取组件资源目录
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $folder 文件目录
-	 * @param       string      $index 文件/文件夹索引
-	 * @return      string
-	*/
-	public function getComponent(string $folder, string $index) : string
-	{
-		$file = $this->getComponentPath($folder) . $index;
-		if(!file_exists($file)) {
-			return '';
-		}
-		return file_get_contents($file);
 	}
 
 	/**
