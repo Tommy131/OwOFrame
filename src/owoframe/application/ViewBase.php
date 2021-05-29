@@ -31,8 +31,8 @@ class ViewBase extends ControllerBase
 	protected $viewTemplate = '';
 	/* @array 模板绑定的变量 */
 	protected $bindValues = [];
-	/* @array 模板绑定变量到静态资源状态 */
-	protected $resourcesStatus = [];
+	/* @array 绑定常量到模板 */
+	protected $customConstants = [];
 
 
 	public function init(string $filePath = '', bool $update = false) : void
@@ -62,6 +62,9 @@ class ViewBase extends ControllerBase
 				break;
 			}
 			$controllerName = ucfirst(strtolower($controllerName));
+			if(!Router::getCurrentApp()->getController($controllerName)) {
+				$controllerName = Router::getCurrentApp()->getDefaultController(true);
+			}
 			$this->filePath = $this->getViewPath($controllerName . '.html');
 		} else {
 			$this->filePath = $filePath;
@@ -304,6 +307,32 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
+	 * @method      readString
+	 * @description 解析字符串的传参
+	 * @author      HanskiJay
+	 * @doenIn      2021-05-29
+	 * @param       string      $str     待解析的字符串
+	 * @param       string      &$result
+	 * @return      boolean
+	 */
+	protected function readString(string $str, &$result = '') : bool
+	{
+		if(count($arr = explode('=', $str)) > 1) {
+			$type = strtolower(array_shift($arr));
+			switch($type) {
+				case 'get_file':
+					$path = array_shift($arr);
+					if(is_file($path)) {
+						 $result = file_get_contents($path);
+						 return true;
+					}
+				break;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * @method      replaceBindValue
 	 * @description 替换绑定变量
 	 * @author      HanskiJay
@@ -319,7 +348,11 @@ class ViewBase extends ControllerBase
 			return;
 		}
 		if(preg_match('/{\$' . $key . '\|def\[(.*)\]}/mU', $str, $match)) {
-			$str = str_replace($match[0], $value ?? $match[1], $str);
+			if($this->readString($str, $result)) {
+				$str = str_replace($match[0], $result, $str);
+			} else {
+				$str = str_replace($match[0], $value ?? (($match[1] === ':null') ? '' : $match[1]), $str);
+			}
 		}
 		$str = str_replace("{\${$key}}", $value, $str);
 	}
@@ -347,22 +380,35 @@ class ViewBase extends ControllerBase
 				}
 			}
 		}
+		// 转换常量绑定;
+		if(preg_match_all('/{([0-9A-Z_]*)}/mU', $this->viewTemplate, $matches)) {
+			foreach($matches[1] as $k => $constName) {
+				if(defined($constName) || isset($this->customConstants[$constName])) {
+					$this->viewTemplate = str_replace($matches[0][$k], @constant($constName) ?? $this->customConstants[$constName], $this->viewTemplate);
+				}
+			}
+		}
 		// 解析循环语句;
 		$this->parseLoopArea($this->viewTemplate);
-		// 绑定资源路径到路由;
-		$this->parseResourcePath($this->viewTemplate);
 		// 绑定变量;
 		foreach($this->bindValues as $k => $v) {
 			$this->replaceBindValue($k, $v, $this->viewTemplate);
 		}
+		// 解析剩余的变量(包含默认值);
 		if(preg_match_all('/{\$(.*)\|def\[(.*)\]}/mU', $this->viewTemplate, $matches))
 		{
 			foreach($matches[1] as $k => $v) {
 				$match = $matches[2][$k];
-				$def   = (strpos($match, ':null') === 0) ? '' : $match;
-				$this->viewTemplate = str_replace("{\${$v}|def[{$match}]}", $this->getValue($v) ?? $def, $this->viewTemplate);
+
+				if($this->readString($match, $result)) {
+					$this->viewTemplate = str_replace("{\${$v}|def[{$match}]}", $result, $this->viewTemplate);
+				} else {
+					$this->viewTemplate = str_replace("{\${$v}|def[{$match}]}", $this->getValue($v) ?? (($match === ':null') ? '' : $match), $this->viewTemplate);
+				}
 			}
 		}
+		// 绑定资源路径到路由;
+		$this->parseResourcePath($this->viewTemplate);
 
 		return $this->viewTemplate;
 	}
