@@ -46,7 +46,7 @@ class BootStraper
 			// Define Timezone;
 			if(!defined('TIME_ZONE'))        define('TIME_ZONE',       'Europe/Berlin');
 			// Define OwOFrame start time;
-			if(!defined('APP_VERSION'))      define('APP_VERSION',     'dev@v1.0.1-ALPHA27');
+			if(!defined('APP_VERSION'))      define('APP_VERSION',     'dev@v1.0.2-ALPHA1');
 			// Check whether the current environment supports mbstring extension;
 			if(!defined('MB_SUPPORTED'))     define('MB_SUPPORTED',    extension_loaded('mbstring'));
 			// Project root directory (absolute path);
