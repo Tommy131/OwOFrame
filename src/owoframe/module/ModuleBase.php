@@ -32,7 +32,7 @@ abstract class ModuleBase
 	 * @method      __construct
 	 * @description 实例化插件时的构造函数
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-23
+	 * @doneIn      2021-01-23
 	 * @param       string[loadPath|插件加载路径]
 	 * @param       object[moduleInfo|插件信息配置文件]
 	 */
@@ -47,7 +47,7 @@ abstract class ModuleBase
 	 * @method      onLoad
 	 * @description 插件加载时自动调用此方法
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-23
+	 * @doneIn      2021-01-23
 	 * @return      void
 	 */
 	abstract public function onLoad() : void;
@@ -58,7 +58,7 @@ abstract class ModuleBase
 	 * @method      getInfos
 	 * @description 获取插件信息对象
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-23
+	 * @doneIn      2021-01-23
 	 * @return      object
 	 */
 	public final function getInfos() : object
@@ -70,7 +70,7 @@ abstract class ModuleBase
 	 * @method      getPath
 	 * @description 获取插件加载路径
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-23
+	 * @doneIn      2021-01-23
 	 * @return      string
 	 */
 	public final function getPath() : string
@@ -82,7 +82,7 @@ abstract class ModuleBase
 	 * @method      isEnabled
 	 * @description 返回插件加载状态
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-02
+	 * @doneIn      2021-03-02
 	 * @return      boolean
 	 */
 	public function isEnabled() : bool
@@ -94,7 +94,7 @@ abstract class ModuleBase
 	 * @method      setEnabled
 	 * @description 设置插件加载状态为已加载
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-02
+	 * @doneIn      2021-03-02
 	 */
 	public function setEnabled() : void
 	{
@@ -107,7 +107,7 @@ abstract class ModuleBase
 	 * @method      setDisabled
 	 * @description 设置插件加载状态为禁用
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-02
+	 * @doneIn      2021-03-02
 	 */
 	public function setDisabled() : void
 	{

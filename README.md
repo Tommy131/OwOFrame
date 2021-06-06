@@ -3,26 +3,26 @@ Open source license : ![License](https://img.shields.io/badge/License-Apache%202
 
 OwO! `OwOFrame` is developed based on the `MVC (Model-Views-Controller)` model. The framework's standard formulation draws on `ThinkPHP`, so the naming rules for some methods seem There are similarities. This repository is just my personal practice repository.
 
-If you think this repository is helpful to you, please give this repository a `Star` QWQ 
+If you think this repository is helpful to you, please give this repository a `Star` QWQ
 
 
-[中文版简介请点这里](https://github.com/Tommy131/OwOFrame)
+[中文版简介请点这里](https://github.com/Tommy131/OwOFrame/README_CHS.md)
 
 ------
 
 ## What can I do?
-> OwOFrame is a small framework that I developed using my free time. Of course, there are many shortcomings. The functions currently supported by this framework are listed below: 
+> OwOFrame is a small framework that I developed using my free time. Of course, there are many shortcomings. The functions currently supported by this framework are listed below:
 
 #### Basic System Components
-- [x] `AppManager`          Judge the corresponding routing controller by identifying `HTTP_URI` and assign it to the corresponding Application 
-- [x] `CommandManager`      Support some operations through the Command Line method on the CLI 
+- [x] `AppManager`          Judge the corresponding routing controller by identifying `HTTP_URI` and assign it to the corresponding Application
+- [x] `CommandManager`      Support some operations through the Command Line method on the CLI
 - [x] `ConfigurationParser` Configuration Parser
 - [x] `EventManager`        Event Manager(Hooks Module)
 - [x] `Exception`           Error capture and Stack output (I know that advanced frameworks have them and are better than mine QAQ)
 - [x] `PluginLoader`        Plug-in loader (a support method that can be flexibly changed independent of Application)
 - [x] `Language`            Custom languages packages supported
-- [x] `LogWriter`           Support the most basic logging 
-- [x] `Redis`               Support basic Redis operations 
+- [x] `LogWriter`           Support the most basic logging
+- [x] `Redis`               Support basic Redis operations
 - [x] `RouterManager`       Router Manager
 - [ ] `BetterRouter`        Better Router (More personalized routing binding settings)
 - [x] `Template`            Back-end rendering template (basic functions have been completed, turtle speed development advanced functions o(*￣▽￣*)o)

@@ -21,11 +21,9 @@ namespace owoframe\event;
 
 use ReflectionClass;
 use ReflectionMethod;
-
-use owoframe\exception\ClassMissedException;
-use owoframe\exception\InvalidEventException;
+use owoframe\contract\Cancellable;
 use owoframe\exception\OwOFrameException;
-use owoframe\exception\ParameterErrorException;
+use owoframe\exception\ParameterTypeErrorException;
 
 class EventManager implements \owoframe\contract\Manager
 {
@@ -51,7 +49,7 @@ class EventManager implements \owoframe\contract\Manager
 	 * @method      trigger
 	 * @description 触发事件, 从而启动监听回调
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-10
+	 * @doneIn      2021-04-10
 	 * @param       string|object@Event      $eventClass 事件名称
 	 * @param       array                    $invokeArgs 调用参数传递
 	 * @return      mixed
@@ -62,7 +60,7 @@ class EventManager implements \owoframe\contract\Manager
 			$eventClass = get_class($eventClass);
 		}
 		if(!is_string($eventClass)) {
-			throw new ParameterErrorException('eventClass', 'string or object@Event', $eventClass);
+			throw new ParameterTypeErrorException('eventClass', 'string or object@Event', $eventClass);
 		}
 
 		if(!self::isEvent($eventClass)) {
@@ -99,7 +97,7 @@ class EventManager implements \owoframe\contract\Manager
 	 * @method      registerListener
 	 * @description 注册监听回调到事件
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-06
+	 * @doneIn      2021-04-06
 	 * @param       string           $registerTag  注册识别标签
 	 * @param       mixed            $listener     监听者(类型可为 callableArray, callback, object)
 	 * @param       integer          $priority     监听优先级别
@@ -113,7 +111,7 @@ class EventManager implements \owoframe\contract\Manager
 		}
 		switch(gettype($listener)) {
 			default:
-				throw new ParameterErrorException('listener', 'callableArray|callback|object', $listener);
+				throw new ParameterTypeErrorException('listener', 'callableArray|callback|object', $listener);
 			break;
 
 			case 'object':
@@ -124,7 +122,7 @@ class EventManager implements \owoframe\contract\Manager
 						$this->setCallbackToEvent($registerTag, $priority, [$listener, $method->getName()], $reload);
 					}
 				} else {
-					throw new OwOFrameException('Cannot register this object as a listener because it has\'nt valid callable method!');
+					throw new OwOFrameException('Cannot register this object as a listener because it hasn\'t valid callable method!');
 				}
 			break;
 
@@ -141,7 +139,7 @@ class EventManager implements \owoframe\contract\Manager
 	 * @method      unregisterListener
 	 * @description 注销监听器
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-10
+	 * @doneIn      2021-04-10
 	 * @param       string             $registerTag 注册识别标签
 	 * @return      void
 	 */
@@ -163,7 +161,7 @@ class EventManager implements \owoframe\contract\Manager
 	 * @method      setCallbackToEvent
 	 * @description 将监听者分配到对应的事件
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-09
+	 * @doneIn      2021-04-09
 	 * @param       string      $registerTag  注册识别标签
 	 * @param       callable    $callback     回调
 	 * @param       integer     $priority     监听优先级别
@@ -199,7 +197,7 @@ class EventManager implements \owoframe\contract\Manager
 	 * @method      hasListener
 	 * @description 判断是否存在监听器
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-10
+	 * @doneIn      2021-04-10
 	 * @param       string      $registerTag 注册识别标签
 	 * @return      boolean
 	 */
@@ -212,7 +210,7 @@ class EventManager implements \owoframe\contract\Manager
 	 * @method      isEvent
 	 * @description 判断是否为标准事件类
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-10
+	 * @doneIn      2021-04-10
 	 * @param       string      $eventClass 事件名称
 	 * @return      boolean
 	 */

@@ -46,7 +46,7 @@ class INI extends Config
 	 * @method      _global
 	 * @description 读取全局配置文件 | get global configuration;
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-09
+	 * @doneIn      2021-01-09
 	 * @param       string[str]
 	 * @param       mixed[default|默认返回值]
 	 * @return      mixed
@@ -61,7 +61,7 @@ class INI extends Config
 	 * @method      save
 	 * @description 保存配置文件
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-30
+	 * @doneIn      2021-01-30
 	 * @param       string|null      $file 文件
 	 * @return      void
 	 */
@@ -70,7 +70,7 @@ class INI extends Config
 		if(empty($this->config)) {
 			return;
 		}
-		
+
 		$parseDataType = function($value) {
 			if(is_null($value) || (strlen($value) === 0)) {
 				$value = 'null';
@@ -85,9 +85,9 @@ class INI extends Config
 		};
 		$text = '';
 
-		foreach($this->config as $group => $subcontent) {
+		foreach($this->config as $group => $subContent) {
 			$text .= "[{$group}]" . PHP_EOL;
-			foreach($subcontent as $name => $value) {
+			foreach($subContent as $name => $value) {
 				if(!is_array($value)) {
 					$value = $parseDataType($value);
 					$text .= "{$name}={$value}" . PHP_EOL;
@@ -107,7 +107,7 @@ class INI extends Config
 	 * @method      reload
 	 * @description 重新读取配置文件
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-30
+	 * @doneIn      2021-01-30
 	 * @return      void
 	 */
 	public function reload() : void
@@ -124,8 +124,15 @@ class INI extends Config
 	 * @method      parseRawData (Draft)
 	 * @description 解析配置文件数据
 	 * @author      HanskiJay
-	 * @doenIn      2021-05-04
+	 * @doneIn      2021-05-04
 	 * Base64 encoded:
-	 * CXB1YmxpYyBmdW5jdGlvbiBwYXJzZVJhd0RhdGEoKSA6IHZvaWQNCgl7DQoJCSR0aGlzLSZndDtjb25maWcgPSBwYXJzZV9pbmlfZmlsZSgkdGhpcy0mZ3Q7ZmlsZVBhdGggLiAkdGhpcy0mZ3Q7ZmlsZU5hbWUsIHRydWUpOw0KCQlmb3JlYWNoKCR0aGlzLSZndDtjb25maWcgYXMgJGdyb3VwID0mZ3Q7ICRzdWJjb250ZW50KSB7DQoJCQlmb3JlYWNoKCRzdWJjb250ZW50IGFzICRuYW1lID0mZ3Q7ICR2YWx1ZSkgew0KCQkJCSRhcnIgPSBhcnJheV9maWx0ZXIoZXhwbG9kZSgmIzM5Oy4mIzM5OywgJG5hbWUpKTsNCgkJCQlpZihjb3VudCgkYXJyKSAmbHQ7PSAxKSBjb250aW51ZTsNCgkJCQkkY3VycmVudCA9JiAkdGhpcy0mZ3Q7Y29uZmlnWyRncm91cF07DQoJCQkJZm9yZWFjaCgkYXJyIGFzICRrZXkpIHsNCgkJCQkJaWYoIWlzc2V0KCRjdXJyZW50WyRrZXldKSkgew0KCQkJCQkJJGN1cnJlbnRbJGtleV0gPSBbXTsNCgkJCQkJfQ0KCQkJCQkkY3VycmVudCA9JiAkY3VycmVudFska2V5XTsNCgkJCQl9DQoJCQkJJGN1cnJlbnQgPSAkdmFsdWU7DQoJCQkJdW5zZXQoJHRoaXMtJmd0O2NvbmZpZ1skZ3JvdXBdWyRuYW1lXSk7DQoJCQl9DQoJCX0NCgl9
+	 * CXB1YmxpYyBmdW5jdGlvbiBwYXJzZVJhd0RhdGEoKSA6IHZvaWQNCgl7DQoJCSR0aGlzLSZndDtjb25maWcgPSBwYXJzZV9pbmlfZm
+	 * lsZSgkdGhpcy0mZ3Q7ZmlsZVBhdGggLiAkdGhpcy0mZ3Q7ZmlsZU5hbWUsIHRydWUpOw0KCQlmb3JlYWNoKCR0aGlzLSZndDtjb25m
+	 * aWcgYXMgJGdyb3VwID0mZ3Q7ICRzdWJjb250ZW50KSB7DQoJCQlmb3JlYWNoKCRzdWJjb250ZW50IGFzICRuYW1lID0mZ3Q7ICR2YW
+	 * x1ZSkgew0KCQkJCSRhcnIgPSBhcnJheV9maWx0ZXIoZXhwbG9kZSgmIzM5Oy4mIzM5OywgJG5hbWUpKTsNCgkJCQlpZihjb3VudCgk
+	 * YXJyKSAmbHQ7PSAxKSBjb250aW51ZTsNCgkJCQkkY3VycmVudCA9JiAkdGhpcy0mZ3Q7Y29uZmlnWyRncm91cF07DQoJCQkJZm9yZW
+	 * FjaCgkYXJyIGFzICRrZXkpIHsNCgkJCQkJaWYoIWlzc2V0KCRjdXJyZW50WyRrZXldKSkgew0KCQkJCQkJJGN1cnJlbnRbJGtleV0g
+	 * PSBbXTsNCgkJCQkJfQ0KCQkJCQkkY3VycmVudCA9JiAkY3VycmVudFska2V5XTsNCgkJCQl9DQoJCQkJJGN1cnJlbnQgPSAkdmFsdWU
+	 * 7DQoJCQkJdW5zZXQoJHRoaXMtJmd0O2NvbmZpZ1skZ3JvdXBdWyRuYW1lXSk7DQoJCQl9DQoJCX0NCgl9
 	 */
 }

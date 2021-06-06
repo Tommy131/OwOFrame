@@ -35,12 +35,12 @@ class DataEncoder implements JsonSerializable, StandardOutput
 	{
 		$this->setData($data);
 	}
-	
+
 	/**
 	 * @method      setData
 	 * @description 设置原始数据
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-11
+	 * @doneIn      2021-02-11
 	 * @param       array      $data 原始数据
 	 * @return      DataEncoder
 	 */
@@ -54,7 +54,7 @@ class DataEncoder implements JsonSerializable, StandardOutput
 	 * @method      setIndex
 	 * @description 以键名方式添加数据
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-11
+	 * @doneIn      2021-02-11
 	 * @param       mixed      $key 键名
 	 * @param       mixed       $val 键值
 	 * @return      DataEncoder
@@ -69,7 +69,7 @@ class DataEncoder implements JsonSerializable, StandardOutput
 	 * @method      mergeData
 	 * @description 合并自定义输出信息到全集
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-11
+	 * @doneIn      2021-02-11
 	 * @param       array      $array 新的数据数组
 	 * @return      DataEncoder
 	 */
@@ -83,7 +83,7 @@ class DataEncoder implements JsonSerializable, StandardOutput
 	 * @method      setStandardData
 	 * @description 设置标准信息并且自动返回实例(此方法将会清空原本存在的数据)
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-11
+	 * @doneIn      2021-02-11
 	 * @param       int      $code       状态码
 	 * @param       string   $msg        返回信息
 	 * @param       bool     $result     执行结果
@@ -103,7 +103,7 @@ class DataEncoder implements JsonSerializable, StandardOutput
 	 * @method      encode
 	 * @description 使用JSON编码数据格式
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-11
+	 * @doneIn      2021-02-11
 	 * @return      string
 	 */
 	public function encode() : string
@@ -115,19 +115,19 @@ class DataEncoder implements JsonSerializable, StandardOutput
 	 * @method      decode
 	 * @description 解码JSON数据格式
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-11
+	 * @doneIn      2021-02-11
 	 * @return      array
 	 */
 	public function decode() : array
 	{
-		return json_decode($this->originData);
+		return json_decode($this->output, true);
 	}
 
 	/**
 	 * @method      getIndex
 	 * @description 返回查找的键名的值
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-11
+	 * @doneIn      2021-02-11
 	 * @param       mixed      $key     键名
 	 * @param       mixed      $default 默认返回值
 	 * @return      mixed
@@ -141,7 +141,7 @@ class DataEncoder implements JsonSerializable, StandardOutput
 	 * @method      getOriginData
 	 * @description 获取原始数据
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-11
+	 * @doneIn      2021-02-11
 	 * @return      array
 	 */
 	public function getOriginData() : array
@@ -153,7 +153,7 @@ class DataEncoder implements JsonSerializable, StandardOutput
 	 * @method      getOutput
 	 * @description 获取输出数据
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-11
+	 * @doneIn      2021-02-11
 	 * @return      string
 	 */
 	public function getOutput() : string
@@ -165,7 +165,7 @@ class DataEncoder implements JsonSerializable, StandardOutput
 	 * @method      reset
 	 * @description 重置数据
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-11
+	 * @doneIn      2021-02-11
 	 * @return      DataEncoder
 	 */
 	public function reset() : DataEncoder
@@ -179,7 +179,7 @@ class DataEncoder implements JsonSerializable, StandardOutput
 	 * @method      jsonSerialize
 	 * @description JsonSerializable接口规定方法
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-21
+	 * @doneIn      2021-03-21
 	 * @return      mixed
 	 */
 	public function jsonSerialize()
@@ -191,7 +191,7 @@ class DataEncoder implements JsonSerializable, StandardOutput
 	 * @method      isOnlyLettersAndNumbers
 	 * @description 判断传入的字符串是否仅为字母和数字
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-11
+	 * @doneIn      2021-02-11
 	 * @param       string      $str   传入的字符串
 	 * @param       &match      $match 匹配结果
 	 * @return      boolean

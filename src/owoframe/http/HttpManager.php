@@ -52,22 +52,22 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 * @method      start
 	 * @description 启动HttpManager
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-07
+	 * @doneIn      2021-03-07
 	 * @return      void
 	 */
-	public function start(bool $autoDispath = true) : void
+	public function start(bool $autoDispatch = true) : void
 	{
 		// TODO: 将ClientRequestFilter中的方法移植过来;
 		$ip = Helper::getClientIp();
 		if(!self::isIpValid($ip)) {
-			LogWriter::write('[403@Banned] Client ' . $ip . '\'s IP is banned, request deined.', self::LOG_PREFIX);
+			LogWriter::write('[403@Banned] Client ' . $ip . '\'s IP is banned, request denied.', self::LOG_PREFIX);
 			self::setStatusCode(403);
 			return;
 		}
-		if($autoDispath) {
+		if($autoDispatch) {
 			if(ob_get_level() === 0) ob_start();
 			Session::start();
-			Router::dispath();
+			Router::dispatch();
 		}
 		if(!in_array(server('REQUEST_URI'), self::$notLogUrl)) LogWriter::write('[B200@' . server('REQUEST_METHOD') . '] ' . $ip . ' -> ' . self::getCompleteUrl(), self::LOG_PREFIX);
 	}
@@ -81,13 +81,13 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	/******************************
 	 *
 	 * HTTP 参数操作方法
-	 * 
+	 *
 	******************************/
 	/**
 	 * @method      setStatusCode
 	 * @description 设置HTTP状态码
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-10
+	 * @doneIn      2021-01-10
 	 * @param       int      $code 状态码
 	 */
 	public static function setStatusCode(int $code) : void
@@ -101,7 +101,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 * @method      Response
 	 * @description 快速新建响应头实例
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-18
+	 * @doneIn      2021-03-18
 	 * @param       null|callable    $callback 可回调参数
 	 * @param       array            $params   回调参数传递
 	 * @param       bool             $reload   重新生成响应实例
@@ -123,7 +123,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 * @method      setXssFilter
 	 * @description 设置自定义的XSS过滤器
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-07
+	 * @doneIn      2021-03-07
 	 * @param       array       $filter 正则过滤器组
 	 */
 	public static function setXssFilter(array $filter) : void
@@ -135,7 +135,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 * @method      xssFilter
 	 * @description XSS跨站请求过滤
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-07
+	 * @doneIn      2021-02-07
 	 * @param       string      $str         需要过滤的参数
 	 * @param       string      $allowedHTML 允许的HTML标签 (e.g. "<a><b><div>" (将不会过滤这三个HTML标签))
 	 * @return      void
@@ -149,7 +149,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 * @method      getRequestMerge
 	 * @description 返回整个的请求数据(默认返回原型)
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-06
+	 * @doneIn      2021-02-06
 	 * @param       bool           $useXssFilter 是否使用默认的XSS过滤函数
 	 * @param       callable|null  callback      回调参数
 	 * @return      array (开发者需注意在此返回参数时必须使回调参数返回数组)
@@ -183,13 +183,13 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	/******************************
 	 *
 	 * ClientIp 操作方法
-	 * 
+	 *
 	******************************/
 	/**
 	 * @method      banIp
 	 * @description 封禁一个IP
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-09
+	 * @doneIn      2021-03-09
 	 * @param       string      $ip     IP地址
 	 * @param       int|integer $toTime 封禁到时间(默认10分钟)
 	 * @param       string      $reason 封禁理由
@@ -202,7 +202,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 		}
 		$toTime = microtime(true) + $toTime * 60;
 		if(!self::isBanned($ip)) {
-			self::ipList()->set($encodedIp, 
+			self::ipList()->set($encodedIp,
 			[
 				'origin'  => $ip,
 				'banTime' => $toTime,
@@ -218,7 +218,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 * @method      isBanned
 	 * @description 判断IP地址是否被带时间封禁
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-07
+	 * @doneIn      2021-03-07
 	 * @param       string      $ip IP地址
 	 * @return      boolean
 	 */
@@ -235,7 +235,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 * @method      isForeverBanned
 	 * @description 判断IP地址是否被永久封禁
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-07
+	 * @doneIn      2021-03-07
 	 * @param       string      $ip IP地址
 	 * @return      boolean
 	 */
@@ -254,7 +254,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 * @method      setIpData
 	 * @description 设置IP信息集
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-09
+	 * @doneIn      2021-03-09
 	 * @param       string      $ip   IP地址
 	 * @param       array       $data 自定义设置信息集
 	 * @return      object@JSON
@@ -278,7 +278,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 * @method      isIpValid
 	 * @description 判断当前IP的访问有效性
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-13
+	 * @doneIn      2021-03-13
 	 * @param       string      $ip IP地址
 	 * @return      boolean
 	 */
@@ -299,7 +299,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 * @method      ipList
 	 * @description 返回黑名单配置文件实例
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-07
+	 * @doneIn      2021-03-07
 	 * @return      object@JSON
 	 */
 	public static function ipList() : JSON
@@ -314,7 +314,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	/******************************
 	 *
 	 * URI/URL 方法
-	 * 
+	 *
 	******************************/
 	/**
 	 * @method      isSecure
@@ -326,7 +326,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	*/
 	public static function isSecure() : bool
 	{
-		return (!empty(server('HTTPS')) && 'off' != strtolower(server('HTTPS'))) 
+		return (!empty(server('HTTPS')) && 'off' != strtolower(server('HTTPS')))
 			|| (!empty(server('SERVER_PORT')) && 443 == server('SERVER_PORT'));
 	}
 

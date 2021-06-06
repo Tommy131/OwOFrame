@@ -35,7 +35,7 @@ class OutputEvent extends \owoframe\event\Event implements StandardOutput
 	 * @method      setOutput
 	 * @description 更新输出内容
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-11
+	 * @doneIn      2021-04-11
 	 * @param       string      $str 输出内容
 	 */
 	public function setOutput(string $str) : void
@@ -47,7 +47,7 @@ class OutputEvent extends \owoframe\event\Event implements StandardOutput
 	 * @method      getOutput
 	 * @description 返回输出内容
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-10
+	 * @doneIn      2021-04-10
 	 * @return      string
 	 */
 	public function getOutput() : string

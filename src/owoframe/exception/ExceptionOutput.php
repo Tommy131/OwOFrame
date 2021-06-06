@@ -19,7 +19,7 @@
 declare(strict_types=1);
 namespace owoframe\exception;
 
-use owoframe\helper\BootStraper as BS;
+use owoframe\helper\BootStrapper as BS;
 use owoframe\helper\Helper;
 use owoframe\http\HttpManager as Http;
 use owoframe\http\route\Router;
@@ -32,7 +32,7 @@ class ExceptionOutput
 	public static function ErrorHandler($errno, $errstr, $errfile, $errline, $context, $trace = null)
 	{
 		if(error_reporting() === 0) return false;
-		$errorConversion = 
+		$errorConversion =
 		[
 			E_ERROR             => 'E_ERROR',
 			E_WARNING           => 'E_WARNING',
@@ -63,7 +63,7 @@ class ExceptionOutput
 						$logged = '';
 					}
 					echo str_replace(
-						['{logged}', '{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'], 
+						['{logged}', '{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'],
 						[$logged, $errno, $msg, $errfile, $errline, null, BS::getRunTime()],
 					self::getTemplate());
 				} else {
@@ -96,7 +96,7 @@ class ExceptionOutput
 			$fileName = method_exists($e, 'getRealFile') ? $e->getRealFile() : $e->getFile();
 			$realName = method_exists($e, 'getRealLine') ? $e->getRealLine() : $e->getLine();
 			echo str_replace(
-				['{logged}', '{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'], 
+				['{logged}', '{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'],
 				[$logged, $type, $e->getMessage(),  $fileName, $realName, $e->getTraceAsString(), BS::getRunTime()],
 			self::getTemplate());
 		} else {
@@ -213,7 +213,7 @@ class ExceptionOutput
 				<span id="notPassed">--- NotPassed ---</span>
 				{logged}
 			</p>
-			
+
 			<div id="type">{type}:</div>
 			<div id="message">{message}</div>
 			in <span id="class">{file}</span> at line <span id="line">{line}</span>

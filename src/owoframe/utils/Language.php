@@ -18,6 +18,8 @@
 
 namespace owoframe\utils;
 
+use owoframe\object\{JSON, INI};
+use owoframe\exception\OwOFrameException;
 use owoframe\exception\ResourceMissedException;
 
 class Language
@@ -31,7 +33,7 @@ class Language
 	/* @array 语言包存放数组 */
 	private $langPack;
 
-	public function __construct(string $package, array $pack, string $lang = 'en-US')
+	public function __construct(string $file, string $package, array $pack, string $lang = 'en-US')
 	{
 		if(!file_exists($file)) {
 			throw new ResourceMissedException('LanguagePack', $file);
@@ -40,13 +42,14 @@ class Language
 		$this->file     = $file;
 		$this->lang     = $lang;
 		$this->langPack = $pack;
+		$this->update('', '');
 	}
 
 	/**
 	 * @method      exists
 	 * @description 判断语言包里是否存在一个条目
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-31
+	 * @doneIn      2021-01-31
 	 * @param       string      $tag 标签
 	 * @return      boolean
 	 */
@@ -59,7 +62,7 @@ class Language
 	 * @method      get
 	 * @description 获取语言包条目
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-31
+	 * @doneIn      2021-01-31
 	 * @param       string      $tag     标签
 	 * @param       string      $default 默认返回值
 	 * @return      string
@@ -73,27 +76,29 @@ class Language
 	 * @method      update
 	 * @description 更新语言包条目
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-31
+	 * @doneIn      2021-01-31
 	 * @param       string      $tag  标签
 	 * @param       string      $text 文字
 	 * @return      void
 	 */
 	public function update(string $tag, string $text) : void
 	{
-		$this->langPack[$tag] = $text;
+		if(!empty($tag) && !empty($text)) {
+			$this->langPack[$tag] = $text;
+		}
 		switch(@end(explode('.', $this->file))) {
 			case 'ini':
-				$r = "[{$this->lang}]" . PHP_EOL;
-				foreach($this->langPack as $tag => $text) {
-					$r .= "{$tag}={$text}" . PHP_EOL;
-				}
-				file_put_contents($this->file, $r);
+				$config = new INI($this->file, [], true);
 			break;
 
 			case 'json':
-				$config = new Config($this->file, [], true);
-				$config->setAll($this->langPack);
+				$config = new JSON($this->file, [], true);
+			break;
+
+			default:
+				throw new OwOFrameException('Unsupported file type of this Language Package!');
 			break;
 		}
+		$config->setAll($this->langPack);
 	}
 }

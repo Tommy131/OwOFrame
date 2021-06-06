@@ -23,7 +23,7 @@ class TextFormat
 {
 	/* @string 定义§的编码 */
 	public const PREFIX = "\xc2\xa7";
-	
+
 	/* 定义标准颜色 | Define Standard Colors */
 	/* @string 水色(亮蓝色) */
 	public const AQUA = self::PREFIX . "0";
@@ -67,7 +67,7 @@ class TextFormat
 	 * @method      split
 	 * @description 分割字符串
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-27
+	 * @doneIn      2021-01-27
 	 * @param       string      $str 传入的字符串
 	 * @return      array
 	 */
@@ -80,7 +80,7 @@ class TextFormat
 	 * @method      clean
 	 * @description 转换颜色字符
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-27
+	 * @doneIn      2021-01-27
 	 * @param       string      $str 传入的字符串
 	 * @return      string
 	 */
@@ -93,7 +93,7 @@ class TextFormat
 	 * @method      parse
 	 * @description 解析传入普通字符转换成颜色字符
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-27
+	 * @doneIn      2021-01-27
 	 * @param       string      $input 传入的字符串
 	 * @return      string
 	 */
@@ -194,7 +194,7 @@ class TextFormat
 	 * @method      color
 	 * @description 取色器
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-27
+	 * @doneIn      2021-01-27
 	 * @param       int      $num 颜色编号
 	 * @param       string   $str 传入的字符
 	 * @return      string
@@ -210,7 +210,7 @@ class TextFormat
 	 * @method      background
 	 * @description 背景取色器
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-27
+	 * @doneIn      2021-01-27
 	 * @param       string   $str 传入的字符
 	 * @param       int      $num 背景颜色编号
 	 * @param       int      $num2 字体颜色编号

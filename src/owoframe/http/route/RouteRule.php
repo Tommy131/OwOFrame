@@ -38,7 +38,7 @@ class RouteRule
 	 * @method      bind
 	 * @description 绑定路由规则到控制器
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-07
+	 * @doneIn      2021-02-07
 	 * @param       string[app_controllerName|Usage: -> AppName@ControllerName]
 	 * @param       string[rule|绑定规则]
 	 * @return      void
@@ -77,7 +77,7 @@ class RouteRule
 	 * @method      compareDomain
 	 * @description 比对域名是否相同
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-16
+	 * @doneIn      2021-01-16
 	 * @param       string[domain1|第一个域名]
 	 * @param       string[domain2|第二个域名]
 	 * @return      boolean
@@ -102,7 +102,7 @@ class RouteRule
 	 * @method      domain
 	 * @description 绑定域名到应用程序 | Bind domains to Application
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-16
+	 * @doneIn      2021-01-16
 	 * @param       string[domain|必须是泛域名]
 	 * @param       array or string[args|传入的参数, 可以仅是AppName, 也可以是数组 [二级域名=>AppName]]
 	 * @return      void
@@ -138,7 +138,7 @@ class RouteRule
 	 * @method      getDomainBind
 	 * @description 获取指定的域名绑定规则
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-16
+	 * @doneIn      2021-01-16
 	 * @param       string[domain|指定的域名]
 	 * @return      null or string
 	 */
@@ -163,48 +163,17 @@ class RouteRule
 	 * @method      bindApiProcessor
 	 * @description 绑定API处理器
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-04
+	 * @doneIn      2021-02-04
 	 * @param       string|class@ApiProcessor[api|绑定的实例对象]
 	 * @return      void
+	 *
+	 * Original Codes:
+	 * CXB1YmxpYyBzdGF0aWMgZnVuY3Rpb24gYmluZEFwaVByb2Nlc3NvcigkYXBpKSA6IHZvaWQNCgl7DQoJCWlmKGlzX3N0cmluZygkY
+	 * XBpKSkgew0KCQkJJHJlZiA9IG5ldyBcUmVmbGVjdGlvbkNsYXNzKCRhcGkpOw0KCQkJaWYoKCRyZWYgPSAkcmVmLSZndDtnZXRQYX
+	 * JlbnRDbGFzcygpKSAhPT0gZmFsc2UpIHsNCgkJCQlpZigkcmVmLSZndDtnZXROYW1lKCkgPT09IEFwaVByb2Nlc3Nvcjo6Y2xhc3M
+	 * pIHsNCgkJCQkJJGFwaSA9IG5ldyAkYXBpOw0KCQkJCX0NCgkJCX0NCgkJfQ0KCQlpZighJGFwaSBpbnN0YW5jZW9mIEFwaVByb2Nl
+	 * c3NvcikgcmV0dXJuOw0KCQlpZihpc19udWxsKHNlbGY6OmdldEFwaVByb2Nlc3NvcigkYXBpLSZndDtnZXROYW1lKCkpKSkgew0KC
+	 * QkJJGFwaS0mZ3Q7c2V0UGF0aFBhcmFtKFJvdXRlcjo6Z2V0UGFyYW1ldGVycygyKSk7DQoJCQlzZWxmOjokYXBpUnVsZVskYXBpLS
+	 * ZndDtnZXROYW1lKCldID0gJGFwaTsNCgkJfQ0KCX0=
 	 */
-	public static function bindApiProcessor($api) : void
-	{
-		if(is_string($api)) {
-			$ref = new \ReflectionClass($api);
-			if(($ref = $ref->getParentClass()) !== false) {
-				if($ref->getName() === ApiProcessor::class) {
-					$api = new $api;
-				}
-			}
-		}
-		if(!$api instanceof ApiProcessor) return;
-		if(is_null(self::getApiProcessor($api->getName()))) {
-			$api->setPathParam(Router::getParameters(2));
-			self::$apiRule[$api->getName()] = $api;
-		}
-	}
-
-	/**
-	 * @method      getApiProcessor
-	 * @description 返回一个有效的api处理器
-	 * @author      HanskiJay
-	 * @doenIn      2021-02-04
-	 * @return      array
-	 */
-	public static function getApiProcessor(string $apiName) : ?ApiProcessor
-	{
-		return self::$apiRule[$apiName] ?? null;
-	}
-
-	/**
-	 * @method      getApiProcessors
-	 * @description 返回所有的api处理器
-	 * @author      HanskiJay
-	 * @doenIn      2021-02-04
-	 * @return      array
-	 */
-	public static function getApiProcessors() : array
-	{
-		return self::$apiRule;
-	}
 }

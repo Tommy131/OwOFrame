@@ -49,7 +49,7 @@ abstract class Config
 	 * @method      get
 	 * @description 获取配置文件项目
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-30
+	 * @doneIn      2021-01-30
 	 * @param       string      $index   键值
 	 * @param       mixed       $default 默认返回值
 	 * @return      mixed
@@ -85,7 +85,7 @@ abstract class Config
 	 * @method      set
 	 * @description 向对象设置属性
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-30
+	 * @doneIn      2021-01-30
 	 * @param       string      $index 键值
 	 * @param       mixed       $value 数据
 	 */
@@ -119,7 +119,7 @@ abstract class Config
 	 * @method      setAll
 	 * @description 向对象设置属性
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-30
+	 * @doneIn      2021-01-30
 	 * @param       array      $data 数据
 	 */
 	public function setAll(array $data) : void
@@ -132,7 +132,7 @@ abstract class Config
 	 * @method      remove
 	 * @description 移除变量值
 	 * @author      HanskiJay
-	 * @doenIn      2021-05-04
+	 * @doneIn      2021-05-04
 	 * @param       string      $index 键名
 	 */
 	public function remove(string $index) : void
@@ -145,7 +145,7 @@ abstract class Config
 	 * @method      save
 	 * @description 保存配置文件
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-30
+	 * @doneIn      2021-01-30
 	 * @param       string|null      $file 文件
 	 * @return      void
 	 */
@@ -155,7 +155,7 @@ abstract class Config
 	 * @method      reload
 	 * @description 重新读取配置文件
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-30
+	 * @doneIn      2021-01-30
 	 * @return      void
 	 */
 	abstract public function reload() : void;
@@ -164,7 +164,7 @@ abstract class Config
 	 * @method      backup
 	 * @description 备份配置文件
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-30
+	 * @doneIn      2021-01-30
 	 * @param       string      $backupPath 备份路径
 	 * @return      void
 	 */
@@ -177,7 +177,7 @@ abstract class Config
 	 * @method      exists
 	 * @description 判断键值是否存在
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-30
+	 * @doneIn      2021-01-30
 	 * @param       string      $index 键值
 	 * @return      boolean
 	 */
@@ -190,7 +190,7 @@ abstract class Config
 	 * @method      getAll
 	 * @description 返回配置文件
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-30
+	 * @doneIn      2021-01-30
 	 * @return      array
 	 */
 	public function getAll() : array
@@ -200,9 +200,9 @@ abstract class Config
 
 	/**
 	 * @method      obj
-	 * @description 将当前的数据转换成对象 | Formating currently data($this->config) to Object
+	 * @description 将当前的数据转换成对象 | Formatting currently data($this->config) to Object
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-31
+	 * @doneIn      2021-01-31
 	 * @return      object
 	 */
 	public function obj() : object

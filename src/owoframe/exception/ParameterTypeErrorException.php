@@ -19,7 +19,7 @@
 declare(strict_types=1);
 namespace owoframe\exception;
 
-class ParameterErrorException extends OwOFrameException
+class ParameterTypeErrorException extends OwOFrameException
 {
 	public function __construct(string $param, string $needType, $currType, int $code = 0, \Throwable $previous = null)
 	{

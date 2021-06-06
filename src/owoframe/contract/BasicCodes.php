@@ -29,7 +29,7 @@ interface BasicCodes
 	public const SERVER_INTERVAL_ERROR = 500;
 
 	# HTTP Request Mode Code #
-	
+
 	/* @int HTTP GET请求模式 */
 	public const GET_MODE = 0;
 	/* @int HTTP POST请求模式 */

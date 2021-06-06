@@ -36,7 +36,7 @@ class MethodMissedException extends OwOFrameException
 	 * @method      setAlternativeCall
 	 * @description 设置备选回调方法
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-30
+	 * @doneIn      2021-04-30
 	 * @param       callable           $callback
 	 */
 	public function setAlternativeCall(callable $callback) : void
@@ -48,7 +48,7 @@ class MethodMissedException extends OwOFrameException
 	 * @method      getAlternativeCall
 	 * @description 获取备选回调方法
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-30
+	 * @doneIn      2021-04-30
 	 * @return      null|callable
 	 */
 	public function getAlternativeCall() : ?callable
@@ -60,7 +60,7 @@ class MethodMissedException extends OwOFrameException
 	 * @method      setJudgement
 	 * @description 设置判断条件结果
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-30
+	 * @doneIn      2021-04-30
 	 * @param       bool         $judgement 判断条件结果
 	 */
 	public function setJudgement(bool $judgement = true) : void
@@ -72,7 +72,7 @@ class MethodMissedException extends OwOFrameException
 	 * @method      getJudgement
 	 * @description 获取判断条件结果
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-30
+	 * @doneIn      2021-04-30
 	 * @return      boolean
 	 */
 	public function getJudgement() : bool
@@ -84,7 +84,7 @@ class MethodMissedException extends OwOFrameException
 	 * @method      resetCall
 	 * @description 重置回调方法相关
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-30
+	 * @doneIn      2021-04-30
 	 */
 	public function resetCall() : void
 	{
@@ -96,7 +96,7 @@ class MethodMissedException extends OwOFrameException
 	 * @method      toggleRunTimeDivOutput
 	 * @description 切换输出运行时间框
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-30
+	 * @doneIn      2021-04-30
 	 * @param       bool|boolean           $update 更新输出状态
 	 * @return      boolean
 	 */

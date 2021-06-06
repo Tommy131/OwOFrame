@@ -22,12 +22,10 @@ namespace owoframe\http\route;
 use Closure;
 use ReflectionClass;
 use ReflectionFunction;
-use ReflectionMethod;
 use owoframe\application\AppBase;
 use owoframe\application\AppManager;
-use owoframe\helper\{BootStraper, Helper};
+use owoframe\helper\{BootStrapper, Helper};
 use owoframe\http\HttpManager as Http;
-use owoframe\http\Response;
 use owoframe\exception\{InvalidControllerException, MethodMissedException, InvalidRouterException, UnknownErrorException};
 use owoframe\utils\DataEncoder;
 
@@ -41,13 +39,13 @@ final class Router
 
 
 	/**
-	 * @method      dispath
+	 * @method      dispatch
 	 * @description 分发路由
 	 * @return      void
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-09 18:03
 	*/
-	public static function dispath() : void
+	public static function dispatch() : void
 	{
 		$tmps = [];
 		$pathInfo = self::getParameters(-1);
@@ -70,19 +68,19 @@ final class Router
 		}
 
 		if(in_array($appName, DENY_APP_LIST)) {
-			HttpManager::setStatusCode(404);
+			Http::setStatusCode(404);
 			return;
 		}
 
 		$app = AppManager::getApp($appName) ?? AppManager::getDefaultApp();
 		if($app === null) {
-			HttpManager::setStatusCode(404);
+			Http::setStatusCode(404);
 			throw new InvalidRouterException("Cannot find any valid Application!");
 			// TODO: 增加一个未找到App的回调方法(callback);
 		} else {
 			self::$currentApp = $app;
 		}
-		
+
 		// Judgment $pathInfo for ControllerName and RequestMethodName;
 		if(count($pathInfo) === 0) {
 			$controllerName = $requestMethod = $appName;
@@ -166,13 +164,13 @@ final class Router
 	 * @method      getRunTimeDiv
 	 * @description 输出运行时间框
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-30
+	 * @doneIn      2021-04-30
 	 * @return      void
 	 */
 	public static function getRunTimeDiv(bool $condition = true) : void
 	{
 		if(defined('DEBUG_MODE') && DEBUG_MODE && $condition) {
-			echo str_replace('{runTime}', BootStraper::getRunTime(), base64_decode('PGRpdiBzdHlsZT0icG9zaXRpb246IGFic29sdXRlOyB6LWluZGV4OiA5OTk5OTk7IGJvdHRvbTogMDsgcmlnaHQ6IDA7IG1hcmdpbjogNXB4OyBwYWRkaW5nOiA1cHg7IGJhY2tncm91bmQtY29sb3I6ICNhYWFhYWE7IGJvcmRlci1yYWRpdXM6IDVweDsiPgoJPGRpdj5Vc2VkVGltZTogPGI+e3J1blRpbWV9czwvYj48L2Rpdj4KPC9kaXY+'));
+			echo str_replace('{runTime}', BootStrapper::getRunTime(), base64_decode('PGRpdiBzdHlsZT0icG9zaXRpb246IGFic29sdXRlOyB6LWluZGV4OiA5OTk5OTk7IGJvdHRvbTogMDsgcmlnaHQ6IDA7IG1hcmdpbjogNXB4OyBwYWRkaW5nOiA1cHg7IGJhY2tncm91bmQtY29sb3I6ICNhYWFhYWE7IGJvcmRlci1yYWRpdXM6IDVweDsiPgoJPGRpdj5Vc2VkVGltZTogPGI+e3J1blRpbWV9czwvYj48L2Rpdj4KPC9kaXY+'));
 		}
 	}
 
@@ -180,7 +178,7 @@ final class Router
 	 * @method      getCurrentApp
 	 * @description 返回当前Application实例
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-17
+	 * @doneIn      2021-04-17
 	 * @return      null|object@AppBase
 	 */
 	public static function getCurrentApp() : ?AppBase
@@ -245,7 +243,7 @@ final class Router
 	{
 		#
 		# URI->@/index.php/{ApplicationName}/{ControllerName}/{RequestMethodName}/[GET]...
-		# 
+		#
 		$param = array_filter(explode('/', self::getPathInfo()));
 		// 1: 返回 ApplicationName 之后的参数;
 		// 2: 返回 ControllerName 之后的参数;

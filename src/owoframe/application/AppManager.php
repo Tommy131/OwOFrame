@@ -60,7 +60,7 @@ class AppManager implements \owoframe\contract\Manager
 		if(is_dir(self::$appPath)) {
 			return self::$appPath;
 		} else {
-			throw new ResourceMissedException("Path", $path);
+			throw new ResourceMissedException("Path", self::$appPath);
 		}
 	}
 
@@ -68,7 +68,7 @@ class AppManager implements \owoframe\contract\Manager
 	 * @method      hasApp
 	 * @description 判断是否存在一个Application
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-26
+	 * @doneIn      2021-01-26
 	 * @param       string       $appName app名称
 	 * @param       &$class      &$class  向上传递存在的应用对象
 	 * @return      boolean

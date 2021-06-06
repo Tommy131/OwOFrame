@@ -23,7 +23,7 @@ use owoframe\MasterManager;
 use owoframe\exception\ExceptionOutput;
 use owoframe\object\INI;
 
-class BootStraper
+class BootStrapper
 {
 
 	/**
@@ -54,7 +54,7 @@ class BootStraper
 			if(!defined('ROOT_PATH'))        define('ROOT_PATH',       dirname(realpath(dirname(__FILE__)), 3) . DIRECTORY_SEPARATOR);
 			// Project source directory (absolute path);
 			if(!defined('OWO_PATH'))         define('OWO_PATH',        dirname(realpath(dirname(__FILE__))) . DIRECTORY_SEPARATOR);
-			// Define Aplication path(absolute path);
+			// Define Application path(absolute path);
 			if(!defined('APP_PATH'))         define('APP_PATH',        ROOT_PATH . 'application' . DIRECTORY_SEPARATOR);
 			// Define Module path(absolute path);
 			if(!defined('MODULE_PATH'))      define('MODULE_PATH',     ROOT_PATH . 'module' . DIRECTORY_SEPARATOR);

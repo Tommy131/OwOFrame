@@ -21,8 +21,8 @@ namespace owoframe\application;
 
 use owoframe\helper\Helper;
 use owoframe\http\route\Router;
-use owoframe\exception\InvalidRouterException;
-use owoframe\exception\ParameterErrorException;
+use owoframe\exception\OwOFrameException;
+use owoframe\exception\ParameterTypeErrorException;
 
 class ViewBase extends ControllerBase
 {
@@ -97,7 +97,7 @@ class ViewBase extends ControllerBase
 	 * @method      removeValue
 	 * @description 删除模板中的变量定义
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-26
+	 * @doneIn      2021-04-26
 	 * @param       string      $searched 需要替换的变量名
 	 * @return      void
 	 */
@@ -130,24 +130,24 @@ class ViewBase extends ControllerBase
 	 * @method      parseResourcePath
 	 * @description 解析模板中的资源路径绑定
 	 * @author      HanskiJay
-	 * @doenIn      2021-05-25
+	 * @doneIn      2021-05-25
 	 * @param       string            &$str 传入模板
 	 * @return      void
 	 */
 	protected function parseResourcePath(string &$str) : void
 	{
-		$regex = 
+		$regex =
 		[
 			'/<(img|script|link) (.*)>/imU',
 			'/@(src|href)="{\$(\w*)\|(.*)}"/imU',
 			'/@name="(\w*)"[\s]+?/mU',
-			'/@actived="(\w*)"[\s]+?/imU'
+			'/@active="(\w*)"[\s]+?/imU'
 		];
 
 		if(!preg_match_all($regex[0], $str, $matches)) {
 			return;
 		}
-		
+
 		foreach($matches[0] as $key => $tag) {
 			if(preg_match($regex[2], $tag, $match)) {
 				$name = $match[1];
@@ -155,16 +155,16 @@ class ViewBase extends ControllerBase
 				$name = '';
 			}
 
-			if(($actived = $this->getValue($name)) !== null) {
-				$actived = (($actived === true) || ($actived === 'true')) ? true : false;
+			if(($active = $this->getValue($name)) !== null) {
+				$active = (($active === true) || ($active === 'true')) ? true : false;
 			}
 			elseif(preg_match($regex[3], $tag, $match)) {
-				$actived = ($match[1] === 'true') ? true : (($match[1] === 'false') ? false : null);
+				$active = ($match[1] === 'true') ? true : (($match[1] === 'false') ? false : null);
 			} else {
-				$actived = null;
+				$active = null;
 			}
 
-			if(is_bool($actived) && !$actived) {
+			if(is_bool($active) && !$active) {
 				if($matches[1][$key] === 'script') {
 					$tag = "{$tag}</script>";
 				}
@@ -224,7 +224,7 @@ class ViewBase extends ControllerBase
 	 * @method      parseLoopArea
 	 * @description 解析前端模板存在的循环语法
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-03
+	 * @doneIn      2021-01-03
 	 * @param       string      $loopArea 需要解析的文本
 	 * @return      void
 	 */
@@ -249,19 +249,15 @@ class ViewBase extends ControllerBase
 
 			$data = $this->getValue($bindTag);
 			if(!$data || ($data && !is_array($data))) {
-				// TODO: 增加一个是否为 DEBUG_MODE 模式, 根据情况扔出异常;
-				if(DEBUG_MODE) {
-					throw new ParameterErrorException("Cannot find bindTag {{$bindElement}{$bindTag}} !");
-				}
-				return;
+				throw new OwOFrameException("[View-LoopParserError] Cannot find bindTag {\${$bindTag}} !");
 			}
 
 			$data = array_filter($data);
 			$complied = [];
-			$finaly   = '';
+			$finally   = '';
 			foreach($data as $k => $v) {
 				if(!is_array($v)) {
-					throw new ParameterErrorException('不合法的使用方法!');
+					throw new ParameterTypeErrorException('不合法的使用方法!', 'array', gettype($v));
 				}
 
 				foreach($loop as $n => $line) {
@@ -299,19 +295,19 @@ class ViewBase extends ControllerBase
 				}
 				ksort($complied[$k]);
 				foreach($complied[$k] as $result) {
-					$finaly .= $result . PHP_EOL;
+					$finally .= $result . PHP_EOL;
 				}
 			}
 		}
 		$this->removeValue($bindTag);
-		$loopArea = preg_replace($loopRegex, $finaly, $loopArea);
+		$loopArea = preg_replace($loopRegex, $finally, $loopArea);
 	}
 
 	/**
 	 * @method      readString
 	 * @description 解析字符串的传参
 	 * @author      HanskiJay
-	 * @doenIn      2021-05-29
+	 * @doneIn      2021-05-29
 	 * @param       string      $str     待解析的字符串
 	 * @param       string      &$result
 	 * @return      boolean
@@ -324,8 +320,8 @@ class ViewBase extends ControllerBase
 				case 'get_file':
 					$path = array_shift($arr);
 					if(is_file($path)) {
-						 $result = file_get_contents($path);
-						 return true;
+						$result = file_get_contents($path);
+						return true;
 					}
 				break;
 			}
@@ -337,7 +333,7 @@ class ViewBase extends ControllerBase
 	 * @method      replaceBindValue
 	 * @description 替换绑定变量
 	 * @author      HanskiJay
-	 * @doenIn      2021-05-29
+	 * @doneIn      2021-05-29
 	 * @param       string                     $key   变量名
 	 * @param       int|integer|string|boolean $value 变量值
 	 * @param       string                     &$str  原始字符串
@@ -418,7 +414,7 @@ class ViewBase extends ControllerBase
 	 * @method      generateStaticUrl
 	 * @description 生成静态资源路由地址
 	 * @author      HanskiJay
-	 * @doenIn      2021-05-29
+	 * @doneIn      2021-05-29
 	 * @param       string            $filePath 静态资源文件路径
 	 * @return      string
 	 */
@@ -583,7 +579,7 @@ class ViewBase extends ControllerBase
 	 * @method      getTemplate
 	 * @description 返回模板
 	 * @author      HanskiJay
-	 * @doenIn      2021-05-29
+	 * @doneIn      2021-05-29
 	 * @return      null|string
 	 */
 	protected function &getTemplate() : ?string

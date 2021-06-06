@@ -46,8 +46,8 @@ class Container implements ArrayAccess, Countable
 	 * @method      getInstance
 	 * @description 返回容器单例实例
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-05
-	 * @return      @Container
+	 * @doneIn      2021-03-05
+	 * @return      object@Container
 	 */
 	public static function getInstance() : Container
 	{
@@ -61,7 +61,7 @@ class Container implements ArrayAccess, Countable
 	 * @method      bind
 	 * @description 绑定到容器绑定标识
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-05
+	 * @doneIn      2021-03-05
 	 * @param       string      $bindTag  绑定标识
 	 * @param       mixed       $concrete 参数可为[类名|对象|闭包]
 	 * @return      void
@@ -80,7 +80,7 @@ class Container implements ArrayAccess, Countable
 	 * @method      instance
 	 * @description 绑定实例到对象实例列表
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-05
+	 * @doneIn      2021-03-05
 	 * @param       string      $bindTag  绑定标识
 	 * @param       object      $instance 实例化对象
 	 * @return      void
@@ -96,7 +96,7 @@ class Container implements ArrayAccess, Countable
 	 * @method      make
 	 * @description 创建实例(存在即返回或自动更新)
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-05
+	 * @doneIn      2021-03-05
 	 * @param       string       $bindTag    绑定标识
 	 * @param       array        $params     参数
 	 * @param       bool|boolean $autoUpdate 自动更新实例开关
@@ -123,11 +123,11 @@ class Container implements ArrayAccess, Countable
 	 * @method      invoke
 	 * @description 调用选择器(function|class|Closure|Method)
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-05
+	 * @doneIn      2021-03-05
 	 * @param       string      $selector
 	 * @param       mixed       $concrete
 	 * @param       array       $params
-	 * @return      
+	 * @return      object
 	 */
 	public function invoke(string $selector, $concrete, array $params = [])
 	{
@@ -152,7 +152,10 @@ class Container implements ArrayAccess, Countable
 			}
 			return $object;
 		} catch(ReflectionException $e) {
-			throw new OwOFrameException("[invoke({$selector})]: {$name} not exists", 0, $e);
+			if(!is_string($concrete)) {
+				$concrete = (string) $concrete;
+			}
+			throw new OwOFrameException("[invoke({$selector})]: {$concrete} not exists", 0, $e);
 		}
 	}
 
@@ -160,7 +163,7 @@ class Container implements ArrayAccess, Countable
 	 * @method      invokeReflectMethod
 	 * @description 调用反射执行类的方法
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-06
+	 * @doneIn      2021-03-06
 	 * @param       Reflector    $reflect [description]
 	 * @param       array        $params  [description]
 	 * @return      [type]                [description]
@@ -174,7 +177,7 @@ class Container implements ArrayAccess, Countable
 	 * @method      bindParams
 	 * @description 绑定参数
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-06
+	 * @doneIn      2021-03-06
 	 * @param       ReflectionFunctionAbstract $reflect 反射类实例
 	 * @param       array                      $params  参数组
 	 * @return      array
@@ -186,8 +189,8 @@ class Container implements ArrayAccess, Countable
 		}
 		$newParams = [];
 		foreach($reflect->getParameters() as $key => $reflectParam) {
-			$param = isset($params[$key]) ? $params[$key] : 
-					(isset($params[$reflectParam->getName()]) ? $params[$reflectParam->getName()] : 
+			$param = isset($params[$key]) ? $params[$key] :
+					(isset($params[$reflectParam->getName()]) ? $params[$reflectParam->getName()] :
 						($reflectParam->isDefaultValueAvailable() ? $reflectParam->getDefaultValue() : null) // ←END HERE;
 					);
 			if(($paramType = $reflectParam->getType()) !== null) {
@@ -219,7 +222,7 @@ class Container implements ArrayAccess, Countable
 	 * @method      has
 	 * @description 判断容器绑定标识或对象实例列表中是否存在一个绑定标识
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-05
+	 * @doneIn      2021-03-05
 	 * @param       string      $bindTag    绑定标识
 	 * @param       int|integer $selectMode 选择模式
 	 * @return      boolean
@@ -235,7 +238,7 @@ class Container implements ArrayAccess, Countable
 	 * @method      count
 	 * @description 返回所有已实例化的对象
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-05
+	 * @doneIn      2021-03-05
 	 * @return      integer
 	 */
 	public function count() : int
@@ -247,7 +250,7 @@ class Container implements ArrayAccess, Countable
 	 * @method      getIterator
 	 * @description 返回数组迭代器实例
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-05
+	 * @doneIn      2021-03-05
 	 * @return      @ArrayIterator
 	 */
 	public function getIterator()
@@ -259,7 +262,7 @@ class Container implements ArrayAccess, Countable
 	 * @method      offsetExists
 	 * @description @ArrayAccess
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-05
+	 * @doneIn      2021-03-05
 	 * @param       mixed $key
 	 * @return      mixed
 	 */
@@ -272,7 +275,7 @@ class Container implements ArrayAccess, Countable
 	 * @method      offsetGet
 	 * @description @ArrayAccess
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-05
+	 * @doneIn      2021-03-05
 	 * @param       mixed $key
 	 * @return      mixed
 	 */
@@ -285,7 +288,7 @@ class Container implements ArrayAccess, Countable
 	 * @method      offsetSet
 	 * @description @ArrayAccess
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-05
+	 * @doneIn      2021-03-05
 	 * @param       mixed $key
 	 */
 	public function offsetSet($key, $val)
@@ -297,7 +300,7 @@ class Container implements ArrayAccess, Countable
 	 * @method      offsetUnset
 	 * @description @ArrayAccess
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-05
+	 * @doneIn      2021-03-05
 	 * @param       mixed $key
 	 */
 	public function offsetUnset($key)

@@ -25,7 +25,7 @@ interface StandardOutput
 	 * @method      getOutput
 	 * @description 标准输出方法
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-16
+	 * @doneIn      2021-04-16
 	 * @return      string
 	 */
 	public function getOutput() : string;

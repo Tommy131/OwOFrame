@@ -77,7 +77,7 @@ abstract class ControllerBase
 	/**
 	 * @method      getViewPath
 	 * @description 返回Views(V)显示层的路径
-	 * @description Get the path for View(V) relativly
+	 * @description Get the path for View(V) relatively
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-10 18:49
 	 * @param       string      $index      文件/文件夹索引
@@ -101,14 +101,14 @@ abstract class ControllerBase
 	final public function hasViewPath(string $index) : bool
 	{
 		$index = explode("/", $index)[0] ?? $index;
-		return is_dir(self::getViewPath($index)) || is_file(self::getViewPath($index));
+		return is_dir($this->getViewPath($index)) || is_file($this->getViewPath($index));
 	}
 
 	/**
 	 * @method      getName
 	 * @description 返回控制器类名
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-09
+	 * @doneIn      2021-02-09
 	 * @return      string
 	 */
 	final public function getName() : string

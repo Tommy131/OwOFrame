@@ -22,7 +22,7 @@ namespace owoframe\contract;
 interface MIMETypeConstant
 {
 	/* @array MIME类型常量数组 */
-	public const MIMETYPE = 
+	public const MIMETYPE =
 	[
 		'ez' => 'application/andrew-inset',
 		'csm' => 'application/cu-seeme',

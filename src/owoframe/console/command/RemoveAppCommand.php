@@ -19,7 +19,7 @@
 declare(strict_types=1);
 namespace owoframe\console\command;
 
-use owoframe\app\AppManager;
+use owoframe\application\AppManager;
 use owoframe\helper\Helper;
 
 class RemoveAppCommand extends \owoframe\console\CommandBase

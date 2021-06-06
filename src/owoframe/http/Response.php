@@ -24,7 +24,7 @@ use ReflectionClass;
 
 use owoframe\contract\MIMETypeConstant;
 use owoframe\contract\StandardOutput;
-use owoframe\exception\JSONException;
+use owoframe\helper\Helper;
 use owoframe\http\HttpManager;
 use owoframe\http\route\Router;
 use owoframe\utils\DataEncoder;
@@ -42,7 +42,7 @@ class Response
 	/* @int HTTP响应代码(Default:200) */
 	protected $code = 200;
 	/* @array HTTP header参数设置 */
-	protected $header = 
+	protected $header =
 	[
 		'Content-Type'           => 'text/html; charset=utf-8',
 		'X-Content-Type-Options' => 'nosniff',
@@ -62,7 +62,7 @@ class Response
 	 * @method      setCallback
 	 * @description 设置回调
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-16
+	 * @doneIn      2021-04-16
 	 * @param       null|callable    $callback 可回调参数
 	 * @param       array            $params   回调参数传递
 	 * @return      object@Response
@@ -77,7 +77,7 @@ class Response
 	 * @method      sendResponse
 	 * @description 发送响应头
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-09
+	 * @doneIn      2021-02-09
 	 * @return      void
 	 */
 	public function sendResponse() : void
@@ -87,14 +87,12 @@ class Response
 
 		if(!is_callable($this->callback)) {
 			$this->callback = !is_null($app = Router::getCurrentApp()) ? [$app, 'renderPageNotFound'] : [$this, 'defaultResponseMsg'];
-			$called = call_user_func_array($this->callback);
-		} else {
-			$called = call_user_func_array($this->callback, $this->callParams);
 		}
+		$called = call_user_func_array($this->callback, $this->callParams);
 
 		if(is_array($called)) {
 			if($this->callback[0] instanceof DataEncoder) {
-				$called = $called->encode();
+				$called = $this->callback[0]->encode();
 			}
 			elseif($this->callback[0] instanceof JsonSerializable) {
 				$called = json_encode($called);
@@ -113,7 +111,7 @@ class Response
 				$this->header('Content-Type', MIMETypeConstant::MIMETYPE['json']);
 			}
 		}
-		
+
 		if(!headers_sent() && !empty($this->header)) {
 			foreach($this->header as $name => $val) {
 				header($name . (!is_null($val) ? ": {$val}"  : ''));
@@ -196,7 +194,7 @@ class Response
 	 * @method      hasSent
 	 * @description 返回响应状态
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-21
+	 * @doneIn      2021-03-21
 	 * @return      boolean
 	 */
 	public function hasSent() : bool

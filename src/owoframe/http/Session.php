@@ -24,14 +24,14 @@ use owoframe\object\INI;
 use owoframe\redis\RedisConnector;
 
 class Session
-{	
+{
 
 
 	/**
 	 * @method      start
 	 * @description 启动Session
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-13
+	 * @doneIn      2021-02-13
 	 * @return      void
 	 */
 	public static function start() : void
@@ -46,12 +46,12 @@ class Session
 					$server = INI::_global('redis.server', '127.0.0.1');
 					$port   = INI::_global('redis.port', 6379);
 					$auth   = INI::_global('redis.auth', null);
-					
+
 					$connector = RedisConnector::getInstance();
 					$connector->cfg('host',     $server, true);
 					$connector->cfg('port',     $port,   true);
 					$connector->cfg('password', $auth,   true);
-					
+
 					if($redis = $connector->getConnection()) {
 						$connector->forceUsePassword();
 					} else {
@@ -72,13 +72,13 @@ class Session
 	/**
 	 * @method      isStarted
 	 * @description 判断Session启动状态
-	 * 
-	 * @consatant   PHP_SESSION_DISABLED 会话是被禁用的
-	 * @consatant   PHP_SESSION_NONE     会话是启用的, 但不存在当前会话
-	 * @consatant   PHP_SESSION_ACTIVE   会话是启用的, 而且存在当前会话
-	 * 
+	 *
+	 * @constant    PHP_SESSION_DISABLED 会话是被禁用的
+	 * @constant    PHP_SESSION_NONE     会话是启用的, 但不存在当前会话
+	 * @constant    PHP_SESSION_ACTIVE   会话是启用的, 而且存在当前会话
+	 *
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-14
+	 * @doneIn      2021-03-14
 	 * @return      boolean
 	 */
 	public static function isStarted() : bool
@@ -90,7 +90,7 @@ class Session
 	 * @method      has
 	 * @description 检查是否存在单个Session数据
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-13
+	 * @doneIn      2021-02-13
 	 * @param       string      $storeKey 存储名
 	 * @return      boolean
 	 */
@@ -103,7 +103,7 @@ class Session
 	 * @method      set
 	 * @description 新增一个Session数据
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-13
+	 * @doneIn      2021-02-13
 	 * @param       string      $storeKey       存储名
 	 * @param       mixed       $data           数据
 	 * @param       boolean     $rewriteAllowed 是否允许重写
@@ -120,7 +120,7 @@ class Session
 	 * @method      get
 	 * @description 获取一个Session数据
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-13
+	 * @doneIn      2021-02-13
 	 * @param       string      $storeKey 存储名
 	 * @param       mixed       $default  默认返回结果
 	 * @return      mixed
@@ -134,7 +134,7 @@ class Session
 	 * @method      getAll
 	 * @description 获取全部的Session数据
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-13
+	 * @doneIn      2021-02-13
 	 * @param       string      $storeKey 存储名
 	 * @return      array
 	 */
@@ -147,7 +147,7 @@ class Session
 	 * @method      delete
 	 * @description 删除单个Session数据
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-13
+	 * @doneIn      2021-02-13
 	 * @param       string      $storeKey 存储名
 	 * @return      void
 	 */
@@ -162,7 +162,7 @@ class Session
 	 * @method      reset
 	 * @description 重置当前客户端的Session数据
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-13
+	 * @doneIn      2021-02-13
 	 * @return      void
 	 */
 	public static function reset() : void

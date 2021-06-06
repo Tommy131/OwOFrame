@@ -52,7 +52,7 @@ class FileUploader implements \owoframe\contract\Manager
 		extract($fileInfo);
 		$s = (int) ini_get('post_max_size');
 		if(($s * 1024000) < $size) {
-			throw new JSONException(["code" => 40001, "msg" => "[40001] The server allows maximium post data size is {$s}MB, your file is too large than the limit."]);
+			throw new JSONException(["code" => 40001, "msg" => "[40001] The server allows maximum post data size is {$s}MB, your file is too large than the limit."]);
 		}
 
 		if($size > ($maxSize * 1024000)) {

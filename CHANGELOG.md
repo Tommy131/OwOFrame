@@ -39,7 +39,7 @@
 `dev@v1.0.1-ALPHA27`[20210415]:
 - 修复了一个BUG
 - 修改了方法名 `HttpManager::checkValid` -> `HttpManager::isIpValid`
-- 移除了 `ApiProsessor` 用法	
+- 移除了 `ApiProsessor` 用法
 - Update issue templates
 - Created `CONTRIBUTING.md`
 

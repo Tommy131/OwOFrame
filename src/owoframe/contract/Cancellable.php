@@ -27,7 +27,7 @@ interface Cancellable
 	 * @method      isCancelled
 	 * @description 返回该事件是否已经频闭回调;
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-10
+	 * @doneIn      2021-04-10
 	 * @return      boolean
 	 */
 	public function isCancelled() : bool;
@@ -36,7 +36,7 @@ interface Cancellable
 	 * @method      setCancelled
 	 * @description 设置事件频闭状态
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-10
+	 * @doneIn      2021-04-10
 	 * @param       bool        $status 频闭状态
 	 */
 	public function setCancelled(bool $status) : void;

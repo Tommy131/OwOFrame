@@ -20,10 +20,5 @@ declare(strict_types=1);
 namespace owoframe\redis;
 
 use owoframe\contract\Manager;
-use owoframe\helper\Helper;
-use owoframe\exception\{OwOFrameException, MethodMissedException};
 
-class RedisManager implements Manager
-{
-	
-}
+class RedisManager implements Manager {}

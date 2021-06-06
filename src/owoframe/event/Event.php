@@ -23,24 +23,24 @@ abstract class Event
 {
 	/* @bool 事件回调状态 */
 	protected $isCalled = false;
-	
+
 	/**
 	 * @method      setCalled
 	 * @description 设置事件是否已被回调
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-11
+	 * @doneIn      2021-04-11
 	 * @return      void
 	 */
 	public function setCalled(bool $status = true) : void
 	{
 		$this->isCalled = $status;
 	}
-	
+
 	/**
 	 * @method      isCalled
 	 * @description 判断事件是否已被回调
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-11
+	 * @doneIn      2021-04-11
 	 * @return      boolean
 	 */
 	public function isCalled() : bool

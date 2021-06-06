@@ -127,7 +127,7 @@ function requestMode() : int
  * @method      arrayGet
  * @description description
  * @author      HanskiJay
- * @doenIn      2021-01-10
+ * @doneIn      2021-01-10
  * @param       array[array|所需数组]
  * @param       string[key|搜索的键名]
  * @param       mixed[default|默认返回值]
@@ -142,7 +142,7 @@ function arrayGet(array $array, string $key, $default = '')
  * @method      compareType
  * @description 比较两个参数的类型是否相等
  * @author      HanskiJay
- * @doenIn      2021-03-06
+ * @doneIn      2021-03-06
  * @param       mixed      $p1     参数1
  * @param       mixed      $p2     参数2
  * @param       mixed      &$types 两个参数的类型数组
@@ -160,7 +160,7 @@ function compareType($p1, $p2, &$types = []) : bool
  * @method      checkArrayValid
  * @description 检查目标数组是否缺少某个元素(仅限二维数组)
  * @author      HanskiJay
- * @doenIn      2021-01-10
+ * @doneIn      2021-01-10
  * @param       array[data|需要检查的数组]
  * @param       array[needle|需要检查的键名]
  * @param       string[missParam|返回缺少的参数]
@@ -188,8 +188,7 @@ function checkArrayValid(array $data, array $needle, ?string &$missParam = "") :
 /**
  * @method      is_serialized
  * @description 判断传入的数据是否已序列化
- * @author      HanskiJay
- * @doenIn      2021-01-31
+ * @doneIn      2021-01-31
  * @param       string      $data 需要判断的数据
  * @return      boolean
  */
@@ -197,18 +196,18 @@ function is_serialized(string $data)
 {
 	$data = trim($data);
 	if('N;' == $data) return true;
-	if(!preg_match('/^([adObis]):/', $data, $badions)) return false;
-	switch ($badions[1]) {
-		case'a':
-		case'O':
-		case's':
-		if(preg_match("/^{$badions[1]}:[0-9]+:.*[;}]\$/s", $data)) return true;
+	if(!preg_match('/^([adObis]):/', $data, $matches)) return false;
+	switch ($matches[1]) {
+		case 'a':
+		case 'O':
+		case 's':
+		if(preg_match("/^{$matches[1]}:[0-9]+:.*[;}]\$/s", $data)) return true;
 		break;
-		case'b':
-		case'i':
-		case'd':
-		if(preg_match("/^{$badions[1]}:[0-9.E-]+;\$/", $data)) return true;
-		break; 
+		case 'b':
+		case 'i':
+		case 'd':
+		if(preg_match("/^{$matches[1]}:[0-9.E-]+;\$/", $data)) return true;
+		break;
 	}
 	return false;
 }
@@ -217,7 +216,7 @@ function is_serialized(string $data)
  * @method      str2UTF8
  * @description 字符串编码转码UTF-8
  * @author      HanskiJay
- * @doenIn      2021-01-31
+ * @doneIn      2021-01-31
  * @param       string      $str 需要转码的字符串
  * @return      string
  */
@@ -239,7 +238,7 @@ function str2UTF8(string $str) : string
  * @method      error
  * @description 创建一个简单的错误信息
  * @author      HanskiJay
- * @doenIn      2021-03-06
+ * @doneIn      2021-03-06
  * @param       int         $code    状态码
  * @param       string      $message 错误信息
  * @return      object@OwOFrameException
@@ -275,7 +274,7 @@ function error(string $message, int $code = 0) : OwOFrameException
  * @method      ask
  * @description 用作在CMD & SHELL下获取标准输入的方法
  * @author      HanskiJay
- * @doenIn      2021-03-06
+ * @doneIn      2021-03-06
  * @param       string      $output  向CMD & SHELL输出的显示文字
  * @param       mixed       $default 默认结果
  * @return      STDIN                标准输入|默认结果(当标准输入结果为空时)

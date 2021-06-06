@@ -37,15 +37,13 @@ abstract class AppBase
 	/* @Array 从请求Url传入的原始get参数 */
 	protected $parameter = [];
 	/* @array 不允许通过路由请求的控制器(方法)组 */
-	protected $contronllerFilter = [];
+	protected $controllerFilter = [];
 
 
 	public function __construct(string $siteUrl, array $parameter = [])
 	{
 		if(static::$instance === null) {
 			static::$instance = $this;
-		} else {
-			throw new OwOFrameException("App '{$appName}' has been initialized!");
 		}
 		$this->siteUrl   = $siteUrl;
 		$this->parameter = $parameter;
@@ -91,7 +89,7 @@ abstract class AppBase
 	 * @method      isControllerMethodBanned
 	 * @description 判断控制器的方法是否不允许直接访问
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-30
+	 * @doneIn      2021-04-30
 	 * @param       string                   $methodName     方法名
 	 * @param       string                   $controllerName 控制器名
 	 * @return      boolean
@@ -99,14 +97,14 @@ abstract class AppBase
 	public function isControllerMethodBanned(string $methodName, string $controllerName) : bool
 	{
 		$controllerName =ucfirst(strtolower($controllerName));
-		return isset($this->contronllerFilter[$controllerName]) && in_array($methodName, $this->contronllerFilter[$controllerName]);
+		return isset($this->controllerFilter[$controllerName]) && in_array($methodName, $this->controllerFilter[$controllerName]);
 	}
 
 	/**
 	 * @method      banControllerMethod
 	 * @description 禁止通过路由请求此控制器的方法
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-29
+	 * @doneIn      2021-04-29
 	 * @param       string              $controllerName 控制器名
 	 * @param       array               $args           多选方法名组
 	 * @return      void
@@ -117,17 +115,17 @@ abstract class AppBase
 		if(!$this->getController($controllerName)) {
 			throw new InvalidControllerException(static::getName(), $controllerName);
 		}
-		if(!isset($this->contronllerFilter[$controllerName])) {
-			$this->contronllerFilter[$controllerName] = [];
+		if(!isset($this->controllerFilter[$controllerName])) {
+			$this->controllerFilter[$controllerName] = [];
 		}
-		$this->contronllerFilter[$controllerName] = array_merge($this->contronllerFilter[$controllerName], $args);
+		$this->controllerFilter[$controllerName] = array_merge($this->controllerFilter[$controllerName], $args);
 	}
 
 	/**
 	 * @method      allowControllerMethod
 	 * @description 允许通过路由请求此控制器的方法
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-29
+	 * @doneIn      2021-04-29
 	 * @param       string              $controllerName 控制器名
 	 * @param       array               $args           多选方法名组
 	 * @return      void
@@ -140,10 +138,10 @@ abstract class AppBase
 		}
 		foreach($args as $key => $methodName) {
 			if($this->isControllerMethodBanned($controllerName, $methodName)) {
-				unset($this->contronllerFilter[$controllerName][$key]);
+				unset($this->controllerFilter[$controllerName][$key]);
 			}
 		}
-		ksort($this->contronllerFilter);
+		ksort($this->controllerFilter);
 	}
 
 	/**
@@ -198,7 +196,7 @@ abstract class AppBase
 	 * @method      getCachePath
 	 * @description 返回本Application的Cache目录
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-14
+	 * @doneIn      2021-03-14
 	 * @param       string     $option 可选参数(文件/文件夹路径)
 	 * @return      string
 	 */
@@ -239,7 +237,7 @@ abstract class AppBase
 	 * @access      protected
 	 * @description 获取模块实例化对象
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-08
+	 * @doneIn      2021-02-08
 	 * @param       string      $name 插件名称
 	 * @return      null|@ModuleBase
 	 */
@@ -268,7 +266,7 @@ abstract class AppBase
 	/**
 	 * @method      initialize
 	 * @description 初始化App时自动调用该方法
-	 * @description A Method for when the Application in initialzation
+	 * @description A Method for when the Application in initialization
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-10
 	 * @return      void

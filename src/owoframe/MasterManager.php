@@ -24,7 +24,7 @@ use owoframe\application\AppManager;
 use owoframe\console\Console;
 use owoframe\contract\Manager;
 use owoframe\event\EventManager;
-use owoframe\helper\BootStraper as BS;
+use owoframe\helper\BootStrapper as BS;
 use owoframe\helper\Helper;
 use owoframe\http\FileUploader;
 use owoframe\http\HttpManager as Http;
@@ -84,7 +84,7 @@ final class MasterManager extends Container implements Manager
 	 * @method      getManager
 	 * @description 返回选择的管理器
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-04
+	 * @doneIn      2021-03-04
 	 * @param       string      $bindTag 绑定标识
 	 * @param       array       $params  传入参数
 	 * @return      @Manager
@@ -98,7 +98,7 @@ final class MasterManager extends Container implements Manager
 	 * @method      isRunning
 	 * @description 返回系统运行状态
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-04
+	 * @doneIn      2021-03-04
 	 * @return      boolean
 	 */
 	public static function isRunning() : bool
@@ -110,7 +110,7 @@ final class MasterManager extends Container implements Manager
 	 * @method      getClassLoader
 	 * @description 返回类加载器
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-06
+	 * @doneIn      2021-03-06
 	 * @return      null|@ClassLoader
 	 */
 	public static function getClassLoader() : ?ClassLoader

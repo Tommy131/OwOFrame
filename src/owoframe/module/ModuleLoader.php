@@ -33,7 +33,7 @@ class ModuleLoader
 	private static $loadPath = '';
 	/* @array 模块池 */
 	private static $modulePool = [];
-	
+
 	/**
 	 * @method      setPath
 	 * @description 设置模块加载路径
@@ -68,7 +68,7 @@ class ModuleLoader
 	 * @method      autoLoad
 	 * @description 自动从加载路径加载模块
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-23
+	 * @doneIn      2021-01-23
 	 * @return      void
 	 */
 	public static function autoLoad() : void
@@ -98,10 +98,10 @@ class ModuleLoader
 	 * @method      existsModule
 	 * @description 判断模块是否存在
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-23
+	 * @doneIn      2021-01-23
 	 * @return      boolean
 	 */
-	public static function existsModule(string $name, &$info = []) : bool
+	public static function existsModule(string $name, &$info = null) : bool
 	{
 		if(isset(self::$modulePool[$name])) return true;
 		// Start judgment;
@@ -125,7 +125,7 @@ class ModuleLoader
 	 * @method      getModule
 	 * @description 获取模块实例化对象
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-08
+	 * @doneIn      2021-02-08
 	 * @param       string[name|模块名称]
 	 * @return      null or ModuleBase
 	 */
@@ -138,7 +138,7 @@ class ModuleLoader
 	 * @method      loadModule
 	 * @description 加载模块
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-23
+	 * @doneIn      2021-01-23
 	 * @param       string[dir|模块所在的路径]
 	 * @param       string[name|模块名称]
 	 * @return      boolean
@@ -174,7 +174,7 @@ class ModuleLoader
 	 * @method      checkInfo
 	 * @description 检查模块信息文件是否有效
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-23
+	 * @doneIn      2021-01-23
 	 * @param       array[info|已加载的配置文件]
 	 * @return      boolean
 	 */

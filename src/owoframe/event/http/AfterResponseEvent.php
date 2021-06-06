@@ -19,6 +19,8 @@
 declare(strict_types=1);
 namespace owoframe\event\http;
 
+use owoframe\http\Response;
+
 class AfterResponseEvent extends \owoframe\event\Event
 {
 	private $response;

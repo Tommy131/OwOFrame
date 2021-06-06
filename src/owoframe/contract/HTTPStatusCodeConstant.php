@@ -21,8 +21,8 @@ namespace owoframe\contract;
 
 interface HTTPStatusCodeConstant
 {
-	/* @array HTTO状态响应码常量数组 */
-	public const HTTP_CODE = 
+	/* @array HTTP状态响应码常量数组 */
+	public const HTTP_CODE =
 	[
 		100 => 'Continue',
 		101 => 'Switching Protocols',

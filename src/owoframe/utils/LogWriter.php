@@ -40,7 +40,7 @@ class LogWriter
 	 * @method      setFileName
 	 * @description 设置日志名称
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-23
+	 * @doneIn      2021-01-23
 	 * @param       string      $fileName 日志名称]
 	 */
 	public static function setFileName(string $fileName) : void
@@ -52,7 +52,7 @@ class LogWriter
 	 * @method      setFileName
 	 * @description 写入日志
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-23
+	 * @doneIn      2021-01-23
 	 * @param       string      $fileName 日志名称
 	 * @param       string      $prefix   记录称号
 	 * @param       string      $level    日志等级
@@ -80,7 +80,7 @@ class LogWriter
 	 * @method      setFileName
 	 * @description 删除错误日志
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-23
+	 * @doneIn      2021-01-23
 	 * @param       string      $fileName 日志名称
 	 */
 	public static function cleanLog(string $fileName = '') : void
@@ -93,7 +93,7 @@ class LogWriter
 	 * @method      setFileName
 	 * @description 获取文件名后缀
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-23
+	 * @doneIn      2021-01-23
 	 * @return      string
 	 */
 	public static function getExt() : string

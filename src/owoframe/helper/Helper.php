@@ -1,17 +1,18 @@
 <?php
 
 /************************************************************************
-	 _____   _          __  _____   _____   _       _____   _____  
-	/  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___| 
-	| | | | | |  __   / /  | | | | | |_| | | |     | | | | | |     
-	| | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _  
-	| |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| | 
-	\_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/ 
-	
-	* Copyright (c) 2015-2019 OwOBlog-DGMT All Rights Reserevd.
-	* Developer: HanskiJay(Teaclon)
-	* Telegram: https://t.me/HanskiJay E-Mail: support@owoblog.com
-	* GitHub: https://github.com/Tommy131
+	 _____   _          __  _____   _____   _       _____   _____
+	/  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
+	| | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
+	| | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _
+	| |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
+	\_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
+
+	* Copyright (c) 2015-2021 OwOBlog-DGMT.
+	* Developer: HanskiJay(Tommy131)
+	* Telegram:  https://t.me/HanskiJay
+	* E-Mail:    support@owoblog.com
+	* GitHub:    https://github.com/Tommy131
 	*
 	* 杂项方法公共存放类
 
@@ -45,14 +46,14 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	 * @method      isMobile
 	 * @description 检测是否为移动设备访问
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-10
+	 * @doneIn      2021-01-10
 	 * @return      boolean|string
 	 */
 	public static function isMobile()
 	{
 		//获取USER AGENT
 		$agent = strtolower(server('HTTP_USER_AGENT'));
-		
+
 		if(preg_match('/(blackberry|configuration\/cldc|hp |hp-|htc |htc_|htc-|iemobile|kindle|midp|mmp|motorola|mobile|nokia|opera mini|opera |Googlebot-Mobile|YahooSeeker\/M1A1-R2D2|android|iphone|ipod|mobi|palm|palmos|pocket|portalmmm|ppc;|smartphone|sonyericsson|sqh|spv|symbian|treo|up.browser|up.link|vodafone|windows ce|xda |xda_)/i', $agent)) return true;
 		elseif(strpos($agent, 'windows nt')) return false;
 		else return $agent;
@@ -62,7 +63,7 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	 * @method      getClientBrowser
 	 * @description 获取客户端信息
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-10
+	 * @doneIn      2021-01-10
 	 * @return      string
 	 */
 	public static function getClientBrowser() : string
@@ -85,7 +86,7 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	 * @method      getClientIp
 	 * @description 获取客户端IP
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-10
+	 * @doneIn      2021-01-10
 	 * @return      string
 	 */
 	public static function getClientIp() : string
@@ -114,7 +115,7 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	 * @method      isDomain
 	 * @description 判断字符串是否为域名
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-30
+	 * @doneIn      2021-01-30
 	 * @param       string      $str 字符串
 	 * @param       &$match
 	 * @return      boolean
@@ -150,7 +151,7 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 		if(strpos($address, '.') !== false)
 		{
 			// ipv4, 非公网地址;
-			$privateNetworks = 
+			$privateNetworks =
 			[
 				'10.0.0.0|10.255.255.255',
 				'172.16.0.0|172.31.255.255',
@@ -177,7 +178,7 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	 * @method      getOS
 	 * @description 返回当前系统类型
 	 * @author      HanskiJay
-	 * @doenIn      2021-02-18
+	 * @doneIn      2021-02-18
 	 * @return      string
 	 */
 	public static function getOS() : string
@@ -222,7 +223,6 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 			}
 		}
 
-		
 		$part = explode('.', $fileName);
 		$size = count($part);
 		if($size > 1)
@@ -248,7 +248,7 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	 * @method      logger
 	 * @description 日志记录
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-06
+	 * @doneIn      2021-03-06
 	 * @param       string      $msg    信息
 	 * @param       string      $prefix 称号
 	 * @param       string      $level  等级
@@ -264,7 +264,7 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	 * @method      removeDir
 	 * @description 删除文件夹
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-17
+	 * @doneIn      2021-04-17
 	 * @param       string      $path 文件夹路径
 	 * @return      void
 	 */
@@ -290,7 +290,7 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	 * @method      getMode
 	 * @description 获取当前PHP的运行模式
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-30
+	 * @doneIn      2021-01-30
 	 * @return      string
 	 */
 	public static function getMode() : string
@@ -302,7 +302,7 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	 * @method      isRunningWithCLI
 	 * @description 判断当前的运行模式是否为CLI
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-30
+	 * @doneIn      2021-01-30
 	 * @return      boolean
 	 */
 	public static function isRunningWithCLI() : bool
@@ -314,7 +314,7 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	 * @method      isRunningWithCGI
 	 * @description 判断当前的运行模式是否为CGI
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-30
+	 * @doneIn      2021-01-30
 	 * @return      boolean
 	 */
 	public static function isRunningWithCGI() : bool
@@ -338,7 +338,7 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	 * @method      escapeSlash
 	 * @description 转义字符串中的斜杠
 	 * @author      HanskiJay
-	 * @doenIn      2021-05-29
+	 * @doneIn      2021-05-29
 	 * @param       string      &$str 所需字符串
 	 * @return      string
 	 */

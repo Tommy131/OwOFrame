@@ -37,7 +37,7 @@ class Console implements Manager
 	 * @method      __construct
 	 * @description 实例化Console类的构造函数
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-26
+	 * @doneIn      2021-01-26
 	 */
 	public function __construct()
 	{
@@ -51,7 +51,7 @@ class Console implements Manager
 				$commandString = strtolower($class::getName());
 				if(!$class::autoLoad() || isset($this->commandPool[$commandString])) continue;
 				if(count(array_intersect($class::getAliases(), $this->usedAliases)) >= 1) {
-					Helper::logger(TF::RED."Cannot register command '".TF::GLOD.$class::getName().TF::RED."' because the alias name has been registered in somewhere.", 'OwOCMD', 'ERROR');
+					Helper::logger(TF::RED."Cannot register command '".TF::GOLD.$class::getName().TF::RED."' because the alias name has been registered in somewhere.", 'OwOCMD', 'ERROR');
 					return;
 				}
 				$class = $this->commandPool[$commandString] = new $class();
@@ -64,7 +64,7 @@ class Console implements Manager
 	 * @method      monitor
 	 * @description 监听指令传入
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-26
+	 * @doneIn      2021-01-26
 	 * @return      void
 	 */
 	public function monitor(array $input = []) : void
@@ -94,7 +94,7 @@ class Console implements Manager
 	 * @method      getCommand
 	 * @description 获取指令
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-26
+	 * @doneIn      2021-01-26
 	 * @param       string      $commandString 指令
 	 * @return      null|@CommandBase
 	 */
@@ -107,7 +107,7 @@ class Console implements Manager
 	 * @method      getCommands
 	 * @description 返回已注册的指令列表
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-06
+	 * @doneIn      2021-03-06
 	 * @return      array
 	 */
 	public function getCommands() : array
@@ -119,10 +119,11 @@ class Console implements Manager
 	 * @method      hasCommand
 	 * @description 判断指令是否存在
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-26
+	 * @doneIn      2021-01-26
+	 * @param       string      $commandString 指令
 	 * @return      boolean
 	 */
-	public function hasCommand() : bool
+	public function hasCommand(string $commandString) : bool
 	{
 		return isset($this->commandPool[strtolower($commandString)]);
 	}

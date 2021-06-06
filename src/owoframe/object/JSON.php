@@ -41,13 +41,13 @@ class JSON extends Config
 	 * @method      backup
 	 * @description 备份配置文件
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-30
+	 * @doneIn      2021-01-30
 	 * @param       string      $backupPath 备份路径
 	 * @return      void
 	 */
 	public function backup(string $backupPath = '') : void
 	{
-		$backupPath = strlen($backupPath === 0) ? $this->filePath : dirname($backupPath);
+		$backupPath = (strlen($backupPath) === 0) ? $this->filePath : dirname($backupPath);
 		$this->save($backupPath . @array_shift(explode('.', $this->fileName)) . '_' . date('Y_m_d') . '.json');
 	}
 
@@ -55,7 +55,7 @@ class JSON extends Config
 	 * @method      save
 	 * @description 保存配置文件
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-30
+	 * @doneIn      2021-01-30
 	 * @param       string|null      $file 文件
 	 * @return      void
 	 */
@@ -71,7 +71,7 @@ class JSON extends Config
 	 * @method      reload
 	 * @description 重新读取配置文件
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-30
+	 * @doneIn      2021-01-30
 	 * @return      void
 	 */
 	public function reload() : void

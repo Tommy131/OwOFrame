@@ -25,13 +25,13 @@ class Cookie
 	private static $_prefix = '';
 	/* @string Cookie存储路径 */
 	private static $_path = '/';
-	
+
 
 	/**
 	 * @method      setPrefix
 	 * @description 设置Cookie前缀
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-06
+	 * @doneIn      2021-03-06
 	 * @param       string      $url 地址
 	 */
 	public static function setPrefix(string $url) : void
@@ -42,48 +42,48 @@ class Cookie
 		/** 在路径后面强制加上斜杠 */
 		self::$_path = $parsed['path'] . '/';
 	}
-	
+
 	/**
 	 * @method      getPrefix
 	 * @description 返回Cookie前缀设置
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-06
+	 * @doneIn      2021-03-06
 	 * @return      string
 	 */
 	public static function getPrefix() : string
 	{
 		return self::$_prefix;
 	}
-	
+
 	/**
 	 * @method      getPath
 	 * @description 返回Cookie路径设置
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-06
+	 * @doneIn      2021-03-06
 	 * @return      string
 	 */
 	public static function getPath() : string
 	{
 		return self::$_path;
 	}
-	
+
 	/**
 	 * @method      getAll
 	 * @description 返回所有Cookies
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-06
+	 * @doneIn      2021-03-06
 	 * @return      array
 	 */
 	public static function getAll() : array
 	{
 		return $_COOKIE ?? [];
 	}
-	
+
 	/**
 	 * @method      get
 	 * @description 获取一个Cookie
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-06
+	 * @doneIn      2021-03-06
 	 * @param       string      $key     键名
 	 * @param       mixed       $default 默认返回结果
 	 * @return      mixed
@@ -99,7 +99,7 @@ class Cookie
 	 * @method      has
 	 * @description 判断是否存在一个Cookie
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-06
+	 * @doneIn      2021-03-06
 	 * @param       string      $key 键名
 	 * @return      boolean
 	 */
@@ -107,12 +107,12 @@ class Cookie
 	{
 		return isset($_COOKIE[$key]);
 	}
-	
+
 	/**
 	 * @method      set
 	 * @description 设置一个Cookie
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-06
+	 * @doneIn      2021-03-06
 	 * @param       string      $key    键名
 	 * @param       mixed       $value  键值
 	 * @param       integer     $expire 过期时间
@@ -123,12 +123,12 @@ class Cookie
 		setrawcookie($key, rawurlencode($value), $expire, self::$_path);
 		$_COOKIE[$key] = $value;
 	}
-	
+
 	/**
 	 * @method      delete
 	 * @description 删除一个Cookie
 	 * @author      HanskiJay
-	 * @doenIn      2021-03-06
+	 * @doneIn      2021-03-06
 	 * @param       string      $key 键名
 	 * @return      boolean
 	 */
@@ -138,7 +138,7 @@ class Cookie
 		if (!isset($_COOKIE[$key])) {
 			return false;
 		}
-		
+
 		setcookie($key, '', time() - 2592000, self::$_path);
 		unset($_COOKIE[$key]);
 		return true;

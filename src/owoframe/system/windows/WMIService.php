@@ -28,7 +28,7 @@ class WMIService extends WMI
 	 * @method      getCPURawInfo
 	 * @description 获取CPU信息
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-24
+	 * @doneIn      2021-04-24
 	 * @param       bool|boolean  $forceUpdate 强制更新信息
 	 * @return      array
 	 */
@@ -61,7 +61,7 @@ class WMIService extends WMI
 	 * @method      getCPUInfo
 	 * @description 返回格式化后的CPU信息
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-25
+	 * @doneIn      2021-04-25
 	 * @param       bool|boolean  $forceUpdate 强制更新信息
 	 * @return      string
 	 */
@@ -86,7 +86,7 @@ class WMIService extends WMI
 	 * @method      getMemoryRawInfo
 	 * @description 获取内存信息
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-24
+	 * @doneIn      2021-04-24
 	 * @param       bool|boolean  $forceUpdate 强制更新信息
 	 * @return      array
 	 */
@@ -111,7 +111,7 @@ class WMIService extends WMI
 	 * @method      getMemoryInfo
 	 * @description 获取格式化后的内存信息
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-25
+	 * @doneIn      2021-04-25
 	 * @param       bool|boolean  $forceUpdate 强制更新信息
 	 * @return      string
 	 */
@@ -137,7 +137,7 @@ class WMIService extends WMI
 	 * @method      getDiskRawInfo
 	 * @description 获取磁盘信息
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-24
+	 * @doneIn      2021-04-24
 	 * @param       bool|boolean  $forceUpdate 强制更新信息
 	 * @return      array
 	 */
@@ -161,7 +161,7 @@ class WMIService extends WMI
 	 * @method      getLogicalDiskRawInfo
 	 * @description 获取硬盘逻辑分区信息
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-25
+	 * @doneIn      2021-04-25
 	 * @param       bool|boolean  $forceUpdate 强制更新信息
 	 * @return      array
 	 */
@@ -225,7 +225,7 @@ class WMIService extends WMI
 	 * @method      getServerRawInfo
 	 * @description 获取系统基本信息
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-25
+	 * @doneIn      2021-04-25
 	 * @param       bool|boolean  $forceUpdate 强制更新信息
 	 * @return      array
 	 */
@@ -252,7 +252,7 @@ class WMIService extends WMI
 	 * @method      getServerInfo
 	 * @description 获取格式化后的系统基本信息
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-25
+	 * @doneIn      2021-04-25
 	 * @param       bool|boolean  $forceUpdate 强制更新信息
 	 * @return      array
 	 */
@@ -291,7 +291,7 @@ class WMIService extends WMI
 	 * @method      getData
 	 * @description 返回数据
 	 * @author      HanskiJay
-	 * @doenIn      2021-04-24
+	 * @doneIn      2021-04-24
 	 * @return      array
 	 */
 	public function getData() : array

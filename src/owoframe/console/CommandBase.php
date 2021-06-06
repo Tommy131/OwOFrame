@@ -25,7 +25,7 @@ abstract class CommandBase
 	 * @method      execute
 	 * @description 触发该指令时调用此方法执行指令
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-26
+	 * @doneIn      2021-01-26
 	 * @param       array[params|传入的参数]
 	 * @return      boolean
 	 */
@@ -35,7 +35,7 @@ abstract class CommandBase
 	 * @method      getAliases
 	 * @description 返回该指令的所有别名
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-26
+	 * @doneIn      2021-01-26
 	 * @return      array
 	 */
 	abstract public static function getAliases() : array;
@@ -44,7 +44,7 @@ abstract class CommandBase
 	 * @method      getName
 	 * @description 返回指令名称
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-26
+	 * @doneIn      2021-01-26
 	 * @return      string
 	 */
 	abstract public static function getName() : string;
@@ -53,7 +53,7 @@ abstract class CommandBase
 	 * @method      getDescription
 	 * @description 返回至零点描述
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-26
+	 * @doneIn      2021-01-26
 	 * @return      string
 	 */
 	abstract public static function getDescription() : string;
@@ -62,7 +62,7 @@ abstract class CommandBase
 	 * @method      getUsage
 	 * @description 返回使用描述
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-26
+	 * @doneIn      2021-01-26
 	 * @return      string
 	 */
 	public static function getUsage() : string
@@ -74,7 +74,7 @@ abstract class CommandBase
 	 * @method      autoLoad
 	 * @description 给出加载器获悉是否自动加载并注册此指令
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-26
+	 * @doneIn      2021-01-26
 	 * @return      boolean
 	 */
 	public static function autoLoad() : bool

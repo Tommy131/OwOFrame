@@ -23,6 +23,6 @@ class UnknownErrorException extends OwOFrameException
 {
 	public function __construct(string $message = null, int $code = 0, \Throwable $previous = null)
 	{
-		parent::__construct("Unknown error throwed. Throwed message: " . ($message ?? "none"), $code, $previous);
+		parent::__construct("Unknown error threw. Threw message: " . ($message ?? "none"), $code, $previous);
 	}
 }

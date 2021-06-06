@@ -31,12 +31,12 @@ class DbConfig extends Db
 
 	public static function init() : void
 	{
-		self::$dbConfig = 
+		self::$dbConfig =
 		[
 			'default' => INI::_global('mysql.default', 'mysql'),
 			'connections' =>
 			[
-				INI::_global('mysql.default', 'mysql') => 
+				INI::_global('mysql.default', 'mysql') =>
 				[
 					// 数据库类型
 					'type'     => INI::_global('mysql.type', 'mysql'),
@@ -80,7 +80,7 @@ class DbConfig extends Db
 	 * @method      getDefault
 	 * @description 获取默认的配置文件
 	 * @author      HanskiJay
-	 * @doenIn      2021-01-09
+	 * @doneIn      2021-01-09
 	 * @param       string      $index   键名
 	 * @param       mixed       $default 默认返回值
 	 * @return      mixed
@@ -89,7 +89,7 @@ class DbConfig extends Db
 	{
 		return self::$dbConfig['connections'][self::$dbConfig['default']][$index] ?? $default;
 	}
-	
+
 	/**
 	 * @method      getIndex
 	 * @description 获取数据库配置中的某个元素
@@ -138,7 +138,7 @@ class DbConfig extends Db
 	/**
 	 * @method      hasDbConfig
 	 * @description 判断是否存在某一个数据库配置文件;
-	 * @description Check if exists a database configutration
+	 * @description Check if exists a database configuration
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-10
 	 * @param       string      $nickName 配置文件标识
