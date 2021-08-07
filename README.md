@@ -6,8 +6,7 @@ OwO! `OwOFrame` is developed based on the `MVC (Model-Views-Controller)` model. 
 If you think this repository is helpful to you, please give this repository a `Star` QWQ
 
 
-[中文版简介请点这里](https://github.com/Tommy131/OwOFrame/README_CHS.md)
-
+[中文版简介请点这里](https://github.com/Tommy131/OwOFrame/blob/dev%40v1.0.2/README_CHS.md)
 ------
 
 ## What can I do?
