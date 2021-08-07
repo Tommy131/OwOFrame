@@ -36,6 +36,16 @@ class ViewBase extends ControllerBase
 	protected $customConstants = [];
 
 
+	/**
+	 * @method      init
+	 * @description 初始化View模板
+	 * @description Initialize Template for View
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-10
+	 * @param       string      $filePath 模板路径
+	 * @param       boolean     $update   更新模板并缓存
+	 * @return      void
+	*/
 	public function init(string $filePath = '', bool $update = false) : void
 	{
 		if(!empty($this->viewTemplate) && !$update) {
@@ -71,7 +81,7 @@ class ViewBase extends ControllerBase
 			$this->filePath = $filePath;
 		}
 
-		$this->viewTemplate = file_get_contents($this->filePath);
+		$this->viewTemplate = is_file($this->filePath) ? file_get_contents($this->filePath) : '';
 	}
 
 	/**
