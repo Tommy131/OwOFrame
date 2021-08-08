@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace owoframe\application;
 
 use owoframe\helper\Helper;
+use owoframe\http\route\Router;
 
 abstract class ControllerBase
 {
@@ -45,7 +46,7 @@ abstract class ControllerBase
 	*/
 	public function methodNotFound()
 	{
-		return 'Requested method not found!';
+		return 'Requested method \'' . Router::getCurrentRequestMethod() . '\' not found!';
 	}
 
 	/**

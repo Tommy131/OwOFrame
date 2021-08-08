@@ -30,14 +30,21 @@ abstract class AppBase
 {
 	/* @AppBase 返回本类实例 */
 	private static $instance = null;
+
 	/* @string 当前的App访问地址 */
-	private $siteUrl = null;
+	protected $currentSiteUrl = null;
 	/* @string 默认控制其名称 */
 	protected $defaultController = '';
-	/* @Array 从请求Url传入的原始get参数 */
+
+	/* @array 从请求Url传入的原始get参数 */
 	protected $parameter = [];
 	/* @array 不允许通过路由请求的控制器(方法)组 */
 	protected $controllerFilter = [];
+
+	/* @bool 是否以JSON格式输出数据 */
+	protected $renderWithJSON = false;
+	/* @string 当页面未找到时输出的默认数据 */
+	protected $renderPageNotFound = '';
 
 
 	public function __construct(string $siteUrl, array $parameter = [])
@@ -45,8 +52,8 @@ abstract class AppBase
 		if(static::$instance === null) {
 			static::$instance = $this;
 		}
-		$this->siteUrl   = $siteUrl;
-		$this->parameter = $parameter;
+		$this->currentSiteUrl = $siteUrl;
+		$this->parameter      = $parameter;
 		$this->initialize();
 	}
 
@@ -61,8 +68,8 @@ abstract class AppBase
 	public static function renderPageNotFound() : string
 	{
 		HttpManager::setStatusCode(404);
-		$sendMessage = (isset(static::$renderPageNotFound) && is_string(static::$renderPageNotFound)) ? static::$renderPageNotFound : '404 PAGE NOT FOUND';
-		if(isset(static::$renderWithJSON)) {
+		$sendMessage = (is_string(static::$renderPageNotFound) && (strlen(static::$renderPageNotFound) > 0)) ? static::$renderPageNotFound : '404 PAGE NOT FOUND';
+		if(static::$renderWithJSON === true) {
 			$render = new DataEncoder;
 			$render->setStandardData(404, $sendMessage, false);
 			return $render->encode();
@@ -112,7 +119,7 @@ abstract class AppBase
 	public function banControllerMethod(string $controllerName, array $args) : void
 	{
 		$controllerName = ucfirst(strtolower($controllerName));
-		if(!$this->getController($controllerName)) {
+		if(!$this->getController($controllerName, false)) {
 			throw new InvalidControllerException(static::getName(), $controllerName);
 		}
 		if(!isset($this->controllerFilter[$controllerName])) {
@@ -133,7 +140,7 @@ abstract class AppBase
 	public function allowControllerMethod(string $controllerName, array $args) : void
 	{
 		$controllerName =ucfirst(strtolower($controllerName));
-		if(!$this->getController($controllerName)) {
+		if(!$this->getController($controllerName, false)) {
 			throw new InvalidControllerException(static::getName(), $controllerName);
 		}
 		foreach($args as $key => $methodName) {
@@ -154,7 +161,7 @@ abstract class AppBase
 	*/
 	public function setDefaultController(string $defaultController) : void
 	{
-		if(!$this->getController($defaultController)) {
+		if(!$this->getController($defaultController, false)) {
 			throw new InvalidControllerException(static::getName(), $defaultController);
 		}
 		$this->defaultController = $defaultController;
@@ -244,6 +251,18 @@ abstract class AppBase
 	final protected function getModule(string $name) : ?ModuleBase
 	{
 		return ModuleLoader::getModule($name);
+	}
+
+	/**
+	 * @method      getCurrentSiteUrl
+	 * @description 返回当前站点Url
+	 * @author      HanskiJay
+	 * @doneIn      2020-08-08
+	 * @return      string
+	*/
+	public function getCurrentSiteUrl() : string
+	{
+		return $this->currentSiteUrl;
 	}
 
 	/**

@@ -73,7 +73,7 @@ class ViewBase extends ControllerBase
 				break;
 			}
 			$controllerName = ucfirst(strtolower($controllerName));
-			if(!Router::getCurrentApp()->getController($controllerName)) {
+			if(!Router::getCurrentApp()->getController($controllerName, false)) {
 				$controllerName = Router::getCurrentApp()->getDefaultController(true);
 			}
 			$this->filePath = $this->getViewPath($controllerName . '.html');

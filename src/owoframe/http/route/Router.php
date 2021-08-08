@@ -22,8 +22,7 @@ namespace owoframe\http\route;
 use Closure;
 use ReflectionClass;
 use ReflectionFunction;
-use owoframe\application\AppBase;
-use owoframe\application\AppManager;
+use owoframe\application\{AppBase, ControllerBase, AppManager};
 use owoframe\helper\{BootStrapper, Helper};
 use owoframe\http\HttpManager as Http;
 use owoframe\exception\{InvalidControllerException, MethodMissedException, InvalidRouterException, UnknownErrorException};
@@ -36,6 +35,10 @@ final class Router
 
 	/* object@AppBase 当前Application实例 */
 	private static $currentApp;
+	/* object@ControllerBase 当前Controller实例 */
+	private static $currentController;
+	/* string 当前的请求方法 */
+	private static $currentRequestMethod;
 
 
 	/**
@@ -48,7 +51,7 @@ final class Router
 	public static function dispatch() : void
 	{
 		$tmps = [];
-		$pathInfo = self::getParameters(-1);
+		$pathInfo = static::getParameters(-1);
 		$appName  = array_shift($pathInfo); // 默认设置为App名称 | Default is to set for AppName;
 		if(is_null($appName) || !DataEncoder::isOnlyLettersAndNumbers($appName)) {
 			$appName = DEFAULT_APP_NAME;
@@ -72,13 +75,14 @@ final class Router
 			return;
 		}
 
-		$app = AppManager::getApp($appName) ?? AppManager::getDefaultApp();
+		$app     = AppManager::getApp($appName) ?? AppManager::getDefaultApp();
+		$appName = $app->getName();
 		if($app === null) {
 			Http::setStatusCode(404);
 			throw new InvalidRouterException("Cannot find any valid Application!");
 			// TODO: 增加一个未找到App的回调方法(callback);
 		} else {
-			self::$currentApp = $app;
+			static::$currentApp = $app;
 		}
 
 		// Judgment $pathInfo for ControllerName and RequestMethodName;
@@ -130,6 +134,8 @@ final class Router
 			throw new InvalidControllerException($app->getName(), $controllerName);
 			// TODO: 增加一个未找到Controller的回调方法(callback);
 		}
+		static::$currentController    = $controller;
+		static::$currentRequestMethod = $requestMethod;
 		if($controller instanceof Closure) {
 			$reflect = new ReflectionFunction($controller);
 			// TODO;
@@ -153,7 +159,6 @@ final class Router
 					$callback = [$controller, $requestMethod];
 				}
 			}
-
 			$response = Http::Response($callback);
 			$response->sendResponse();
 		}
@@ -170,7 +175,7 @@ final class Router
 	public static function getRunTimeDiv(bool $condition = true) : void
 	{
 		if(defined('DEBUG_MODE') && DEBUG_MODE && $condition) {
-			echo str_replace('{runTime}', BootStrapper::getRunTime(), base64_decode('PGRpdiBzdHlsZT0icG9zaXRpb246IGFic29sdXRlOyB6LWluZGV4OiA5OTk5OTk7IGJvdHRvbTogMDsgcmlnaHQ6IDA7IG1hcmdpbjogNXB4OyBwYWRkaW5nOiA1cHg7IGJhY2tncm91bmQtY29sb3I6ICNhYWFhYWE7IGJvcmRlci1yYWRpdXM6IDVweDsiPgoJPGRpdj5Vc2VkVGltZTogPGI+e3J1blRpbWV9czwvYj48L2Rpdj4KPC9kaXY+'));
+			echo str_replace('{runTime}', (string) BootStrapper::getRunTime(), base64_decode('PGRpdiBzdHlsZT0icG9zaXRpb246IGFic29sdXRlOyB6LWluZGV4OiA5OTk5OTk7IGJvdHRvbTogMDsgcmlnaHQ6IDA7IG1hcmdpbjogNXB4OyBwYWRkaW5nOiA1cHg7IGJhY2tncm91bmQtY29sb3I6ICNhYWFhYWE7IGJvcmRlci1yYWRpdXM6IDVweDsiPgoJPGRpdj5Vc2VkVGltZTogPGI+e3J1blRpbWV9czwvYj48L2Rpdj4KPC9kaXY+'));
 		}
 	}
 
@@ -183,7 +188,31 @@ final class Router
 	 */
 	public static function getCurrentApp() : ?AppBase
 	{
-		return self::$currentApp;
+		return static::$currentApp;
+	}
+
+	/**
+	 * @method      getCurrentController
+	 * @description 返回当前Controller实例
+	 * @author      HanskiJay
+	 * @doneIn      2021-04-17
+	 * @return      null|object@ControllerBase
+	 */
+	public static function getCurrentController() : ?ControllerBase
+	{
+		return static::$currentController;
+	}
+
+	/**
+	 * @method      getCurrentRequestMethod
+	 * @description 返回当前RequestMethod
+	 * @author      HanskiJay
+	 * @doneIn      2021-04-17
+	 * @return      string
+	 */
+	public static function getCurrentRequestMethod() : string
+	{
+		return static::$currentRequestMethod;
 	}
 
 	/**
@@ -197,7 +226,7 @@ final class Router
 	*/
 	public static function setPathInfo(string $pathInfo = '/') : void
 	{
-		self::$_pathInfo = trim($pathInfo);
+		static::$_pathInfo = trim($pathInfo);
 	}
 
 	/**
@@ -210,7 +239,7 @@ final class Router
 	*/
 	public static function isEmptyPathInfo() : bool
 	{
-		return self::$_pathInfo === null;
+		return static::$_pathInfo === null;
 	}
 
 	/**
@@ -223,11 +252,11 @@ final class Router
 	*/
 	public static function getPathInfo() : string
 	{
-		if(self::isEmptyPathInfo()) {
-			self::setPathInfo(str_replace(server('SCRIPT_NAME'), '', server('REQUEST_URI')));
-			if(self::$_pathInfo === "") self::setPathInfo();
+		if(static::isEmptyPathInfo()) {
+			static::setPathInfo(str_replace(server('SCRIPT_NAME'), '', server('REQUEST_URI')));
+			if(static::$_pathInfo === "") static::setPathInfo();
 		}
-		return self::$_pathInfo;
+		return static::$_pathInfo;
 	}
 
 	/**
@@ -235,6 +264,9 @@ final class Router
 	 * @description 获取路径参数传递
 	 * @description Get PathInfo to array
 	 * @param       int[getFrom|从第几个参数开始获取](Default:1)
+	 *              1: 返回 ApplicationName 之后的参数;
+	 *              2: 返回 ControllerName 之后的参数;
+	 *              3: 返回 RequestMethodName 之后的参数;
 	 * @return      array
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-09 18:03
@@ -244,10 +276,7 @@ final class Router
 		#
 		# URI->@/index.php/{ApplicationName}/{ControllerName}/{RequestMethodName}/[GET]...
 		#
-		$param = array_filter(explode('/', self::getPathInfo()));
-		// 1: 返回 ApplicationName 之后的参数;
-		// 2: 返回 ControllerName 之后的参数;
-		// 3: 返回 RequestMethodName 之后的参数;
+		$param = array_filter(explode('/', static::getPathInfo()));
 		if(($getFrom >= 1) && ($getFrom <= 3)) {
 			return array_slice($param, $getFrom);
 		} else {
