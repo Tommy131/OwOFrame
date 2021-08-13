@@ -29,7 +29,7 @@ use owoframe\utils\DataEncoder;
 abstract class AppBase
 {
 	/* @AppBase 返回本类实例 */
-	private static $instance = null;
+	protected static $instance = null;
 
 	/* @string 当前的App访问地址 */
 	protected $currentSiteUrl = null;

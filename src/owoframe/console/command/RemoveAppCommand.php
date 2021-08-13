@@ -31,7 +31,7 @@ class RemoveAppCommand extends \owoframe\console\CommandBase
 			Helper::logger("Cannot find appName called '{$appName}'!");
 			return false;
 		}
-		$answer = ask('[WARNING] ARE YOU SURE THAT YOU WANT TO DELETE/REMOVE THIS APPLICATION? THIS OPERATION IS IRREVERSIBLE! [Y/N]', 'N');
+		$answer = (string) ask('[WARNING] ARE YOU SURE THAT YOU WANT TO DELETE/REMOVE THIS APPLICATION? THIS OPERATION IS IRREVERSIBLE! [Y/N]', 'N');
 		if(strtolower($answer) === 'y') {
 			Helper::logger('Now will remove this application forever...', 'OwOCMD');
 			self::removeDir($path = AppManager::getPath() . $appName . DIRECTORY_SEPARATOR);
@@ -55,7 +55,9 @@ class RemoveAppCommand extends \owoframe\console\CommandBase
 		foreach($dirArray as $fileName) {
 			if(is_dir($path . $fileName)) {
 				self::removeDir($path . $fileName);
-				rmdir($path . $fileName);
+				if(is_dir($path . $fileName)) {
+					rmdir($path . $fileName);
+				}
 			} else {
 				unlink($path . $fileName);
 			}

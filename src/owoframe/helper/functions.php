@@ -19,6 +19,7 @@
 declare(strict_types=1);
 use owoframe\contract\BasicCodes;
 use owoframe\exception\OwOFrameException;
+use owoframe\helper\Helper;
 
 if(!defined('owohttp')) define('owohttp', 'owosuperget');
 
@@ -281,6 +282,6 @@ function error(string $message, int $code = 0) : OwOFrameException
  */
 function ask(string $output, $default = null)
 {
-	logger($output . (!is_null($default) ? "[Default: {$default}]" : ''));
+	Helper::logger($output . (!is_null($default) ? "[Default: {$default}]" : ''));
 	return trim(fgets(STDIN) ?? $default);
 }
