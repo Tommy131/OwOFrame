@@ -213,6 +213,19 @@ abstract class AppBase
 	}
 
 	/**
+	 * @method      getResourcePath
+	 * @description 返回本Application的资源目录
+	 * @author      HanskiJay
+	 * @doneIn      2021-08-14
+	 * @param       string     $option 可选参数(文件/文件夹路径)
+	 * @return      string
+	 */
+	public static function getResourcePath(string $option = '') : string
+	{
+		return RESOURCE_PATH . static::getName() . DIRECTORY_SEPARATOR . $option;
+	}
+
+	/**
 	 * @method      getAppPath
 	 * @description 获取当前App目录
 	 * @author      HanskiJay
