@@ -33,8 +33,29 @@ class ViewBase extends ControllerBase
 	/* @array 模板绑定的变量 */
 	protected $bindValues = [];
 	/* @array 绑定常量到模板 */
-	protected $customConstants = [];
+	protected $constants = [];
 
+
+	public function __construct(\owoframe\application\AppBase $app)
+	{
+		parent::__construct($app);
+		// Define constant in VIEW Template;
+		$this->mergeConstants([
+			'VIEW_PATH' => $this->getViewPath('')
+		]);
+	}
+
+	/**
+	 * @method      mergeConstants
+	 * @description 合并常量定义
+	 * @author      HanskiJay
+	 * @doneIn      2020-09-10
+	 * @return      void
+	*/
+	public function mergeConstants(array $arr) : void
+	{
+		$this->constants = array_merge($this->constants, $arr);
+	}
 
 	/**
 	 * @method      init
@@ -378,20 +399,18 @@ class ViewBase extends ControllerBase
 
 		/* 开始解析模板组件 */
 		$regex = '/{require (.*)}/imU';
-		while(preg_match_all($regex, $this->viewTemplate, $matches)) {
+		while(preg_match_all($regex, $this->viewTemplate, $matches) && (count($matches[1]) > 0)) {
 			foreach($matches[1] as $key => $path) {
 				$path = $this->getViewPath($path);
 				Helper::escapeSlash($path);
-				if(is_file($path)) {
-					$this->viewTemplate = str_replace($matches[0][$key], file_get_contents($path), $this->viewTemplate);
-				}
+				$this->viewTemplate = str_replace($matches[0][$key], is_file($path) ? file_get_contents($path) : "Template {$path} Not Found", $this->viewTemplate);
 			}
 		}
 		// 转换常量绑定;
 		if(preg_match_all('/{([0-9A-Z_]*)}/mU', $this->viewTemplate, $matches)) {
 			foreach($matches[1] as $k => $constName) {
-				if(defined($constName) || isset($this->customConstants[$constName])) {
-					$this->viewTemplate = str_replace($matches[0][$k], @constant($constName) ?? $this->customConstants[$constName], $this->viewTemplate);
+				if(defined($constName) || isset($this->constants[$constName])) {
+					$this->viewTemplate = str_replace($matches[0][$k], @constant($constName) ?? $this->constants[$constName], $this->viewTemplate);
 				}
 			}
 		}
