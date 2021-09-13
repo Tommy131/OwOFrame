@@ -31,10 +31,12 @@ class AppGeneratorCommand extends \owoframe\console\CommandBase
 			Helper::logger('Please enter a valid appName. Usage: ' . self::getUsage('newapp [string:appName]'));
 			return false;
 		}
-		$appName = strtolower($appName);
-		$upAppName = ucfirst($appName);
-		$appPath = AppManager::getPath() . $appName . DIRECTORY_SEPARATOR;
-		$ctlPath = $appPath . 'controller' . DIRECTORY_SEPARATOR;
+		$appName    = strtolower($appName);
+		$upAppName  = ucfirst($appName);
+		$appPath    = AppManager::getPath() . $appName . DIRECTORY_SEPARATOR;
+		$ctlPath    = $appPath . 'controller' . DIRECTORY_SEPARATOR;
+		$viewPath   = $appPath . 'view' . DIRECTORY_SEPARATOR;
+		$staticPath = $viewPath . 'static' . DIRECTORY_SEPARATOR;
 
 		if(is_dir($appPath)) {
 			Helper::logger("Application '{$appName}' may exists, please delete/rename/move it and then use this command.");
@@ -42,6 +44,9 @@ class AppGeneratorCommand extends \owoframe\console\CommandBase
 		} else {
 			mkdir($appPath, 755, true);
 			mkdir($ctlPath, 755, true);
+			if(!is_dir($viewPath))   mkdir($viewPath, 755, true);
+			if(!is_dir($viewPath . 'component'))   mkdir($viewPath . 'component', 755, true);
+			if(!is_dir($staticPath)) mkdir($staticPath, 755, true);
 
 			// Make application main info class file;
 			file_put_contents($appPath . $upAppName . 'App.php', str_replace(['{appName_s}', '{appName_u}'], [$appName, $upAppName], base64_decode('PD9waHAKCi8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKCSBfX19fXyAgIF8gICAgICAgICAgX18gIF9fX19fICAgX19fX18gICBfICAgICAgIF9fX19fICAgX19fX18KCS8gIF8gIFwgfCB8ICAgICAgICAvIC8gLyAgXyAgXCB8ICBfICBcIHwgfCAgICAgLyAgXyAgXCAvICBfX198Cgl8IHwgfCB8IHwgfCAgX18gICAvIC8gIHwgfCB8IHwgfCB8X3wgfCB8IHwgICAgIHwgfCB8IHwgfCB8Cgl8IHwgfCB8IHwgfCAvICB8IC8gLyAgIHwgfCB8IHwgfCAgXyAgeyB8IHwgICAgIHwgfCB8IHwgfCB8ICBfCgl8IHxffCB8IHwgfC8gICB8LyAvICAgIHwgfF98IHwgfCB8X3wgfCB8IHxfX18gIHwgfF98IHwgfCB8X3wgfAoJXF9fX19fLyB8X19fL3xfX18vICAgICBcX19fX18vIHxfX19fXy8gfF9fX19ffCBcX19fX18vIFxfX19fXy8KCgkqIENvcHlyaWdodCAoYykgMjAxNS0yMDIxIE93T0Jsb2ctREdNVC4KCSogRGV2ZWxvcGVyOiBIYW5za2lKYXkoVG9tbXkxMzEpCgkqIFRlbGVncmFtOiAgaHR0cHM6Ly90Lm1lL0hhbnNraUpheQoJKiBFLU1haWw6ICAgIHN1cHBvcnRAb3dvYmxvZy5jb20KCSogR2l0SHViOiAgICBodHRwczovL2dpdGh1Yi5jb20vVG9tbXkxMzEKCioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCgpkZWNsYXJlKHN0cmljdF90eXBlcz0xKTsKbmFtZXNwYWNlIGFwcGxpY2F0aW9uXHthcHBOYW1lX3N9OwoKCmNsYXNzIHthcHBOYW1lX3V9QXBwIGV4dGVuZHMgXG93b2ZyYW1lXGFwcGxpY2F0aW9uXEFwcEJhc2UKewoJcHVibGljIGZ1bmN0aW9uIGluaXRpYWxpemUoKSA6IHZvaWQKCXsKCX0KCglwdWJsaWMgc3RhdGljIGZ1bmN0aW9uIGdldE5hbWUoKSA6IHN0cmluZwoJewoJCXJldHVybiAne2FwcE5hbWVfc30nOwoJfQoKCXB1YmxpYyBzdGF0aWMgZnVuY3Rpb24gYXV0b1RvNDA0UGFnZSgpIDogYm9vbAoJewoJCXJldHVybiB0cnVlOwoJfQp9Cj8+')));
