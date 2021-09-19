@@ -22,14 +22,13 @@ namespace owoframe\contract;
 interface BasicCodes
 {
 	# System Basic Status Code #
-
 	/* @int 访问被拒绝状态码 */
 	public const ACCESS_DENIED = 403;
 	/* @int 服务器内部错误状态码 */
 	public const SERVER_INTERVAL_ERROR = 500;
 
-	# HTTP Request Mode Code #
 
+	# HTTP Request Mode Code #
 	/* @int HTTP GET请求模式 */
 	public const GET_MODE = 0;
 	/* @int HTTP POST请求模式 */
@@ -44,27 +43,25 @@ interface BasicCodes
 	public const AJAX_P_POST_MODE = 5;
 
 
-	/*
-	 * @User Module
-	*/
-	/* @int 用户成功登录状态码 */
-	public const USER_LOGGED_IN_SUCCESSFULLY  = 200;
-	/* @int 用户已登录状态码 */
-	public const USER_HAS_LOGGED_IN = 201;
-	/* @int 用户已登出状态码 */
-	public const USER_LOGGED_OUT_SUCCESSFULLY = 202;
-	/* @int 用户密码未验证状态码 */
-	public const USER_PASSWORD_NOT_VERIFIED = 400;
+	# @User Module - 10xxx #
+	/* @int 状态码: 用户成功登录 */
+	public const USER_LOGGED_IN_SUCCESSFULLY  = 10200;
+	/* @int 状态码: 用户已登录 */
+	public const USER_HAS_LOGGED_IN = 10201;
+	/* @int 状态码: 用户已登出 */
+	public const USER_LOGGED_OUT_SUCCESSFULLY = 10202;
+	/* @int 状态码: 用户密码未验证 */
+	public const USER_PASSWORD_NOT_VERIFIED = 10400;
 	/* @int 用户操作状态码: 验证码错误 */
-	public const VERIFY_CODE_INCORRECT = 401;
+	public const VERIFY_CODE_INCORRECT = 10401;
 	/* @int 用户操作状态码: 密码错误 */
-	public const USER_PASSWORD_INCORRECT = 402;
+	public const USER_PASSWORD_INCORRECT = 10402;
 	/* @int 用户操作状态码: 账号访问被冻结 */
-	public const USER_ACCESS_DENIED = 403;
-	/* @int 用户操作状态码: 用户信息未找到 */
-	public const USER_NOT_FOUND = 404;
-	/* @int 用户操作状态码: 用户未登录 */
-	public const USER_HAS_NOT_LOGGED_IN = 405;
+	public const USER_ACCESS_DENIED = 10403;
 	/* @int 用户操作状态码: 账号被封禁 */
 	public const USER_WAS_BANNED = 10403;
+	/* @int 用户操作状态码: 用户信息未找到 */
+	public const USER_NOT_FOUND = 10404;
+	/* @int 用户操作状态码: 用户未登录 */
+	public const USER_HAS_NOT_LOGGED_IN = 10405;
 }

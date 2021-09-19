@@ -28,7 +28,7 @@ class LogWriter
 	public const DEFAULT_LOG_NAME = "owoblog_run.log";
 	/* @string 日志记录格式 */
 	public const LOG_PREFIX = "[%s][%s][%s/%s] > %s";
-	// const LOG_PREFIX = "[{date}][{time}][{prefix}/{level}] > {msg}";
+
 	/* @string 日志记录文件名称 */
 	private static $fileName;
 	/* @int 最大文件大小(mb) */

@@ -32,8 +32,14 @@ if(!defined('DENY_APP_LIST'))    define('DENY_APP_LIST', []);
 if(!defined('TIME_ZONE'))        define('TIME_ZONE', 'Europe/Berlin');
 
 // 引入自动加载文件 | require autoload file;
-$classLoader = require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php');
+$vendor_file = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+if(!file_exists($vendor_file)) {
+	exit('Please execute command \'composer install\' at root path at first!');
+}
+$classLoader = require_once($vendor_file);
 $master = new owoframe\MasterManager($classLoader);
+// If you do not need to start the database now, you can delete the following line;
+\owoframe\db\DbConfig::init();
 $http = $master->getManager('http');
 $http->start();
 $master->stop();

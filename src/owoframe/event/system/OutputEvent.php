@@ -57,6 +57,7 @@ class OutputEvent extends \owoframe\event\Event implements StandardOutput
 
 	public function output(bool $autoClean = false) : void
 	{
+		// TODO: 过滤输出内容;
 		echo $this->output;
 		if($autoClean) {
 			$this->output = '';

@@ -30,6 +30,7 @@ use owoframe\http\FileUploader;
 use owoframe\http\HttpManager as Http;
 use owoframe\module\ModuleLoader;
 use owoframe\redis\RedisManager as Redis;
+use owoframe\user\UserManager;
 
 final class MasterManager extends Container implements Manager
 {
@@ -43,6 +44,7 @@ final class MasterManager extends Container implements Manager
 		'fileuploader' => FileUploader::class,
 		'http'         => Http::class,
 		'redis'        => Redis::class,
+		'usermanager'  => UserManager::class,
 		'unknown'      => null
 	];
 
@@ -80,6 +82,14 @@ final class MasterManager extends Container implements Manager
 		// TODO: 结束任务相关;
 	}
 
+
+	public function bind(string $bindTag, $concrete) : void
+	{
+		if($concrete instanceof Manager) {
+			parent::bind($bindTag, $concrete);
+		}
+	}
+
 	/**
 	 * @method      getManager
 	 * @description 返回选择的管理器
@@ -91,6 +101,7 @@ final class MasterManager extends Container implements Manager
 	 */
 	public function getManager(string $bindTag, array $params = []) : Manager
 	{
+		$bindTag = strtolower($bindTag);
 		return $this->make($bindTag ?? 'unknown', $params);
 	}
 

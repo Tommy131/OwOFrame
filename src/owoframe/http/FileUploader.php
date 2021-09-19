@@ -63,7 +63,7 @@ class FileUploader implements \owoframe\contract\Manager
 				mkdir($savedPath, 755, true);
 			}
 			move_uploaded_file($tmp_name, $savedPath . $name);
-		} else  {
+		} else {
 			throw new JSONException(["code" => 40003, "msg" => "[40003] File cannot be upload because the server denied the extension!"]);
 		}
 		return $fileInfo;

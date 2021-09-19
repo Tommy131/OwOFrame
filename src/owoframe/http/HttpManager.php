@@ -43,7 +43,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	/* @Config 黑名单配置文件 */
 	protected static $ipList;
 	/* @array 不记录日志的路由 */
-	protected static $notLogUrl = [];
+	public static $notLogUrl = [];
 	/* @array 自定义的用于过滤的正则表达式 */
 	public static $customFilter = [];
 
@@ -69,12 +69,12 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 			Session::start();
 			Router::dispatch();
 		}
-		if(!in_array(server('REQUEST_URI'), self::$notLogUrl)) LogWriter::write('[B200@' . server('REQUEST_METHOD') . '] ' . $ip . ' -> ' . self::getCompleteUrl(), self::LOG_PREFIX);
+		if(stripos(implode(',', static::$notLogUrl), server('REQUEST_URI')) === false) LogWriter::write('[B200@' . server('REQUEST_METHOD') . '] ' . $ip . ' -> ' . self::getCompleteUrl(), self::LOG_PREFIX);
 	}
 
 	public static function pushInLogFilter(string $uri) : void
 	{
-		self::$notLogUrl[] = $uri;
+		static::$notLogUrl[] = $uri;
 	}
 
 
@@ -128,7 +128,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 */
 	public static function setXssFilter(array $filter) : void
 	{
-		self::$customFilter = array_merge(self::$customFilter, $filter);
+		static::$customFilter = array_merge(static::$customFilter, $filter);
 	}
 
 	/**
@@ -142,7 +142,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 */
 	public static function xssFilter(string &$str, string $allowedHTML = null) : void
 	{
-		$str = preg_replace(array_merge(self::DEFAULT_XSS_FILTER, self::$customFilter), '', strip_tags($str, $allowedHTML));
+		$str = preg_replace(array_merge(self::DEFAULT_XSS_FILTER, static::$customFilter), '', strip_tags($str, $allowedHTML));
 	}
 
 	/**
@@ -161,15 +161,15 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 			foreach(get(owohttp) as $k => $v) {
 				$k = trim($k);
 				$v = trim($v);
-				self::xssFilter($k);
-				self::xssFilter($v);
+				static::xssFilter($k);
+				static::xssFilter($v);
 				$get[$k] = $v;
 			}
 			foreach(post(owohttp) as $k => $v) {
 				$k = trim($k);
 				$v = trim($v);
-				self::xssFilter($k);
-				self::xssFilter($v);
+				static::xssFilter($k);
+				static::xssFilter($v);
 				$post[$k] = $v;
 			}
 			$array = ['get' => $get, 'post' => $post];
@@ -201,17 +201,17 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 			$encodedIp = base64_encode($ip);
 		}
 		$toTime = microtime(true) + $toTime * 60;
-		if(!self::isBanned($ip)) {
-			self::ipList()->set($encodedIp,
+		if(!static::isBanned($ip)) {
+			static::ipList()->set($encodedIp,
 			[
 				'origin'  => $ip,
 				'banTime' => $toTime,
 				'reason'  => $reason
 			]);
 		} else {
-			self::ipList()->set($encodedIp.'.banTime', $toTime);
+			static::ipList()->set($encodedIp.'.banTime', $toTime);
 		}
-		self::ipList()->save();
+		static::ipList()->save();
 	}
 
 	/**
@@ -227,7 +227,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 		if(Helper::isIp($ip)) {
 			$ip = base64_encode($ip);
 		}
-		$ipData = self::ipList()->get($ip);
+		$ipData = static::ipList()->get($ip);
 		return ($ipData !== null) && isset($ipData['banTime']);
 	}
 
@@ -244,10 +244,10 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 		if(Helper::isIp($ip)) {
 			$ip = base64_encode($ip);
 		}
-		if(!self::isBanned($ip)) {
+		if(!static::isBanned($ip)) {
 			return false;
 		}
-		return self::ipList()->get($ip.'.banTime') == true;
+		return static::ipList()->get($ip.'.banTime') == true;
 	}
 
 	/**
@@ -264,14 +264,14 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 		if(Helper::isIp($ip)) {
 			$encodedIp = base64_encode($ip);
 		}
-		$ipData    = self::ipList()->get($encodedIp) ?? [];
+		$ipData    = static::ipList()->get($encodedIp) ?? [];
 		$ipData    = array_merge($ipData, $data);
 		if(!isset($ipData['origin'])) {
 			$ipData['origin'] = $ip;
 		}
-		self::ipList()->set($encodedIp, $ipData);
-		self::ipList()->save();
-		return self::ipList();
+		static::ipList()->set($encodedIp, $ipData);
+		static::ipList()->save();
+		return static::ipList();
 	}
 
 	/**
@@ -287,10 +287,10 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 		if(Helper::isIp($ip)) {
 			$encodedIp = base64_encode($ip);
 		}
-		if(!self::isBanned($ip)) {
+		if(!static::isBanned($ip)) {
 			return true;
 		}
-		if(self::isForeverBanned($ip) || (microtime(true) - self::ipList()->get($encodedIp.'.banTime') > 0)) {
+		if(static::isForeverBanned($ip) || (microtime(true) - static::ipList()->get($encodedIp.'.banTime') > 0)) {
 			return false;
 		}
 	}
@@ -304,10 +304,10 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 */
 	public static function ipList() : JSON
 	{
-		if(!self::$ipList instanceof JSON) {
-			self::$ipList = new JSON(FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'ipList.json');
+		if(!static::$ipList instanceof JSON) {
+			static::$ipList = new JSON(FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'ipList.json');
 		}
-		return self::$ipList;
+		return static::$ipList;
 	}
 
 
