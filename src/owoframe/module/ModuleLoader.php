@@ -19,6 +19,7 @@
 declare(strict_types=1);
 namespace owoframe\module;
 
+use owoframe\MasterManager;
 use owoframe\helper\Helper;
 use owoframe\object\INI;
 use owoframe\utils\LogWriter;
@@ -37,7 +38,7 @@ class ModuleLoader
 	/**
 	 * @method      setPath
 	 * @description 设置模块加载路径
-	 * @param       string[path|路径]
+	 * @param       string      $path 路径
 	 * @return      void
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-09 18:03
@@ -69,9 +70,10 @@ class ModuleLoader
 	 * @description 自动从加载路径加载模块
 	 * @author      HanskiJay
 	 * @doneIn      2021-01-23
+	 * @param       object@MasterManager      $master 主进程实例
 	 * @return      void
 	 */
-	public static function autoLoad() : void
+	public static function autoLoad(MasterManager $master) : void
 	{
 		// try {
 			$dirArray = scandir(self::getPath());
@@ -85,7 +87,7 @@ class ModuleLoader
 			}
 			// TODO: 读取配置文件后加载模块(Method::existsModule);
 			foreach($path as $name => $dir) {
-				if(!self::loadModule($dir, $name)) {
+				if(!self::loadModule($dir, $name, $master)) {
 					LogWriter::write("Load module '{$name}' failed!", 'ModuleLoader', 'WARNING');
 				}
 			}
@@ -126,7 +128,7 @@ class ModuleLoader
 	 * @description 获取模块实例化对象
 	 * @author      HanskiJay
 	 * @doneIn      2021-02-08
-	 * @param       string[name|模块名称]
+	 * @param       string      $name 模块名称
 	 * @return      null or ModuleBase
 	 */
 	public static function getModule(string $name) : ?ModuleBase
@@ -139,11 +141,11 @@ class ModuleLoader
 	 * @description 加载模块
 	 * @author      HanskiJay
 	 * @doneIn      2021-01-23
-	 * @param       string[dir|模块所在的路径]
-	 * @param       string[name|模块名称]
+	 * @param       string      $dir  模块所在的路径
+	 * @param       string      $name 模块名称
 	 * @return      boolean
 	 */
-	public static function loadModule(string $dir, string $name) : bool
+	public static function loadModule(string $dir, string $name, MasterManager $master) : bool
 	{
 		if(self::existsModule($name, $info)) {
 			// include_once($dir . $info->className . '.php');
@@ -151,7 +153,7 @@ class ModuleLoader
 			$class     = $namespace . '\\' . $info->className;
 
 			if(class_exists($class)) {
-				$class = self::$modulePool[$class] = new $class($dir, $info);
+				$class = self::$modulePool[$class] = new $class($dir, $info, $master);
 				$class->onLoad();
 				$class->setEnabled();
 			}
@@ -175,7 +177,7 @@ class ModuleLoader
 	 * @description 检查模块信息文件是否有效
 	 * @author      HanskiJay
 	 * @doneIn      2021-01-23
-	 * @param       array[info|已加载的配置文件]
+	 * @param       array      $info 已加载的配置文件
 	 * @return      boolean
 	 */
 	public static function checkInfo(array $info, string &$missParam = '') : bool

@@ -19,14 +19,18 @@
 declare(strict_types=1);
 namespace owoframe\module;
 
+use owoframe\MasterManager;
+
 abstract class ModuleBase
 {
 	/* @string 插件加载路径 */
 	private $loadPath;
 	/* @object 插件信息配置文件(JSON对象传入) | Plugin Information Configuration (Json Format Object) */
 	private $moduleInfo;
+	/* @object MasterManager实例 */
+	private $master = null;
 	/* @bool 插件已加载值 */
-	private $isEnabled = false;
+	protected $isEnabled = false;
 
 	/**
 	 * @method      __construct
@@ -36,10 +40,11 @@ abstract class ModuleBase
 	 * @param       string[loadPath|插件加载路径]
 	 * @param       object[moduleInfo|插件信息配置文件]
 	 */
-	public final function __construct(string $loadPath, object $moduleInfo)
+	public final function __construct(string $loadPath, object $moduleInfo, MasterManager $master)
 	{
 		$this->loadPath   = $loadPath;
 		$this->moduleInfo = $moduleInfo;
+		$this->master     = $master;
 	}
 
 
@@ -76,6 +81,18 @@ abstract class ModuleBase
 	public final function getPath() : string
 	{
 		return $this->loadPath;
+	}
+
+	/**
+	 * @method      getMasterManager
+	 * @description 获取主进程实例
+	 * @author      HanskiJay
+	 * @doneIn      2021-10-01
+	 * @return      object@MasterManager
+	 */
+	public final function getMasterManager() : MasterManager
+	{
+		return $this->master;
 	}
 
 	/**

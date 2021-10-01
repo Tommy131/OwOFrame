@@ -32,10 +32,13 @@ use owoframe\module\ModuleLoader;
 use owoframe\redis\RedisManager as Redis;
 use owoframe\user\UserManager;
 
-final class MasterManager extends Container implements Manager
+final class MasterManager implements Manager
 {
+	/* @MasterManager 主进程实例 */
+	protected static $instance = null;
 	/* @ClassLoader */
 	private static $classLoader;
+
 	/* @array 绑定标签到类 */
 	protected $bind =
 	[
@@ -47,17 +50,22 @@ final class MasterManager extends Container implements Manager
 		'usermanager'  => UserManager::class,
 		'unknown'      => null
 	];
+	/* @array 对象实例列表 */
+	protected $instances = [];
 
 
 
 	public function __construct(?ClassLoader $classLoader = null)
 	{
 		if(!BS::isRunning()) {
+			if(!static::$instance instanceof Container) {
+				static::$instance = $this;
+			}
 			if($classLoader !== null) {
-				self::$classLoader = $classLoader;
+				static::$classLoader = $classLoader;
 			}
 			BS::initializeSystem();
-			$this->bind('unknown', new class implements Manager {});
+			Container::getInstance()->bind('unknown', new class implements Manager {});
 
 			foreach(['DEBUG_MODE', 'LOG_ERROR', 'DEFAULT_APP_NAME', 'DENY_APP_LIST'] as $define) {
 				if(Helper::isRunningWithCLI()) {
@@ -71,7 +79,7 @@ final class MasterManager extends Container implements Manager
 			}
 			AppManager::setPath(APP_PATH);
 			ModuleLoader::setPath(MODULE_PATH);
-			ModuleLoader::autoLoad();
+			ModuleLoader::autoLoad($this);
 			define('OWO_INITIALIZED', true); // Define this constant to let the system know that OwOFrame has been initialized;
 		}
 	}
@@ -82,13 +90,6 @@ final class MasterManager extends Container implements Manager
 		// TODO: 结束任务相关;
 	}
 
-
-	public function bind(string $bindTag, $concrete) : void
-	{
-		if($concrete instanceof Manager) {
-			parent::bind($bindTag, $concrete);
-		}
-	}
 
 	/**
 	 * @method      getManager
@@ -102,7 +103,15 @@ final class MasterManager extends Container implements Manager
 	public function getManager(string $bindTag, array $params = []) : Manager
 	{
 		$bindTag = strtolower($bindTag);
-		return $this->make($bindTag ?? 'unknown', $params);
+		if(!isset($this->bind[$bindTag])) {
+			$bindTag = 'unknown';
+		}
+		if(!isset($this->instances[$bindTag])) {
+			$container = Container::getInstance();
+			$container->bind($bindTag, $this->bind[$bindTag]);
+			$this->instances[$bindTag] = $container->make($bindTag, $params);
+		}
+		return $this->instances[$bindTag];
 	}
 
 	/**
@@ -126,6 +135,21 @@ final class MasterManager extends Container implements Manager
 	 */
 	public static function getClassLoader() : ?ClassLoader
 	{
-		return self::$classLoader;
+		return static::$classLoader;
+	}
+
+	/**
+	 * @method      getInstance
+	 * @description 返回容器单例实例
+	 * @author      HanskiJay
+	 * @doneIn      2021-03-05
+	 * @return      object@MasterManager
+	 */
+	public static function getInstance() : MasterManager
+	{
+		if(!static::$instance instanceof MasterManager) {
+			static::$instance = new static;
+		}
+		return static::$instance;
 	}
 }

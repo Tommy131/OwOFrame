@@ -31,7 +31,7 @@ class DbConfig extends Db
 
 	public static function init() : void
 	{
-		self::$dbConfig =
+		static::$dbConfig =
 		[
 			'default' => INI::_global('mysql.default', 'mysql'),
 			'connections' =>
@@ -57,7 +57,7 @@ class DbConfig extends Db
 				]
 			]
 		];
-		self::setConfig(self::$dbConfig);
+		self::setConfig(static::$dbConfig);
 		// 定义初始化标识;
 		if(!defined('DB_INITED')) {
 			define('DB_INITED', true);
@@ -75,7 +75,7 @@ class DbConfig extends Db
 	public static function setDefault(string $default) : void
 	{
 		if(self::hasDbConfig($default)) {
-			self::$dbConfig['default'] = $default;
+			static::$dbConfig['default'] = $default;
 		}
 		throw new OwOFrameException("Database configuration '{$default}' doesn't exists!");
 	}
@@ -91,7 +91,7 @@ class DbConfig extends Db
 	 */
 	public static function getDefault(string $index, $default ='')
 	{
-		return self::$dbConfig['connections'][self::$dbConfig['default']][$index] ?? $default;
+		return static::$dbConfig['connections'][static::$dbConfig['default']][$index] ?? $default;
 	}
 
 	/**
@@ -106,7 +106,7 @@ class DbConfig extends Db
 	*/
 	public static function getIndex(string $index, string $default = '') : string
 	{
-		return self::$dbConfig[$index] ?? DbConfig::getDefault($index) ?? $default;
+		return static::$dbConfig[$index] ?? DbConfig::getDefault($index) ?? $default;
 	}
 
 	/**
@@ -119,7 +119,7 @@ class DbConfig extends Db
 	*/
 	public static function getAll() : array
 	{
-		return self::$dbConfig;
+		return static::$dbConfig;
 	}
 
 	/**
@@ -135,7 +135,7 @@ class DbConfig extends Db
 	public static function setIndex(string $index, string $value) : void
 	{
 		// if(isset(DbConfig::DEFAULT_DB_CONFIG[$index])) {
-			self::$dbConfig[$index] = $value;
+			static::$dbConfig[$index] = $value;
 		// }
 	}
 
@@ -150,7 +150,7 @@ class DbConfig extends Db
 	*/
 	public static function hasDbConfig(string $nickName) : bool
 	{
-		return isset(self::$dbConfig['connections'][$nickName]);
+		return isset(static::$dbConfig['connections'][$nickName]);
 	}
 
 	/**
@@ -165,7 +165,7 @@ class DbConfig extends Db
 	*/
 	public static function addConfig(string $nickName, array $dbConfig) : void
 	{
-		self::$dbConfig['connections'][$nickName] = $dbConfig;
+		static::$dbConfig['connections'][$nickName] = $dbConfig;
 	}
 
 }

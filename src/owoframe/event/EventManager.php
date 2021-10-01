@@ -39,7 +39,13 @@ class EventManager implements \owoframe\contract\Manager
 	public const LOWEST_PRIORITY  = 1;
 
 	/* @array 事件列表 */
-	private $eventList = [];
+	private $eventList =
+	[
+		user\UserRegisterEvent::class,
+		http\BeforeResponseEvent::class,
+		http\AfterResponseEvent::class,
+		system\OutputEvent::class
+	];
 	/* @array 监听者列表 */
 	private $listenerList = [];
 
@@ -52,9 +58,9 @@ class EventManager implements \owoframe\contract\Manager
 	 * @doneIn      2021-04-10
 	 * @param       string|object@Event      $eventClass 事件名称
 	 * @param       array                    $invokeArgs 调用参数传递
-	 * @return      mixed
+	 * @return      void
 	 */
-	public function trigger($eventClass, array $invokeArgs = [])
+	public function trigger($eventClass, array $invokeArgs = []) : void
 	{
 		if($eventClass instanceof Event) {
 			$eventClass = get_class($eventClass);
@@ -99,7 +105,7 @@ class EventManager implements \owoframe\contract\Manager
 	 * @author      HanskiJay
 	 * @doneIn      2021-04-06
 	 * @param       string           $registerTag  注册识别标签
-	 * @param       mixed            $listener     监听者(类型可为 callableArray, callback, object)
+	 * @param       mixed            $listener     监听者(类型可为 callable, callback, object)
 	 * @param       integer          $priority     监听优先级别
 	 * @param       boolean          $reload       允许重新注册
 	 * @return      void
@@ -111,7 +117,7 @@ class EventManager implements \owoframe\contract\Manager
 		}
 		switch(gettype($listener)) {
 			default:
-				throw new ParameterTypeErrorException('listener', 'callableArray|callback|object', $listener);
+				throw new ParameterTypeErrorException('listener', 'callable|callback|object', $listener);
 			break;
 
 			case 'object':

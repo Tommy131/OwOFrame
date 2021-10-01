@@ -17,27 +17,16 @@
 **********************************************************************/
 
 declare(strict_types=1);
-namespace owoframe\contract;
+namespace owoframe\event\user;
 
-// This file is for EventManager to recognize which event is cancelable;
-// Cancellable: American English | Cancelable: British English;
-interface Cancellable
+use owoframe\user\UserManager;
+
+class UserRegisterEvent extends \owoframe\event\Event
 {
-	/**
-	 * @method      isCancelled
-	 * @description 返回该事件是否已经取消回调;
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-10
-	 * @return      boolean
-	 */
-	public function isCancelled() : bool;
+	private $manager;
 
-	/**
-	 * @method      setCancelled
-	 * @description 设置事件取消状态
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-10
-	 * @param       bool        $status 状态
-	 */
-	public function setCancelled(bool $status) : void;
+	public function __construct(UserManager $manager)
+	{
+		$this->manager = $manager;
+	}
 }
