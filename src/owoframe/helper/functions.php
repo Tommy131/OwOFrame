@@ -126,7 +126,7 @@ function requestMode() : int
  */
 /**
  * @method      arrayGet
- * @description description
+ * @description 如果存在则获取数组中的元素值否之返回默认设定值
  * @author      HanskiJay
  * @doneIn      2021-01-10
  * @param       array[array|所需数组]

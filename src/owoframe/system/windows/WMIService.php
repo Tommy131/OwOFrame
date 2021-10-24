@@ -128,7 +128,8 @@ class WMIService extends WMI
 			$memoryInfo = sprintf($template, $memory['Name'], ($totalSize / 1024), $num, ($totalSize / $num), $memory['Speed'], $memory['ConfiguredClockSpeed']);
 		} else {
 			$memoryInfo = array_shift($memoryInfo);
-			$memoryInfo = sprintf($template, $memoryInfo['Name'], ($totalSize / 1024), $num, ($totalSize / $num), $memoryInfo['Speed'], $memoryInfo['ConfiguredClockSpeed']);
+			$totalSize = $memoryInfo['TypeDetail'] - 128;
+			$memoryInfo = sprintf($template, $memoryInfo['Name'], ($totalSize / 1024), 1, $totalSize, $memoryInfo['Speed'], $memoryInfo['ConfiguredClockSpeed']);
 		}
 		return $memoryInfo;
 	}

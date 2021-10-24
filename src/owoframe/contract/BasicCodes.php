@@ -28,6 +28,8 @@ interface BasicCodes
 	public const ACCESS_DENIED = 403;
 	/* @int 服务器内部错误状态码 */
 	public const SERVER_INTERVAL_ERROR = 500;
+	/* @int 通用状态码: 非法名称 */
+	public const ILLEGAL_NAME = 19000;
 	/* @int 通用状态码: 验证码错误 */
 	public const VERIFY_CODE_INCORRECT = 19001;
 
@@ -68,4 +70,6 @@ interface BasicCodes
 	public const USER_NOT_FOUND = 10404;
 	/* @int 用户操作状态码: 用户未登录 */
 	public const USER_HAS_NOT_LOGGED_IN = 10405;
+	/* @int 用户操作状态码: 无效的用户数据 */
+	public const INVALID_USERDATA = 10406;
 }

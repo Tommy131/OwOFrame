@@ -17,7 +17,7 @@
 **********************************************************************/
 
 declare(strict_types=1);
-namespace owoframe\db;
+namespace owoframe\database;
 
 use owoframe\exception\OwOFrameException;
 use owoframe\object\INI;
