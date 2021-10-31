@@ -19,7 +19,7 @@
 declare(strict_types=1);
 namespace owoframe\object;
 
-use owoframe\helper\Helper;
+use owoframe\utils\LogWriter;
 
 class JSON extends Config
 {
@@ -80,7 +80,7 @@ class JSON extends Config
 			$this->nestedCache = [];
 			$this->config = json_decode(file_get_contents($this->filePath . $this->fileName), true) ?? [];
 		} else {
-			Helper::logger("Cannot reload Config::{$this->fileName} because the file does not exists!");
+			LogWriter::error("Cannot reload Config::{$this->fileName} because the file does not exists!");
 		}
 	}
 }

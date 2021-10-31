@@ -58,9 +58,10 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	public function start(bool $autoDispatch = true) : void
 	{
 		// TODO: 将ClientRequestFilter中的方法移植过来;
+		LogWriter::$logPrefix = self::LOG_PREFIX;
 		$ip = Helper::getClientIp();
 		if(!self::isIpValid($ip)) {
-			LogWriter::write('[403@Banned] Client ' . $ip . '\'s IP is banned, request denied.', self::LOG_PREFIX);
+			LogWriter::info('[403@Banned] Client ' . $ip . '\'s IP is banned, request denied.');
 			self::setStatusCode(403);
 			return;
 		}
@@ -69,7 +70,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 			Session::start();
 			Router::dispatch();
 		}
-		if(stripos(implode(',', static::$notLogUrl), server('REQUEST_URI')) === false) LogWriter::write('[B200@' . server('REQUEST_METHOD') . '] ' . $ip . ' -> ' . self::getCompleteUrl(), self::LOG_PREFIX);
+		if(stripos(implode(',', static::$notLogUrl), server('REQUEST_URI')) === false) LogWriter::info('[B200@' . server('REQUEST_METHOD') . '] ' . $ip . ' -> ' . self::getCompleteUrl());
 	}
 
 	public static function pushInLogFilter(string $uri) : void

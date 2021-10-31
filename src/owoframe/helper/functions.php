@@ -19,7 +19,7 @@
 declare(strict_types=1);
 use owoframe\contract\BasicCodes;
 use owoframe\exception\OwOFrameException;
-use owoframe\helper\Helper;
+use owoframe\utils\LogWriter;
 
 if(!defined('owohttp')) define('owohttp', 'owosuperget');
 
@@ -280,8 +280,8 @@ function error(string $message, int $code = 0) : OwOFrameException
  * @param       mixed       $default 默认结果
  * @return      STDIN                标准输入|默认结果(当标准输入结果为空时)
  */
-function ask(string $output, $default = null)
+function ask(string $output, $default = null, string $logLevel = 'info')
 {
-	Helper::logger($output . (!is_null($default) ? "[Default: {$default}]" : ''));
+	LogWriter::{$logLevel}($output . (!is_null($default) ? "[Default: {$default}]" : ''));
 	return trim(fgets(STDIN) ?? $default);
 }

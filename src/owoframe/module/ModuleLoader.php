@@ -88,7 +88,8 @@ class ModuleLoader
 			// TODO: 读取配置文件后加载模块(Method::existsModule);
 			foreach($path as $name => $dir) {
 				if(!self::loadModule($dir, $name, $master)) {
-					LogWriter::write("Load module '{$name}' failed!", 'ModuleLoader', 'WARNING');
+					LogWriter::$logPrefix = 'ModuleLoader';
+					LogWriter::warning("Load module '{$name}' failed!");
 				}
 			}
 		// } catch(\Throwable $e) {

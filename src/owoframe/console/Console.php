@@ -20,7 +20,7 @@ declare(strict_types=1);
 namespace owoframe\console;
 
 use owoframe\contract\Manager;
-use owoframe\helper\Helper;
+use owoframe\utils\LogWriter;
 use owoframe\utils\TextFormat as TF;
 
 class Console implements Manager
@@ -41,6 +41,7 @@ class Console implements Manager
 	 */
 	public function __construct()
 	{
+		LogWriter::$logPrefix = 'OwOCMD';
 		$cmdPath  = __DIR__ . DIRECTORY_SEPARATOR . 'command' . DIRECTORY_SEPARATOR;
 		$dirArray = scandir($cmdPath);
 		unset($dirArray[array_search('.', $dirArray)], $dirArray[array_search('..', $dirArray)]);
@@ -51,7 +52,7 @@ class Console implements Manager
 				$commandString = strtolower($class::getName());
 				if(!$class::autoLoad() || isset($this->commandPool[$commandString])) continue;
 				if(count(array_intersect($class::getAliases(), $this->usedAliases)) >= 1) {
-					Helper::logger(TF::RED."Cannot register command '".TF::GOLD.$class::getName().TF::RED."' because the alias name has been registered in somewhere.", 'OwOCMD', 'ERROR');
+					LogWriter::error(TF::RED."Cannot register command '".TF::GOLD.$class::getName().TF::RED."' because the alias name has been registered in somewhere.");
 					return;
 				}
 				$class = $this->commandPool[$commandString] = new $class();
@@ -84,10 +85,10 @@ class Console implements Manager
 
 		if($command instanceof CommandBase) {
 			if(!$command->execute($input)) {
-				Helper::logger(TF::RED."Command ".TF::GOLD."'{$inputCommand}'".TF::RED." may not execute successfully, please check the issue.", 'OwOCMD');
+				LogWriter::debug(TF::RED."Command ".TF::GOLD."'{$inputCommand}'".TF::RED." may not execute successfully, please check the issue.");
 			}
 		} else {
-			Helper::logger(TF::RED."Command ".TF::GOLD."'{$inputCommand}'".TF::RED." not found, please use ".TF::GOLD."'php owo help'".TF::RED." to  check the details.", 'OwOCMD');
+			LogWriter::debug(TF::RED."Command ".TF::GOLD."'{$inputCommand}'".TF::RED." not found, please use ".TF::GOLD."'php owo help'".TF::RED." to  check the details.");
 		}
 	}
 	/**

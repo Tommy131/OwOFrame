@@ -30,6 +30,7 @@ if(!defined('TIME_ZONE'))        define('TIME_ZONE', 'Europe/Berlin');
 // 引入自动加载文件 | require autoload file;
 $classLoader = require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php');
 use owoframe\helper\Helper;
+use owoframe\http\HttpManager as HTTP;
 use owoframe\http\route\Router;
 use owoframe\utils\LogWriter;
 
@@ -37,7 +38,7 @@ $master = new owoframe\MasterManager($classLoader);
 $http = $master->getManager('http');
 $http->start(false);
 
-$logPrefix = 'static.php';
+LogWriter::$logPrefix = 'static.php';
 $parser = Router::getParameters(-1);
 
 if(count($parser) === 2) {
@@ -50,7 +51,7 @@ if(count($parser) === 2) {
 			if(isset($tempData['expireTime'])) {
 				if(microtime(true) - $tempData['expireTime'] <= 0) {
 					$reason = 'FILE ALLOED ACCESS TIME HAS EXPIRED';
-					LogWriter::write('[403@Access Denied=' . $reason . '] ' . Helper::getClientIp() . ' -> ' . $http::getCompleteUrl(), $logPrefix);
+					LogWriter::info('[403@Access Denied=' . $reason . '] ' . Helper::getClientIp() . ' -> ' . HTTP::getCompleteUrl());
 					stdDie($reason, '', 403);
 				}
 			}
@@ -59,11 +60,11 @@ if(count($parser) === 2) {
 			}
 		}
 	} else {
-		LogWriter::write('[404@Not Found] ' . Helper::getClientIp() . ' -> ' . $http::getCompleteUrl(), $logPrefix);
+		LogWriter::info('[404@Not Found] ' . Helper::getClientIp() . ' -> ' . HTTP::getCompleteUrl());
 		stdDie('REQUESTED FILE NOT FOUND', '<p>FILE: ' . $hashTag . '.' . $type . '</p>');
 	}
 } else {
-	LogWriter::write('[403@Access Denied] ' . Helper::getClientIp() . ' -> ' . $http::getCompleteUrl(), $logPrefix);
+	LogWriter::info('[403@Access Denied] ' . Helper::getClientIp() . ' -> ' . HTTP::getCompleteUrl());
 	stdDie('', '', 403);
 }
 $master->stop();

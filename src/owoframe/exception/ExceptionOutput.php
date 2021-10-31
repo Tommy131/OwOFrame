@@ -108,7 +108,8 @@ class ExceptionOutput
 	private static function log(string $msg) : void
 	{
 		LogWriter::setFileName('owoblog_error.log');
-		LogWriter::write(trim(str2UTF8($msg)), 'OwOBlogErrorHandler');
+		LogWriter::$logPrefix = 'OwOBlogErrorHandler';
+		LogWriter::emergency(trim(str2UTF8($msg)));
 	}
 
 	public static function getTemplate() : string

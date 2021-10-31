@@ -19,7 +19,6 @@
 declare(strict_types=1);
 namespace owoframe\utils;
 
-use FilesystemIterator as FI;
 use owoframe\helper\Helper;
 
 class LogWriter
@@ -27,25 +26,86 @@ class LogWriter
 	/* @string 默认日志记录文件名称 */
 	public const DEFAULT_LOG_NAME = "owoblog_run.log";
 	/* @string 日志记录格式 */
-	public const LOG_PREFIX = "[%s][%s][%s/%s] > %s";
+	public const LOG_FORMAT = "[%s][%s][%s/%s] > %s";
 
 	/* @string 日志记录文件名称 */
 	private static $fileName;
+	/* @string 日志记录称号 */
+	public static $logPrefix = 'OwOWeb';
 	/* @int 最大文件大小(mb) */
 	public static $maxFileSize = 1024; // mb, 日志文件大小大于这个值时自动截断并且生成新的日志;
 
 
+	/**
+	 * @method      success
+	 * @description 日志写入: INFO 等级(仅颜色显示不同)
+	 * @param       string      $message 日志内容
+	 * @param       string      $color   默认输出颜色(仅在CLI模式下)
+	 * @return      void
+	 */
+	public static function success(string $message, string $color = TextFormat::GREEN) : void
+	{
+		self::write($message, 'SUCCESS', $color);
+	}
 
 	/**
-	 * @method      setFileName
-	 * @description 设置日志名称
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-23
-	 * @param       string      $fileName 日志名称]
+	 * @method      info
+	 * @description 日志写入: INFO 等级
+	 * @param       string      $message 日志内容
+	 * @param       string      $color   默认输出颜色(仅在CLI模式下)
+	 * @return      void
 	 */
-	public static function setFileName(string $fileName) : void
+	public static function info(string $message, string $color = TextFormat::WHITE) : void
 	{
-		self::$fileName = LOG_PATH . $fileName;
+		self::write($message, 'INFO', $color);
+	}
+
+	/**
+	 * @method      warning
+	 * @description 日志写入: WARNING 等级
+	 * @param       string      $message 日志内容
+	 * @param       string      $color   默认输出颜色(仅在CLI模式下)
+	 * @return      void
+	 */
+	public static function warning(string $message, string $color = TextFormat::GOLD) : void
+	{
+		self::write($message, 'WARNING', $color);
+	}
+
+	/**
+	 * @method      error
+	 * @description 日志写入: ERROR 等级
+	 * @param       string      $message 日志内容
+	 * @param       string      $color   默认输出颜色(仅在CLI模式下)
+	 * @return      void
+	 */
+	public static function error(string $message, string $color = TextFormat::RED) : void
+	{
+		self::write($message, 'ERROR', $color);
+	}
+
+	/**
+	 * @method      emergency
+	 * @description 日志写入: EMERGENCY 等级
+	 * @param       string      $message 日志内容
+	 * @param       string      $color   默认输出颜色(仅在CLI模式下)
+	 * @return      void
+	 */
+	public static function emergency(string $message, string $color = TextFormat::LIGHT_RED) : void
+	{
+		self::write($message, 'EMERGENCY', $color);
+	}
+
+	/**
+	 * @method      debug
+	 * @description 日志写入: DEBUG 等级
+	 * @param       string      $message 日志内容
+	 * @param       string      $color   默认输出颜色(仅在CLI模式下)
+	 * @return      void
+	 */
+	public static function debug(string $message, string $color = TextFormat::GRAY) : void
+	{
+		self::write($message, 'DEBUG', $color);
 	}
 
 	/**
@@ -53,27 +113,23 @@ class LogWriter
 	 * @description 写入日志
 	 * @author      HanskiJay
 	 * @doneIn      2021-01-23
-	 * @param       string      $fileName 日志名称
-	 * @param       string      $prefix   记录称号
-	 * @param       string      $level    日志等级
+	 * @param       string      $message 日志内容
+	 * @param       string      $level   日志等级
 	 */
-	public static function write(string $msg, string $prefix = 'OwOWeb', string $level = "INFO") : void
+	public static function write(string $message, string $level, string $color = TextFormat::WHITE) : void
 	{
-		if(is_null(self::$fileName)) self::$fileName = LOG_PATH . self::DEFAULT_LOG_NAME;
-		$files = iterator_to_array(new FI(LOG_PATH, FI::CURRENT_AS_PATHNAME | FI::SKIP_DOTS), false);
-		$ext   = self::getExt();
-		foreach($files as $file)
-		{
-			if(is_file($file) && (substr($file, -strlen($ext)) === $ext) && (strpos($file, self::$fileName) !== false) && (filesize(self::$fileName) >= self::$maxFileSize * 1000)) {
-				rename($file, str_replace($ext, "", $file).date("_Y_m_d").$ext);
-			}
+		if(is_null(static::$fileName)) static::$fileName = LOG_PATH . self::DEFAULT_LOG_NAME;
+
+		if(is_file(static::$fileName) && (filesize(static::$fileName) >= static::$maxFileSize * 1000)) {
+			rename(static::$fileName, str_replace('.log', '', static::$fileName) . date('_Y_m_d') . '.log');
 		}
-		$msg = sprintf(self::LOG_PREFIX, date("Y-m-d"), date("H:i:s"), $prefix, $level, $msg) . PHP_EOL;
+		$message = $color . sprintf(self::LOG_FORMAT, date('Y-m-d'), date('H:i:s'), static::$logPrefix, $level, $message) . PHP_EOL;
+
 		if(Helper::isRunningWithCLI()) {
-			echo TextFormat::parse($msg);
-			$msg = TextFormat::clean($msg);
+			echo TextFormat::parse($message);
+			$message = TextFormat::clean($message);
 		}
-		file_put_contents(self::$fileName, $msg, FILE_APPEND | LOCK_EX);
+		file_put_contents(static::$fileName, $message, FILE_APPEND | LOCK_EX);
 	}
 
 	/**
@@ -85,20 +141,20 @@ class LogWriter
 	 */
 	public static function cleanLog(string $fileName = '') : void
 	{
-		if(is_null($fileName)) $fileName = LOG_PATH . self::$fileName;
+		if(is_null($fileName)) $fileName = LOG_PATH . static::$fileName;
 		if(is_file($fileName)) unlink($fileName);
 	}
 
 	/**
 	 * @method      setFileName
-	 * @description 获取文件名后缀
+	 * @description 设置日志名称
 	 * @author      HanskiJay
 	 * @doneIn      2021-01-23
-	 * @return      string
+	 * @param       string      $fileName 日志名称]
 	 */
-	public static function getExt() : string
+	public static function setFileName(string $fileName) : void
 	{
-		return ".".(@end(explode(".", self::$fileName)) ?? "");
+		static::$fileName = LOG_PATH . $fileName;
 	}
 }
 ?>

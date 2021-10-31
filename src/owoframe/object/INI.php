@@ -19,7 +19,7 @@
 declare(strict_types=1);
 namespace owoframe\object;
 
-use owoframe\helper\Helper;
+use owoframe\utils\LogWriter;
 
 class INI extends Config
 {
@@ -115,7 +115,8 @@ class INI extends Config
 		if(is_file($this->filePath . $this->fileName)) {
 			$this->config = parse_ini_file($this->filePath . $this->fileName, true);
 		} else {
-			Helper::logger("Cannot reload Config::{$this->fileName} because the file does not exists!", 'Config', 'ERROR');
+			LogWriter::$logPrefix = 'Config';
+			LogWriter::error("Cannot reload Config::{$this->fileName} because the file does not exists!");
 		}
 	}
 

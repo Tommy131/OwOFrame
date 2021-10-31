@@ -21,6 +21,7 @@ namespace owoframe\console\command;
 
 use FilesystemIterator as FI;
 use owoframe\helper\Helper;
+use owoframe\utils\LogWriter;
 use owoframe\utils\TextFormat as TF;
 
 class ClearCommand extends \owoframe\console\CommandBase
@@ -47,7 +48,7 @@ class ClearCommand extends \owoframe\console\CommandBase
 						} else {
 							$param = TF::LIGHT_RED . 'Cannot find log file ' . TF::GOLD . $param . TF::LIGHT_RED . '!';
 						}
-						Helper::logger($param);
+						LogWriter::info($param);
 					} else {
 						$files = iterator_to_array(new FI(LOG_PATH, FI::CURRENT_AS_PATHNAME | FI::SKIP_DOTS), false);
 						foreach($files as $file) {
@@ -55,7 +56,7 @@ class ClearCommand extends \owoframe\console\CommandBase
 							$ext = @end(explode('.', $baseName));
 							if(strtolower($ext) === 'log') {
 								unlink($file);
-								Helper::logger(TF::GREEN . 'Removed log file ' . TF::GOLD . $baseName . TF::GREEN . ' successfully.');
+								LogWriter::success(TF::GREEN . 'Removed log file ' . TF::GOLD . $baseName . TF::GREEN . ' successfully.');
 							}
 						}
 					}
@@ -69,19 +70,19 @@ class ClearCommand extends \owoframe\console\CommandBase
 						if(($next = array_shift($params)) !== null) {
 							if(is_dir($path . $next)) {
 								Helper::removeDir($path . $next);
-								Helper::logger(TF::GREEN . 'Removed Cache path ' . TF::GOLD . $path . $next . TF::GREEN . ' successfully.');
+								LogWriter::success(TF::GREEN . 'Removed Cache path ' . TF::GOLD . $path . $next . TF::GREEN . ' successfully.');
 							}
 							elseif(is_file($path . $next)) {
 								unlink($path . $next);
-								Helper::logger(TF::GREEN . 'Removed Cache file ' . TF::GOLD . $path . $next . TF::GREEN . ' successfully.');
+								LogWriter::success(TF::GREEN . 'Removed Cache file ' . TF::GOLD . $path . $next . TF::GREEN . ' successfully.');
 							}
 						} else {
 							Helper::removeDir($path);
 							file_put_contents($path . '.gitignore', base64_decode('KgohLmdpdGlnbm9yZQ=='));
-							Helper::logger(TF::GREEN . 'Removed Cache path ' . TF::GOLD . $path . TF::GREEN . ' successfully.');
+							LogWriter::success(TF::GREEN . 'Removed Cache path ' . TF::GOLD . $path . TF::GREEN . ' successfully.');
 						}
 					} else {
-						Helper::logger(TF::LIGHT_RED . 'Please choose a cache folder to delete: ' . TF::GOLD . '(app|framework)');
+						LogWriter::info(TF::LIGHT_RED . 'Please choose a cache folder to delete: ' . TF::GOLD . '(app|framework)');
 					}
 				break;
 			}

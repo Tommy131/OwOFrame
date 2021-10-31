@@ -20,7 +20,7 @@ declare(strict_types=1);
 namespace owoframe\console\command;
 
 use owoframe\MasterManager;
-use owoframe\helper\Helper;
+use owoframe\utils\LogWriter;
 use owoframe\utils\TextFormat as TF;
 
 class HelpCommand extends \owoframe\console\CommandBase
@@ -31,22 +31,22 @@ class HelpCommand extends \owoframe\console\CommandBase
 		$commands = $console->getCommands();
 		ksort($commands, SORT_NATURAL | SORT_FLAG_CASE);
 		if(count($params) <= 0) {
-			Helper::logger(TF::GOLD . "---------- Registered Commands: " . TF::GREEN . count($commands) . TF::GOLD . " ----------");
+			LogWriter::info(TF::GOLD . "---------- Registered Commands: " . TF::GREEN . count($commands) . TF::GOLD . " ----------");
 			foreach($commands as $command => $class) {
-				Helper::logger(TF::GREEN . "{$command}: " . TF::WHITE . $class->getDescription());
+				LogWriter::info(TF::GREEN . "{$command}: " . TF::WHITE . $class->getDescription());
 			}
-			Helper::logger(TF::WHITE . "Use '" . self::getUsage() . "'" . TF::WHITE . " to look details.");
+			LogWriter::info(TF::WHITE . "Use '" . self::getUsage() . "'" . TF::WHITE . " to look details.");
 		} else {
 			$command = strtolower(array_shift($params));
 			if(!isset($commands[$command])) {
-				Helper::logger(TF::RED . "Command " . TF::GOLD . $command . TF::RED . " does not exists!");
+				LogWriter::info(TF::RED . "Command " . TF::GOLD . $command . TF::RED . " does not exists!");
 			} else {
 				$command = $commands[$command];
-				Helper::logger(TF::WHITE . "---[Details@" . TF::GREEN . $command->getName() . TF::WHITE . "]---");
-				Helper::logger(TF::WHITE . "CommandName: " . $command->getName());
-				Helper::logger(TF::WHITE . "AliasName:   " . implode(', ', $command->getAliases()));
-				Helper::logger(TF::WHITE . "Usage:       " . $command->getUsage());
-				Helper::logger(TF::WHITE . "Description: " . $command->getDescription());
+				LogWriter::info(TF::WHITE . "---[Details@" . TF::GREEN . $command->getName() . TF::WHITE . "]---");
+				LogWriter::info(TF::WHITE . "CommandName: " . $command->getName());
+				LogWriter::info(TF::WHITE . "AliasName:   " . implode(', ', $command->getAliases()));
+				LogWriter::info(TF::WHITE . "Usage:       " . $command->getUsage());
+				LogWriter::info(TF::WHITE . "Description: " . $command->getDescription());
 			}
 		}
 		return true;
