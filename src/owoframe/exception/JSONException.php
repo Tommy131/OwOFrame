@@ -26,6 +26,7 @@ class JSONException extends OwOFrameException implements JsonSerializable
 {
 	public function __construct(array $messages = [], int $code = 0, \Throwable $previous = null)
 	{
+		$this->message = $messages;
 		$data = new DataEncoder($messages);
 		die($data->encode());
 	}

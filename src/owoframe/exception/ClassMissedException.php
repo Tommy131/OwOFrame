@@ -21,8 +21,8 @@ namespace owoframe\exception;
 
 class ClassMissedException extends OwOFrameException
 {
-	public function __construct(string $className, string $method, int $code = 0, \Throwable $previous = null)
+	public function __construct(string $className, int $code = 0, \Throwable $previous = null)
 	{
-		parent::__construct("Cannot find need class '{$className}::class'!", $code, $previous);
+		parent::__construct("Cannot find class '{$className}::class'!", $code, $previous);
 	}
 }

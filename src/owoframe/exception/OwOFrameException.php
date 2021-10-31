@@ -20,4 +20,91 @@ declare(strict_types=1);
 namespace owoframe\exception;
 
 class OwOFrameException extends \Exception
-{}
+{
+	/* @callable 备选回调方法 */
+	private $alternativeCall = [];
+	/* @bool 判断条件结果 */
+	private $judgement = true;
+
+
+
+	/**
+	 * @method      setAlternativeCall
+	 * @description 设置备选回调方法
+	 * @author      HanskiJay
+	 * @doneIn      2021-04-30
+	 * @param       callable           $callback
+	 */
+	public function setAlternativeCall(callable $callback) : void
+	{
+		$this->alternativeCall = $callback;
+	}
+
+	/**
+	 * @method      getAlternativeCall
+	 * @description 获取备选回调方法
+	 * @author      HanskiJay
+	 * @doneIn      2021-04-30
+	 * @return      null|callable
+	 */
+	public function getAlternativeCall() : ?callable
+	{
+		return $this->alternativeCall ?? null;
+	}
+
+	/**
+	 * @method      setJudgement
+	 * @description 设置判断条件结果
+	 * @author      HanskiJay
+	 * @doneIn      2021-04-30
+	 * @param       bool         $judgement 判断条件结果
+	 */
+	public function setJudgement(bool $judgement = true) : void
+	{
+		$this->judgement = $judgement;
+	}
+
+	/**
+	 * @method      getJudgement
+	 * @description 获取判断条件结果
+	 * @author      HanskiJay
+	 * @doneIn      2021-04-30
+	 * @return      boolean
+	 */
+	public function getJudgement() : bool
+	{
+		return $this->judgement;
+	}
+
+	/**
+	 * @method      resetCall
+	 * @description 重置回调方法相关
+	 * @author      HanskiJay
+	 * @doneIn      2021-04-30
+	 */
+	public function resetCall() : void
+	{
+		$this->alternativeCall = null;
+		$this->judgement       = true;
+	}
+
+	/**
+	 * @method      toggleRunTimeDivOutput
+	 * @description 切换输出运行时间框
+	 * @author      HanskiJay
+	 * @doneIn      2021-04-30
+	 * @param       bool|boolean           $update 更新输出状态
+	 * @return      boolean
+	 */
+	public static function toggleRunTimeDivOutput(bool $update = true) : bool
+	{
+		static $status;
+		if(!isset($status)) {
+			$status = true;
+		}
+		if($update) {
+			$status = ($status ? false : true);
+		}
+		return $status;
+	}
+}

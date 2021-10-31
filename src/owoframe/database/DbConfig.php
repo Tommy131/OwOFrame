@@ -59,8 +59,8 @@ class DbConfig extends Db
 		];
 		self::setConfig(static::$dbConfig);
 		// 定义初始化标识;
-		if(!defined('DB_INITED')) {
-			define('DB_INITED', true);
+		if(!defined('DB_INIT')) {
+			define('DB_INIT', true);
 		}
 	}
 

@@ -70,7 +70,7 @@ class AppManager implements \owoframe\contract\Manager
 	 * @author      HanskiJay
 	 * @doneIn      2021-01-26
 	 * @param       string       $appName app名称
-	 * @param       &$class      &$class  向上传递存在的应用对象
+	 * @param       &           &$class  向上传递存在的应用对象
 	 * @return      boolean
 	 */
 	public static function hasApp(string $appName, &$class = null) : bool

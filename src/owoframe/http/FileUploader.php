@@ -19,7 +19,7 @@
 declare(strict_types=1);
 namespace owoframe\http;
 
-use owoframe\helper\Helper;
+use owoframe\contract\MIMETypeConstant;
 use owoframe\exception\JSONException;
 
 class FileUploader implements \owoframe\contract\Manager
@@ -110,7 +110,7 @@ class FileUploader implements \owoframe\contract\Manager
 	*/
 	public function canUpload(string $ext) : bool
 	{
-		return isset(Helper::MIMETYPE[$ext]) && in_array($ext, $this->getAllowedExts());
+		return isset(MIMETypeConstant::MIMETYPE[$ext]) && in_array($ext, $this->getAllowedExts());
 	}
 
 	/**

@@ -21,8 +21,8 @@ namespace owoframe\exception;
 
 class ResourceMissedException extends OwOFrameException
 {
-	public function __construct(string $type, string $file, int $code = 0, \Throwable $previous = null)
+	public function __construct(string $type, string $resource, int $code = 0, \Throwable $previous = null)
 	{
-		parent::__construct("Resource [{$type}]|'{$file}' not Found!", $code, $previous);
+		parent::__construct("Resource [{$type}] Missed | '{$resource}' not Found!", $code, $previous);
 	}
 }

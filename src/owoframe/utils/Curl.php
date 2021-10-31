@@ -3,6 +3,8 @@
 declare(strict_types=1);
 namespace owoframe\utils;
 
+use CurlHandle;
+
 class Curl
 {
 	protected $curl;
@@ -38,22 +40,16 @@ class Curl
 
 
 
-	public function __construct()
-	{
-		$this->reload();
-		return $this;
-	}
-
 	/**
-	 * @method      reload
-	 * @description 重载CURL
+	 * @method      init
+	 * @description 初始化CURL
 	 * @author      HanskiJay
 	 * @doneIn      2021-08-14
 	 * @return      object@Curl
 	 */
-	public function reload() : Curl
+	public function init() : Curl
 	{
-		if(is_resource($this->curl)) {
+		if($this->curl instanceof CurlHandle) {
 			curl_close($this->curl);
 		}
 		$this->curl = curl_init();
@@ -75,7 +71,6 @@ class Curl
 	public function exec()
 	{
 		$this->content = curl_exec($this->curl);
-		$this->reload();
 		return $this->content;
 	}
 

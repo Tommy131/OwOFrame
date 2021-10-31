@@ -39,13 +39,7 @@ class EventManager implements \owoframe\contract\Manager
 	public const LOWEST_PRIORITY  = 1;
 
 	/* @array 事件列表 */
-	private $eventList =
-	[
-		user\UserRegisterEvent::class,
-		http\BeforeResponseEvent::class,
-		http\AfterResponseEvent::class,
-		system\OutputEvent::class
-	];
+	private $eventList = [];
 	/* @array 监听者列表 */
 	private $listenerList = [];
 
@@ -174,7 +168,7 @@ class EventManager implements \owoframe\contract\Manager
 	 * @param       boolean     $reload       允许重新注册
 	 * @return      void
 	 */
-	public function setCallbackToEvent(string $registerTag, int $priority, callable $callback, bool $reload = false) : void
+	protected function setCallbackToEvent(string $registerTag, int $priority, callable $callback, bool $reload = false) : void
 	{
 		if(($priority > 5) || ($priority <= 0)) {
 			throw new OwOFrameException("[Event_Priority_Invalid] The priority of register tag '{$registerTag}' should between 1 ~ 6!");

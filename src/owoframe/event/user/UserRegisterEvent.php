@@ -23,10 +23,8 @@ use owoframe\user\UserManager;
 
 class UserRegisterEvent extends \owoframe\event\Event
 {
-	private $manager;
 
-	public function __construct(UserManager $manager)
+	public function __construct()
 	{
-		$this->manager = $manager;
 	}
 }
