@@ -24,7 +24,6 @@ namespace owoframe\helper;
 use FilesystemIterator as FI;
 use owoframe\contract\HTTPStatusCodeConstant;
 use owoframe\contract\MIMETypeConstant;
-use owoframe\utils\LogWriter;
 
 class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 {
@@ -186,7 +185,7 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 		$r  = null;
 		$os = php_uname('s');
 		if(stripos($os, 'linux') !== false) {
-			$r = @file_exists('/system/build.prop') ? self::OS_ANDROID : self::LINUX;
+			$r = @file_exists('/system/build.prop') ? self::OS_ANDROID : self::OS_LINUX;
 		}
 		elseif(stripos($os, 'windows') !== false) {
 			$r = self::OS_WINDOWS;
@@ -245,45 +244,32 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	}
 
 	/**
-	 * @method      logger
-	 * @description 日志记录
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-06
-	 * @param       string      $msg    信息
-	 * @param       string      $prefix 称号
-	 * @param       string      $level  等级
-	 * @return      void
-	 */
-	public static function logger(string $msg, string $prefix = 'OwOCLI', string $level = 'INFO') : void
-	{
-		LogWriter::setFileName(self::isRunningWithCLI() ? 'owoblog_cli_run.log' : 'owoblog_run.log');
-		LogWriter::write($msg, $prefix, $level);
-	}
-
-	/**
 	 * @method      removeDir
 	 * @description 删除文件夹
 	 * @author      HanskiJay
 	 * @doneIn      2021-04-17
 	 * @param       string      $path 文件夹路径
-	 * @return      void
+	 * @return      boolean
 	 */
-	public static function removeDir(string $path) : void
+	public static function removeDir(string $path) : bool
 	{
-		if(!is_dir($path)) {
-			return;
-		}
-		$files = iterator_to_array(new FI($path, FI::CURRENT_AS_PATHNAME | FI::SKIP_DOTS), false);
+		if(!is_dir($path)) return false;
+		$path = $path . DIRECTORY_SEPARATOR;
+		$dirArray = scandir($path);
+		unset($dirArray[array_search('.', $dirArray)], $dirArray[array_search('..', $dirArray)]);
 
-		foreach($files as $file) {
-			if(is_file($file)) {
-				unlink($file);
-			}
-			elseif(is_dir($file)) {
-				self::removeDir($file);
-				rmdir($file);
+		foreach($dirArray as $fileName) {
+			if(is_dir($path . $fileName)) {
+				self::removeDir($path . $fileName);
+				if(is_dir($path . $fileName)) {
+					rmdir($path . $fileName);
+				}
+			} else {
+				unlink($path . $fileName);
 			}
 		}
+		rmdir($path);
+		return is_dir($path);
 	}
 
 	/**

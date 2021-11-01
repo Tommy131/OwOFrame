@@ -85,10 +85,10 @@ class Console implements Manager
 
 		if($command instanceof CommandBase) {
 			if(!$command->execute($input)) {
-				LogWriter::debug(TF::RED."Command ".TF::GOLD."'{$inputCommand}'".TF::RED." may not execute successfully, please check the issue.");
+				LogWriter::debug("Command '{$inputCommand}' may not execute successfully, please check the issue.");
 			}
 		} else {
-			LogWriter::debug(TF::RED."Command ".TF::GOLD."'{$inputCommand}'".TF::RED." not found, please use ".TF::GOLD."'php owo help'".TF::RED." to  check the details.");
+			LogWriter::debug("Command '{$inputCommand}' not found, please use '".TF::GOLD."php owo help".TF::GRAY."' to check the details.");
 		}
 	}
 	/**

@@ -16,8 +16,8 @@
 
 **********************************************************************/
 
+declare(strict_types=1);
 namespace application\index\controller;
-
 
 class Index extends \owoframe\application\ControllerBase
 {

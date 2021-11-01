@@ -24,7 +24,6 @@ use owoframe\helper\Helper;
 use owoframe\http\HttpManager as Http;
 use owoframe\http\route\Router;
 use owoframe\utils\LogWriter;
-use owoframe\utils\TextFormat;
 
 class ExceptionOutput
 {

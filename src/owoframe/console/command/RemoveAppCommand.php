@@ -21,49 +21,34 @@ namespace owoframe\console\command;
 
 use owoframe\application\AppManager;
 use owoframe\helper\Helper;
+use owoframe\utils\LogWriter;
 
 class RemoveAppCommand extends \owoframe\console\CommandBase
 {
 	public function execute(array $params) : bool
 	{
-		$appName = strtolower(array_shift($params));
-		if(!AppManager::hasApp($appName)) {
-			Helper::logger("Cannot find appName called '{$appName}'!");
+		$appName = array_shift($params);
+		if(empty($appName)) {
+			LogWriter::info('Please enter a valid appName. Usage: ' . self::getUsage() . ' [string:appName]');
 			return false;
 		}
-		$answer = (string) ask('[WARNING] ARE YOU SURE THAT YOU WANT TO DELETE/REMOVE THIS APPLICATION? THIS OPERATION IS IRREVERSIBLE! [Y/N]', 'N');
+		$appName = strtolower($appName);
+		if(!AppManager::hasApp($appName)) {
+			LogWriter::error("Cannot find appName called '{$appName}'!");
+			return false;
+		}
+		$answer = (string) ask('[WARNING] ARE YOU SURE THAT YOU WANT TO DELETE/REMOVE THIS APPLICATION? THIS OPERATION IS IRREVERSIBLE! [Y/N]', 'N', 'warning');
 		if(strtolower($answer) === 'y') {
-			Helper::logger('Now will remove this application forever...', 'OwOCMD');
-			self::removeDir($path = AppManager::getPath() . $appName . DIRECTORY_SEPARATOR);
+			LogWriter::warning('Now will remove this application forever...');
+			Helper::removeDir($path = AppManager::getPath() . $appName . DIRECTORY_SEPARATOR);
 			if(!is_dir($path)) {
-				Helper::logger("Removed Application '{$appName}' successfully.", 'OwOCMD');
+				LogWriter::success("Removed Application '{$appName}' successfully.");
 			} else {
-				Helper::logger('Somewhere was wrong that cannot remove this application!', 'OwOCMD', 'ERROR');
+				LogWriter::error('Somewhere was wrong that cannot remove this application!');
 				return false;
 			}
 		}
 		return true;
-	}
-
-	public static function removeDir(string $path) : bool
-	{
-		if(!is_dir($path)) return false;
-		$path = $path . DIRECTORY_SEPARATOR;
-		$dirArray = scandir($path);
-		unset($dirArray[array_search('.', $dirArray)], $dirArray[array_search('..', $dirArray)]);
-
-		foreach($dirArray as $fileName) {
-			if(is_dir($path . $fileName)) {
-				self::removeDir($path . $fileName);
-				if(is_dir($path . $fileName)) {
-					rmdir($path . $fileName);
-				}
-			} else {
-				unlink($path . $fileName);
-			}
-		}
-		rmdir($path);
-		return is_dir($path);
 	}
 
 	public static function getAliases() : array
