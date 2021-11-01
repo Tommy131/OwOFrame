@@ -41,11 +41,11 @@ class Curl
 
 
 	/**
-	 * @method      init
-	 * @description 初始化CURL
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @return      object@Curl
+	 * 初始化CURL
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @return object@Curl
 	 */
 	public function init() : Curl
 	{
@@ -62,11 +62,11 @@ class Curl
 	}
 
 	/**
-	 * @method      exec
-	 * @description 执行CURL请求
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @return      string
+	 * 执行CURL请求
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @return string
 	 */
 	public function exec()
 	{
@@ -75,12 +75,12 @@ class Curl
 	}
 
 	/**
-	 * @method      setUA
-	 * @description 设置UA (User Agent)
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @param       string      $ua
-	 * @return      object@Curl
+	 * 设置UA (User Agent)
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @param  string      $ua
+	 * @return Curl
 	 */
 	public function setUA(string $ua) : Curl
 	{
@@ -89,12 +89,12 @@ class Curl
 	}
 
 	/**
-	 * @method      setUrl
-	 * @description 设置请求地址
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @param       string      $url
-	 * @return      object@Curl
+	 * 设置请求地址
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @param  string      $url
+	 * @return Curl
 	 */
 	public function setUrl($url) : Curl
 	{
@@ -104,12 +104,12 @@ class Curl
 	}
 
 	/**
-	 * @method      setHeader
-	 * @description 设置HTTP Header
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @param       array      $header
-	 * @return      object@Curl
+	 * 设置HTTP Header
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @param  array      $header
+	 * @return Curl
 	 */
 	public function setHeader(array $header) : Curl
 	{
@@ -118,12 +118,12 @@ class Curl
 	}
 
 	/**
-	 * @method      setReferer
-	 * @description 设置来源
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @param       string      $referer
-	 * @return      object@Curl
+	 * 设置来源
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @param  string      $referer
+	 * @return Curl
 	 */
 	public function setReferer(string $referer) : Curl
 	{
@@ -132,12 +132,12 @@ class Curl
 	}
 
 	/**
-	 * @method      setGetData
-	 * @description 设置Get请求的数据
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @param       array      $data
-	 * @return      object@Curl
+	 * 设置Get请求的数据
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @param  array      $data
+	 * @return Curl
 	 */
 	public function setGetData($data) : Curl
 	{
@@ -151,12 +151,12 @@ class Curl
 	}
 
 	/**
-	 * @method      setPostData
-	 * @description 设置Post请求的数据
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @param       array      $data
-	 * @return      object@Curl
+	 * 设置Post请求的数据
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @param  array      $data
+	 * @return Curl
 	 */
 	public function setPostData($data) : Curl
 	{
@@ -171,12 +171,12 @@ class Curl
 	}
 
 	/**
-	 * @method      setEncPostData
-	 * @description 设置Post请求的数据
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @param       mixed
-	 * @return      object@Curl
+	 * 设置Post请求的数据
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @param  mixed
+	 * @return Curl
 	 */
 	public function setEncPostData($post) : Curl
 	{
@@ -186,12 +186,12 @@ class Curl
 	}
 
 	/**
-	 * @method      setTimeout
-	 * @description 设置CURL的请求超时时间
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @param       int      $timeout
-	 * @return      object@Curl
+	 * 设置CURL的请求超时时间
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @param  int      $timeout
+	 * @return Curl
 	 */
 	public function setTimeout(int $timeout) : Curl
 	{
@@ -201,12 +201,13 @@ class Curl
 	}
 
 	/**
-	 * @method      setOpt
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @param       int        $option
-	 * @param       mixed      $value
-	 * @return      object@Curl
+	 * 设置CURL参数
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @param  int        $option
+	 * @param  mixed      $value
+	 * @return Curl
 	 */
 	public function setOpt(int $option, $value) : Curl
 	{
@@ -215,12 +216,12 @@ class Curl
 	}
 
 	/**
-	 * @method      returnHeader
-	 * @description 设置是否返回HTTP请求头数据
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @param       boolean      $bool
-	 * @return      object@Curl
+	 * 设置是否返回HTTP请求头数据
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @param  boolean      $bool
+	 * @return Curl
 	 */
 	public function returnHeader(bool $bool) : Curl
 	{
@@ -229,12 +230,12 @@ class Curl
 	}
 
 	/**
-	 * @method      returnBody
-	 * @description 设置是否返回Body
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @param       boolean      $bool
-	 * @return      object@Curl
+	 * 设置是否返回Body
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @param  boolean      $bool
+	 * @return Curl
 	 */
 	public function returnBody(bool $bool) : Curl
 	{
@@ -243,12 +244,12 @@ class Curl
 	}
 
 	/**
-	 * @method      setCookie
-	 * @description 设置Cookie
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @param       array      $cookies
-	 * @return      object@Curl
+	 * 设置Cookie
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @param  array      $cookies
+	 * @return Curl
 	 */
 	public function setCookie(array $cookies) : Curl
 	{
@@ -262,10 +263,11 @@ class Curl
 	}
 
 	/**
-	 * @method      keepCookie
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @return      object@Curl
+	 * 保持Cookie
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @return Curl
 	 */
 	public function keepCookie() : Curl
 	{
@@ -275,11 +277,11 @@ class Curl
 	}
 
 	/**
-	 * @method      getCookie
-	 * @description 返回Cookie
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @return      string
+	 * 返回Cookie
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @return string
 	 */
 	public function getCookie()
 	{
@@ -298,11 +300,11 @@ class Curl
 	}
 
 	/**
-	 * @method      getUrl
-	 * @description 返回设置的请求地址
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @return      string
+	 * 返回设置的请求地址
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @return string
 	 */
 	public function getUrl() : string
 	{
@@ -310,11 +312,11 @@ class Curl
 	}
 
 	/**
-	 * @method      getContent
-	 * @description 返回CURL执行结果
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @return      string
+	 * 返回CURL执行结果
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @return string
 	 */
 	public function getContent() : string
 	{
@@ -322,11 +324,11 @@ class Curl
 	}
 
 	/**
-	 * @method      isError
-	 * @description 返回CURL是否出错的布尔值
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @return      boolean
+	 * 返回CURL是否出错的布尔值
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @return boolean
 	 */
 	public function isError()
 	{
@@ -334,11 +336,11 @@ class Curl
 	}
 
 	/**
-	 * @method      getRadomIp
-	 * @description 返回随机IP地址
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @return      string
+	 * 返回随机IP地址
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @return string
 	 */
 	public function getRadomIp()
 	{

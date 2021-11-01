@@ -38,11 +38,11 @@ abstract class ControllerBase
 	}
 
 	/**
-	 * @method      methodNotFound
-	 * @description 这只是一个示例, 参考上方注释
-	 * @return      mixed
-	 * @author      HanskiJay
-	 * @doneIn      2020-10-08 22:04
+	 * 这只是一个示例, 参考上方注释
+	 *
+	 * @author HanskiJay
+	 * @since  2020-10-08 22:04
+	 * @return mixed
 	*/
 	public function methodNotFound()
 	{
@@ -50,12 +50,12 @@ abstract class ControllerBase
 	}
 
 	/**
-	 * @method      getResourcePath
-	 * @description 获取公共静态资源目录
-	 * Author:      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $index 文件/文件夹索引
-	 * @return      string
+	 * 获取公共静态资源目录
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @param  string      $index 文件/文件夹索引
+	 * @return string
 	*/
 	public function getResourcePath(string $index) : string
 	{
@@ -63,12 +63,12 @@ abstract class ControllerBase
 	}
 
 	/**
-	 * @method      getStaticPath
-	 * @description 获取Application局部静态资源目录
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $index 文件/文件夹索引
-	 * @return      string
+	 * 获取Application局部静态资源目录
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @param  string      $index 文件/文件夹索引
+	 * @return string
 	*/
 	public function getStaticPath(string $index) : string
 	{
@@ -76,14 +76,13 @@ abstract class ControllerBase
 	}
 
 	/**
-	 * @method      getViewPath
-	 * @description 返回Views(V)显示层的路径
-	 * @description Get the path for View(V) relatively
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10 18:49
-	 * @param       string      $index      文件/文件夹索引
-	 * @param       bool        $selectMode 选择模式[True: 返回绝对路径|Return absolute path][False: 返回相对路径|Return relative path]](Default:true)
-	 * @return      string
+	 * 返回Views(V)显示层的路径
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10 18:49
+	 * @param  string      $index      文件/文件夹索引
+	 * @param  bool        $selectMode 选择模式[True: 返回绝对路径|Return absolute path][False: 返回相对路径|Return relative path]](Default:true)
+	 * @return string
 	*/
 	final public function getViewPath(string $index, bool $selectMode = true) : string
 	{
@@ -91,13 +90,12 @@ abstract class ControllerBase
 	}
 
 	/**
-	 * @method      hasViewPath
-	 * @description 判断是否存在一个View(V)目录
-	 * @description Determine whether there is a Views(V) directory
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $index 文件/文件夹索引
-	 * @return      boolean
+	 * 判断是否存在一个View(V)目录
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @param  string      $index 文件/文件夹索引
+	 * @return boolean
 	*/
 	final public function hasViewPath(string $index) : bool
 	{
@@ -106,11 +104,11 @@ abstract class ControllerBase
 	}
 
 	/**
-	 * @method      getName
-	 * @description 返回控制器类名
-	 * @author      HanskiJay
-	 * @doneIn      2021-02-09
-	 * @return      string
+	 * 返回控制器类名
+	 *
+	 * @author HanskiJay
+	 * @since  2021-02-09
+	 * @return string
 	 */
 	final public function getName() : string
 	{
@@ -118,12 +116,11 @@ abstract class ControllerBase
 	}
 
 	/**
-	 * @method      getApp
-	 * @description 返回对应的App
-	 * @description Return corresponding AppBase Object
-	 * @return      AppBase
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10 18:49
+	 * 返回对应的App
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10 18:49
+	 * @return AppBase
 	*/
 	final public function getApp() : AppBase
 	{

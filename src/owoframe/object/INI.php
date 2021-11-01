@@ -43,13 +43,13 @@ class INI extends Config
 	}
 
 	/**
-	 * @method      _global
-	 * @description 读取全局配置文件 | get global configuration;
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-09
-	 * @param       string[str]
-	 * @param       mixed[default|默认返回值]
-	 * @return      mixed
+	 * 读取全局配置文件 | get global configuration
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-09
+	 * @param  string      $str
+	 * @param  mixed       $default 默认返回值
+	 * @return mixed
 	 */
 	public static function _global(string $str, $default = null)
 	{
@@ -58,12 +58,12 @@ class INI extends Config
 	}
 
 	/**
-	 * @method      save
-	 * @description 保存配置文件
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-30
-	 * @param       string|null      $file 文件
-	 * @return      void
+	 * 保存配置文件
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-30
+	 * @param  string|null      $file 文件
+	 * @return void
 	 */
 	public function save(?string $file = null) : void
 	{
@@ -104,11 +104,11 @@ class INI extends Config
 	}
 
 	/**
-	 * @method      reload
-	 * @description 重新读取配置文件
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-30
-	 * @return      void
+	 * 重新读取配置文件
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-30
+	 * @return void
 	 */
 	public function reload() : void
 	{
@@ -122,10 +122,9 @@ class INI extends Config
 
 
 	/**
-	 * @method      parseRawData (Draft)
-	 * @description 解析配置文件数据
-	 * @author      HanskiJay
-	 * @doneIn      2021-05-04
+	 * 解析配置文件数据
+	 * @author HanskiJay
+	 * @since  2021-05-04
 	 * Base64 encoded:
 	 * CXB1YmxpYyBmdW5jdGlvbiBwYXJzZVJhd0RhdGEoKSA6IHZvaWQNCgl7DQoJCSR0aGlzLSZndDtjb25maWcgPSBwYXJzZV9pbmlfZm
 	 * lsZSgkdGhpcy0mZ3Q7ZmlsZVBhdGggLiAkdGhpcy0mZ3Q7ZmlsZU5hbWUsIHRydWUpOw0KCQlmb3JlYWNoKCR0aGlzLSZndDtjb25m

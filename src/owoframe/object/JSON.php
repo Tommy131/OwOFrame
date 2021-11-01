@@ -38,12 +38,12 @@ class JSON extends Config
 	}
 
 	/**
-	 * @method      backup
-	 * @description 备份配置文件
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-30
-	 * @param       string      $backupPath 备份路径
-	 * @return      void
+	 * 备份配置文件
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-30
+	 * @param  string      $backupPath 备份路径
+	 * @return void
 	 */
 	public function backup(string $backupPath = '') : void
 	{
@@ -52,12 +52,12 @@ class JSON extends Config
 	}
 
 	/**
-	 * @method      save
-	 * @description 保存配置文件
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-30
-	 * @param       string|null      $file 文件
-	 * @return      void
+	 * 保存配置文件
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-30
+	 * @param  string|null      $file 文件
+	 * @return void
 	 */
 	public function save(?string $file = null) : void
 	{
@@ -68,11 +68,11 @@ class JSON extends Config
 	}
 
 	/**
-	 * @method      reload
-	 * @description 重新读取配置文件
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-30
-	 * @return      void
+	 * 重新读取配置文件
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-30
+	 * @return void
 	 */
 	public function reload() : void
 	{

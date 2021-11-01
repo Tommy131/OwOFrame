@@ -25,12 +25,12 @@ class WMIService extends WMI
 	protected $data = [];
 
 	/**
-	 * @method      getCPURawInfo
-	 * @description 获取CPU信息
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-24
-	 * @param       bool|boolean  $forceUpdate 强制更新信息
-	 * @return      array
+	 * 获取CPU信息
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-24
+	 * @param  bool|boolean  $forceUpdate 强制更新信息
+	 * @return array
 	 */
 	public function getCPURawInfo(bool $forceUpdate = false) : array
 	{
@@ -58,12 +58,12 @@ class WMIService extends WMI
 	}
 
 	/**
-	 * @method      getCPUInfo
-	 * @description 返回格式化后的CPU信息
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-25
-	 * @param       bool|boolean  $forceUpdate 强制更新信息
-	 * @return      string
+	 * 返回格式化后的CPU信息
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-25
+	 * @param  bool|boolean  $forceUpdate 强制更新信息
+	 * @return string
 	 */
 	public function getCPUInfo(bool $forceUpdate = false) : string
 	{
@@ -83,12 +83,12 @@ class WMIService extends WMI
 	}
 
 	/**
-	 * @method      getMemoryRawInfo
-	 * @description 获取内存信息
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-24
-	 * @param       bool|boolean  $forceUpdate 强制更新信息
-	 * @return      array
+	 * 获取内存信息
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-24
+	 * @param  bool|boolean  $forceUpdate 强制更新信息
+	 * @return array
 	 */
 	public function getMemoryRawInfo(bool $forceUpdate = false) : array
 	{
@@ -108,12 +108,12 @@ class WMIService extends WMI
 	}
 
 	/**
-	 * @method      getMemoryInfo
-	 * @description 获取格式化后的内存信息
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-25
-	 * @param       bool|boolean  $forceUpdate 强制更新信息
-	 * @return      string
+	 * 获取格式化后的内存信息
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-25
+	 * @param  bool|boolean  $forceUpdate 强制更新信息
+	 * @return string
 	 */
 	public function getMemoryInfo(bool $forceUpdate = false) : string
 	{
@@ -135,12 +135,12 @@ class WMIService extends WMI
 	}
 
 	/**
-	 * @method      getDiskRawInfo
-	 * @description 获取磁盘信息
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-24
-	 * @param       bool|boolean  $forceUpdate 强制更新信息
-	 * @return      array
+	 * 获取磁盘信息
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-24
+	 * @param  bool|boolean  $forceUpdate 强制更新信息
+	 * @return array
 	 */
 	public function getDiskRawInfo(bool $forceUpdate = false) : array
 	{
@@ -159,12 +159,12 @@ class WMIService extends WMI
 	}
 
 	/**
-	 * @method      getLogicalDiskRawInfo
-	 * @description 获取硬盘逻辑分区信息
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-25
-	 * @param       bool|boolean  $forceUpdate 强制更新信息
-	 * @return      array
+	 * 获取硬盘逻辑分区信息
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-25
+	 * @param  bool|boolean  $forceUpdate 强制更新信息
+	 * @return array
 	 */
 	public function getLogicalDiskRawInfo(bool $forceUpdate = false) : array
 	{
@@ -183,6 +183,14 @@ class WMIService extends WMI
 		return $this->data['logicalDisk'] = $diskArr;
 	}
 
+	/**
+	 * 获取硬盘分区信息
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-25
+	 * @param  array      $exceptionCallParam
+	 * @return array
+	 */
 	public function getDiskInfo(array $exceptionCallParam = [], &$call = []) : array
 	{
 		$diskInfo = $this->getLogicalDiskRawInfo();
@@ -223,12 +231,12 @@ class WMIService extends WMI
 	}
 
 	/**
-	 * @method      getServerRawInfo
-	 * @description 获取系统基本信息
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-25
-	 * @param       bool|boolean  $forceUpdate 强制更新信息
-	 * @return      array
+	 * 获取系统基本信息
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-25
+	 * @param  bool|boolean  $forceUpdate 强制更新信息
+	 * @return array
 	 */
 	public function getServerRawInfo(bool $forceUpdate = false) : array
 	{
@@ -250,12 +258,12 @@ class WMIService extends WMI
 	}
 
 	/**
-	 * @method      getServerInfo
-	 * @description 获取格式化后的系统基本信息
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-25
-	 * @param       bool|boolean  $forceUpdate 强制更新信息
-	 * @return      array
+	 * 获取格式化后的系统基本信息
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-25
+	 * @param  bool|boolean  $forceUpdate 强制更新信息
+	 * @return array
 	 */
 	public function getServerInfo(bool $forceUpdate = false) : array
 	{
@@ -289,11 +297,11 @@ class WMIService extends WMI
 	}
 
 	/**
-	 * @method      getData
-	 * @description 返回数据
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-24
-	 * @return      array
+	 * 返回数据
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-24
+	 * @return array
 	 */
 	public function getData() : array
 	{

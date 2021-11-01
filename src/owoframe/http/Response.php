@@ -59,13 +59,13 @@ class Response
 	}
 
 	/**
-	 * @method      setCallback
-	 * @description 设置回调
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-16
-	 * @param       null|callable    $callback 可回调参数
-	 * @param       array            $params   回调参数传递
-	 * @return      object@Response
+	 * 设置回调
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-16
+	 * @param  null|callable    $callback 可回调参数
+	 * @param  array            $params   回调参数传递
+	 * @return Response
 	 */
 	public function setCallback(?callable $callback, array $params = []) : Response
 	{
@@ -74,11 +74,11 @@ class Response
 	}
 
 	/**
-	 * @method      sendResponse
-	 * @description 发送响应头
-	 * @author      HanskiJay
-	 * @doneIn      2021-02-09
-	 * @return      void
+	 * 发送响应头
+	 *
+	 * @author HanskiJay
+	 * @since  2021-02-09
+	 * @return void
 	 */
 	public function sendResponse() : void
 	{
@@ -130,13 +130,12 @@ class Response
 	}
 
 	/**
-	 * @method      setResponseCode
-	 * @description 设置HTTP响应代码
-	 * @description Set the response code for HTTP;
-	 * @param       int[code|响应代码]
-	 * @return      boolean
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10 18:49
+	 * 设置HTTP响应代码
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10 18:49
+	 * @param  int      $code 响应代码
+	 * @return boolean
 	*/
 	public function setResponseCode(int $code) : bool
 	{
@@ -146,13 +145,12 @@ class Response
 	}
 
 	/**
-	 * @method      getResponseCode
-	 * @description 获取当前设置的HTTP响应代码
-	 * @description Get the response code from HTTP;
-	 * @param       int[code|响应代码](Default:403)
-	 * @return      int
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10 18:49
+	 * 获取当前设置的HTTP响应代码
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10 18:49
+	 * @param  int      $code 响应代码
+	 * @return int
 	*/
 	public function getResponseCode(int $code = 403) : int
 	{
@@ -160,13 +158,13 @@ class Response
 	}
 
 	/**
-	 * @method      header
-	 * @description 设置HTTP_HEADER
-	 * @param       string[index|文件/文件夹索引]
-	 * @param       string[val|值]
-	 * @return      mixed
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10 18:49
+	 * 设置HTTP_HEADER
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10 18:49
+	 * @param  string      $index 文件/文件夹索引
+	 * @param  string      $val 值
+	 * @return mixed
 	*/
 	public function &header(string $name, string $val = '')
 	{
@@ -191,17 +189,24 @@ class Response
 	}
 
 	/**
-	 * @method      hasSent
-	 * @description 返回响应状态
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-21
-	 * @return      boolean
+	 * 返回响应状态
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-21
+	 * @return boolean
 	 */
 	public function hasSent() : bool
 	{
 		return $this->hasSent;
 	}
 
+	/**
+	 * 默认响应信息
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-21
+	 * @return string
+	 */
 	public function defaultResponseMsg() : string
 	{
 		return $this->defaultResponseMsg;

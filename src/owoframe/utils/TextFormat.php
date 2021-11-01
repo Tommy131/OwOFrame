@@ -64,12 +64,12 @@ class TextFormat
 	public const UNDERLINE = self::PREFIX . "u";
 
 	/**
-	 * @method      split
-	 * @description 分割字符串
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-27
-	 * @param       string      $str 传入的字符串
-	 * @return      array
+	 * 分割字符串
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-27
+	 * @param  string      $str 传入的字符串
+	 * @return array
 	 */
 	public static function split(string $str) : array
 	{
@@ -77,12 +77,12 @@ class TextFormat
 	}
 
 	/**
-	 * @method      clean
-	 * @description 转换颜色字符
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-27
-	 * @param       string      $str 传入的字符串
-	 * @return      string
+	 * 转换颜色字符
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-27
+	 * @param  string      $str 传入的字符串
+	 * @return string
 	 */
 	public static function clean(string $str) : string
 	{
@@ -90,12 +90,12 @@ class TextFormat
 	}
 
 	/**
-	 * @method      parse
-	 * @description 解析传入普通字符转换成颜色字符
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-27
-	 * @param       string      $input 传入的字符串
-	 * @return      string
+	 * 解析传入普通字符转换成颜色字符
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-27
+	 * @param  string      $input 传入的字符串
+	 * @return string
 	 */
 	public static function parse(string $input) : string
 	{
@@ -191,13 +191,13 @@ class TextFormat
 	}
 
 	/**
-	 * @method      color
-	 * @description 取色器
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-27
-	 * @param       int      $num 颜色编号
-	 * @param       string   $str 传入的字符
-	 * @return      string
+	 * 取色器
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-27
+	 * @param  int      $num 颜色编号
+	 * @param  string   $str 传入的字符
+	 * @return string
 	 */
 	public static function color(string $str, int $num = 15) : string
 	{
@@ -207,14 +207,14 @@ class TextFormat
 	}
 
 	/**
-	 * @method      background
-	 * @description 背景取色器
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-27
-	 * @param       string   $str 传入的字符
-	 * @param       int      $num 背景颜色编号
-	 * @param       int      $num2 字体颜色编号
-	 * @return      string
+	 * 背景取色器
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-27
+	 * @param  string   $str 传入的字符
+	 * @param  int      $num 背景颜色编号
+	 * @param  int      $num2 字体颜色编号
+	 * @return string
 	 */
 	public static function background(string $str, int $num = 40, int $num2 = 37) : string
 	{
@@ -225,6 +225,13 @@ class TextFormat
 		return "\033[{$num};{$num2}m{$str}\033[0m";
 	}
 
+	/**
+	 * 发送一个清屏代码
+	 *
+	 * @author HanskiJay
+	 * @since  2021-11-01
+	 * @return void
+	 */
 	public static function sendClear() : void
 	{
 		echo "\033[2J\033[0m" . PHP_EOL;

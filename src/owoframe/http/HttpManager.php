@@ -49,11 +49,11 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 
 
 	/**
-	 * @method      start
-	 * @description 启动HttpManager
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-07
-	 * @return      void
+	 * 启动HttpManager
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-07
+	 * @return void
 	 */
 	public function start(bool $autoDispatch = true) : void
 	{
@@ -73,23 +73,30 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 		if(stripos(implode(',', static::$notLogUrl), server('REQUEST_URI')) === false) LogWriter::info('[B200@' . server('REQUEST_METHOD') . '] ' . $ip . ' -> ' . self::getCompleteUrl());
 	}
 
+	/**
+	 * 日志记录过滤方法
+	 *
+	 * @author HanskiJay
+	 * @since  2021-11-01
+	 * @param  string      $uri URL地址
+	 * @return void
+	 */
 	public static function pushInLogFilter(string $uri) : void
 	{
 		static::$notLogUrl[] = $uri;
 	}
 
 
-	/******************************
-	 *
-	 * HTTP 参数操作方法
-	 *
-	******************************/
 	/**
-	 * @method      setStatusCode
-	 * @description 设置HTTP状态码
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-10
-	 * @param       int      $code 状态码
+	 * HTTP 参数操作方法
+	*/
+	/**
+	 * 设置HTTP状态码
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-10
+	 * @param  int      $code 状态码
+	 * @return void
 	 */
 	public static function setStatusCode(int $code) : void
 	{
@@ -99,13 +106,14 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	}
 
 	/**
-	 * @method      Response
-	 * @description 快速新建响应头实例
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-18
-	 * @param       null|callable    $callback 可回调参数
-	 * @param       array            $params   回调参数传递
-	 * @param       bool             $reload   重新生成响应实例
+	 * 快速新建响应头实例
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-18
+	 * @param  null|callable    $callback 可回调参数
+	 * @param  array            $params   回调参数传递
+	 * @param  bool             $reload   重新生成响应实例
+	 * @return Response
 	 */
 	public static function Response(?callable $callback = null, array $params = [], bool $reload = false) : Response
 	{
@@ -121,11 +129,12 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	}
 
 	/**
-	 * @method      setXssFilter
-	 * @description 设置自定义的XSS过滤器
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-07
-	 * @param       array       $filter 正则过滤器组
+	 * 设置自定义的XSS过滤器
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-07
+	 * @param  array       $filter 正则过滤器组
+	 * @return void
 	 */
 	public static function setXssFilter(array $filter) : void
 	{
@@ -133,13 +142,13 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	}
 
 	/**
-	 * @method      xssFilter
-	 * @description XSS跨站请求过滤
-	 * @author      HanskiJay
-	 * @doneIn      2021-02-07
-	 * @param       string      $str         需要过滤的参数
-	 * @param       string      $allowedHTML 允许的HTML标签 (e.g. "<a><b><div>" (将不会过滤这三个HTML标签))
-	 * @return      void
+	 * XSS跨站请求过滤
+	 *
+	 * @author HanskiJay
+	 * @since  2021-02-07
+	 * @param  string      $str         需要过滤的参数
+	 * @param  string      $allowedHTML 允许的HTML标签 (e.g. "<a><b><div>" (将不会过滤这三个HTML标签))
+	 * @return void
 	 */
 	public static function xssFilter(string &$str, string $allowedHTML = null) : void
 	{
@@ -147,13 +156,13 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	}
 
 	/**
-	 * @method      getRequestMerge
-	 * @description 返回整个的请求数据(默认返回原型)
-	 * @author      HanskiJay
-	 * @doneIn      2021-02-06
-	 * @param       bool           $useXssFilter 是否使用默认的XSS过滤函数
-	 * @param       callable|null  callback      回调参数
-	 * @return      array (开发者需注意在此返回参数时必须使回调参数返回数组)
+	 * 返回整个的请求数据(默认返回原型)
+	 *
+	 * @author HanskiJay
+	 * @since  2021-02-06
+	 * @param  bool           $useXssFilter 是否使用默认的XSS过滤函数
+	 * @param  callable|null  callback      回调参数
+	 * @return array (开发者需注意在此返回参数时必须使回调参数返回数组)
 	 */
 	public static function getRequestMerge(bool $useXssFilter = true, ?callable $callback = null) : array
 	{
@@ -181,20 +190,18 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	}
 
 
-	/******************************
-	 *
-	 * ClientIp 操作方法
-	 *
-	******************************/
 	/**
-	 * @method      banIp
-	 * @description 封禁一个IP
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-09
-	 * @param       string      $ip     IP地址
-	 * @param       int|integer $toTime 封禁到时间(默认10分钟)
-	 * @param       string      $reason 封禁理由
-	 * @return      void
+	 * ClientIp 操作方法
+	*/
+	/**
+	 * 封禁一个IP
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-09
+	 * @param  string      $ip     IP地址
+	 * @param  int|integer $toTime 封禁到时间(默认10分钟)
+	 * @param  string      $reason 封禁理由
+	 * @return void
 	 */
 	public static function banIp(string $ip, int $toTime = 10, string $reason = '') : void
 	{
@@ -216,12 +223,12 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	}
 
 	/**
-	 * @method      isBanned
-	 * @description 判断IP地址是否被带时间封禁
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-07
-	 * @param       string      $ip IP地址
-	 * @return      boolean
+	 * 判断IP地址是否被带时间封禁
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-07
+	 * @param  string      $ip IP地址
+	 * @return boolean
 	 */
 	public static function isBanned(string $ip) : bool
 	{
@@ -233,12 +240,12 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	}
 
 	/**
-	 * @method      isForeverBanned
-	 * @description 判断IP地址是否被永久封禁
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-07
-	 * @param       string      $ip IP地址
-	 * @return      boolean
+	 * 判断IP地址是否被永久封禁
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-07
+	 * @param  string      $ip IP地址
+	 * @return boolean
 	 */
 	public static function isForeverBanned(string $ip) : bool
 	{
@@ -252,13 +259,13 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	}
 
 	/**
-	 * @method      setIpData
-	 * @description 设置IP信息集
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-09
-	 * @param       string      $ip   IP地址
-	 * @param       array       $data 自定义设置信息集
-	 * @return      object@JSON
+	 * 设置IP信息集
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-09
+	 * @param  string      $ip   IP地址
+	 * @param  array       $data 自定义设置信息集
+	 * @return JSON
 	 */
 	public static function setIpData(string $ip, array $data) : JSON
 	{
@@ -276,12 +283,12 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	}
 
 	/**
-	 * @method      isIpValid
-	 * @description 判断当前IP的访问有效性
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-13
-	 * @param       string      $ip IP地址
-	 * @return      boolean
+	 * 判断当前IP的访问有效性
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-13
+	 * @param  string      $ip IP地址
+	 * @return boolean
 	 */
 	private static function isIpValid(string $ip) : bool
 	{
@@ -297,11 +304,11 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	}
 
 	/**
-	 * @method      ipList
-	 * @description 返回黑名单配置文件实例
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-07
-	 * @return      object@JSON
+	 * 返回黑名单配置文件实例
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-07
+	 * @return JSON
 	 */
 	public static function ipList() : JSON
 	{
@@ -312,18 +319,15 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	}
 
 
-	/******************************
-	 *
-	 * URI/URL 方法
-	 *
-	******************************/
 	/**
-	 * @method      isSecure
-	 * @description 判断是否为HTTPS协议
-	 * @description Check if HTTP Protocol has used SSL
-	 * @return      boolean
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09 18:03
+	 * URI/URL 方法
+	*/
+	/**
+	 * 判断是否为HTTPS协议
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09 18:03
+	 * @return boolean
 	*/
 	public static function isSecure() : bool
 	{
@@ -332,12 +336,11 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	}
 
 	/**
-	 * @method      getCompleteUrl
-	 * @description 获取完整请求HTTP地址
-	 * @description Get complete http requested url
-	 * @return      string
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09 18:03
+	 * 获取完整请求HTTP地址
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09 18:03
+	 * @return string
 	*/
 	public static function getCompleteUrl() : string
 	{
@@ -345,12 +348,11 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	}
 
 	/**
-	 * @method      getRootUrl
-	 * @description 获取根地址
-	 * @description Get root url
-	 * @return      string
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09 18:03
+	 * 获取根地址
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09 18:03
+	 * @return string
 	*/
 	public static function getRootUrl() : string
 	{
@@ -358,14 +360,13 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	}
 
 	/**
-	 * @method      betterUrl
-	 * @description 返回自定义Url
-	 * @description Set HTTP_HEADER;
-	 * @param       string[name|名称]
-	 * @param       string[path|路径]
-	 * @return      string
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10 18:49
+	 * 返回自定义Url
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10 18:49
+	 * @param  string      $name 名称
+	 * @param  string      $path 路径
+	 * @return string
 	*/
 	public static function betterUrl(string $name, string $path) : string
 	{

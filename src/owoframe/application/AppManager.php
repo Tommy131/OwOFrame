@@ -32,12 +32,12 @@ class AppManager implements \owoframe\contract\Manager
 	private static $appPath = "";
 
 	/**
-	 * @method      setPath
-	 * @description 设置App目录
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09
-	 * @param       string      $path 目录
-	 * @return      void
+	 * 设置App目录
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09
+	 * @param  string      $path 目录
+	 * @return void
 	*/
 	public static function setPath(string $path) : void
 	{
@@ -49,11 +49,11 @@ class AppManager implements \owoframe\contract\Manager
 	}
 
 	/**
-	 * @method      getPath
-	 * @description 获取App目录
-	 * @return      string
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09
+	 * 获取App目录
+	 *
+	 * @return string
+	 * @author HanskiJay
+	 * @since  2020-09-09
 	*/
 	public static function getPath() : string
 	{
@@ -65,13 +65,13 @@ class AppManager implements \owoframe\contract\Manager
 	}
 
 	/**
-	 * @method      hasApp
-	 * @description 判断是否存在一个Application
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-26
-	 * @param       string       $appName app名称
-	 * @param       &           &$class  向上传递存在的应用对象
-	 * @return      boolean
+	 * 判断是否存在一个Application
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-26
+	 * @param  string      $appName app名称
+	 * @param  &           &$class  向上传递存在的应用对象
+	 * @return boolean
 	 */
 	public static function hasApp(string $appName, &$class = null) : bool
 	{
@@ -107,11 +107,11 @@ class AppManager implements \owoframe\contract\Manager
 	}
 
 	/**
-	 * @method      getDefaultApp
-	 * @description 获取默认端App
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09
-	 * @return      null or AppBase
+	 * 获取默认端App
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09
+	 * @return null|AppBase
 	*/
 	public static function getDefaultApp() : ?AppBase
 	{
@@ -119,12 +119,12 @@ class AppManager implements \owoframe\contract\Manager
 	}
 
 	/**
-	 * @method      getApp
-	 * @description 获取指定App
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09
-	 * @param       string      $appName App名称
-	 * @return      null|@AppBase
+	 * 获取指定App
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09
+	 * @param  string      $appName App名称
+	 * @return null|AppBase
 	*/
 	public static function getApp(string $appName) : ?AppBase
 	{

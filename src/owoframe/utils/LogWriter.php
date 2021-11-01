@@ -37,11 +37,11 @@ class LogWriter
 
 
 	/**
-	 * @method      success
-	 * @description 日志写入: INFO 等级(仅颜色显示不同)
-	 * @param       string      $message 日志内容
-	 * @param       string      $color   默认输出颜色(仅在CLI模式下)
-	 * @return      void
+	 * 日志写入: INFO 等级(仅颜色显示不同)
+	 *
+	 * @param  string      $message 日志内容
+	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
+	 * @return void
 	 */
 	public static function success(string $message, string $color = TextFormat::GREEN) : void
 	{
@@ -49,11 +49,11 @@ class LogWriter
 	}
 
 	/**
-	 * @method      info
-	 * @description 日志写入: INFO 等级
-	 * @param       string      $message 日志内容
-	 * @param       string      $color   默认输出颜色(仅在CLI模式下)
-	 * @return      void
+	 * 日志写入: INFO 等级
+	 *
+	 * @param  string      $message 日志内容
+	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
+	 * @return void
 	 */
 	public static function info(string $message, string $color = TextFormat::WHITE) : void
 	{
@@ -61,11 +61,11 @@ class LogWriter
 	}
 
 	/**
-	 * @method      warning
-	 * @description 日志写入: WARNING 等级
-	 * @param       string      $message 日志内容
-	 * @param       string      $color   默认输出颜色(仅在CLI模式下)
-	 * @return      void
+	 * 日志写入: WARNING 等级
+	 *
+	 * @param  string      $message 日志内容
+	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
+	 * @return void
 	 */
 	public static function warning(string $message, string $color = TextFormat::GOLD) : void
 	{
@@ -73,11 +73,11 @@ class LogWriter
 	}
 
 	/**
-	 * @method      error
-	 * @description 日志写入: ERROR 等级
-	 * @param       string      $message 日志内容
-	 * @param       string      $color   默认输出颜色(仅在CLI模式下)
-	 * @return      void
+	 * 日志写入: ERROR 等级
+	 *
+	 * @param  string      $message 日志内容
+	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
+	 * @return void
 	 */
 	public static function error(string $message, string $color = TextFormat::RED) : void
 	{
@@ -85,11 +85,11 @@ class LogWriter
 	}
 
 	/**
-	 * @method      emergency
-	 * @description 日志写入: EMERGENCY 等级
-	 * @param       string      $message 日志内容
-	 * @param       string      $color   默认输出颜色(仅在CLI模式下)
-	 * @return      void
+	 * 日志写入: EMERGENCY 等级
+	 *
+	 * @param  string      $message 日志内容
+	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
+	 * @return void
 	 */
 	public static function emergency(string $message, string $color = TextFormat::LIGHT_RED) : void
 	{
@@ -97,11 +97,11 @@ class LogWriter
 	}
 
 	/**
-	 * @method      debug
-	 * @description 日志写入: DEBUG 等级
-	 * @param       string      $message 日志内容
-	 * @param       string      $color   默认输出颜色(仅在CLI模式下)
-	 * @return      void
+	 * 日志写入: DEBUG 等级
+	 *
+	 * @param  string      $message 日志内容
+	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
+	 * @return void
 	 */
 	public static function debug(string $message, string $color = TextFormat::GRAY) : void
 	{
@@ -109,12 +109,13 @@ class LogWriter
 	}
 
 	/**
-	 * @method      setFileName
-	 * @description 写入日志
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-23
-	 * @param       string      $message 日志内容
-	 * @param       string      $level   日志等级
+	 * 写入日志
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
+	 * @param  string      $message 日志内容
+	 * @param  string      $level   日志等级
+	 * @return void
 	 */
 	public static function write(string $message, string $level, string $color = TextFormat::WHITE) : void
 	{
@@ -133,11 +134,12 @@ class LogWriter
 	}
 
 	/**
-	 * @method      setFileName
-	 * @description 删除错误日志
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-23
-	 * @param       string      $fileName 日志名称
+	 * 删除错误日志
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
+	 * @param  string      $fileName 日志名称
+	 * @return void
 	 */
 	public static function cleanLog(string $fileName = '') : void
 	{
@@ -146,11 +148,12 @@ class LogWriter
 	}
 
 	/**
-	 * @method      setFileName
-	 * @description 设置日志名称
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-23
-	 * @param       string      $fileName 日志名称]
+	 * 设置日志名称
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
+	 * @param  string      $fileName 日志名称
+	 * @return void
 	 */
 	public static function setFileName(string $fileName) : void
 	{

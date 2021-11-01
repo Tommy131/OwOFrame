@@ -46,13 +46,13 @@ class EventManager implements \owoframe\contract\Manager
 
 
 	/**
-	 * @method      trigger
-	 * @description 触发事件, 从而启动监听回调
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-10
-	 * @param       string|object@Event      $eventClass 事件名称
-	 * @param       array                    $invokeArgs 调用参数传递
-	 * @return      void
+	 * 触发事件, 从而启动监听回调
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-10
+	 * @param  string|object@Event      $eventClass 事件名称
+	 * @param  array                    $invokeArgs 调用参数传递
+	 * @return void
 	 */
 	public function trigger($eventClass, array $invokeArgs = []) : void
 	{
@@ -94,15 +94,15 @@ class EventManager implements \owoframe\contract\Manager
 	}
 
 	/**
-	 * @method      registerListener
-	 * @description 注册监听回调到事件
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-06
-	 * @param       string           $registerTag  注册识别标签
-	 * @param       mixed            $listener     监听者(类型可为 callable, callback, object)
-	 * @param       integer          $priority     监听优先级别
-	 * @param       boolean          $reload       允许重新注册
-	 * @return      void
+	 * 注册监听回调到事件
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-06
+	 * @param  string       $registerTag  注册识别标签
+	 * @param  mixed        $listener     监听者(类型可为 callable, callback, object)
+	 * @param  integer      $priority     监听优先级别
+	 * @param  boolean      $reload       允许重新注册
+	 * @return void
 	 */
 	public function registerListener(string $registerTag, $listener, int $priority = self::NORMAL_PRIORITY, bool $reload = false) : void
 	{
@@ -136,12 +136,12 @@ class EventManager implements \owoframe\contract\Manager
 	}
 
 	/**
-	 * @method      unregisterListener
-	 * @description 注销监听器
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-10
-	 * @param       string             $registerTag 注册识别标签
-	 * @return      void
+	 * 注销监听器
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-10
+	 * @param  string             $registerTag 注册识别标签
+	 * @return void
 	 */
 	public function unregisterListener(string $registerTag) : void
 	{
@@ -158,15 +158,15 @@ class EventManager implements \owoframe\contract\Manager
 	}
 
 	/**
-	 * @method      setCallbackToEvent
-	 * @description 将监听者分配到对应的事件
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-09
-	 * @param       string      $registerTag  注册识别标签
-	 * @param       callable    $callback     回调
-	 * @param       integer     $priority     监听优先级别
-	 * @param       boolean     $reload       允许重新注册
-	 * @return      void
+	 * 将监听者分配到对应的事件
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-09
+	 * @param  string      $registerTag  注册识别标签
+	 * @param  callable    $callback     回调
+	 * @param  integer     $priority     监听优先级别
+	 * @param  boolean     $reload       允许重新注册
+	 * @return void
 	 */
 	protected function setCallbackToEvent(string $registerTag, int $priority, callable $callback, bool $reload = false) : void
 	{
@@ -194,12 +194,12 @@ class EventManager implements \owoframe\contract\Manager
 	}
 
 	/**
-	 * @method      hasListener
-	 * @description 判断是否存在监听器
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-10
-	 * @param       string      $registerTag 注册识别标签
-	 * @return      boolean
+	 * 判断是否存在监听器
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-10
+	 * @param  string      $registerTag 注册识别标签
+	 * @return boolean
 	 */
 	public function hasListener(string $registerTag) : bool
 	{
@@ -207,12 +207,12 @@ class EventManager implements \owoframe\contract\Manager
 	}
 
 	/**
-	 * @method      isEvent
-	 * @description 判断是否为标准事件类
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-10
-	 * @param       string      $eventClass 事件名称
-	 * @return      boolean
+	 * 判断是否为标准事件类
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-10
+	 * @param  string      $eventClass 事件名称
+	 * @return boolean
 	 */
 	public static function isEvent(string $eventClass) : bool
 	{

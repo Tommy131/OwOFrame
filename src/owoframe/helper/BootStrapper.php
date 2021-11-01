@@ -27,11 +27,11 @@ class BootStrapper
 {
 
 	/**
-	 * @method      initializeSystem
-	 * @description 初始化系統需要
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-06
-	 * @return      void
+	 * 初始化系統需要
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-06
+	 * @return void
 	 */
 	public static function initializeSystem() : void
 	{
@@ -86,11 +86,11 @@ class BootStrapper
 	}
 
 	/**
-	 * @method      getRunTime
-	 * @description 返回系统初始化到调用此函数的总共运行时间
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-06
-	 * @return      float
+	 * 返回系统初始化到调用此函数的总共运行时间
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-06
+	 * @return float
 	 */
 	public static function getRunTime() : float
 	{
@@ -98,11 +98,11 @@ class BootStrapper
 	}
 
 	/**
-	 * @method      isRunning
-	 * @description 返回布尔值: 系统是否正在运行(已初始化)
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-06
-	 * @return      boolean
+	 * 返回布尔值: 系统是否正在运行(已初始化)
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-06
+	 * @return boolean
 	 */
 	public static function isRunning() : bool
 	{

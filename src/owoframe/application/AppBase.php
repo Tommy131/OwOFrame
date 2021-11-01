@@ -47,13 +47,13 @@ abstract class AppBase
 	}
 
 	/**
-	 * @method      isControllerMethodBanned
-	 * @description 判断控制器的方法是否不允许直接访问
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-30
-	 * @param       string                   $controllerName 控制器名
-	 * @param       string                   $methodName     方法名
-	 * @return      boolean
+	 * 判断控制器的方法是否不允许直接访问
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-30
+	 * @param  string      $controllerName 控制器名
+	 * @param  string      $methodName     方法名
+	 * @return boolean
 	 */
 	public function isControllerMethodBanned(string $controllerName, string $methodName) : bool
 	{
@@ -62,13 +62,13 @@ abstract class AppBase
 	}
 
 	/**
-	 * @method      banControllerMethod
-	 * @description 禁止通过路由请求此控制器的方法
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-29
-	 * @param       string              $controllerName 控制器名
-	 * @param       array               $args           多选方法名组
-	 * @return      void
+	 * 禁止通过路由请求此控制器的方法
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-29
+	 * @param  string      $controllerName 控制器名
+	 * @param  array       $args           多选方法名组
+	 * @return void
 	 */
 	public function banControllerMethod(string $controllerName, array $args) : void
 	{
@@ -83,13 +83,13 @@ abstract class AppBase
 	}
 
 	/**
-	 * @method      allowControllerMethod
-	 * @description 允许通过路由请求此控制器的方法
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-29
-	 * @param       string              $controllerName 控制器名
-	 * @param       array               $args           多选方法名组
-	 * @return      void
+	 * 允许通过路由请求此控制器的方法
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-29
+	 * @param  string      $controllerName 控制器名
+	 * @param  array       $args           多选方法名组
+	 * @return void
 	 */
 	public function allowControllerMethod(string $controllerName, array $args) : void
 	{
@@ -106,12 +106,12 @@ abstract class AppBase
 	}
 
 	/**
-	 * @method      setDefaultController
-	 * @description 设置默认控制器
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09
-	 * @param       string      $defaultController 默认控制器名称
-	 * @return      void
+	 * 设置默认控制器
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09
+	 * @param  string      $defaultController 默认控制器名称
+	 * @return void
 	*/
 	public function setDefaultController(string $defaultController) : void
 	{
@@ -122,12 +122,12 @@ abstract class AppBase
 	}
 
 	/**
-	 * @method      getDefaultController
-	 * @description 获取默认控制器
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09
-	 * @param       bool      $returnName 返回控制器名称
-	 * @return      string|ControllerBase
+	 * 获取默认控制器
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09
+	 * @param  bool      $returnName 返回控制器名称
+	 * @return string|ControllerBase
 	*/
 	public function getDefaultController(bool $returnName = false)
 	{
@@ -135,13 +135,12 @@ abstract class AppBase
 	}
 
 	/**
-	 * @method      getController
-	 * @description 获取一个有效的控制器
-	 * @description Return a valid Controller
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09
-	 * @param       string      $controllerName 控制器名称
-	 * @return      boolean|ControllerBase
+	 * 获取一个有效的控制器
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09
+	 * @param  string      $controllerName 控制器名称
+	 * @return boolean|ControllerBase
 	*/
 	public function getController(string $controllerName, bool $autoMake = true)
 	{
@@ -154,12 +153,12 @@ abstract class AppBase
 	}
 
 	/**
-	 * @method      getCachePath
-	 * @description 返回本Application的Cache目录
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-14
-	 * @param       string     $option 可选参数(文件/文件夹路径)
-	 * @return      string
+	 * 返回本Application的Cache目录
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-14
+	 * @param  string     $option 可选参数(文件/文件夹路径)
+	 * @return string
 	 */
 	public static function getCachePath(string $option = '') : string
 	{
@@ -167,12 +166,12 @@ abstract class AppBase
 	}
 
 	/**
-	 * @method      getResourcePath
-	 * @description 返回本Application的资源目录
-	 * @author      HanskiJay
-	 * @doneIn      2021-08-14
-	 * @param       string     $option 可选参数(文件/文件夹路径)
-	 * @return      string
+	 * 返回本Application的资源目录
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @param  string     $option 可选参数(文件/文件夹路径)
+	 * @return string
 	 */
 	public static function getResourcePath(string $option = '') : string
 	{
@@ -180,12 +179,12 @@ abstract class AppBase
 	}
 
 	/**
-	 * @method      getAppPath
-	 * @description 获取当前App目录
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09
-	 * @param       bool      $selectMode 选择模式[True: 返回绝对路径|Return absolute path][False: 返回相对路径|Return relative path]](Default:true)
-	 * @return      string
+	 * 获取当前App目录
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09
+	 * @param  bool      $selectMode 选择模式[True: 返回绝对路径|Return absolute path][False: 返回相对路径|Return relative path]](Default:true)
+	 * @return string
 	*/
 	final public static function getAppPath(bool $selectMode = true) : string
 	{
@@ -193,12 +192,11 @@ abstract class AppBase
 	}
 
 	/**
-	 * @method      getNameSpace
-	 * @description 自动解析并返回当前App的命名空间
-	 * @description Automatically parse and return the namespace of the current App
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09
-	 * @return      string
+	 * 自动解析并返回当前App的命名空间
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09
+	 * @return string
 	*/
 	final public static function getNameSpace() : string
 	{
@@ -207,13 +205,13 @@ abstract class AppBase
 	}
 
 	/**
-	 * @method      getModule
-	 * @access      protected
-	 * @description 获取模块实例化对象
-	 * @author      HanskiJay
-	 * @doneIn      2021-02-08
-	 * @param       string      $name 插件名称
-	 * @return      null|ModuleBase
+	 * 获取模块实例化对象
+	 *
+	 * @author HanskiJay
+	 * @since  2021-02-08
+	 * @param  string      $name 插件名称
+	 * @return null|ModuleBase
+	 * @access protected
 	 */
 	final protected function getModule(string $name) : ?ModuleBase
 	{
@@ -221,11 +219,11 @@ abstract class AppBase
 	}
 
 	/**
-	 * @method      getCurrentSiteUrl
-	 * @description 返回当前站点Url
-	 * @author      HanskiJay
-	 * @doneIn      2020-08-08
-	 * @return      string
+	 * 返回当前站点Url
+	 *
+	 * @author HanskiJay
+	 * @since  2020-08-08
+	 * @return string
 	*/
 	public function getCurrentSiteUrl() : string
 	{
@@ -233,12 +231,11 @@ abstract class AppBase
 	}
 
 	/**
-	 * @method      getInstance
-	 * @description 返回本类实例
-	 * @description Return this class instance
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09
-	 * @return      null|@AppBase
+	 * 返回本类实例
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09
+	 * @return null|AppBase
 	*/
 	public static function getInstance() : ?AppBase
 	{
@@ -250,31 +247,29 @@ abstract class AppBase
 	/* 抽象化方法 | Abstraction Methods */
 
 	/**
-	 * @method      initialize
-	 * @description 初始化App时自动调用该方法
-	 * @description A Method for when the Application in initialization
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @return      void
+	 * 初始化App时自动调用该方法
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @return void
 	*/
 	abstract public function initialize() : void;
 
 	/**
-	 * @method      autoTo404Page
-	 * @description 告知路由组件是否自动跳转到404页面(如果指定)
-	 * @description Tell the Router whether to automatically jump to the 404 page (if specified)
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09
-	 * @return      boolean
+	 * 告知路由组件是否自动跳转到404页面(如果指定)
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09
+	 * @return boolean
 	*/
 	abstract public static function autoTo404Page() : bool;
 
 	/**
-	 * @method      getName
-	 * @description 获取App名称
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09
-	 * @return      string
+	 * 获取App名称
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09
+	 * @return string
 	*/
 	abstract public static function getName() : string;
 }

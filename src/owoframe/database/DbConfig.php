@@ -65,12 +65,12 @@ class DbConfig extends Db
 	}
 
 	/**
-	 * @method      setDefault
-	 * @description 设置默认数据库连接配置
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $default 配置文件标识
-	 * @return      void
+	 * 设置默认数据库连接配置
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @param  string      $default 配置文件标识
+	 * @return void
 	*/
 	public static function setDefault(string $default) : void
 	{
@@ -81,13 +81,13 @@ class DbConfig extends Db
 	}
 
 	/**
-	 * @method      getDefault
-	 * @description 获取默认的配置文件
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-09
-	 * @param       string      $index   键名
-	 * @param       mixed       $default 默认返回值
-	 * @return      mixed
+	 * 获取默认的配置文件
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-09
+	 * @param  string      $index   键名
+	 * @param  mixed       $default 默认返回值
+	 * @return mixed
 	 */
 	public static function getDefault(string $index, $default ='')
 	{
@@ -95,14 +95,13 @@ class DbConfig extends Db
 	}
 
 	/**
-	 * @method      getIndex
-	 * @description 获取数据库配置中的某个元素
-	 * @description Get a element from global value $dbConfig
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-19 18:03
-	 * @param       string      $index   配置索引
-	 * @param       string      $default 默认返回值
-	 * @return      string
+	 * 获取数据库配置中的某个元素
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-19 18:03
+	 * @param  string      $index   配置索引
+	 * @param  string      $default 默认返回值
+	 * @return string
 	*/
 	public static function getIndex(string $index, string $default = '') : string
 	{
@@ -110,12 +109,11 @@ class DbConfig extends Db
 	}
 
 	/**
-	 * @method      getAll
-	 * @description 获取数据库配置
-	 * @description Get global value $dbConfig
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-19
-	 * @return      string
+	 * 获取数据库配置
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-19
+	 * @return string
 	*/
 	public static function getAll() : array
 	{
@@ -123,14 +121,13 @@ class DbConfig extends Db
 	}
 
 	/**
-	 * @method      setIndex
-	 * @description 设置数据库配置某项元素的值
-	 * @description Set the value into a element from global value $dbConfig
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-19
-	 * @param       string      $index 配置索引
-	 * @param       string      $value 更新值
-	 * @return      void
+	 * 设置数据库配置某项元素的值
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-19
+	 * @param  string      $index 配置索引
+	 * @param  string      $value 更新值
+	 * @return void
 	*/
 	public static function setIndex(string $index, string $value) : void
 	{
@@ -140,13 +137,12 @@ class DbConfig extends Db
 	}
 
 	/**
-	 * @method      hasDbConfig
-	 * @description 判断是否存在某一个数据库配置文件;
-	 * @description Check if exists a database configuration
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $nickName 配置文件标识
-	 * @return      boolean
+	 * 判断是否存在某一个数据库配置文件
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @param  string      $nickName 配置文件标识
+	 * @return boolean
 	*/
 	public static function hasDbConfig(string $nickName) : bool
 	{
@@ -154,14 +150,13 @@ class DbConfig extends Db
 	}
 
 	/**
-	 * @method      addConfig
-	 * @description 组合数据库配置文件;
-	 * @description Merge the database configurations
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $nickName 配置文件标识
-	 * @param       array       $dbConfig 传入的数据
-	 * @return      void
+	 * 组合数据库配置文件;
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @param  string      $nickName 配置文件标识
+	 * @param  array       $dbConfig 传入的数据
+	 * @return void
 	*/
 	public static function addConfig(string $nickName, array $dbConfig) : void
 	{

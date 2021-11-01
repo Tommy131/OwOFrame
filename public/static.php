@@ -71,14 +71,14 @@ $master->stop();
 
 
 /**
- * @method      stdDie
- * @description 标准结束脚本输出
- * @author      HanskiJay
- * @doneIn      2021-03-14
- * @param       string      $title     输出标题(为空则不输出任何结果)
- * @param       string      $customMsg 自定义输出信息
- * @param       int|integer $code      HTTP响应状态码
- * @return      void
+ * 标准结束脚本输出
+ *
+ * @author HanskiJay
+ * @since  2021-03-14
+ * @param  string      $title     输出标题(为空则不输出任何结果)
+ * @param  string      $customMsg 自定义输出信息
+ * @param  int|integer $code      HTTP响应状态码
+ * @return void
  */
 function stdDie(string $title, string $customMsg = '', int $code = 404) : void
 {

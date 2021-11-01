@@ -25,11 +25,11 @@ abstract class Event
 	protected $isCalled = false;
 
 	/**
-	 * @method      setCalled
-	 * @description 设置事件是否已被回调
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-11
-	 * @return      void
+	 * 设置事件是否已被回调
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-11
+	 * @return void
 	 */
 	public function setCalled(bool $status = true) : void
 	{
@@ -37,11 +37,11 @@ abstract class Event
 	}
 
 	/**
-	 * @method      isCalled
-	 * @description 判断事件是否已被回调
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-11
-	 * @return      boolean
+	 * 判断事件是否已被回调
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-11
+	 * @return boolean
 	 */
 	public function isCalled() : bool
 	{

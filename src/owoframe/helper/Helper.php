@@ -42,11 +42,11 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 
 
 	/**
-	 * @method      isMobile
-	 * @description 检测是否为移动设备访问
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-10
-	 * @return      boolean|string
+	 * 检测是否为移动设备访问
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-10
+	 * @return boolean|string
 	 */
 	public static function isMobile()
 	{
@@ -59,11 +59,11 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	}
 
 	/**
-	 * @method      getClientBrowser
-	 * @description 获取客户端信息
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-10
-	 * @return      string
+	 * 获取客户端信息
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-10
+	 * @return string
 	 */
 	public static function getClientBrowser() : string
 	{
@@ -82,11 +82,11 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	}
 
 	/**
-	 * @method      getClientIp
-	 * @description 获取客户端IP
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-10
-	 * @return      string
+	 * 获取客户端IP
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-10
+	 * @return string
 	 */
 	public static function getClientIp() : string
 	{
@@ -98,12 +98,12 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	}
 
 	/**
-	 * @method      isIp
-	 * @description 判断传入的字符串是否为有效IP地址
-	 * @author      HanskiJay
-	 * @doneIn      2020-10-24
-	 * @param       string      $ip 字符串
-	 * @return      bool
+	 * 判断传入的字符串是否为有效IP地址
+	 *
+	 * @author HanskiJay
+	 * @since  2020-10-24
+	 * @param  string      $ip 字符串
+	 * @return bool
 	 */
 	public static function isIp(string $ip) : bool
 	{
@@ -111,13 +111,13 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	}
 
 	/**
-	 * @method      isDomain
-	 * @description 判断字符串是否为域名
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-30
-	 * @param       string      $str 字符串
-	 * @param       &$match
-	 * @return      boolean
+	 * 判断字符串是否为域名
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-30
+	 * @param  string      $str 字符串
+	 * @param  &$match
+	 * @return boolean
 	 */
 	public static function isDomain(string $str, &$match = null) : bool
 	{
@@ -126,10 +126,10 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	}
 
 	/**
-	 * @method      checkStrEncoding
-	 * @description 检查是否是一个安全的主机名
-	 * @param       string      $host 主机名
-	 * @return      boolean
+	 * 检查是否是一个安全的主机名
+	 *
+	 * @param  string      $host 主机名
+	 * @return boolean
 	 */
 	public static function isSafeHost(string $host) : bool
 	{
@@ -174,11 +174,11 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	}
 
 	/**
-	 * @method      getOS
-	 * @description 返回当前系统类型
-	 * @author      HanskiJay
-	 * @doneIn      2021-02-18
-	 * @return      string
+	 * 返回当前系统类型
+	 *
+	 * @author HanskiJay
+	 * @since  2021-02-18
+	 * @return string
 	 */
 	public static function getOS() : string
 	{
@@ -200,10 +200,10 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	}
 
 	/**
-	 * @method      mimeContentType
-	 * @description 获取文件类型
-	 * @param       string      $fileName 文件名
-	 * @return      string
+	 * 获取文件类型
+	 *
+	 * @param  string      $fileName 文件名
+	 * @return string
 	 */
 	public static function mimeContentType(string $fileName) : string
 	{
@@ -233,10 +233,10 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	}
 
 	/**
-	 * @method      getMimeType
-	 * @description 获取所有的Mime类型
-	 * @author      HanskiJay
-	 * @return      array
+	 * 获取所有的Mime类型
+	 *
+	 * @author HanskiJay
+	 * @return array
 	 */
 	public static function getMimeType() : array
 	{
@@ -244,12 +244,12 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	}
 
 	/**
-	 * @method      removeDir
-	 * @description 删除文件夹
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-17
-	 * @param       string      $path 文件夹路径
-	 * @return      boolean
+	 * 删除文件夹
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-17
+	 * @param  string      $path 文件夹路径
+	 * @return boolean
 	 */
 	public static function removeDir(string $path) : bool
 	{
@@ -273,11 +273,11 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	}
 
 	/**
-	 * @method      getMode
-	 * @description 获取当前PHP的运行模式
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-30
-	 * @return      string
+	 * 获取当前PHP的运行模式
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-30
+	 * @return string
 	 */
 	public static function getMode() : string
 	{
@@ -285,11 +285,11 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	}
 
 	/**
-	 * @method      isRunningWithCLI
-	 * @description 判断当前的运行模式是否为CLI
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-30
-	 * @return      boolean
+	 * 判断当前的运行模式是否为CLI
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-30
+	 * @return boolean
 	 */
 	public static function isRunningWithCLI() : bool
 	{
@@ -297,11 +297,11 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	}
 
 	/**
-	 * @method      isRunningWithCGI
-	 * @description 判断当前的运行模式是否为CGI
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-30
-	 * @return      boolean
+	 * 判断当前的运行模式是否为CGI
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-30
+	 * @return boolean
 	 */
 	public static function isRunningWithCGI() : bool
 	{
@@ -309,11 +309,11 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	}
 
 	/**
-	 * @method      getShortClassName
-	 * @description 返回当前对象更好的类名
-	 * @author      HanskiJay
-	 * @param       object      $class 实例化对象
-	 * @return      string
+	 * 返回当前对象更好的类名
+	 *
+	 * @author HanskiJay
+	 * @param  object      $class 实例化对象
+	 * @return string
 	 */
 	public static function getShortClassName(object $class) : string
 	{
@@ -321,12 +321,12 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	}
 
 	/**
-	 * @method      escapeSlash
-	 * @description 转义字符串中的斜杠
-	 * @author      HanskiJay
-	 * @doneIn      2021-05-29
-	 * @param       string      &$str 所需字符串
-	 * @return      string
+	 * 转义字符串中的斜杠
+	 *
+	 * @author HanskiJay
+	 * @since  2021-05-29
+	 * @param  string      &$str 所需字符串
+	 * @return string
 	 */
 	public static function escapeSlash(string &$str) : string
 	{

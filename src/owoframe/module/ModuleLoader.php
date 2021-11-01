@@ -36,12 +36,12 @@ class ModuleLoader
 	private static $modulePool = [];
 
 	/**
-	 * @method      setPath
-	 * @description 设置模块加载路径
-	 * @param       string      $path 路径
-	 * @return      void
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09 18:03
+	 * 设置模块加载路径
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09 18:03
+	 * @param  string      $path 路径
+	 * @return void
 	*/
 	public static function setPath(string $path) : void
 	{
@@ -53,11 +53,11 @@ class ModuleLoader
 	}
 
 	/**
-	 * @method      getPath
-	 * @description 获取模块加载路径
-	 * @return      string
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09 18:03
+	 * 获取模块加载路径
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09 18:03
+	 * @return string
 	*/
 	public static function getPath() : string
 	{
@@ -66,12 +66,12 @@ class ModuleLoader
 
 
 	/**
-	 * @method      autoLoad
-	 * @description 自动从加载路径加载模块
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-23
-	 * @param       object@MasterManager      $master 主进程实例
-	 * @return      void
+	 * 自动从加载路径加载模块
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
+	 * @param  MasterManager      $master 主进程实例
+	 * @return void
 	 */
 	public static function autoLoad(MasterManager $master) : void
 	{
@@ -98,11 +98,11 @@ class ModuleLoader
 	}
 
 	/**
-	 * @method      existsModule
-	 * @description 判断模块是否存在
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-23
-	 * @return      boolean
+	 * 判断模块是否存在
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
+	 * @return boolean
 	 */
 	public static function existsModule(string $name, &$info = null) : bool
 	{
@@ -125,12 +125,12 @@ class ModuleLoader
 	}
 
 	/**
-	 * @method      getModule
-	 * @description 获取模块实例化对象
-	 * @author      HanskiJay
-	 * @doneIn      2021-02-08
-	 * @param       string      $name 模块名称
-	 * @return      null or ModuleBase
+	 * 获取模块实例化对象
+	 *
+	 * @author HanskiJay
+	 * @since  2021-02-08
+	 * @param  string      $name 模块名称
+	 * @return null|ModuleBase
 	 */
 	public static function getModule(string $name) : ?ModuleBase
 	{
@@ -138,13 +138,13 @@ class ModuleLoader
 	}
 
 	/**
-	 * @method      loadModule
-	 * @description 加载模块
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-23
-	 * @param       string      $dir  模块所在的路径
-	 * @param       string      $name 模块名称
-	 * @return      boolean
+	 * 加载模块
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
+	 * @param  string      $dir  模块所在的路径
+	 * @param  string      $name 模块名称
+	 * @return boolean
 	 */
 	public static function loadModule(string $dir, string $name, MasterManager $master) : bool
 	{
@@ -163,6 +163,14 @@ class ModuleLoader
 		return false;
 	}
 
+	/**
+	 * 卸载模块
+	 *
+	 * @author HanskiJay
+	 * @since  2021-02-08
+	 * @param  string      $name 模块名称
+	 * @return boolean
+	 */
 	public static function disableModule(string $name) : bool
 	{
 		if(($module = self::getModule($name)) !== null) {
@@ -174,12 +182,12 @@ class ModuleLoader
 	}
 
 	/**
-	 * @method      checkInfo
-	 * @description 检查模块信息文件是否有效
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-23
-	 * @param       array      $info 已加载的配置文件
-	 * @return      boolean
+	 * 检查模块信息文件是否有效
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
+	 * @param  array      $info 已加载的配置文件
+	 * @return boolean
 	 */
 	public static function checkInfo(array $info, string &$missParam = '') : bool
 	{

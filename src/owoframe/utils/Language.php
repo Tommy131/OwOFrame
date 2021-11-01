@@ -46,12 +46,12 @@ class Language
 	}
 
 	/**
-	 * @method      exists
-	 * @description 判断语言包里是否存在一个条目
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-31
-	 * @param       string      $tag 标签
-	 * @return      boolean
+	 * 判断语言包里是否存在一个条目
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-31
+	 * @param  string      $tag 标签
+	 * @return boolean
 	 */
 	public function exists(string $tag) : bool
 	{
@@ -59,13 +59,13 @@ class Language
 	}
 
 	/**
-	 * @method      get
-	 * @description 获取语言包条目
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-31
-	 * @param       string      $tag     标签
-	 * @param       string      $default 默认返回值
-	 * @return      string
+	 * 获取语言包条目
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-31
+	 * @param  string      $tag     标签
+	 * @param  string      $default 默认返回值
+	 * @return string
 	 */
 	public function get(string $tag, string $default = 'Language tag {%s} undefined') : string
 	{
@@ -73,13 +73,13 @@ class Language
 	}
 
 	/**
-	 * @method      update
-	 * @description 更新语言包条目
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-31
-	 * @param       string      $tag  标签
-	 * @param       string      $text 文字
-	 * @return      void
+	 * 更新语言包条目
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-31
+	 * @param  string      $tag  标签
+	 * @param  string      $text 文字
+	 * @return void
 	 */
 	public function update(string $tag, string $text) : void
 	{

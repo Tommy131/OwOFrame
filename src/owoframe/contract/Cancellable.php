@@ -24,20 +24,20 @@ namespace owoframe\contract;
 interface Cancellable
 {
 	/**
-	 * @method      isCancelled
-	 * @description 返回该事件是否已经取消回调;
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-10
-	 * @return      boolean
+	 * 返回该事件是否已经取消回调
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-10
+	 * @return boolean
 	 */
 	public function isCancelled() : bool;
 
 	/**
-	 * @method      setCancelled
-	 * @description 设置事件取消状态
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-10
-	 * @param       bool        $status 状态
+	 * 设置事件取消状态
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-10
+	 * @param  bool        $status 状态
 	 */
 	public function setCancelled(bool $status) : void;
 }

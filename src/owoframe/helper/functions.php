@@ -26,13 +26,31 @@ if(!defined('owohttp')) define('owohttp', 'owosuperget');
 /**
  * HTTP基础方法
 */
+/**
+ * $_SERVER 的简化版本
+ *
+ * @author HanskiJay
+ * @since  2021-03-06
+ * @param  string  $index
+ * @param  boolean $autoUpper
+ * @return mixed
+ */
 function server(string $index, bool $autoUpper = true)
 {
-	if($autoUpper) $index = strtoupper($index);
 	if(strtolower($index) === owohttp) return $_SERVER;
+	if($autoUpper) $index = strtoupper($index);
 	return $_SERVER[$index] ?? null;
 }
 
+/**
+ * $_SESSION 的简化版本
+ *
+ * @author HanskiJay
+ * @since  2021-03-06
+ * @param  string $index
+ * @param  string $default
+ * @return mixed
+ */
 function session(string $index, $default = '') {
 	if(strtolower($index) === owohttp) {
 		return $_SESSION ?? [];
@@ -40,6 +58,15 @@ function session(string $index, $default = '') {
 	return $_SESSION[$index] ?? $default;
 }
 
+/**
+ * $_GET 的简化版本
+ *
+ * @author HanskiJay
+ * @since  2021-03-06
+ * @param  string  $index
+ * @param  boolean $autoUpper
+ * @return mixed
+ */
 function get(string $index, bool $autoUpper = false)
 {
 	if($autoUpper) $index = strtoupper($index);
@@ -49,6 +76,15 @@ function get(string $index, bool $autoUpper = false)
 	return (strtolower($index) === owohttp) ? ($_GET ?? null) : ($_GET[$index] ?? null);
 }
 
+/**
+ * $_POST 的简化版本
+ *
+ * @author HanskiJay
+ * @since  2021-03-06
+ * @param  string  $index
+ * @param  boolean $autoUpper
+ * @return mixed
+ */
 function post(string $index, bool $autoUpper = false)
 {
 	if($autoUpper) $index = strtoupper($index);
@@ -57,6 +93,15 @@ function post(string $index, bool $autoUpper = false)
 	return (strtolower($index) === owohttp) ? ($_POST ?? null) : ($_POST[$index] ?? null);
 }
 
+/**
+ * $_PUT 的简化版本
+ *
+ * @author HanskiJay
+ * @since  2021-03-06
+ * @param  string  $index
+ * @param  boolean $autoUpper
+ * @return mixed
+ */
 function put(string $index, bool $autoUpper = false)
 {
 	if($autoUpper) $index = strtoupper($index);
@@ -65,6 +110,15 @@ function put(string $index, bool $autoUpper = false)
 	return (strtolower($index) === owohttp) ? ($_PUT ?? null) : ($_PUT[$index] ?? null);
 }
 
+/**
+ * $_FILES 的简化版本
+ *
+ * @author HanskiJay
+ * @since  2021-03-06
+ * @param  string  $index
+ * @param  boolean $autoUpper
+ * @return mixed
+ */
 function files(string $index, bool $autoUpper = false)
 {
 	if($autoUpper) $index = strtoupper($index);
@@ -73,7 +127,16 @@ function files(string $index, bool $autoUpper = false)
 	return (strtolower($index) === owohttp) ? ($_FILES ?? null) : ($_FILES[$index] ?? null);
 }
 
-function check(string $index, bool $autoUpper = false, &$method = 'GET')
+/**
+ * 检查所给出的索引存在于哪一个请求模式数据中
+ *
+ * @author HanskiJay
+ * @since  2021-03-06
+ * @param  string  $index
+ * @param  boolean $autoUpper
+ * @return mixed
+ */
+function check(string $index, bool $autoUpper = false, &$method = 'NULL')
 {
 	if($autoUpper) $index = strtoupper($index);
 	if(($result = get($index)) !== null) {
@@ -93,9 +156,16 @@ function check(string $index, bool $autoUpper = false, &$method = 'GET')
 	return $result;
 }
 
+/**
+ * 返回请求模式的整型代码
+ *
+ * @author HanskiJay
+ * @since  2021-03-06
+ * @return integer
+ */
 function requestMode() : int
 {
-	$httpMode = strtolower(server('REQUEST_METHOD'));
+	$httpMode = strtolower($_SERVER['REQUEST_METHOD']);
 	$ajaxMode = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
 
 	if($ajaxMode) {
@@ -125,14 +195,14 @@ function requestMode() : int
  * 系统基本方法
  */
 /**
- * @method      arrayGet
- * @description 如果存在则获取数组中的元素值否之返回默认设定值
- * @author      HanskiJay
- * @doneIn      2021-01-10
- * @param       array[array|所需数组]
- * @param       string[key|搜索的键名]
- * @param       mixed[default|默认返回值]
- * @return      mixed
+ * 如果存在则获取数组中的元素值否之返回默认设定值
+ *
+ * @author HanskiJay
+ * @since  2021-01-10
+ * @param  array       array   所需数组
+ * @param  string      key     搜索的键名
+ * @param  mixed       default 默认返回值
+ * @return mixed
  */
 function arrayGet(array $array, string $key, $default = '')
 {
@@ -140,14 +210,14 @@ function arrayGet(array $array, string $key, $default = '')
 }
 
 /**
- * @method      compareType
- * @description 比较两个参数的类型是否相等
- * @author      HanskiJay
- * @doneIn      2021-03-06
- * @param       mixed      $p1     参数1
- * @param       mixed      $p2     参数2
- * @param       mixed      &$types 两个参数的类型数组
- * @return      boolean
+ * 比较两个参数的类型是否相等
+ *
+ * @author HanskiJay
+ * @since  2021-03-06
+ * @param  mixed      $p1     参数1
+ * @param  mixed      $p2     参数2
+ * @param  mixed      &$types 两个参数的类型数组
+ * @return boolean
  */
 function compareType($p1, $p2, &$types = []) : bool
 {
@@ -158,14 +228,14 @@ function compareType($p1, $p2, &$types = []) : bool
 }
 
 /**
- * @method      checkArrayValid
- * @description 检查目标数组是否缺少某个元素(仅限二维数组)
- * @author      HanskiJay
- * @doneIn      2021-01-10
- * @param       array[data|需要检查的数组]
- * @param       array[needle|需要检查的键名]
- * @param       string[missParam|返回缺少的参数]
- * @return      bool
+ * 检查目标数组是否缺少某个元素(仅限二维数组)
+ *
+ * @author HanskiJay
+ * @since  2021-01-10
+ * @param  array       $data      需要检查的数组
+ * @param  array       $needle    需要检查的键名
+ * @param  string      $missParam 返回缺少的参数
+ * @return bool
  */
 function checkArrayValid(array $data, array $needle, ?string &$missParam = "") : bool
 {
@@ -187,11 +257,12 @@ function checkArrayValid(array $data, array $needle, ?string &$missParam = "") :
 }
 
 /**
- * @method      is_serialized
- * @description 判断传入的数据是否已序列化
- * @doneIn      2021-01-31
- * @param       string      $data 需要判断的数据
- * @return      boolean
+ * 判断传入的数据是否已序列化
+ *
+ * @author HanskiJay
+ * @since  2021-01-31
+ * @param  string      $data 需要判断的数据
+ * @return boolean
  */
 function is_serialized(string $data)
 {
@@ -214,12 +285,12 @@ function is_serialized(string $data)
 }
 
 /**
- * @method      str2UTF8
- * @description 字符串编码转码UTF-8
- * @author      HanskiJay
- * @doneIn      2021-01-31
- * @param       string      $str 需要转码的字符串
- * @return      string
+ * 字符串编码转码UTF-8
+ *
+ * @author HanskiJay
+ * @since  2021-01-31
+ * @param  string      $str 需要转码的字符串
+ * @return string
  */
 function str2UTF8(string $str) : string
 {
@@ -236,13 +307,13 @@ function str2UTF8(string $str) : string
  * 系统特殊方法
  */
 /**
- * @method      error
- * @description 创建一个简单的错误信息
- * @author      HanskiJay
- * @doneIn      2021-03-06
- * @param       int         $code    状态码
- * @param       string      $message 错误信息
- * @return      object@OwOFrameException
+ * 创建一个简单的错误信息
+ *
+ * @author HanskiJay
+ * @since  2021-03-06
+ * @param  int         $code    状态码
+ * @param  string      $message 错误信息
+ * @return OwOFrameException
  */
 function error(string $message, int $code = 0) : OwOFrameException
 {
@@ -253,32 +324,17 @@ function error(string $message, int $code = 0) : OwOFrameException
 			$this->code    = $code;
 			$this->message = $message ?? 'unknown';
 		}
-
-		public function getRealFile() : string
-		{
-			return $this->getTrace()[1]['file'] ?? $this->getTrace()[0]['file'];
-		}
-
-		public function getRealLine() : int
-		{
-			return $this->getTrace()[1]['line'] ?? $this->getTrace()[0]['line'];
-		}
-
-		public function getMethod() : string
-		{
-			return $this->getTrace()[1]['function'] ?? $this->getTrace()[0]['function'];
-		}
 	};
 }
 
 /**
- * @method      ask
- * @description 用作在CMD & SHELL下获取标准输入的方法
- * @author      HanskiJay
- * @doneIn      2021-03-06
- * @param       string      $output  向CMD & SHELL输出的显示文字
- * @param       mixed       $default 默认结果
- * @return      STDIN                标准输入|默认结果(当标准输入结果为空时)
+ * 用作在CMD & SHELL下获取标准输入的方法
+ *
+ * @author HanskiJay
+ * @since  2021-03-06
+ * @param  string      $output  向CMD & SHELL输出的显示文字
+ * @param  mixed       $default 默认结果
+ * @return STDIN       标准输入|默认结果(当标准输入结果为空时)
  */
 function ask(string $output, $default = null, string $logLevel = 'info')
 {

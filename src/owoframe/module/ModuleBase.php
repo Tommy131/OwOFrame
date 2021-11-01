@@ -33,12 +33,13 @@ abstract class ModuleBase
 	protected $isEnabled = false;
 
 	/**
-	 * @method      __construct
-	 * @description 实例化插件时的构造函数
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-23
-	 * @param       string[loadPath|插件加载路径]
-	 * @param       object[moduleInfo|插件信息配置文件]
+	 * 实例化插件时的构造函数
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
+	 * @param  string      $loadPath   插件加载路径
+	 * @param  object      $moduleInfo 插件信息配置文件
+	 * @return void
 	 */
 	public final function __construct(string $loadPath, object $moduleInfo, MasterManager $master)
 	{
@@ -49,22 +50,22 @@ abstract class ModuleBase
 
 
 	/**
-	 * @method      onLoad
-	 * @description 插件加载时自动调用此方法
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-23
-	 * @return      void
+	 * 插件加载时自动调用此方法
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
+	 * @return void
 	 */
 	abstract public function onLoad() : void;
 
 
 
 	/**
-	 * @method      getInfos
-	 * @description 获取插件信息对象
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-23
-	 * @return      object
+	 * 获取插件信息对象
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
+	 * @return object
 	 */
 	public final function getInfos() : object
 	{
@@ -72,11 +73,11 @@ abstract class ModuleBase
 	}
 
 	/**
-	 * @method      getPath
-	 * @description 获取插件加载路径
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-23
-	 * @return      string
+	 * 获取插件加载路径
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
+	 * @return string
 	 */
 	public final function getPath() : string
 	{
@@ -84,11 +85,11 @@ abstract class ModuleBase
 	}
 
 	/**
-	 * @method      getMasterManager
-	 * @description 获取主进程实例
-	 * @author      HanskiJay
-	 * @doneIn      2021-10-01
-	 * @return      object@MasterManager
+	 * 获取主进程实例
+	 *
+	 * @author HanskiJay
+	 * @since  2021-10-01
+	 * @return MasterManager
 	 */
 	public final function getMasterManager() : MasterManager
 	{
@@ -96,11 +97,11 @@ abstract class ModuleBase
 	}
 
 	/**
-	 * @method      isEnabled
-	 * @description 返回插件加载状态
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-02
-	 * @return      boolean
+	 * 返回插件加载状态
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-02
+	 * @return boolean
 	 */
 	public function isEnabled() : bool
 	{
@@ -108,10 +109,11 @@ abstract class ModuleBase
 	}
 
 	/**
-	 * @method      setEnabled
-	 * @description 设置插件加载状态为已加载
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-02
+	 * 设置插件加载状态为已加载
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-02
+	 * @return void
 	 */
 	public function setEnabled() : void
 	{
@@ -121,10 +123,11 @@ abstract class ModuleBase
 	}
 
 	/**
-	 * @method      setDisabled
-	 * @description 设置插件加载状态为禁用
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-02
+	 * 设置插件加载状态为禁用
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-02
+	 * @return void
 	 */
 	public function setDisabled() : void
 	{

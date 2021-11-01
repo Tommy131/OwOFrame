@@ -32,11 +32,11 @@ class OutputEvent extends \owoframe\event\Event implements StandardOutput
 	}
 
 	/**
-	 * @method      setOutput
-	 * @description 更新输出内容
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-11
-	 * @param       string      $str 输出内容
+	 * 更新输出内容
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-11
+	 * @param  string      $str 输出内容
 	 */
 	public function setOutput(string $str) : void
 	{
@@ -44,17 +44,24 @@ class OutputEvent extends \owoframe\event\Event implements StandardOutput
 	}
 
 	/**
-	 * @method      getOutput
-	 * @description 返回输出内容
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-10
-	 * @return      string
+	 * 返回输出内容
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-10
+	 * @return string
 	 */
 	public function getOutput() : string
 	{
 		return $this->output;
 	}
 
+	/**
+	 * 输出内容
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-11
+	 * @param  string      $autoClean 是否自动清空输出内容
+	 */
 	public function output(bool $autoClean = false) : void
 	{
 		// TODO: 过滤输出内容;

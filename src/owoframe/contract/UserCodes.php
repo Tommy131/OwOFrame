@@ -33,8 +33,9 @@ interface UserCodes
 	public const STATUS_NOT_DISTURB = 0x0a4;
 	/* @int(165) 离线状态 */
 	public const STATUS_OFFLINE = 0x0a5;
+
 	/**
-	  * @description 用户状态标签 | User Status Labels
+	  * 用户状态标签 | User Status Labels
 	*/
 	public const STATUS_LABELS =
 	[

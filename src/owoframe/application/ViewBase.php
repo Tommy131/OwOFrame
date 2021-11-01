@@ -46,11 +46,11 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      mergeConstants
-	 * @description 合并常量定义
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @return      void
+	 * 合并常量定义
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @return void
 	*/
 	public function mergeConstants(array $arr) : void
 	{
@@ -58,14 +58,13 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      init
-	 * @description 初始化View模板
-	 * @description Initialize Template for View
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $filePath 模板路径
-	 * @param       boolean     $update   更新模板并缓存
-	 * @return      void
+	 * 初始化View模板
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @param  string      $filePath 模板路径
+	 * @param  boolean     $update   更新模板并缓存
+	 * @return void
 	*/
 	public function init(string $filePath = '', bool $update = false) : void
 	{
@@ -106,14 +105,13 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      assign
-	 * @description 将View(V)模板中的变量替换掉
-	 * @description Change the value in View(V) template
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string|array      $searched 需要替换的变量名
-	 * @param       mixed             $val      替换的值
-	 * @return      void
+	 * 将View(V)模板中的变量替换掉
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @param  string|array      $searched 需要替换的变量名
+	 * @param  mixed             $val      替换的值
+	 * @return void
 	*/
 	public function assign($searched, $val = null) : void
 	{
@@ -125,12 +123,12 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      removeValue
-	 * @description 删除模板中的变量定义
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-26
-	 * @param       string      $searched 需要替换的变量名
-	 * @return      void
+	 * 删除模板中的变量定义
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-26
+	 * @param  string      $searched 需要替换的变量名
+	 * @return void
 	 */
 	public function removeValue(string $searched) : void
 	{
@@ -140,12 +138,12 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      getValue
-	 * @description 获取绑定标签的值
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $searched 查找到的变量索引
-	 * @return      mixed
+	 * 获取绑定标签的值
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @param  string      $searched 查找到的变量索引
+	 * @return mixed
 	*/
 	public function getValue(string $searched)
 	{
@@ -155,15 +153,15 @@ class ViewBase extends ControllerBase
 
 
 	/**
-	 * @method 模板渲染核心方法
+	 * 模板渲染核心方法
 	 */
 	/**
-	 * @method      parseResourcePath
-	 * @description 解析模板中的资源路径绑定
-	 * @author      HanskiJay
-	 * @doneIn      2021-05-25
-	 * @param       string            &$str 传入模板
-	 * @return      void
+	 * 解析模板中的资源路径绑定
+	 *
+	 * @author HanskiJay
+	 * @since  2021-05-25
+	 * @param  string      &$str 传入模板
+	 * @return void
 	 */
 	protected function parseResourcePath(string &$str) : void
 	{
@@ -252,12 +250,12 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      parseLoopArea
-	 * @description 解析前端模板存在的循环语法
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-03
-	 * @param       string      $loopArea 需要解析的文本
-	 * @return      void
+	 * 解析前端模板存在的循环语法
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-03
+	 * @param  string      $loopArea 需要解析的文本
+	 * @return void
 	 */
 	protected function parseLoopArea(string &$loopArea) : void
 	{
@@ -335,13 +333,13 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      readString
-	 * @description 解析字符串的传参
-	 * @author      HanskiJay
-	 * @doneIn      2021-05-29
-	 * @param       string      $str     待解析的字符串
-	 * @param       string      &$result
-	 * @return      boolean
+	 * 解析字符串的传参
+	 *
+	 * @author HanskiJay
+	 * @since  2021-05-29
+	 * @param  string      $str     待解析的字符串
+	 * @param  string      &$result
+	 * @return boolean
 	 */
 	protected function readString(string $str, &$result = '') : bool
 	{
@@ -361,14 +359,14 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      replaceBindValue
-	 * @description 替换绑定变量
-	 * @author      HanskiJay
-	 * @doneIn      2021-05-29
-	 * @param       string                     $key   变量名
-	 * @param       int|integer|string|boolean $value 变量值
-	 * @param       string                     &$str  原始字符串
-	 * @return      void
+	 * 替换绑定变量
+	 *
+	 * @author HanskiJay
+	 * @since  2021-05-29
+	 * @param  string                     $key   变量名
+	 * @param  int|integer|string|boolean $value 变量值
+	 * @param  string                     &$str  原始字符串
+	 * @return void
 	 */
 	protected function replaceBindValue(string $key, $value, string &$str) : void
 	{
@@ -386,11 +384,11 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      render
-	 * @description 渲染视图到前端
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @return      string
+	 * 渲染视图到前端
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @return string
 	*/
 	protected function render() : string
 	{
@@ -440,12 +438,12 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      generateStaticUrl
-	 * @description 生成静态资源路由地址
-	 * @author      HanskiJay
-	 * @doneIn      2021-05-29
-	 * @param       string            $filePath 静态资源文件路径
-	 * @return      string
+	 * 生成静态资源路由地址
+	 *
+	 * @author HanskiJay
+	 * @since  2021-05-29
+	 * @param  string            $filePath 静态资源文件路径
+	 * @return string
 	 */
 	protected function generateStaticUrl(string $filePath) : string
 	{
@@ -476,15 +474,15 @@ class ViewBase extends ControllerBase
 
 
 	/**
-	 * @method 静态资源相对/绝对路径获取方法
+	 * 静态资源相对/绝对路径获取方法
 	 */
 	/**
-	 * @method      getComponent
-	 * @description 获取组件资源
-	 * @return      string
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $index 文件/文件夹索引
+	 * 获取组件资源
+	 *
+	 * @return string
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @param  string      $index 文件/文件夹索引
 	*/
 	public function getComponent(string $index, int $mode = 0) : string
 	{
@@ -493,12 +491,12 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      getCssPath
-	 * @description 获取CSS文件目录的指定文件
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $index 文件/文件夹索引
-	 * @return      string
+	 * 获取CSS文件目录的指定文件
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @param  string      $index 文件/文件夹索引
+	 * @return string
 	*/
 	public function getCssPath(string $index) : string
 	{
@@ -506,12 +504,12 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      getPublicCssPath
-	 * @description 获取公共目录下的CSS文件目录的指定文件
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $index 文件/文件夹索引
-	 * @return      string
+	 * 获取公共目录下的CSS文件目录的指定文件
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @param  string      $index 文件/文件夹索引
+	 * @return string
 	*/
 	public function getPublicCssPath(string $index) : string
 	{
@@ -519,12 +517,12 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      getJsPath
-	 * @description 获取JS文件目录的指定文件
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $index 文件/文件夹索引
-	 * @return      string
+	 * 获取JS文件目录的指定文件
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @param  string      $index 文件/文件夹索引
+	 * @return string
 	*/
 	public function getJsPath(string $index) : string
 	{
@@ -532,12 +530,12 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      getPublicJsPath
-	 * @description 获取公共目录下的JS文件目录的指定文件
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $index 文件/文件夹索引
-	 * @return      string
+	 * 获取公共目录下的JS文件目录的指定文件
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @param  string      $index 文件/文件夹索引
+	 * @return string
 	*/
 	public function getPublicJsPath(string $index) : string
 	{
@@ -545,12 +543,12 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      getImgPath
-	 * @description 获取IMG文件目录的指定文件
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $index 文件/文件夹索引
-	 * @return      string
+	 * 获取IMG文件目录的指定文件
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @param  string      $index 文件/文件夹索引
+	 * @return string
 	*/
 	public function getImgPath(string $index) : string
 	{
@@ -558,12 +556,12 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      getPublicImgPath
-	 * @description 获取公共目录下的IMG文件目录的指定文件
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $index 文件/文件夹索引
-	 * @return      string
+	 * 获取公共目录下的IMG文件目录的指定文件
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @param  string      $index 文件/文件夹索引
+	 * @return string
 	*/
 	public function getPublicImgPath(string $index) : string
 	{
@@ -571,13 +569,13 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      existsStatic
-	 * @description 判断是否存在一个局部静态资源文件目录
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10
-	 * @param       string      $index1 文件夹索引
-	 * @param       string      $index2 文件索引
-	 * @return      boolean
+	 * 判断是否存在一个局部静态资源文件目录
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @param  string      $index1 文件夹索引
+	 * @param  string      $index2 文件索引
+	 * @return boolean
 	*/
 	public function existsStatic(string $index1, string $index2) : bool
 	{
@@ -605,11 +603,11 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
-	 * @method      getTemplate
-	 * @description 返回模板
-	 * @author      HanskiJay
-	 * @doneIn      2021-05-29
-	 * @return      null|string
+	 * 返回模板
+	 *
+	 * @author HanskiJay
+	 * @since  2021-05-29
+	 * @return null|string
 	 */
 	protected function &getTemplate() : ?string
 	{

@@ -34,10 +34,10 @@ class Console implements Manager
 
 
 	/**
-	 * @method      __construct
-	 * @description 实例化Console类的构造函数
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-26
+	 * 实例化Console类的构造函数
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-26
 	 */
 	public function __construct()
 	{
@@ -62,11 +62,11 @@ class Console implements Manager
 	}
 
 	/**
-	 * @method      monitor
-	 * @description 监听指令传入
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-26
-	 * @return      void
+	 * 监听指令传入
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-26
+	 * @return void
 	 */
 	public function monitor(array $input = []) : void
 	{
@@ -92,12 +92,12 @@ class Console implements Manager
 		}
 	}
 	/**
-	 * @method      getCommand
-	 * @description 获取指令
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-26
-	 * @param       string      $commandString 指令
-	 * @return      null|@CommandBase
+	 * 获取指令
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-26
+	 * @param  string      $commandString 指令
+	 * @return null|CommandBase
 	 */
 	public function getCommand(string $commandString) : ?CommandBase
 	{
@@ -105,11 +105,11 @@ class Console implements Manager
 	}
 
 	/**
-	 * @method      getCommands
-	 * @description 返回已注册的指令列表
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-06
-	 * @return      array
+	 * 返回已注册的指令列表
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-06
+	 * @return array
 	 */
 	public function getCommands() : array
 	{
@@ -117,12 +117,12 @@ class Console implements Manager
 	}
 
 	/**
-	 * @method      hasCommand
-	 * @description 判断指令是否存在
-	 * @author      HanskiJay
-	 * @doneIn      2021-01-26
-	 * @param       string      $commandString 指令
-	 * @return      boolean
+	 * 判断指令是否存在
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-26
+	 * @param  string      $commandString 指令
+	 * @return boolean
 	 */
 	public function hasCommand(string $commandString) : bool
 	{

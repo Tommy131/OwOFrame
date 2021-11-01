@@ -58,13 +58,13 @@ class WMI
 
 
 	/**
-	 * @method      set
-	 * @description 设置/更新WMI关键配置文件
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-24
-	 * @param       string      $index 键名
-	 * @param       string      $value 值
-	 * @return      void
+	 * 设置/更新WMI关键配置文件
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-24
+	 * @param  string      $index 键名
+	 * @param  string      $value 值
+	 * @return void
 	 */
 	public function set(string $index, string $value) : void
 	{
@@ -72,11 +72,11 @@ class WMI
 	}
 
 	/**
-	 * @method      getConnection
-	 * @description 返回或创建一个COM连接
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-24
-	 * @return      Variant
+	 * 返回或创建一个COM连接
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-24
+	 * @return Variant
 	 */
 	public function getConnection() : Variant
 	{
@@ -99,13 +99,13 @@ class WMI
 	}
 
 	/**
-	 * @method      getRealWMI
-	 * @description 返回真实的WMI实例
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-24
-	 * @link        https://powershell.one/wmi/root/cimv2 (所有可获取的类名)
-	 * @param       string      $className [description]
-	 * @return      [type]                [description]
+	 * 返回真实的WMI实例
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-24
+	 * @link   https://powershell.one/wmi/root/cimv2 (所有可获取的类名)
+	 * @param  string      $className
+	 * @return Variant
 	 */
 	public function getRealWMI(string $className) : Variant
 	{
@@ -113,11 +113,11 @@ class WMI
 	}
 
 	/**
-	 * @method      COM
-	 * @description 返回COM实例化对象
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-24
-	 * @return      object@COM
+	 * 返回COM实例化对象
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-24
+	 * @return COM
 	 */
 	public function COM() : COM
 	{
@@ -125,13 +125,13 @@ class WMI
 	}
 
 	/**
-	 * @method      get
-	 * @description 获取WMI关键配置文件
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-24
-	 * @param       string      $index   键名
-	 * @param       mixed       $default 默认返回值
-	 * @return      mixed
+	 * 获取WMI关键配置文件
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-24
+	 * @param  string      $index   键名
+	 * @param  mixed       $default 默认返回值
+	 * @return mixed
 	 */
 	public function get(string $index, $default = null)
 	{

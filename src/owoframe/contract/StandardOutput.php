@@ -22,11 +22,11 @@ namespace owoframe\contract;
 interface StandardOutput
 {
 	/**
-	 * @method      getOutput
-	 * @description 标准输出方法
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-16
-	 * @return      string
+	 * 标准输出方法
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-16
+	 * @return string
 	 */
 	public function getOutput() : string;
 }

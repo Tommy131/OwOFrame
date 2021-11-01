@@ -28,11 +28,12 @@ class Cookie
 
 
 	/**
-	 * @method      setPrefix
-	 * @description 设置Cookie前缀
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-06
-	 * @param       string      $url 地址
+	 * 设置Cookie前缀
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-06
+	 * @param  string      $url 地址
+	 * @return void
 	 */
 	public static function setPrefix(string $url) : void
 	{
@@ -44,11 +45,11 @@ class Cookie
 	}
 
 	/**
-	 * @method      getPrefix
-	 * @description 返回Cookie前缀设置
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-06
-	 * @return      string
+	 * 返回Cookie前缀设置
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-06
+	 * @return string
 	 */
 	public static function getPrefix() : string
 	{
@@ -56,11 +57,11 @@ class Cookie
 	}
 
 	/**
-	 * @method      getPath
-	 * @description 返回Cookie路径设置
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-06
-	 * @return      string
+	 * 返回Cookie路径设置
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-06
+	 * @return string
 	 */
 	public static function getPath() : string
 	{
@@ -68,11 +69,11 @@ class Cookie
 	}
 
 	/**
-	 * @method      getAll
-	 * @description 返回所有Cookies
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-06
-	 * @return      array
+	 * 返回所有Cookies
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-06
+	 * @return array
 	 */
 	public static function getAll() : array
 	{
@@ -80,13 +81,13 @@ class Cookie
 	}
 
 	/**
-	 * @method      get
-	 * @description 获取一个Cookie
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-06
-	 * @param       string      $key     键名
-	 * @param       mixed       $default 默认返回结果
-	 * @return      mixed
+	 * 获取一个Cookie
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-06
+	 * @param  string      $key     键名
+	 * @param  mixed       $default 默认返回结果
+	 * @return mixed
 	 */
 	public static function get(string $key, $default = NULL)
 	{
@@ -96,12 +97,12 @@ class Cookie
 	}
 
 	/**
-	 * @method      has
-	 * @description 判断是否存在一个Cookie
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-06
-	 * @param       string      $key 键名
-	 * @return      boolean
+	 * 判断是否存在一个Cookie
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-06
+	 * @param  string      $key 键名
+	 * @return boolean
 	 */
 	public static function has(string $key) : bool
 	{
@@ -109,13 +110,13 @@ class Cookie
 	}
 
 	/**
-	 * @method      set
-	 * @description 设置一个Cookie
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-06
-	 * @param       string      $key    键名
-	 * @param       mixed       $value  键值
-	 * @param       integer     $expire 过期时间
+	 * 设置一个Cookie
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-06
+	 * @param  string      $key    键名
+	 * @param  mixed       $value  键值
+	 * @param  integer     $expire 过期时间
 	 */
 	public static function set(string $key, $value, $expire = 0) : void
 	{
@@ -125,12 +126,12 @@ class Cookie
 	}
 
 	/**
-	 * @method      delete
-	 * @description 删除一个Cookie
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-06
-	 * @param       string      $key 键名
-	 * @return      boolean
+	 * 删除一个Cookie
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-06
+	 * @param  string      $key 键名
+	 * @return boolean
 	 */
 	public static function delete(string $key) : bool
 	{

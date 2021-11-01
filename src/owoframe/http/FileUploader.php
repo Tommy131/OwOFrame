@@ -32,7 +32,7 @@ class FileUploader implements \owoframe\contract\Manager
 
 
 	/**
-	 * 下方代码为文件上传方法;
+	 * 下方代码为文件上传方法
 	 *
 	 * 错误代码说明:
 	 * (int: 0) UPLOAD_ERR_OK        => 没有错误发生, 文件上传成功;
@@ -42,6 +42,13 @@ class FileUploader implements \owoframe\contract\Manager
 	 * (int: 4) UPLOAD_ERR_NO_FILE   => 没有文件被上传;
 	 *
 	 * !注意! ==> 如果有必要的话, 数据返回可以使用JSON;
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @param  string      $uploadId  上传ID
+	 * @param  string      $savedPath 保存到文件路径
+	 * @param  int         $maxSize   允许的最大上传大小
+	 * @return array
 	 */
 	public function checkUploadFile(string $uploadId, ?string $savedPath = STORAGE_PATH . 'upload/', int $maxSize = 10) : array
 	{
@@ -70,12 +77,12 @@ class FileUploader implements \owoframe\contract\Manager
 	}
 
 	/**
-	 * @method      addAllowedExt
-	 * @description 添加一个文件类型到允许上传的文件类型列表;
-	 * @param       string[ext|文件类型]
-	 * @return      boolean
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10 18:49
+	 * 添加一个文件类型到允许上传的文件类型列表
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10 18:49
+	 * @param  string      $ext 文件类型
+	 * @return boolean
 	*/
 	public function addAllowedExt(string $ext) : void
 	{
@@ -85,12 +92,12 @@ class FileUploader implements \owoframe\contract\Manager
 	}
 
 	/**
-	 * @method      delAllowedExt
-	 * @description 添加一个文件类型到允许上传的文件类型列表;
-	 * @param       string[ext|文件类型]
-	 * @return      boolean
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10 18:49
+	 * 添加一个文件类型到允许上传的文件类型列表
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10 18:49
+	 * @param  string      $ext 文件类型
+	 * @return boolean
 	*/
 	public function delAllowedExt(string $ext) : void
 	{
@@ -101,12 +108,12 @@ class FileUploader implements \owoframe\contract\Manager
 	}
 
 	/**
-	 * @method      canUpload
-	 * @description 检测文件类型是否允许上传到服务器;
-	 * @param       string[ext|文件类型]
-	 * @return      boolean
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10 18:49
+	 * 检测文件类型是否允许上传到服务器
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10 18:49
+	 * @param  string      $ext 文件类型
+	 * @return boolean
 	*/
 	public function canUpload(string $ext) : bool
 	{
@@ -114,12 +121,12 @@ class FileUploader implements \owoframe\contract\Manager
 	}
 
 	/**
-	 * @method      getAllowedExts
-	 * @description 检测文件类型是否允许上传到服务器;
-	 * @param       string[ext|文件类型]
-	 * @return      boolean
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-10 18:49
+	 * 检测文件类型是否允许上传到服务器
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10 18:49
+	 * @param  string      $ext 文件类型
+	 * @return boolean
 	*/
 	public function getAllowedExts() : array
 	{

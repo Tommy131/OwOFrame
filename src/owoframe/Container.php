@@ -43,11 +43,11 @@ class Container implements ArrayAccess, Countable
 
 
 	/**
-	 * @method      getInstance
-	 * @description 返回容器单例实例
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-05
-	 * @return      object@Container
+	 * 返回容器单例实例
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-05
+	 * @return Container
 	 */
 	public static function getInstance() : Container
 	{
@@ -58,13 +58,13 @@ class Container implements ArrayAccess, Countable
 	}
 
 	/**
-	 * @method      bind
-	 * @description 绑定到容器绑定标识
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-05
-	 * @param       string      $bindTag  绑定标识
-	 * @param       mixed       $concrete 参数可为[类名|对象|闭包]
-	 * @return      void
+	 * 绑定到容器绑定标识
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-05
+	 * @param  string      $bindTag  绑定标识
+	 * @param  mixed       $concrete 参数可为[类名|对象|闭包]
+	 * @return void
 	 */
 	public function bind(string $bindTag, $concrete) : void
 	{
@@ -77,13 +77,13 @@ class Container implements ArrayAccess, Countable
 	}
 
 	/**
-	 * @method      instance
-	 * @description 绑定实例到对象实例列表
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-05
-	 * @param       string      $bindTag  绑定标识
-	 * @param       object      $instance 实例化对象
-	 * @return      void
+	 * 绑定实例到对象实例列表
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-05
+	 * @param  string      $bindTag  绑定标识
+	 * @param  object      $instance 实例化对象
+	 * @return void
 	 */
 	public function instance(string $bindTag, $instance) : void
 	{
@@ -93,14 +93,14 @@ class Container implements ArrayAccess, Countable
 	}
 
 	/**
-	 * @method      make
-	 * @description 创建实例(存在即返回或自动更新)
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-05
-	 * @param       string       $bindTag    绑定标识
-	 * @param       array        $params     参数
-	 * @param       bool|boolean $autoUpdate 自动更新实例开关
-	 * @return      object
+	 * 创建实例(存在即返回或自动更新)
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-05
+	 * @param  string       $bindTag    绑定标识
+	 * @param  array        $params     参数
+	 * @param  bool|boolean $autoUpdate 自动更新实例开关
+	 * @return object
 	 */
 	public function make(string $bindTag, array $params = [], bool $autoUpdate = false)
 	{
@@ -120,14 +120,14 @@ class Container implements ArrayAccess, Countable
 	}
 
 	/**
-	 * @method      invoke
-	 * @description 调用选择器(function|class|Closure|Method)
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-05
-	 * @param       string      $selector
-	 * @param       mixed       $concrete
-	 * @param       array       $params
-	 * @return      object
+	 * 调用选择器(function|class|Closure|Method)
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-05
+	 * @param  string      $selector
+	 * @param  mixed       $concrete
+	 * @param  array       $params
+	 * @return object
 	 */
 	public function invoke(string $selector, $concrete, array $params = [])
 	{
@@ -160,13 +160,13 @@ class Container implements ArrayAccess, Countable
 	}
 
 	/**
-	 * @method      invokeReflectMethod
-	 * @description 调用反射执行类的方法
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-06
-	 * @param       Reflector    $reflect [description]
-	 * @param       array        $params  [description]
-	 * @return      [type]                [description]
+	 * 调用反射执行类的方法
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-06
+	 * @param  Reflector    $reflect
+	 * @param  array        $params
+	 * @return mixed
 	 */
 	public function invokeReflectMethod(Reflector $reflect, array $params = [])
 	{
@@ -174,13 +174,13 @@ class Container implements ArrayAccess, Countable
 	}
 
 	/**
-	 * @method      bindParams
-	 * @description 绑定参数
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-06
-	 * @param       ReflectionFunctionAbstract $reflect 反射类实例
-	 * @param       array                      $params  参数组
-	 * @return      array
+	 * 绑定参数
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-06
+	 * @param  ReflectionFunctionAbstract $reflect 反射类实例
+	 * @param  array                      $params  参数组
+	 * @return array
 	 */
 	public function bindParams(ReflectionFunctionAbstract $reflect, array $params = []) : array
 	{
@@ -219,13 +219,13 @@ class Container implements ArrayAccess, Countable
 	}
 
 	/**
-	 * @method      has
-	 * @description 判断容器绑定标识或对象实例列表中是否存在一个绑定标识
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-05
-	 * @param       string      $bindTag    绑定标识
-	 * @param       int|integer $selectMode 选择模式
-	 * @return      boolean
+	 * 判断容器绑定标识或对象实例列表中是否存在一个绑定标识
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-05
+	 * @param  string      $bindTag    绑定标识
+	 * @param  int|integer $selectMode 选择模式
+	 * @return boolean
 	 */
 	public function has(string $bindTag, int $selectMode = 0) : bool
 	{
@@ -235,11 +235,11 @@ class Container implements ArrayAccess, Countable
 	}
 
 	/**
-	 * @method      count
-	 * @description 返回所有已实例化的对象
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-05
-	 * @return      integer
+	 * 返回所有已实例化的对象
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-05
+	 * @return integer
 	 */
 	public function count() : int
 	{
@@ -247,11 +247,11 @@ class Container implements ArrayAccess, Countable
 	}
 
 	/**
-	 * @method      getIterator
-	 * @description 返回数组迭代器实例
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-05
-	 * @return      @ArrayIterator
+	 * 返回数组迭代器实例
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-05
+	 * @return @ArrayIterator
 	 */
 	public function getIterator()
 	{
@@ -259,12 +259,12 @@ class Container implements ArrayAccess, Countable
 	}
 
 	/**
-	 * @method      offsetExists
-	 * @description @ArrayAccess
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-05
-	 * @param       mixed $key
-	 * @return      mixed
+	 * @ArrayAccess
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-05
+	 * @param  mixed $key
+	 * @return mixed
 	 */
 	public function offsetExists($key)
 	{
@@ -272,12 +272,12 @@ class Container implements ArrayAccess, Countable
 	}
 
 	/**
-	 * @method      offsetGet
-	 * @description @ArrayAccess
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-05
-	 * @param       mixed $key
-	 * @return      mixed
+	 * @ArrayAccess
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-05
+	 * @param  mixed $key
+	 * @return mixed
 	 */
 	public function offsetGet($key)
 	{
@@ -285,11 +285,11 @@ class Container implements ArrayAccess, Countable
 	}
 
 	/**
-	 * @method      offsetSet
-	 * @description @ArrayAccess
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-05
-	 * @param       mixed $key
+	 * @ArrayAccess
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-05
+	 * @param  mixed $key
 	 */
 	public function offsetSet($key, $val)
 	{
@@ -297,11 +297,11 @@ class Container implements ArrayAccess, Countable
 	}
 
 	/**
-	 * @method      offsetUnset
-	 * @description @ArrayAccess
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-05
-	 * @param       mixed $key
+	 * @ArrayAccess
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-05
+	 * @param  mixed $key
 	 */
 	public function offsetUnset($key)
 	{

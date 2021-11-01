@@ -92,13 +92,13 @@ final class MasterManager implements Manager
 
 
 	/**
-	 * @method      getManager
-	 * @description 返回选择的管理器
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-04
-	 * @param       string      $bindTag 绑定标识
-	 * @param       array       $params  传入参数
-	 * @return      @Manager
+	 * 返回选择的管理器
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-04
+	 * @param  string      $bindTag 绑定标识
+	 * @param  array       $params  传入参数
+	 * @return Manager
 	 */
 	public function getManager(string $bindTag, array $params = []) : Manager
 	{
@@ -115,11 +115,11 @@ final class MasterManager implements Manager
 	}
 
 	/**
-	 * @method      isRunning
-	 * @description 返回系统运行状态
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-04
-	 * @return      boolean
+	 * 返回系统运行状态
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-04
+	 * @return boolean
 	 */
 	public static function isRunning() : bool
 	{
@@ -127,11 +127,11 @@ final class MasterManager implements Manager
 	}
 
 	/**
-	 * @method      getClassLoader
-	 * @description 返回类加载器
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-06
-	 * @return      null|@ClassLoader
+	 * 返回类加载器
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-06
+	 * @return null|ClassLoader
 	 */
 	public static function getClassLoader() : ?ClassLoader
 	{
@@ -139,11 +139,11 @@ final class MasterManager implements Manager
 	}
 
 	/**
-	 * @method      getInstance
-	 * @description 返回容器单例实例
-	 * @author      HanskiJay
-	 * @doneIn      2021-03-05
-	 * @return      object@MasterManager
+	 * 返回容器单例实例
+	 *
+	 * @author HanskiJay
+	 * @since  2021-03-05
+	 * @return MasterManager
 	 */
 	public static function getInstance() : MasterManager
 	{

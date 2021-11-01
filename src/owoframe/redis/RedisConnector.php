@@ -44,11 +44,11 @@ class RedisConnector
 	protected $name = '';
 
 	/**
-	 * @method      getConnection
-	 * @description 新建Redis连接
-	 * @author      HanskiJay
-	 * @doneIn      2021-02-14
-	 * @return      null or object@Redis
+	 * 新建Redis连接
+	 *
+	 * @author HanskiJay
+	 * @since  2021-02-14
+	 * @return null|Redis
 	 */
 	public function getConnection() : ?Redis
 	{
@@ -72,12 +72,12 @@ class RedisConnector
 	}
 
 	/**
-	 * @method      forceUsePassword
-	 * @description 使用强制密码访问模式
-	 * @author      HanskiJay
-	 * @doneIn      2021-02-14
-	 * @param       bool[mode|强制使用密码认证]
-	 * @return      void
+	 * 使用强制密码访问模式
+	 *
+	 * @author HanskiJay
+	 * @since  2021-02-14
+	 * @param  bool      $mode 强制使用密码认证
+	 * @return void
 	 */
 	public function forceUsePassword(bool $mode = true) : void
 	{
@@ -92,14 +92,14 @@ class RedisConnector
 	}
 
 	/**
-	 * @method      cfg
-	 * @description 返回配置文件的项目
-	 * @author      HanskiJay
-	 * @doneIn      2021-02-14
-	 * @param       string[index|键名]
-	 * @param       mixed[val|值]
-	 * @param       bool[update|更新配置文件项目]
-	 * @return      mixed
+	 * 返回配置文件的项目
+	 *
+	 * @author HanskiJay
+	 * @since  2021-02-14
+	 * @param  string      $index  键名
+	 * @param  mixed       $val    值
+	 * @param  bool        $update 更新配置文件项目
+	 * @return mixed
 	 */
 	public function cfg(string $index, $val = '', bool $update = false)
 	{
@@ -144,11 +144,11 @@ class RedisConnector
 	}
 
 	/**
-	 * @method      saveCfg
-	 * @description 保存当前设置的Redis配置文件
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-17
-	 * @return      [type]      [description]
+	 * 保存当前设置的Redis配置文件
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-17
+	 * @return void
 	 */
 	public function saveCfg() : void
 	{
@@ -158,11 +158,11 @@ class RedisConnector
 	}
 
 	/**
-	 * @method      isAlive
-	 * @description 判断当前连接是否有效
-	 * @author      HanskiJay
-	 * @doneIn      2021-02-14
-	 * @return      boolean
+	 * 判断当前连接是否有效
+	 *
+	 * @author HanskiJay
+	 * @since  2021-02-14
+	 * @return boolean
 	 */
 	public function isAlive() : bool
 	{
@@ -170,11 +170,11 @@ class RedisConnector
 	}
 
 	/**
-	 * @method      getInstance
-	 * @description 返回实例化对象
-	 * @author      HanskiJay
-	 * @doneIn      2021-02-14
-	 * @return      class@Redis
+	 * 返回实例化对象
+	 *
+	 * @author HanskiJay
+	 * @since  2021-02-14
+	 * @return Redis
 	 */
 	public static function getInstance() : RedisConnector
 	{
@@ -185,11 +185,11 @@ class RedisConnector
 	}
 
 	/**
-	 * @method      getHandler
-	 * @description 返回Redis实例化对象(若未正确配置则返回null)
-	 * @author      HanskiJay
-	 * @doneIn      2021-02-14
-	 * @return      null or class@Redis
+	 * 返回Redis实例化对象(若未正确配置则返回null)
+	 *
+	 * @author HanskiJay
+	 * @since  2021-02-14
+	 * @return null|Redis
 	 */
 	public function getHandler() : ?Redis
 	{
@@ -200,11 +200,11 @@ class RedisConnector
 	}
 
 	/**
-	 * @method      getName
-	 * @description 返回当前Redis容器名称
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-17
-	 * @return      string
+	 * 返回当前Redis容器名称
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-17
+	 * @return string
 	 */
 	public function &getName() : string
 	{
@@ -212,11 +212,11 @@ class RedisConnector
 	}
 
 	/**
-	 * @method      __call
-	 * @description 使用PHP的魔术方法回调Redis类中的方法
-	 * @author      HanskiJay
-	 * @doneIn      2021-02-16
-	 * @return      mixed
+	 * 使用PHP的魔术方法回调Redis类中的方法
+	 *
+	 * @author HanskiJay
+	 * @since  2021-02-16
+	 * @return mixed
 	 */
 	public function __call($name, $args)
 	{
@@ -228,11 +228,12 @@ class RedisConnector
 	}
 
 	/**
-	 * @method      __construct
-	 * @access      private
-	 * @description 阻止外部调用者实例化此对象
-	 * @author      HanskiJay
-	 * @doneIn      2021-02-16
+	 * 阻止外部调用者实例化此对象
+	 *
+	 * @access private
+	 * @author HanskiJay
+	 * @since  2021-02-16
+	 * @return void
 	 */
 	private function __construct() {}
 }
