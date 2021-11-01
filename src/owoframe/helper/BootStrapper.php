@@ -40,6 +40,9 @@ class BootStrapper
 		}
 
 		if(!self::isRunning()) {
+			// Prevent missing the definition in the master boot file;
+			if(!defined('DEBUG_MODE'))       define('DEBUG_MODE', true);
+			// Set up exception crawling;
 			set_error_handler([ExceptionOutput::class, 'ErrorHandler'], E_ALL);
 			set_exception_handler([ExceptionOutput::class, 'ExceptionHandler']);
 			// Define OwOFrame start time;
@@ -47,7 +50,7 @@ class BootStrapper
 			// Define Timezone;
 			if(!defined('TIME_ZONE'))        define('TIME_ZONE',       'Europe/Berlin');
 			// Define OwOFrame start time;
-			if(!defined('APP_VERSION'))      define('APP_VERSION',     'dev@v1.0.2-ALPHA1');
+			if(!defined('APP_VERSION'))      define('APP_VERSION',     'dev@v1.0.2-ALPHA2');
 			// Check whether the current environment supports mbstring extension;
 			if(!defined('MB_SUPPORTED'))     define('MB_SUPPORTED',    extension_loaded('mbstring'));
 			// Project root directory (absolute path);
