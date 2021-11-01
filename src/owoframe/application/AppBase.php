@@ -20,9 +20,7 @@ declare(strict_types=1);
 namespace owoframe\application;
 
 use owoframe\exception\InvalidControllerException;
-use owoframe\http\HttpManager;
 use owoframe\module\{ModuleBase, ModuleLoader};
-use owoframe\utils\DataEncoder;
 
 abstract class AppBase
 {
@@ -34,60 +32,18 @@ abstract class AppBase
 	/* @string 默认控制其名称 */
 	protected $defaultController = '';
 
-	/* @array 从请求Url传入的原始get参数 */
-	protected $parameter = [];
 	/* @array 不允许通过路由请求的控制器(方法)组 */
 	protected $controllerFilter = [];
 
-	/* @bool 是否以JSON格式输出数据 */
-	protected $renderWithJSON = false;
-	/* @string 当页面未找到时输出的默认数据 */
-	protected $renderPageNotFound = '';
 
 
-	public function __construct(string $siteUrl, array $parameter = [])
+	public function __construct(string $siteUrl)
 	{
 		if(static::$instance === null) {
 			static::$instance = $this;
 		}
 		$this->currentSiteUrl = $siteUrl;
-		$this->parameter      = $parameter;
 		$this->initialize();
-	}
-
-	/**
-	 * @method      renderPageNotFound
-	 * @description 渲染404页面(未匹配有效的控制器时)
-	 * @description Render 404 page (when no valid controller is matched)
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09
-	 * @return      string
-	*/
-	public static function renderPageNotFound() : string
-	{
-		HttpManager::setStatusCode(404);
-		$sendMessage = (is_string(static::$renderPageNotFound) && (strlen(static::$renderPageNotFound) > 0)) ? static::$renderPageNotFound : '404 PAGE NOT FOUND';
-		if(static::$renderWithJSON === true) {
-			$render = new DataEncoder;
-			$render->setStandardData(404, $sendMessage, false);
-			return $render->encode();
-		} else {
-			return $sendMessage;
-		}
-	}
-
-	/**
-	 * @method      setParameters
-	 * @description 外部调用, 设置从Url获取到当前的GET请求参数
-	 * @description External call, set the GET request parameters obtained from current Url
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09
-	 * @param       array      $parameter 需要设置的参数数组
-	 * @return      void
-	*/
-	public function setParameters(array $parameter) : void
-	{
-		$this->parameter = $parameter;
 	}
 
 	/**
@@ -95,11 +51,11 @@ abstract class AppBase
 	 * @description 判断控制器的方法是否不允许直接访问
 	 * @author      HanskiJay
 	 * @doneIn      2021-04-30
-	 * @param       string                   $methodName     方法名
 	 * @param       string                   $controllerName 控制器名
+	 * @param       string                   $methodName     方法名
 	 * @return      boolean
 	 */
-	public function isControllerMethodBanned(string $methodName, string $controllerName) : bool
+	public function isControllerMethodBanned(string $controllerName, string $methodName) : bool
 	{
 		$controllerName =ucfirst(strtolower($controllerName));
 		return isset($this->controllerFilter[$controllerName]) && in_array($methodName, $this->controllerFilter[$controllerName]);
@@ -137,7 +93,7 @@ abstract class AppBase
 	 */
 	public function allowControllerMethod(string $controllerName, array $args) : void
 	{
-		$controllerName =ucfirst(strtolower($controllerName));
+		$controllerName = ucfirst(strtolower($controllerName));
 		if(!$this->getController($controllerName, false)) {
 			throw new InvalidControllerException(static::getName(), $controllerName);
 		}
@@ -171,7 +127,7 @@ abstract class AppBase
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-09
 	 * @param       bool      $returnName 返回控制器名称
-	 * @return      string|@ControllerBase
+	 * @return      string|ControllerBase
 	*/
 	public function getDefaultController(bool $returnName = false)
 	{
@@ -185,7 +141,7 @@ abstract class AppBase
 	 * @author      HanskiJay
 	 * @doneIn      2020-09-09
 	 * @param       string      $controllerName 控制器名称
-	 * @return      boolean|@ControllerBase
+	 * @return      boolean|ControllerBase
 	*/
 	public function getController(string $controllerName, bool $autoMake = true)
 	{
@@ -257,7 +213,7 @@ abstract class AppBase
 	 * @author      HanskiJay
 	 * @doneIn      2021-02-08
 	 * @param       string      $name 插件名称
-	 * @return      null|@ModuleBase
+	 * @return      null|ModuleBase
 	 */
 	final protected function getModule(string $name) : ?ModuleBase
 	{

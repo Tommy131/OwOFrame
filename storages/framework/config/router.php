@@ -17,9 +17,3 @@
 	* This configuration is for bind domain(s) to application.
 
 ************************************************************************/
-
-use owoframe\http\route\RouteRule as RR;
-use owoframe\utils\DataEncoder;
-
-// 绑定域名 test.xxx.com 到 IndexApp;
-RR::domain('xxx.com', ['test' => 'index']);

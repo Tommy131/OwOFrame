@@ -28,6 +28,43 @@ class OwOFrameException extends \Exception
 
 
 
+
+	/**
+	 * @method      getRealFile
+	 * @description 获取真实文件位置
+	 * @author      HanskiJay
+	 * @doneIn      2021-04-30
+	 * @return string
+	 */
+	public function getRealFile() : string
+	{
+		return $this->getTrace()[1]['file'] ?? $this->getTrace()[0]['file'];
+	}
+
+	/**
+	 * @method      getRealLine
+	 * @description 获取真实错误行数
+	 * @author      HanskiJay
+	 * @doneIn      2021-04-30
+	 * @return string
+	 */
+	public function getRealLine() : int
+	{
+		return $this->getTrace()[1]['line'] ?? $this->getTrace()[0]['line'];
+	}
+
+	/**
+	 * @method      getMethod
+	 * @description 获取真实错误方法
+	 * @author      HanskiJay
+	 * @doneIn      2021-04-30
+	 * @return string
+	 */
+	public function getMethod() : string
+	{
+		return $this->getTrace()[1]['function'] ?? $this->getTrace()[0]['function'];
+	}
+
 	/**
 	 * @method      setAlternativeCall
 	 * @description 设置备选回调方法

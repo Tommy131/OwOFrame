@@ -73,33 +73,33 @@ class ExceptionOutput
 		}
 	}
 
-	public static function ExceptionHandler(\Throwable $e)
+	public static function ExceptionHandler(\Throwable $exception)
 	{
-		$type  = "[" . (($e instanceof OwOFrameException) ? "OwOError" : "PHPError")."] ";
-		$type .= Helper::getShortClassName($e);
+		$type  = "[" . (($exception instanceof OwOFrameException) ? "OwOError" : "PHPError")."] ";
+		$type .= Helper::getShortClassName($exception);
 
 		if(Helper::isRunningWithCGI()) {
-			if(($e instanceof MethodMissedException) && $e->getJudgement()) {
-				$response = Http::Response($e->getAlternativeCall());
+			if(($exception instanceof MethodMissedException) && $exception->getJudgement()) {
+				$response = Http::Response($exception->getAlternativeCall());
 				$response->sendResponse();
-				Router::getRunTimeDiv($e::toggleRunTimeDivOutput(false));
+				Router::getRunTimeDiv($exception::toggleRunTimeDivOutput(false));
 				return;
 			}
 
 			if(defined('LOG_ERROR') && LOG_ERROR) {
 				$logged = '<span id="logged">--- Logged ---</span>';
-				self::log($e->__toString());
+				self::log($exception->__toString());
 			} else {
 				$logged = '';
 			}
-			$fileName = method_exists($e, 'getRealFile') ? $e->getRealFile() : $e->getFile();
-			$realName = method_exists($e, 'getRealLine') ? $e->getRealLine() : $e->getLine();
+			$fileName = method_exists($exception, 'getRealFile') ? $exception->getRealFile() : $exception->getFile();
+			$realName = method_exists($exception, 'getRealLine') ? $exception->getRealLine() : $exception->getLine();
 			echo str_replace(
 				['{logged}', '{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'],
-				[$logged, $type, $e->getMessage(),  $fileName, $realName, $e->getTraceAsString(), BS::getRunTime()],
+				[$logged, $type, $exception->getMessage(),  $fileName, $realName, $exception->getTraceAsString(), BS::getRunTime()],
 			self::getTemplate());
 		} else {
-			self::log($e->__toString());
+			self::log($exception->__toString());
 		}
 		exit(1);
 	}
@@ -114,116 +114,7 @@ class ExceptionOutput
 	public static function getTemplate() : string
 	{
 		$debugMode = (defined("DEBUG_MODE") && DEBUG_MODE) ? '<span id="debugMode">DebugMode</span>' : '';
-		return str_replace('{debugMode}', $debugMode,
-<<<EOF
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<title>程序错误机制显示页面 - OwOFrame</title>
-		<style>
-			html {
-				padding: 50px 10px;
-				font-size: 16px;
-				font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-				line-height: 1.4;
-				color: #666;
-				background: #F6F6F3;
-				-webkit-text-size-adjust: 100%;
-				-ms-text-size-adjust: 100%;
-			}
-			pre {
-				font-size: 14px;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-			}
-			.container {
-				position: relative;
-				margin: 0 auto;
-				padding: 30px 20px;
-				width: 50%;
-				border-radius: 5px;
-				box-shadow: 2px 2px 2px #eee;
-				background: #FFF;
-			}
-			p#title {
-				text-align: center;
-				padding: 10px 5px;
-				border-radius: 5px;
-				font-weight: bold;
-				background-color: #212121;
-				color: #FFFF00;
-			}
-			div#type {
-				font-weight: bold;
-				color: #FF5722;
-			}
-			div#message {
-				margin: 5px auto;
-				padding: 20px;
-				font-weight: bold;
-				border-radius: 5px;
-				background-color: #eee;
-				color: #DD2C00;
-			}
-			span#class {
-				font-weight: bold;
-				color: #00B8D4;
-			}
-			span#line {
-				font-weight: bold;
-				color: #FF6D00;
-			}
-			span#debugMode {
-				padding: 5px 10px;
-				font-weight: bold;
-				border-radius: 5px;
-				background-color: #299c08;
-				color: #fff46f;
-			}
-			span#notPassed {
-				padding: 5px 10px;
-				font-weight: bold;
-				border-radius: 5px;
-				background-color: #C51162;
-				color: white;
-			}
-			span#logged {
-				padding: 5px 10px;
-				font-weight: bold;
-				border-radius: 5px;
-				background-color: #7576d4;
-				color: white;
-			}
-			div#runTime span{
-				padding: 5px;
-				width: 150px;
-				text-align: center;
-				border-radius: 5px;
-				background-color: #6D6D82;
-				color: white;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="container">
-			<p id="title">OwOBlog Exception Handler &nbsp;{debugMode}</p>
-			<p>Status:
-				<span id="notPassed">--- NotPassed ---</span>
-				{logged}
-			</p>
-
-			<div id="type">{type}:</div>
-			<div id="message">{message}</div>
-			in <span id="class">{file}</span> at line <span id="line">{line}</span>
-
-			<p><b>Stack Trace</b>: <br/><pre>{trace}</pre></p>
-			<div id="runTime"><b>Used Time:</b> <span>{runTime}s</span></div>
-		</div>
-	</body>
-</html>
-EOF);
+		return str_replace('{debugMode}', $debugMode, file_get_contents(FRAMEWORK_PATH . 'template' . DIRECTORY_SEPARATOR . 'ExceptionOutputTemplate.html'));
 	}
 }
 ?>
