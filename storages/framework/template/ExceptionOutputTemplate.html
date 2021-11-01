@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="description" content="OwOBlog Usercenter">
+		<meta name="author" content="OwOBlogTeam"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>程序错误机制显示页面 - OwOFrame</title>
+		<style>
+			html {
+				padding: 50px 10px;
+				font-size: 16px;
+				font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+				line-height: 1.4;
+				color: #666;
+				background: #F6F6F3;
+				-webkit-text-size-adjust: 100%;
+				-ms-text-size-adjust: 100%;
+			}
+			pre {
+				font-size: 14px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+			}
+			.container {
+				position: relative;
+				margin: 0 auto;
+				padding: 30px 20px;
+				width: 50%;
+				border-radius: 5px;
+				box-shadow: 2px 2px 2px #eee;
+				background: #FFF;
+			}
+			p#title {
+				text-align: center;
+				padding: 10px 5px;
+				border-radius: 5px;
+				font-weight: bold;
+				background-color: #212121;
+				color: #FFFF00;
+			}
+			div#type {
+				font-weight: bold;
+				color: #FF5722;
+			}
+			div#message {
+				margin: 5px auto;
+				padding: 20px;
+				font-weight: bold;
+				border-radius: 5px;
+				background-color: #eee;
+				color: #DD2C00;
+			}
+			div#file {
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			span#class {
+				font-weight: bold;
+				color: #00B8D4;
+			}
+			span#line {
+				font-weight: bold;
+				color: #FF6D00;
+			}
+			span#debugMode {
+				padding: 5px 10px;
+				font-weight: bold;
+				border-radius: 5px;
+				background-color: #299c08;
+				color: #fff46f;
+			}
+			span#notPassed {
+				padding: 5px 10px;
+				font-weight: bold;
+				border-radius: 5px;
+				background-color: #C51162;
+				color: white;
+			}
+			span#logged {
+				padding: 5px 10px;
+				font-weight: bold;
+				border-radius: 5px;
+				background-color: #7576d4;
+				color: white;
+			}
+			div#runTime span{
+				padding: 5px;
+				width: 150px;
+				text-align: center;
+				border-radius: 5px;
+				background-color: #6D6D82;
+				color: white;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<p id="title">OwOFrame Exception Handler &nbsp;{debugMode}</p>
+			<p>Status:
+				<span id="notPassed">--- NotPassed ---</span>
+				{logged}
+			</p>
+
+			<div id="type">{type}:</div>
+			<div id="message">{message}</div>
+			<div id="file">in <span id="class">{file}</span> at line <span id="line">{line}</span></div>
+
+			<p><b>Stack Trace</b>: <br/><pre>{trace}</pre></p>
+			<div id="runTime"><b>Used Time:</b> <span>{runTime}s</span></div>
+		</div>
+	</body>
+</html>
