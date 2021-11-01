@@ -128,8 +128,13 @@ class AppManager implements \owoframe\contract\Manager
 	*/
 	public static function getApp(string $appName) : ?AppBase
 	{
+		static $application;
+		if($application instanceof AppBase) {
+			return $application;
+		}
+
 		if(self::hasApp($appName, $class)) {
-			return new $class(Http::getCompleteUrl(), Router::getParameters());
+			return $application = new $class(Http::getCompleteUrl(), Router::getParameters());
 		} else {
 			return null;
 		}

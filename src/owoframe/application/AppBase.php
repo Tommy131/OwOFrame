@@ -144,9 +144,14 @@ abstract class AppBase
 	*/
 	public function getController(string $controllerName, bool $autoMake = true)
 	{
+		static $controller;
+		if($controller instanceof ControllerBase) {
+			return $controller;
+		}
+
 		$controller = '\\application\\' . static::getName() . '\\controller\\' . $controllerName;
 		if(class_exists($controller)) {
-			return ($autoMake) ? new $controller($this) : true;
+			return ($autoMake) ? ($controller = new $controller($this)) : true;
 		} else {
 			return false;
 		}

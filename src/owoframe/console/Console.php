@@ -41,6 +41,7 @@ class Console implements Manager
 	 */
 	public function __construct()
 	{
+		LogWriter::setLogFileName('owoblog_cli_run.log');
 		LogWriter::$logPrefix = 'OwOCMD';
 		$cmdPath  = __DIR__ . DIRECTORY_SEPARATOR . 'command' . DIRECTORY_SEPARATOR;
 		$dirArray = scandir($cmdPath);
