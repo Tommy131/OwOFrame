@@ -19,6 +19,8 @@
 declare(strict_types=1);
 namespace owoframe\exception;
 
+use Throwable;
+
 use owoframe\helper\BootStrapper as BS;
 use owoframe\helper\Helper;
 use owoframe\http\HttpManager as Http;
@@ -51,29 +53,30 @@ class ExceptionOutput
 		];
 		$errno = isset($errorConversion[$errno]) ? $errorConversion[$errno] : $errno;
 		if(($pos = strpos($errstr, "\n")) !== false) $errstr = substr($errstr, 0, $pos);
-		if(defined("DEBUG_MODE") && DEBUG_MODE) {
-			if(!preg_match('/Cannot use "parent" when current class scope has no parent/i', $errstr)) {
-				$msg = "{$errno} happened: {$errstr} in {$errfile} at line {$errline}";
-				if(Helper::isRunningWithCGI()) {
-					if(defined('LOG_ERROR') && LOG_ERROR) {
-						$logged = '<span id="logged">--- Logged ---</span>';
-						self::log($msg);
-					} else {
-						$logged = '';
-					}
-					echo str_replace(
-						['{logged}', '{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'],
-						[$logged, $errno, $msg, $errfile, $errline, null, BS::getRunTime()],
-					self::getTemplate());
-				} else {
+		if(!preg_match('/Cannot use "parent" when current class scope has no parent/i', $errstr)) {
+			$msg = "{$errno} happened: {$errstr} in {$errfile} at line {$errline}";
+			if(Helper::isRunningWithCGI()) {
+				/* if(!DEBUG_MODE) {
+					return false;
+				} */
+				if(defined('LOG_ERROR') && LOG_ERROR) {
+					$logged = '<span id="logged">--- Logged ---</span>';
 					self::log($msg);
+				} else {
+					$logged = '';
 				}
-				exit(1);
+				echo str_replace(
+					['{logged}', '{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'],
+					[$logged, $errno, $msg, $errfile, $errline, null, BS::getRunTime()],
+				self::getTemplate());
+			} else {
+				self::log($msg);
 			}
+			exit(1);
 		}
 	}
 
-	public static function ExceptionHandler(\Throwable $exception)
+	public static function ExceptionHandler(Throwable $exception)
 	{
 		$type  = "[" . (($exception instanceof OwOFrameException) ? "OwOError" : "PHPError")."] ";
 		$type .= Helper::getShortClassName($exception);
@@ -106,14 +109,15 @@ class ExceptionOutput
 
 	private static function log(string $msg) : void
 	{
-		LogWriter::setFileName('owoblog_error.log');
+		$isCLI = Helper::isRunningWithCGI() ? '' : 'cli_';
+		LogWriter::setLogFileName("owoblog_{$isCLI}error.log");
 		LogWriter::$logPrefix = 'OwOBlogErrorHandler';
 		LogWriter::emergency(trim(str2UTF8($msg)));
 	}
 
 	public static function getTemplate() : string
 	{
-		$debugMode = (defined("DEBUG_MODE") && DEBUG_MODE) ? '<span id="debugMode">DebugMode</span>' : '';
+		$debugMode = (DEBUG_MODE) ? '<span id="debugMode">DebugMode</span>' : '';
 		return str_replace('{debugMode}', $debugMode, file_get_contents(FRAMEWORK_PATH . 'template' . DIRECTORY_SEPARATOR . 'ExceptionOutputTemplate.html'));
 	}
 }

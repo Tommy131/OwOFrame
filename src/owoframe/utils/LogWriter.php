@@ -61,6 +61,18 @@ class LogWriter
 	}
 
 	/**
+	 * 日志写入: NOTICE 等级
+	 *
+	 * @param  string      $message 日志内容
+	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
+	 * @return void
+	 */
+	public static function notice(string $message, string $color = TextFormat::AQUA) : void
+	{
+		self::write($message, 'NOTICE', $color);
+	}
+
+	/**
 	 * 日志写入: WARNING 等级
 	 *
 	 * @param  string      $message 日志内容
@@ -155,7 +167,7 @@ class LogWriter
 	 * @param  string      $fileName 日志名称
 	 * @return void
 	 */
-	public static function setFileName(string $fileName) : void
+	public static function setLogFileName(string $fileName) : void
 	{
 		static::$fileName = LOG_PATH . $fileName;
 	}
