@@ -24,7 +24,6 @@ use owoframe\exception\ParameterTypeErrorException;
 
 class UrlRule implements UrlRuleConstant
 {
-
 	/**
 	 * 请求路由
 	 *
@@ -107,11 +106,52 @@ class UrlRule implements UrlRuleConstant
 		return false;
 	}
 
+	/**
+	 * 通过分解路径单一检查
+	 *
+	 * @author HanskiJay
+	 * @since  2021-11-02
+	 * @param  null|string      $rule
+	 * @see   类型可参考写法: /[onlyNumbers]/[onlyLowercaseLetters]/...
+	 * @see   具体标签代表请参考\owoframe\constant\UrlRuleConstant
+	 * @return boolean
+	 */
+	public function checkWithSeparate(?string $rule = null) : bool
+	{
+		// Use Regex to grab effective rules;
+		if(!(bool) preg_match_all('/\[\w+\]{1,}/iU', $rule ?? $this->rule, $rules)) {
+			return false;
+		}
+		$rules = array_shift($rules);
+
+		// Separate UrlPath;
+		$paths = array_filter(explode('/', '/' . $this->url));
+		if(count($rules) !== count($paths)) {
+			return false;
+		}
+
+		// Start to check;
+		$start = 0;
+		foreach($paths as $path) {
+			if(!isset(self::URL_CHECK_RULES[$rules[$start]])) {
+				return false;
+			}
+			$rule = self::URL_CHECK_RULES[$rules[$start]];
+
+			if(!(bool) preg_match($rule, $path)) {
+				return false;
+			}
+			++$start;
+		}
+		return true;
+	}
 
 	/**
 	 * 设置请求路由
 	 *
-	 * @param  string  $url
+	 * @author HanskiJay
+	 * @since  2021-11-02
+	 * @param  string      $url
 	 * @return UrlRule
 	 */
 	public function setUrl(string $url) : UrlRule
@@ -121,9 +161,11 @@ class UrlRule implements UrlRuleConstant
 	}
 
 	/**
-	 * Undocumented function
+	 * 设置路由规则
 	 *
-	 * @param  string   $rule
+	 * @author HanskiJay
+	 * @since  2021-11-02
+	 * @param  string      $rule
 	 * @return UrlRule
 	 */
 	public function setRule(string $rule) : UrlRule
@@ -135,7 +177,9 @@ class UrlRule implements UrlRuleConstant
 	/**
 	 * 魔术方法: 直接返回类内部变量
 	 *
-	 * @param  string $name
+	 * @author HanskiJay
+	 * @since  2021-11-02
+	 * @param  string      $name
 	 * @return mixed
 	 */
 	public function __get(string $name)

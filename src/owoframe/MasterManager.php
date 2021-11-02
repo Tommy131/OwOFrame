@@ -120,7 +120,7 @@ final class MasterManager implements Manager
 	 * @since  2021-03-04
 	 * @param  string      $bindTag 绑定标识
 	 * @param  array       $params  传入参数
-	 * @return Manager
+	 * @return Console|EventManager|FileUploader|Http|Redis|UserManager
 	 */
 	public function getManager(string $bindTag, array $params = []) : Manager
 	{

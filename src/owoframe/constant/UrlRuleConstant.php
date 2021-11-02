@@ -32,7 +32,7 @@ interface UrlRuleConstant
 	/**
 	 * 仅匹配小写字母
 	 */
-	public const TAG_ONLY_LOWERCASE_LETTERS = '[onlyLowerLetters]';
+	public const TAG_ONLY_LOWERCASE_LETTERS = '[onlyLowercaseLetters]';
 	/**
 	 * 仅匹配混合字母与数字
 	 */

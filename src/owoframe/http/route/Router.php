@@ -129,7 +129,7 @@ final class Router
 		if(!$controller) {
 			$internalError("Cannot find a valid Controller of Application [{$appName}]!", '', 'The requested Controller was not found!');
 		}
-		$anonymousClass->controllerName = $controllerName;
+		$anonymousClass->controllerName = $controller->getName();
 
 		// Start to instance a Controller;
 		$reflect = new ReflectionClass($controller);
