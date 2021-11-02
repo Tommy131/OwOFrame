@@ -19,11 +19,10 @@
 declare(strict_types=1);
 namespace owoframe\console;
 
-use owoframe\contract\Manager;
 use owoframe\utils\LogWriter;
 use owoframe\utils\TextFormat as TF;
 
-class Console implements Manager
+class Console implements \owoframe\constant\Manager
 {
 	/**
 	 * 命名空间

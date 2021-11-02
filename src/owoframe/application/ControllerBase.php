@@ -62,7 +62,7 @@ abstract class ControllerBase
 	 */
 	public function methodNotFound()
 	{
-		return 'Requested method \'' . Router::getCurrentRequestMethod() . '\' not found!';
+		return 'Requested method \'' . Router::getCurrent('methodName') . '\' not found!';
 	}
 
 	/**

@@ -21,9 +21,9 @@ namespace owoframe\utils;
 
 use JsonSerializable;
 
-use owoframe\contract\StandardOutput;
+use owoframe\constant\StandardOutputConstant;
 
-class DataEncoder implements JsonSerializable, StandardOutput
+class DataEncoder implements JsonSerializable, StandardOutputConstant
 {
 	/**
 	 * 原始数据

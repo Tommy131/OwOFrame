@@ -19,6 +19,5 @@
 declare(strict_types=1);
 namespace owoframe\redis;
 
-use owoframe\contract\Manager;
 
-class RedisManager implements Manager {}
+class RedisManager implements \owoframe\constant\Manager {}

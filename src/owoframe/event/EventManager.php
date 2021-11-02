@@ -21,11 +21,11 @@ namespace owoframe\event;
 
 use ReflectionClass;
 use ReflectionMethod;
-use owoframe\contract\Cancellable;
+use owoframe\constant\Cancellable;
 use owoframe\exception\OwOFrameException;
 use owoframe\exception\ParameterTypeErrorException;
 
-class EventManager implements \owoframe\contract\Manager
+class EventManager implements \owoframe\constant\Manager
 {
 	/* @int 监听优先级别: 最高 */
 	public const HIGHEST_PRIORITY = 5;

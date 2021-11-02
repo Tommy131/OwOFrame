@@ -17,16 +17,27 @@
 **********************************************************************/
 
 declare(strict_types=1);
-namespace owoframe\contract;
+namespace owoframe\constant;
 
-interface StandardOutput
+// This file is for EventManager to recognize which event is cancelable;
+// Cancellable: American English | Cancelable: British English;
+interface Cancellable
 {
 	/**
-	 * 标准输出方法
+	 * 返回该事件是否已经取消回调
 	 *
 	 * @author HanskiJay
-	 * @since  2021-04-16
-	 * @return string
+	 * @since  2021-04-10
+	 * @return boolean
 	 */
-	public function getOutput() : string;
+	public function isCancelled() : bool;
+
+	/**
+	 * 设置事件取消状态
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-10
+	 * @param  bool        $status 状态
+	 */
+	public function setCancelled(bool $status) : void;
 }

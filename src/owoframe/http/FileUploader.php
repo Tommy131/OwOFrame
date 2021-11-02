@@ -19,10 +19,10 @@
 declare(strict_types=1);
 namespace owoframe\http;
 
-use owoframe\contract\MIMETypeConstant;
+use owoframe\constant\MIMETypeConstant;
 use owoframe\exception\JSONException;
 
-class FileUploader implements \owoframe\contract\Manager
+class FileUploader implements \owoframe\constant\Manager
 {
 	/* @array 默认允许上传的文件类型集合 */
 	private const DEFAULT_ALLOWED_EXTS = ["mp4", "gif", "jpeg", "jpg", "png"];

@@ -19,9 +19,9 @@
 declare(strict_types=1);
 namespace owoframe\event\system;
 
-use owoframe\contract\StandardOutput;
+use owoframe\constant\StandardOutputConstant;
 
-class OutputEvent extends \owoframe\event\Event implements StandardOutput
+class OutputEvent extends \owoframe\event\Event implements StandardOutputConstant
 {
 	/**
 	 * 输出内容

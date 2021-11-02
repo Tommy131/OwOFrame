@@ -17,7 +17,7 @@
 **********************************************************************/
 
 declare(strict_types=1);
-use owoframe\contract\BasicCodes;
+use owoframe\constant\BasicConstant as BC;
 use owoframe\exception\OwOFrameException;
 use owoframe\utils\LogWriter;
 
@@ -170,21 +170,21 @@ function requestMode() : int
 
 	if($ajaxMode) {
 		if($httpMode === 'get') {
-			return BasicCodes::AJAX_P_GET_MODE;
+			return BC::AJAX_P_GET_MODE;
 		}
 		elseif($httpMode === 'post') {
-			return BasicCodes::AJAX_P_POST_MODE;
+			return BC::AJAX_P_POST_MODE;
 		}
-		return BasicCodes::AJAX_MODE;
+		return BC::AJAX_MODE;
 	}
 	elseif($httpMode === 'get') {
-		return BasicCodes::GET_MODE;
+		return BC::GET_MODE;
 	}
 	elseif($httpMode === 'post') {
-		return BasicCodes::POST_MODE;
+		return BC::POST_MODE;
 	}
 	elseif($httpMode === 'put') {
-		return BasicCodes::PUT_MODE;
+		return BC::PUT_MODE;
 	} else {
 		return -1;
 	}
@@ -317,7 +317,7 @@ function str2UTF8(string $str) : string
  */
 function error(string $message, int $code = 0) : OwOFrameException
 {
-	return new class($code, $message) extends OwOFrameException implements BasicCodes
+	return new class($code, $message) extends OwOFrameException implements BC
 	{
 		public function __construct(int $code, ?string $message)
 		{

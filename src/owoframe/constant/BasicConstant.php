@@ -17,9 +17,9 @@
 **********************************************************************/
 
 declare(strict_types=1);
-namespace owoframe\contract;
+namespace owoframe\constant;
 
-interface BasicCodes
+interface BasicConstant
 {
 	# System Basic Status Code #
 	/* @int 操作成功 */

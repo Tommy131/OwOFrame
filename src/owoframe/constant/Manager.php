@@ -17,7 +17,7 @@
 **********************************************************************/
 
 declare(strict_types=1);
-namespace owoframe\contract;
+namespace owoframe\constant;
 
 /**
  * This file just let the MasterManager know your class has implemented a Manager

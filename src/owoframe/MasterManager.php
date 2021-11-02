@@ -22,7 +22,7 @@ namespace owoframe;
 use Composer\Autoload\ClassLoader;
 use owoframe\application\AppManager;
 use owoframe\console\Console;
-use owoframe\contract\Manager;
+use owoframe\constant\Manager;
 use owoframe\event\EventManager;
 use owoframe\helper\BootStrapper as BS;
 use owoframe\helper\Helper;

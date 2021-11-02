@@ -21,256 +21,194 @@ namespace owoframe\http\route;
 
 use Closure;
 use ReflectionClass;
-use ReflectionFunction;
-use owoframe\application\{AppBase, ControllerBase, AppManager};
-use owoframe\helper\{BootStrapper, Helper};
+
+use owoframe\MasterManager;
+use owoframe\application\AppManager;
+use owoframe\event\http\PageErrorEvent;
+use owoframe\exception\InvalidRouterException;
 use owoframe\http\HttpManager as Http;
-use owoframe\exception\{InvalidControllerException, MethodMissedException, InvalidRouterException, UnknownErrorException};
 use owoframe\utils\DataEncoder;
 
 final class Router
 {
-	/* @string 路由全路径 */
+
+	/**
+	 * 路由全路径
+	 *
+	 * @access private
+	 * @var string
+	 */
 	private static $_pathInfo = null;
 
-	/* object@AppBase 当前Application实例 */
-	private static $currentApp;
-	/* object@ControllerBase 当前Controller实例 */
-	private static $currentController;
-	/* string 当前的请求方法 */
-	private static $currentRequestMethod;
 
 
 	/**
-	 * @method      dispatch
-	 * @description 分发路由
-	 * @return      void
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09 18:03
-	*/
+	 * 分发路由
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09 18:03
+	 * @return void
+	 */
 	public static function dispatch() : void
 	{
-		$tmps = [];
+		// Closure Method for throw or display an error;
+		$internalError = function(string $errorMessage, string $title, string $outputMessage, int $statusCode = 404) : void {
+			Http::setStatusCode($statusCode);
+			if(DEBUG_MODE) {
+				throw new InvalidRouterException($errorMessage);
+			} else {
+				if(strlen($title) > 0) {
+					PageErrorEvent::$title  = $title;
+				}
+				if(strlen($outputMessage) > 0) {
+					PageErrorEvent::$output = $outputMessage;
+				}
+				MasterManager::getInstance()->getManager('event')->trigger(new PageErrorEvent());
+				exit;
+			}
+		};
+
 		$pathInfo = static::getParameters(-1);
-		$appName  = array_shift($pathInfo); // 默认设置为App名称 | Default is to set for AppName;
+		$appName  = array_shift($pathInfo);
+		// Check the valid of the name;
 		if(is_null($appName) || !DataEncoder::isOnlyLettersAndNumbers($appName)) {
 			$appName = DEFAULT_APP_NAME;
 		}
 		$appName = strtolower($appName);
 
-		if(is_file($file = FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'router.php')) {
-			include_once($file);
-			$nrules = RouteRule::getNormalRules();
-			$drules = RouteRule::getDomainRules();
-			foreach($drules as $domain => $v) {
-				if(RouteRule::compareDomain(server('HTTP_HOST'), $domain)) {
-					$appName = $v;
-					break;
-				}
-			}
-		}
-
+		// Judge whether the Application is in the banned list;
 		if(in_array($appName, DENY_APP_LIST)) {
-			Http::setStatusCode(404);
+			Http::setStatusCode(403);
 			return;
 		}
 
-		$app     = AppManager::getApp($appName) ?? AppManager::getDefaultApp();
-		$appName = $app->getName();
+		$app = AppManager::getApp($appName);
 		if($app === null) {
-			Http::setStatusCode(404);
-			throw new InvalidRouterException("Cannot find any valid Application!");
-			// TODO: 增加一个未找到App的回调方法(callback);
-		} else {
-			static::$currentApp = $app;
+			$internalError('Cannot find any valid Application!', '', 'Invalid route URL!');
 		}
+		// Write appName in an anonymous class;
+		$anonymousClass = static::getAnonymousClass();
+		$anonymousClass->appName = $appName;
 
-		// Judgment $pathInfo for ControllerName and RequestMethodName;
+		// Judge $pathInfo for ControllerName and RequestMethodName;
 		if(count($pathInfo) === 0) {
-			$controllerName = $requestMethod = $appName;
+			$requestMethod = $controllerName = ucfirst($appName);
 		}
 		elseif(count($pathInfo) >= 1) {
 			$controllerName = array_shift($pathInfo);
+			// Judge whether the path is legal;
 			if(!DataEncoder::isOnlyLettersAndNumbers($controllerName)) {
 				$controllerName = $appName;
 			}
+			// Because until this line of IF-ELSE statement counts the result of $pathInfo equal to 1;
 			$requestMethod = $controllerName;
 
-			if(count($pathInfo) >= 1) { // If $pathInfo still more than 2;
+			// If $pathInfo still exceeds 1 parameter;
+			if(count($pathInfo) >= 1) {
 				$requestMethod = array_shift($pathInfo);
+				// Judge whether the path is legal;
 				if(!DataEncoder::isOnlyLettersAndNumbers($requestMethod)) {
 					$requestMethod = $controllerName;
 				}
 
-				while(count($pathInfo) > 1) { // The rest vars will be used for GET to Controller;
-					$tmps[] = array_shift($pathInfo);
-				}
-				$rest = array_shift($pathInfo);
-				if($rest !== null) {
-					if(($s = stripos($rest, '?')) !== false) {
-						if($s > 0) {
-							$tmps[] = substr($rest, 0, $s);
-							$rest   = substr($rest, ++$s);
-						}
-						$rest = explode('&', substr($rest, 1));
-						$_get = [];
-						foreach($rest as $var) {
-							$var = explode('=', $var);
-							$_get[$var[0]] = $var[1];
-						}
-						$_GET = array_merge($_GET, $_get); // ?Bewilderment;
-					}
+				// Check the url validity;
+				$urlRule = new UrlRule(implode('/', $pathInfo));
+				if(!$urlRule->checkValid()) {
+					$internalError('Illegal Url requested!', '502 BAD GATEWAY', 'Illegal Url requested!', 403);
 				}
 			}
 		}
-		$app->setParameters($tmps);
 
-		$controllerName = ucfirst($controllerName);
+		// Initialize Controller;
 		if(!($controller = $app->getController($controllerName))) {
 			$controller = $app->getDefaultController();
 		}
+		// If not found any valid Controller;
 		if(!$controller) {
-			Http::setStatusCode(404);
-			throw new InvalidControllerException($app->getName(), $controllerName);
-			// TODO: 增加一个未找到Controller的回调方法(callback);
+			$internalError("Cannot find a valid Controller of Application [{$appName}]!", '', 'The requested Controller was not found!');
 		}
-		static::$currentController    = $controller;
-		static::$currentRequestMethod = $requestMethod;
-		if($controller instanceof Closure) {
-			$reflect = new ReflectionFunction($controller);
-			// TODO;
-		} else {
-			$reflect = new ReflectionClass($controller);
-			if($reflect->hasMethod($requestMethod) && $reflect->getMethod($requestMethod)->isPublic()) {
-				if(!$app->isControllerMethodBanned($requestMethod, $controller->getName())) {
-					$callback = [$controller, $requestMethod];
-				} else {
-					throw new InvalidRouterException("Requested method '{$requestMethod}' is banned, cannot be requested!");
-				}
+		$anonymousClass->controllerName = $controllerName;
+
+		// Start to instance a Controller;
+		$reflect = new ReflectionClass($controller);
+		// Check RequestMethod validity;
+		if($reflect->hasMethod($requestMethod) && $reflect->getMethod($requestMethod)->isPublic()) {
+			if(!$app->isControllerMethodBanned($requestMethod, $controller->getName())) {
+				$callback = [$controller, $requestMethod];
 			} else {
-				$requestMethod = $controller::$autoInvoke_methodNotFound;
-				if(!$reflect->hasMethod($requestMethod)) {
-					$exception = new MethodMissedException(get_class($controller), $requestMethod);
-					$exception->setJudgement($app->autoTo404Page());
-					$exception->setAlternativeCall([$app, 'renderPageNotFound']);
-					// TODO: 增加一个请求方法无效的事件回调;
-					throw $exception;
-				} else {
-					$callback = [$controller, $requestMethod];
-				}
+				$internalError("Requested method '{$requestMethod}' is banned, cannot be requested!", '403 Forbidden', 'Permission Denied!', 403);
 			}
-			$response = Http::Response($callback);
-			$response->sendResponse();
+		} else {
+			// If RequestMethod is invalid, then use the alternative methodName;
+			$requestMethod = $controller::$autoInvoke_methodNotFound;
+			// If the alternative method is the same invalid;
+			if(!$reflect->hasMethod($requestMethod)) {
+				$internalError("Requested method '{$requestMethod}' is invalid, cannot be requested!", '403 Forbidden', 'Unknown Error happened :(', 403);
+			} else {
+				$callback = [$controller, $requestMethod];
+			}
 		}
-		self::getRunTimeDiv($controller::$showUsedTimeDiv);
+		$anonymousClass->methodName = $requestMethod;
+
+		$response = Http::Response($callback);
+		$response->sendResponse();
 	}
 
+
+
 	/**
-	 * @method      getRunTimeDiv
-	 * @description 输出运行时间框
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-30
-	 * @return      void
+	 * 设置全路径
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09 18:03
+	 * @param  string      $pathInfo 路径
+	 * @return void
 	 */
-	public static function getRunTimeDiv(bool $condition = true) : void
-	{
-		if(defined('DEBUG_MODE') && DEBUG_MODE && $condition) {
-			echo str_replace('{runTime}', (string) BootStrapper::getRunTime(), base64_decode('PGRpdiBzdHlsZT0icG9zaXRpb246IGFic29sdXRlOyB6LWluZGV4OiA5OTk5OTk7IGJvdHRvbTogMDsgcmlnaHQ6IDA7IG1hcmdpbjogNXB4OyBwYWRkaW5nOiA1cHg7IGJhY2tncm91bmQtY29sb3I6ICNhYWFhYWE7IGJvcmRlci1yYWRpdXM6IDVweDsiPgoJPGRpdj5Vc2VkVGltZTogPGI+e3J1blRpbWV9czwvYj48L2Rpdj4KPC9kaXY+'));
-		}
-	}
-
-	/**
-	 * @method      getCurrentApp
-	 * @description 返回当前Application实例
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-17
-	 * @return      null|object@AppBase
-	 */
-	public static function getCurrentApp() : ?AppBase
-	{
-		return static::$currentApp;
-	}
-
-	/**
-	 * @method      getCurrentController
-	 * @description 返回当前Controller实例
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-17
-	 * @return      null|object@ControllerBase
-	 */
-	public static function getCurrentController() : ?ControllerBase
-	{
-		return static::$currentController;
-	}
-
-	/**
-	 * @method      getCurrentRequestMethod
-	 * @description 返回当前RequestMethod
-	 * @author      HanskiJay
-	 * @doneIn      2021-04-17
-	 * @return      string
-	 */
-	public static function getCurrentRequestMethod() : string
-	{
-		return static::$currentRequestMethod;
-	}
-
-	/**
-	 * @method      setPathInfo
-	 * @description 设置全路径
-	 * @description Set HTTP Url Path Info
-	 * @param       string[pathInfo|路径]
-	 * @return      void
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09 18:03
-	*/
 	public static function setPathInfo(string $pathInfo = '/') : void
 	{
 		static::$_pathInfo = trim($pathInfo);
 	}
 
 	/**
-	 * @method      isEmptyPathInfo
-	 * @description 检查全路径是否存在
-	 * @description Check if PathInfo exists
-	 * @return      boolean
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09 18:03
-	*/
+	 * 检查全路径是否为空
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09 18:03
+	 * @return boolean
+	 */
 	public static function isEmptyPathInfo() : bool
 	{
 		return static::$_pathInfo === null;
 	}
 
 	/**
-	 * @method      getPathInfo
-	 * @description 获取全路径
-	 * @description Get PathInfo
-	 * @return      string
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09 18:03
-	*/
+	 * 获取全路径
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09 18:03
+	 * @return string
+	 */
 	public static function getPathInfo() : string
 	{
 		if(static::isEmptyPathInfo()) {
 			static::setPathInfo(str_replace(server('SCRIPT_NAME'), '', server('REQUEST_URI')));
-			if(static::$_pathInfo === "") static::setPathInfo();
+			// ↓ Double check & set to '/' when last sentence does not work;
+			if(static::$_pathInfo === '') static::setPathInfo();
 		}
 		return static::$_pathInfo;
 	}
 
 	/**
-	 * @method      getParameters
-	 * @description 获取路径参数传递
-	 * @description Get PathInfo to array
-	 * @param       int[getFrom|从第几个参数开始获取](Default:1)
-	 *              1: 返回 ApplicationName 之后的参数;
-	 *              2: 返回 ControllerName 之后的参数;
-	 *              3: 返回 RequestMethodName 之后的参数;
-	 * @return      array
-	 * @author      HanskiJay
-	 * @doneIn      2020-09-09 18:03
-	*/
+	 * 获取路径参数传递
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09 18:03
+	 * @param  int      $getFrom 从第几个参数开始获取
+	 *                       1:       返回 ApplicationName 之后的参数;
+	 *                       2:       返回 ControllerName 之后的参数;
+	 *                       3:       返回 RequestMethodName 之后的参数;
+	 * @return array
+	 */
 	public static function getParameters(int $getFrom = 1) : array
 	{
 		#
@@ -282,5 +220,77 @@ final class Router
 		} else {
 			return $param;
 		}
+	}
+
+
+	/**
+	 * 返回当前路由选取名称
+	 *
+	 * @author HanskiJay
+	 * @since  2021-11-01
+	 * @param  string      $nameType 名称类型
+	 * @return mixed
+	 */
+	public static function getCurrent(string $nameType)
+	{
+		$closure = self::getAnonymousClass();
+		switch($nameType) {
+			default:
+				return null;
+
+			case 'appName':
+			case 'applicationName':
+				return $closure->appName;
+
+			case 'cName':
+			case 'controllerName':
+				return $closure->controllerName;
+
+			case 'mName':
+			case 'methodName':
+				return $closure->methodName;
+
+			case 'app':
+			case 'application':
+				return AppManager::getApp($closure->appName);
+
+			case 'controller':
+				return AppManager::getApp($closure->appName)->getController($closure->controllerName);
+		}
+	}
+
+	/**
+	 * 创建或返回一个匿名类
+	 *
+	 * @author HanskiJay
+	 * @since  2021-11-01
+	 * @return class@anonymous
+	 * @access private
+	 */
+	private static function getAnonymousClass()
+	{
+		static $anonymousClass;
+		if(is_null($anonymousClass)) {
+			$anonymousClass = new class()
+			{
+				public function __set(string $name, $value)
+				{
+					$this->{$name} = $value;
+				}
+
+				public function __get(string $name)
+				{
+					return $this->{$name} ?? null;
+				}
+
+				public function __unset(string $name)
+				{
+					if(isset($this->{$name})) {
+						unset($this->{$name});
+					}
+				}
+			};
+		}
+		return $anonymousClass;
 	}
 }

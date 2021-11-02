@@ -19,12 +19,12 @@
 declare(strict_types=1);
 namespace owoframe\application;
 
-use owoframe\http\HttpManager as Http;
-use owoframe\http\route\Router;
 use owoframe\exception\InvalidAppException;
 use owoframe\exception\ResourceMissedException;
+use owoframe\http\HttpManager as Http;
+use owoframe\http\route\Router;
 
-class AppManager implements \owoframe\contract\Manager
+class AppManager implements \owoframe\constant\Manager
 {
 	/**
 	 * AppBase basic namespace

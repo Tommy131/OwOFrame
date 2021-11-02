@@ -19,10 +19,10 @@
 declare(strict_types=1);
 namespace owoframe\application;
 
-use owoframe\helper\Helper;
-use owoframe\http\route\Router;
 use owoframe\exception\OwOFrameException;
 use owoframe\exception\ParameterTypeErrorException;
+use owoframe\helper\Helper;
+use owoframe\http\route\Router;
 
 class ViewBase extends ControllerBase
 {

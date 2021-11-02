@@ -22,11 +22,14 @@ namespace owoframe\http;
 use JsonSerializable;
 use ReflectionClass;
 
-use owoframe\contract\MIMETypeConstant;
-use owoframe\contract\StandardOutput;
+use owoframe\constant\MIMETypeConstant;
+use owoframe\constant\StandardOutputConstant;
+
+use owoframe\helper\BootStrapper;
 use owoframe\helper\Helper;
+
 use owoframe\http\HttpManager;
-use owoframe\http\route\Router;
+
 use owoframe\utils\DataEncoder;
 
 use owoframe\event\http\{BeforeResponseEvent, AfterResponseEvent};
@@ -91,11 +94,11 @@ class Response
 	 *
 	 * @author HanskiJay
 	 * @since  2021-04-16
-	 * @param  null|callable    $callback 可回调参数
-	 * @param  array            $params   回调参数传递
+	 * @param  callable   $callback 可回调参数
+	 * @param  array      $params   回调参数传递
 	 * @return Response
 	 */
-	public function setCallback(?callable $callback, array $params = []) : Response
+	public function setCallback(callable $callback, array $params = []) : Response
 	{
 		$this->__construct($callback, $params);
 		return $this;
@@ -113,11 +116,14 @@ class Response
 		$eventManager = \owoframe\MasterManager::getInstance()->getManager('event');
 		$eventManager->trigger(BeforeResponseEvent::class, [$this]);
 
+		// If the callback is invalid;
 		if(!is_callable($this->callback)) {
-			$this->callback = !is_null($app = Router::getCurrentApp()) ? [$app, 'renderPageNotFound'] : [$this, 'defaultResponseMsg'];
+			$this->callback = [$this, 'defaultResponseMsg'];
 		}
+		// Callback method and get result;
 		$called = call_user_func_array($this->callback, $this->callParams);
 
+		// If result is an Array;
 		if(is_array($called)) {
 			if($this->callback[0] instanceof DataEncoder) {
 				$called = $this->callback[0]->encode();
@@ -128,13 +134,14 @@ class Response
 			$this->header('Content-Type', MIMETypeConstant::MIMETYPE['json']);
 		}
 
+		// Check whether the callback result type is String;
 		if(!is_string($called)) {
 			$reflect = new ReflectionClass($this->callback[0]);
-			if($reflect->implementsInterface(StandardOutput::class)) {
+			if($reflect->implementsInterface(StandardOutputConstant::class)) {
 				$called = $this->callback[0]->getOutput();
 			} else {
 				$called = new DataEncoder();
-				$called->setStandardData(403, '[OwOResponseError] Cannot callback method ' . get_class($this->callback[0]) . '::' . $this->callback[1] . ' for response! (Method must be return string, ' . gettype($called) . ' is returned!', false);
+				$called->setStandardData(502, '[OwOResponseError] Cannot callback method ' . get_class($this->callback[0]) . '::' . $this->callback[1] . ' for response! (Method must be return string, ' . gettype($called) . ' is returned!', false);
 				$called = $called->encode();
 				$this->header('Content-Type', MIMETypeConstant::MIMETYPE['json']);
 			}
@@ -151,6 +158,7 @@ class Response
 		$eventManager->trigger($event);
 		$event->output();
 		unset($event);
+		self::getRunTimeDiv();
 
 		if(function_exists('fastcgi_finish_request')) fastcgi_finish_request();
 		$eventManager->trigger(AfterResponseEvent::class, [$this]);
@@ -238,5 +246,20 @@ class Response
 	public function defaultResponseMsg() : string
 	{
 		return $this->defaultResponseMsg;
+	}
+
+	/**
+	 * 输出运行时间框
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-30
+	 * @param  boolean      $condition
+	 * @return void
+	 */
+	public static function getRunTimeDiv(bool $condition = true) : void
+	{
+		if(DEBUG_MODE || $condition) {
+			echo str_replace('{runTime}', (string) BootStrapper::getRunTime(), base64_decode('PGRpdiBzdHlsZT0icG9zaXRpb246IGFic29sdXRlOyB6LWluZGV4OiA5OTk5OTk7IGJvdHRvbTogMDsgcmlnaHQ6IDA7IG1hcmdpbjogNXB4OyBwYWRkaW5nOiA1cHg7IGJhY2tncm91bmQtY29sb3I6ICNhYWFhYWE7IGJvcmRlci1yYWRpdXM6IDVweDsiPgoJPGRpdj5Vc2VkVGltZTogPGI+e3J1blRpbWV9czwvYj48L2Rpdj4KPC9kaXY+'));
+		}
 	}
 }

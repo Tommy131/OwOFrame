@@ -20,7 +20,8 @@ declare(strict_types=1);
 namespace owoframe\application;
 
 use owoframe\exception\InvalidControllerException;
-use owoframe\module\{ModuleBase, ModuleLoader};
+use owoframe\module\ModuleBase;
+use owoframe\module\ModuleLoader;
 
 abstract class AppBase
 {

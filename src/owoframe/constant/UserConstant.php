@@ -17,9 +17,9 @@
 **********************************************************************/
 
 declare(strict_types=1);
-namespace owoframe\contract;
+namespace owoframe\constant;
 
-interface UserCodes
+interface UserConstant
 {
 	/* @int(160) 在线状态 */
 	public const STATUS_ONLINE = 0x0a0;

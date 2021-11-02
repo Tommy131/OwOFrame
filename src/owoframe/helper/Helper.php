@@ -22,8 +22,8 @@ declare(strict_types=1);
 namespace owoframe\helper;
 
 use FilesystemIterator as FI;
-use owoframe\contract\HTTPStatusCodeConstant;
-use owoframe\contract\MIMETypeConstant;
+use owoframe\constant\HTTPStatusCodeConstant;
+use owoframe\constant\MIMETypeConstant;
 
 class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 {
