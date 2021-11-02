@@ -21,18 +21,41 @@ namespace owoframe\event\http;
 
 use owoframe\http\HttpManager as Http;
 
-class PageNotFoundEvent extends \owoframe\event\Event
+class PageErrorEvent extends \owoframe\event\Event
 {
     /* @string 默认模板文件路径 */
-    public const DEFAULT_TEMPLATE_FILE = FRAMEWORK_PATH . 'template' . DIRECTORY_SEPARATOR . '404.html';
+    public const DEFAULT_TEMPLATE_FILE = FRAMEWORK_PATH . 'template' . DIRECTORY_SEPARATOR . 'Error.html';
 
 
-    /* @string HTML模板路径 */
+    /**
+     * HTML模板路径
+     *
+     * @var string
+     */
     public static $templateFile = self::DEFAULT_TEMPLATE_FILE;
-    /* @string 输出内容 */
+
+    /**
+     * 标题
+     *
+     * @var string
+     */
+    public static $title = '404 PAGE NOT FOUND';
+
+    /**
+     * 输出内容
+     *
+     * @var string
+     */
     public static $output = 'Loun seidon poton dalon queotocy cuca quadosai posidensidy!';
-    /* @string 模板选然缓存 */
+
+    /**
+     * 模板选然缓存
+     *
+     * @var string
+     */
     public static $temp;
+
+
 
 	public function __construct(array $replaceTags = [], array $replace = [])
 	{
@@ -69,8 +92,8 @@ class PageNotFoundEvent extends \owoframe\event\Event
         if($update || (is_null(static::$temp)))
         {
             $template     = file_get_contents(static::$templateFile);
-            $replaceTags  = array_merge(array_filter($replaceTags), ['{description}']);
-            $replace      = array_merge(array_filter($replace),     [static::$output]);
+            $replaceTags  = array_merge(array_filter($replaceTags), ['{title}', '{description}']);
+            $replace      = array_merge(array_filter($replace),     [static::$title, static::$output]);
             static::$temp = str_replace($replaceTags, $replace, $template);
         }
         return static::$temp;
