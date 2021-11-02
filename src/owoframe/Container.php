@@ -33,13 +33,30 @@ use owoframe\exception\OwOFrameException;
 
 class Container implements ArrayAccess, Countable
 {
-
-	/* @Container 容器实例 */
+	/**
+	 * 容器实例
+	 *
+	 * @access protected
+	 * @var Container
+	 */
 	protected static $instance = null;
-	/* @array 容器绑定标识 */
+
+	/**
+	 * 容器绑定标识
+	 *
+	 * @access protected
+	 * @var array
+	 */
 	protected $bind = [];
-	/* @array 对象实例列表 */
+
+	/**
+	 * 对象实例列表
+	 *
+	 * @access protected
+	 * @var array
+	 */
 	protected $instances = [];
+
 
 
 	/**

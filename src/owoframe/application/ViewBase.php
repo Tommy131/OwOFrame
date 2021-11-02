@@ -26,14 +26,38 @@ use owoframe\exception\ParameterTypeErrorException;
 
 class ViewBase extends ControllerBase
 {
-	/* @string 视图文件路径 */
+	/**
+	 * 视图文件路径
+	 *
+	 * @access protected
+	 * @var string
+	 */
 	protected $filePath = '';
-	/* @string 视图模板 */
+
+	/**
+	 * 视图模板
+	 *
+	 * @access protected
+	 * @var string
+	 */
 	protected $viewTemplate = '';
-	/* @array 模板绑定的变量 */
+
+	/**
+	 * 模板绑定的变量
+	 *
+	 * @access protected
+	 * @var array
+	 */
 	protected $bindValues = [];
-	/* @array 绑定常量到模板 */
+
+	/**
+	 * 绑定常量到模板
+	 *
+	 * @access protected
+	 * @var array
+	 */
 	protected $constants = [];
+
 
 
 	public function __construct(\owoframe\application\AppBase $app)
@@ -51,7 +75,7 @@ class ViewBase extends ControllerBase
 	 * @author HanskiJay
 	 * @since  2020-09-10
 	 * @return void
-	*/
+	 */
 	public function mergeConstants(array $arr) : void
 	{
 		$this->constants = array_merge($this->constants, $arr);
@@ -65,36 +89,17 @@ class ViewBase extends ControllerBase
 	 * @param  string      $filePath 模板路径
 	 * @param  boolean     $update   更新模板并缓存
 	 * @return void
-	*/
+	 */
 	public function init(string $filePath = '', bool $update = false) : void
 	{
 		if(!empty($this->viewTemplate) && !$update) {
 			return;
 		}
 		if(!file_exists($filePath)) {
-			$controllerName = Router::getParameters(-1);
-			switch(count($controllerName)) {
-				case 0:
-					$controllerName = DEFAULT_APP_NAME;
-				break;
-
-				case 1:
-					$controllerName = array_shift($controllerName);
-				break;
-
-				case 2:
-					$controllerName = end($controllerName);
-				break;
-
-				default:
-				case 3:
-					$controllerName = array_slice($controllerName, 1, 1);
-					$controllerName = array_shift($controllerName);
-				break;
-			}
+			$controllerName = Router::getCurrent('controller');
 			$controllerName = ucfirst(strtolower($controllerName));
-			if(!Router::getCurrentApp()->getController($controllerName, false)) {
-				$controllerName = Router::getCurrentApp()->getDefaultController(true);
+			if(!Router::getCurrent('app')->getController($controllerName, false)) {
+				$controllerName = Router::getCurrent('app')->getDefaultController(true);
 			}
 			$this->filePath = $this->getViewPath($controllerName . '.html');
 		} else {
@@ -112,7 +117,7 @@ class ViewBase extends ControllerBase
 	 * @param  string|array      $searched 需要替换的变量名
 	 * @param  mixed             $val      替换的值
 	 * @return void
-	*/
+	 */
 	public function assign($searched, $val = null) : void
 	{
 		if(is_array($searched)) {
@@ -144,7 +149,7 @@ class ViewBase extends ControllerBase
 	 * @since  2020-09-10
 	 * @param  string      $searched 查找到的变量索引
 	 * @return mixed
-	*/
+	 */
 	public function getValue(string $searched)
 	{
 		return $this->bindValues[$searched] ?? null;
@@ -389,7 +394,7 @@ class ViewBase extends ControllerBase
 	 * @author HanskiJay
 	 * @since  2020-09-10
 	 * @return string
-	*/
+	 */
 	protected function render() : string
 	{
 		// 获取模板;
@@ -483,7 +488,7 @@ class ViewBase extends ControllerBase
 	 * @author HanskiJay
 	 * @since  2020-09-10
 	 * @param  string      $index 文件/文件夹索引
-	*/
+	 */
 	public function getComponent(string $index, int $mode = 0) : string
 	{
 		$path = $this->getViewPath('component') . DIRECTORY_SEPARATOR . Helper::escapeSlash($index);
@@ -497,7 +502,7 @@ class ViewBase extends ControllerBase
 	 * @since  2020-09-10
 	 * @param  string      $index 文件/文件夹索引
 	 * @return string
-	*/
+	 */
 	public function getCssPath(string $index) : string
 	{
 		return $this->getStaticPath('css') . Helper::escapeSlash($index);
@@ -510,7 +515,7 @@ class ViewBase extends ControllerBase
 	 * @since  2020-09-10
 	 * @param  string      $index 文件/文件夹索引
 	 * @return string
-	*/
+	 */
 	public function getPublicCssPath(string $index) : string
 	{
 		return $this->getResourcePath('css') . Helper::escapeSlash($index);
@@ -523,7 +528,7 @@ class ViewBase extends ControllerBase
 	 * @since  2020-09-10
 	 * @param  string      $index 文件/文件夹索引
 	 * @return string
-	*/
+	 */
 	public function getJsPath(string $index) : string
 	{
 		return $this->getStaticPath('js') . Helper::escapeSlash($index);
@@ -536,7 +541,7 @@ class ViewBase extends ControllerBase
 	 * @since  2020-09-10
 	 * @param  string      $index 文件/文件夹索引
 	 * @return string
-	*/
+	 */
 	public function getPublicJsPath(string $index) : string
 	{
 		return $this->getResourcePath('js') . Helper::escapeSlash($index);
@@ -549,7 +554,7 @@ class ViewBase extends ControllerBase
 	 * @since  2020-09-10
 	 * @param  string      $index 文件/文件夹索引
 	 * @return string
-	*/
+	 */
 	public function getImgPath(string $index) : string
 	{
 		return $this->getStaticPath('img') . Helper::escapeSlash($index);
@@ -562,7 +567,7 @@ class ViewBase extends ControllerBase
 	 * @since  2020-09-10
 	 * @param  string      $index 文件/文件夹索引
 	 * @return string
-	*/
+	 */
 	public function getPublicImgPath(string $index) : string
 	{
 		return $this->getResourcePath('img') . Helper::escapeSlash($index);
@@ -576,7 +581,7 @@ class ViewBase extends ControllerBase
 	 * @param  string      $index1 文件夹索引
 	 * @param  string      $index2 文件索引
 	 * @return boolean
-	*/
+	 */
 	public function existsStatic(string $index1, string $index2) : bool
 	{
 		$index1 = strtolower($index1);

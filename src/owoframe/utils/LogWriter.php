@@ -28,11 +28,27 @@ class LogWriter
 	/* @string 日志记录格式 */
 	public const LOG_FORMAT = "[%s][%s][%s/%s] > %s";
 
-	/* @string 日志记录文件名称 */
+
+	/**
+	 * 日志记录文件名称
+	 *
+	 * @access private
+	 * @var string
+	 */
 	private static $fileName;
-	/* @string 日志记录称号 */
+
+	/**
+	 * 日志记录称号
+	 *
+	 * @var string
+	 */
 	public static $logPrefix = 'OwOWeb';
-	/* @int 最大文件大小(mb) */
+
+	/**
+	 * 最大文件大小(mb)
+	 *
+	 * @var integer
+	 */
 	public static $maxFileSize = 1024; // mb, 日志文件大小大于这个值时自动截断并且生成新的日志;
 
 

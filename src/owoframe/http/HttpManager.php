@@ -40,11 +40,27 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 		// "/[`~!@#$%^&*()_\-+=<>?:\\\"{}|,.\/;'\\[\]·~！#￥%……&*（）——\-+={}|《》？：“”【】、；‘'，。、]/im"
 	];
 
-	/* @Config 黑名单配置文件 */
+
+	/**
+	 * 黑名单配置文件
+	 *
+	 * @access protected
+	 * @var Config
+	 */
 	protected static $ipList;
-	/* @array 不记录日志的路由 */
+
+	/**
+	 * 不记录日志的路由
+	 *
+	 * @var array
+	 */
 	public static $notLogUrl = [];
-	/* @array 自定义的用于过滤的正则表达式 */
+
+	/**
+	 * 自定义的用于过滤的正则表达式
+	 *
+	 * @var array
+	 */
 	public static $customFilter = [];
 
 
@@ -89,7 +105,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 
 	/**
 	 * HTTP 参数操作方法
-	*/
+	 */
 	/**
 	 * 设置HTTP状态码
 	 *
@@ -192,7 +208,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 
 	/**
 	 * ClientIp 操作方法
-	*/
+	 */
 	/**
 	 * 封禁一个IP
 	 *
@@ -321,14 +337,14 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 
 	/**
 	 * URI/URL 方法
-	*/
+	 */
 	/**
 	 * 判断是否为HTTPS协议
 	 *
 	 * @author HanskiJay
 	 * @since  2020-09-09 18:03
 	 * @return boolean
-	*/
+	 */
 	public static function isSecure() : bool
 	{
 		return (!empty(server('HTTPS')) && 'off' != strtolower(server('HTTPS')))
@@ -353,7 +369,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 * @author HanskiJay
 	 * @since  2020-09-09 18:03
 	 * @return string
-	*/
+	 */
 	public static function getRootUrl() : string
 	{
 		return server('REQUEST_SCHEME').'://'.server('HTTP_HOST');
@@ -367,7 +383,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 * @param  string      $name 名称
 	 * @param  string      $path 路径
 	 * @return string
-	*/
+	 */
 	public static function betterUrl(string $name, string $path) : string
 	{
 		return trim($path, '/').'/'.str_replace('//', '/', ltrim(((0 === strpos($name, './')) ? substr($name, 2) : $name), '/'));

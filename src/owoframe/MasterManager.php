@@ -34,12 +34,28 @@ use owoframe\user\UserManager;
 
 final class MasterManager implements Manager
 {
-	/* @MasterManager 主进程实例 */
-	protected static $instance = null;
-	/* @ClassLoader */
+	/**
+	 * 主进程实例
+	 *
+	 * @access protected
+	 * @var MasterManager
+	 */
+	private static $instance = null;
+
+	/**
+	 * ClassLoader实例
+	 *
+	 * @access private
+	 * @var ClassLoader
+	 */
 	private static $classLoader;
 
-	/* @array 绑定标签到类 */
+	/**
+	 * 绑定标签到类
+	 *
+	 * @access protected
+	 * @var array
+	 */
 	protected $bind =
 	[
 		'console'      => Console::class,
@@ -50,7 +66,13 @@ final class MasterManager implements Manager
 		'usermanager'  => UserManager::class,
 		'unknown'      => null
 	];
-	/* @array 对象实例列表 */
+
+	/**
+	 * 对象实例列表
+	 *
+	 * @access protected
+	 * @var array
+	 */
 	protected $instances = [];
 
 

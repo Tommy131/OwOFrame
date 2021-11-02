@@ -24,12 +24,28 @@ use owoframe\http\route\Router;
 
 abstract class ControllerBase
 {
-	/* @AppBase 返回AppBase实例 */
+	/**
+	 * 返回AppBase实例
+	 *
+	 * @access private
+	 * @var AppBase
+	 */
 	private $app = null;
-	/* @bool Front-End开启或关闭UsedTimeDiv(Default:true) */
+
+	/**
+	 * Front-End开启或关闭UsedTimeDiv(Default:true)
+	 *
+	 * @var boolean
+	 */
 	public static $showUsedTimeDiv = true;
-	/* @string 若请求的Url中包含无效的请求方法, 则默认执行该方法 */
+
+	/**
+	 * 若请求的Url中包含无效的请求方法, 则默认执行该方法
+	 *
+	 * @var string
+	 */
 	public static $autoInvoke_methodNotFound = 'methodNotFound';
+
 
 
 	public function __construct(AppBase $app)
@@ -43,7 +59,7 @@ abstract class ControllerBase
 	 * @author HanskiJay
 	 * @since  2020-10-08 22:04
 	 * @return mixed
-	*/
+	 */
 	public function methodNotFound()
 	{
 		return 'Requested method \'' . Router::getCurrentRequestMethod() . '\' not found!';
@@ -56,7 +72,7 @@ abstract class ControllerBase
 	 * @since  2020-09-10
 	 * @param  string      $index 文件/文件夹索引
 	 * @return string
-	*/
+	 */
 	public function getResourcePath(string $index) : string
 	{
 		return RESOURCE_PATH . $index . DIRECTORY_SEPARATOR;
@@ -69,7 +85,7 @@ abstract class ControllerBase
 	 * @since  2020-09-10
 	 * @param  string      $index 文件/文件夹索引
 	 * @return string
-	*/
+	 */
 	public function getStaticPath(string $index) : string
 	{
 		return $this->getViewPath('static') . DIRECTORY_SEPARATOR . $index . DIRECTORY_SEPARATOR;
@@ -83,7 +99,7 @@ abstract class ControllerBase
 	 * @param  string      $index      文件/文件夹索引
 	 * @param  bool        $selectMode 选择模式[True: 返回绝对路径|Return absolute path][False: 返回相对路径|Return relative path]](Default:true)
 	 * @return string
-	*/
+	 */
 	final public function getViewPath(string $index, bool $selectMode = true) : string
 	{
 		return $this->getApp()::getAppPath($selectMode) . "view" . DIRECTORY_SEPARATOR . $index;
@@ -96,7 +112,7 @@ abstract class ControllerBase
 	 * @since  2020-09-10
 	 * @param  string      $index 文件/文件夹索引
 	 * @return boolean
-	*/
+	 */
 	final public function hasViewPath(string $index) : bool
 	{
 		$index = explode("/", $index)[0] ?? $index;
@@ -121,7 +137,7 @@ abstract class ControllerBase
 	 * @author HanskiJay
 	 * @since  2020-09-10 18:49
 	 * @return AppBase
-	*/
+	 */
 	final public function getApp() : AppBase
 	{
 		return $this->app;

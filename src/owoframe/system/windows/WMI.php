@@ -32,19 +32,43 @@ use owoframe\exception\ExtensionMissedException;
 
 class WMI
 {
-	/* @string 连接到的命名空间 */
+	/**
+	 * 连接到的命名空间
+	 *
+	 * @access protected
+	 * @var string
+	 */
 	protected $namespace = 'root\cimv2';
-	/* @string 执行脚本 */
+
+	/**
+	 * 执行脚本
+	 *
+	 * @access protected
+	 * @var string
+	 */
 	protected $script = 'WbemScripting.SWbemLocator';
-	/* @array WMI关键配置文件 */
+
+	/**
+	 * WMI关键配置文件
+	 *
+	 * @access protected
+	 * @var array
+	 */
 	protected $config =
 	[
 		'host' => '127.0.0.1',
 		'user' => '',
 		'pass' => ''
 	];
-	/* object@Variant 连接实例 */
+
+	/**
+	 * 连接实例
+	 *
+	 * @access protected
+	 * @var Variant
+	 */
 	protected $connection;
+
 
 
 	public function __construct(?string $script = null)

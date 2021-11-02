@@ -25,10 +25,22 @@ use owoframe\contract\StandardOutput;
 
 class DataEncoder implements JsonSerializable, StandardOutput
 {
-	/* @array 原始数据 */
+	/**
+	 * 原始数据
+	 *
+	 * @access protected
+	 * @var array
+	 */
 	protected $originData = [];
-	/* @string 最终输出数据*/
+
+	/**
+	 * 最终输出数据
+	 *
+	 * @access protected
+	 * @var string
+	 */
 	protected $output = '';
+
 
 
 	public function __construct(array $data = [])

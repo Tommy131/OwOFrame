@@ -34,22 +34,50 @@ use owoframe\event\system\OutputEvent;
 
 class Response
 {
-	/* @bool 响应 & 数据发送状态 */
+	/**
+	 * 响应 & 数据发送状态
+	 *
+	 * @access private
+	 * @var boolean
+	 */
 	private $hasSent = false;
-	/* @array 回调参数(可以输出数据的回调方法) */
+
+	/**
+	 * 回调参数(可以输出数据的回调方法)
+	 *
+	 * @access private
+	 * @var callable
+	 */
 	private $callback;
 
-	/* @int HTTP响应代码(Default:200) */
+	/**
+	 * HTTP响应代码(Default:200)
+	 *
+	 * @access protected
+	 * @var integer
+	 */
 	protected $code = 200;
-	/* @array HTTP header参数设置 */
+
+	/**
+	 * HTTP header参数设置
+	 *
+	 * @access protected
+	 * @var array
+	 */
 	protected $header =
 	[
 		'Content-Type'           => 'text/html; charset=utf-8',
 		'X-Content-Type-Options' => 'nosniff',
 		'Pragma'                 => 'HTTP/1.0'
 	];
-	/* @string 默认响应信息 */
+
+	/**
+	 * 默认响应信息
+	 *
+	 * @var string
+	 */
 	public $defaultResponseMsg = '[OwOResponseError] Keine Ahnung...';
+
 
 
 	public function __construct(?callable $callback, array $params = [])
@@ -136,7 +164,7 @@ class Response
 	 * @since  2020-09-10 18:49
 	 * @param  int      $code 响应代码
 	 * @return boolean
-	*/
+	 */
 	public function setResponseCode(int $code) : bool
 	{
 		if(!isset(Helper::HTTP_CODE[$code])) return false;
@@ -151,7 +179,7 @@ class Response
 	 * @since  2020-09-10 18:49
 	 * @param  int      $code 响应代码
 	 * @return int
-	*/
+	 */
 	public function getResponseCode(int $code = 403) : int
 	{
 		return $this->code ?: $code;
@@ -165,7 +193,7 @@ class Response
 	 * @param  string      $index 文件/文件夹索引
 	 * @param  string      $val 值
 	 * @return mixed
-	*/
+	 */
 	public function &header(string $name, string $val = '')
 	{
 		if(($name === '') && ($val === '')) {

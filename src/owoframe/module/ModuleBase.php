@@ -23,14 +23,39 @@ use owoframe\MasterManager;
 
 abstract class ModuleBase
 {
-	/* @string 插件加载路径 */
+	/**
+	 * 插件加载路径
+	 *
+	 * @access private
+	 * @var string
+	 */
 	private $loadPath;
-	/* @object 插件信息配置文件(JSON对象传入) | Plugin Information Configuration (Json Format Object) */
+
+	/**
+	 * 插件信息配置文件(JSON对象传入) | Plugin Information Configuration (Json Format Object)
+	 *
+	 * @access private
+	 * @var object
+	 */
 	private $moduleInfo;
-	/* @object MasterManager实例 */
+
+	/**
+	 * MasterManager实例
+	 *
+	 * @access private
+	 * @var object
+	 */
 	private $master = null;
-	/* @bool 插件已加载值 */
+
+	/**
+	 * 插件已加载值
+	 *
+	 * @access protected
+	 * @var boolean
+	 */
 	protected $isEnabled = false;
+
+
 
 	/**
 	 * 实例化插件时的构造函数

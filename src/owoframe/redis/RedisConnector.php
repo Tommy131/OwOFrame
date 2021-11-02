@@ -25,11 +25,28 @@ use owoframe\object\Config;
 
 class RedisConnector
 {
-	/* class@RedisConnector RedisConnector实例 */
+	/**
+	 * RedisConnector实例
+	 *
+	 * @access protected
+	 * @var RedisConnector
+	 */
 	protected static $instance = null;
-	/* class@Redis Redis实例 */
+
+	/**
+	 * Redis实例
+	 *
+	 * @access protected
+	 * @var Redis
+	 */
 	protected $handler = null;
-	/* @array 配置文件 */
+
+	/**
+	 * 配置文件
+	 *
+	 * @access protected
+	 * @var array
+	 */
 	protected $config =
 	[
 		'host'       => '127.0.0.1',
@@ -40,8 +57,16 @@ class RedisConnector
 		'persistent' => false,
 		'prefix'     => '',
 	];
-	/* @string Redis容器名称 */
+
+	/**
+	 * Redis容器名称
+	 *
+	 * @access protected
+	 * @var string
+	 */
 	protected $name = '';
+
+
 
 	/**
 	 * 新建Redis连接

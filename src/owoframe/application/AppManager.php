@@ -26,10 +26,23 @@ use owoframe\exception\ResourceMissedException;
 
 class AppManager implements \owoframe\contract\Manager
 {
-	/* @string AppBase basic namespace */
+	/**
+	 * AppBase basic namespace
+	 *
+	 * @access private
+	 * @var string
+	 */
 	private static $basicAppClass = "owoframe\\application\\AppBase";
-	/* @string Application路径 */
+
+	/**
+	 * Application路径
+	 *
+	 * @access private
+	 * @var string
+	 */
 	private static $appPath = "";
+
+
 
 	/**
 	 * 设置App目录
@@ -38,7 +51,7 @@ class AppManager implements \owoframe\contract\Manager
 	 * @since  2020-09-09
 	 * @param  string      $path 目录
 	 * @return void
-	*/
+	 */
 	public static function setPath(string $path) : void
 	{
 		if(is_dir($path)) {
@@ -54,7 +67,7 @@ class AppManager implements \owoframe\contract\Manager
 	 * @return string
 	 * @author HanskiJay
 	 * @since  2020-09-09
-	*/
+	 */
 	public static function getPath() : string
 	{
 		if(is_dir(self::$appPath)) {
@@ -112,7 +125,7 @@ class AppManager implements \owoframe\contract\Manager
 	 * @author HanskiJay
 	 * @since  2020-09-09
 	 * @return null|AppBase
-	*/
+	 */
 	public static function getDefaultApp() : ?AppBase
 	{
 		return self::getApp(DEFAULT_APP_NAME);
@@ -125,7 +138,7 @@ class AppManager implements \owoframe\contract\Manager
 	 * @since  2020-09-09
 	 * @param  string      $appName App名称
 	 * @return null|AppBase
-	*/
+	 */
 	public static function getApp(string $appName) : ?AppBase
 	{
 		static $application;

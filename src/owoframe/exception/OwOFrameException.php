@@ -21,9 +21,20 @@ namespace owoframe\exception;
 
 class OwOFrameException extends \Exception
 {
-	/* @callable 备选回调方法 */
+	/**
+	 * 备选回调方法
+	 *
+	 * @access private
+	 * @var callable
+	 */
 	private $alternativeCall = [];
-	/* @bool 判断条件结果 */
+
+	/**
+	 * 判断条件结果
+	 *
+	 * @access private
+	 * @var boolean
+	 */
 	private $judgement = true;
 
 

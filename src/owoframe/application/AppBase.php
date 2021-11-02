@@ -24,15 +24,36 @@ use owoframe\module\{ModuleBase, ModuleLoader};
 
 abstract class AppBase
 {
-	/* @AppBase 返回本类实例 */
+	/**
+	 * 返回本类实例
+	 *
+	 * @access protected
+	 * @var AppBase
+	 */
 	protected static $instance = null;
 
-	/* @string 当前的App访问地址 */
+	/**
+	 * 当前的App访问地址
+	 *
+	 * @access protected
+	 * @var string
+	 */
 	protected $currentSiteUrl = null;
-	/* @string 默认控制其名称 */
+
+	/**
+	 * 默认控制其名称
+	 *
+	 * @access protected
+	 * @var string
+	 */
 	protected $defaultController = '';
 
-	/* @array 不允许通过路由请求的控制器(方法)组 */
+	/**
+	 * 不允许通过路由请求的控制器(方法)组
+	 *
+	 * @access protected
+	 * @var array
+	 */
 	protected $controllerFilter = [];
 
 
@@ -112,7 +133,7 @@ abstract class AppBase
 	 * @since  2020-09-09
 	 * @param  string      $defaultController 默认控制器名称
 	 * @return void
-	*/
+	 */
 	public function setDefaultController(string $defaultController) : void
 	{
 		if(!$this->getController($defaultController, false)) {
@@ -128,7 +149,7 @@ abstract class AppBase
 	 * @since  2020-09-09
 	 * @param  bool      $returnName 返回控制器名称
 	 * @return string|ControllerBase
-	*/
+	 */
 	public function getDefaultController(bool $returnName = false)
 	{
 		return $returnName ? $this->defaultController : $this->getController($this->defaultController);
@@ -141,7 +162,7 @@ abstract class AppBase
 	 * @since  2020-09-09
 	 * @param  string      $controllerName 控制器名称
 	 * @return boolean|ControllerBase
-	*/
+	 */
 	public function getController(string $controllerName, bool $autoMake = true)
 	{
 		static $controller;
@@ -190,7 +211,7 @@ abstract class AppBase
 	 * @since  2020-09-09
 	 * @param  bool      $selectMode 选择模式[True: 返回绝对路径|Return absolute path][False: 返回相对路径|Return relative path]](Default:true)
 	 * @return string
-	*/
+	 */
 	final public static function getAppPath(bool $selectMode = true) : string
 	{
 		return (($selectMode) ? AppManager::getPath() : static::getNameSpace()) . static::getName() . DIRECTORY_SEPARATOR;
@@ -202,7 +223,7 @@ abstract class AppBase
 	 * @author HanskiJay
 	 * @since  2020-09-09
 	 * @return string
-	*/
+	 */
 	final public static function getNameSpace() : string
 	{
 		$ns = explode("\\", __CLASS__);
@@ -229,7 +250,7 @@ abstract class AppBase
 	 * @author HanskiJay
 	 * @since  2020-08-08
 	 * @return string
-	*/
+	 */
 	public function getCurrentSiteUrl() : string
 	{
 		return $this->currentSiteUrl;
@@ -241,7 +262,7 @@ abstract class AppBase
 	 * @author HanskiJay
 	 * @since  2020-09-09
 	 * @return null|AppBase
-	*/
+	 */
 	public static function getInstance() : ?AppBase
 	{
 		return static::$instance ?? null;
@@ -257,7 +278,7 @@ abstract class AppBase
 	 * @author HanskiJay
 	 * @since  2020-09-10
 	 * @return void
-	*/
+	 */
 	abstract public function initialize() : void;
 
 	/**
@@ -266,7 +287,7 @@ abstract class AppBase
 	 * @author HanskiJay
 	 * @since  2020-09-09
 	 * @return boolean
-	*/
+	 */
 	abstract public static function autoTo404Page() : bool;
 
 	/**
@@ -275,7 +296,7 @@ abstract class AppBase
 	 * @author HanskiJay
 	 * @since  2020-09-09
 	 * @return string
-	*/
+	 */
 	abstract public static function getName() : string;
 }
 ?>

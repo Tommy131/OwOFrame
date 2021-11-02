@@ -21,7 +21,12 @@ namespace owoframe\system\windows;
 
 class WMIService extends WMI
 {
-	/* @array 数据存储 */
+	/**
+	 * 数据存储
+	 *
+	 * @access protected
+	 * @var array
+	 */
 	protected $data = [];
 
 	/**

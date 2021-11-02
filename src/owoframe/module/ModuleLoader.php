@@ -30,9 +30,20 @@ class ModuleLoader
 	/* @string 模块信息识别文件名称 */
 	public const IDENTIFY_FILE_NAME = 'info.ini';
 
-	/* @string 模块加载路径 */
+	/**
+	 * 模块加载路径
+	 *
+	 * @access private
+	 * @var string
+	 */
 	private static $loadPath = '';
-	/* @array 模块池 */
+
+	/**
+	 * 模块池
+	 *
+	 * @access private
+	 * @var array
+	 */
 	private static $modulePool = [];
 
 	/**
@@ -42,7 +53,7 @@ class ModuleLoader
 	 * @since  2020-09-09 18:03
 	 * @param  string      $path 路径
 	 * @return void
-	*/
+	 */
 	public static function setPath(string $path) : void
 	{
 		if(is_dir($path)) {
@@ -58,7 +69,7 @@ class ModuleLoader
 	 * @author HanskiJay
 	 * @since  2020-09-09 18:03
 	 * @return string
-	*/
+	 */
 	public static function getPath() : string
 	{
 		return self::$loadPath;

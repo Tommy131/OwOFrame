@@ -26,7 +26,13 @@ class FileUploader implements \owoframe\contract\Manager
 {
 	/* @array 默认允许上传的文件类型集合 */
 	private const DEFAULT_ALLOWED_EXTS = ["mp4", "gif", "jpeg", "jpg", "png"];
-	/* @array 自定义允许上传的文件类型集合 */
+
+	/**
+	 * 自定义允许上传的文件类型集合
+	 *
+	 * @access private
+	 * @var array
+	 */
 	private $allowedExts = [];
 
 
@@ -83,7 +89,7 @@ class FileUploader implements \owoframe\contract\Manager
 	 * @since  2020-09-10 18:49
 	 * @param  string      $ext 文件类型
 	 * @return boolean
-	*/
+	 */
 	public function addAllowedExt(string $ext) : void
 	{
 		if(!$this->canUpload($ext)) {
@@ -98,7 +104,7 @@ class FileUploader implements \owoframe\contract\Manager
 	 * @since  2020-09-10 18:49
 	 * @param  string      $ext 文件类型
 	 * @return boolean
-	*/
+	 */
 	public function delAllowedExt(string $ext) : void
 	{
 		$ext = strtolower($ext);
@@ -114,7 +120,7 @@ class FileUploader implements \owoframe\contract\Manager
 	 * @since  2020-09-10 18:49
 	 * @param  string      $ext 文件类型
 	 * @return boolean
-	*/
+	 */
 	public function canUpload(string $ext) : bool
 	{
 		return isset(MIMETypeConstant::MIMETYPE[$ext]) && in_array($ext, $this->getAllowedExts());
@@ -127,7 +133,7 @@ class FileUploader implements \owoframe\contract\Manager
 	 * @since  2020-09-10 18:49
 	 * @param  string      $ext 文件类型
 	 * @return boolean
-	*/
+	 */
 	public function getAllowedExts() : array
 	{
 		return array_merge(self::DEFAULT_ALLOWED_EXTS, $this->allowedExts);

@@ -21,10 +21,23 @@ namespace owoframe\http;
 
 class Cookie
 {
-	/* @string Cookie前缀 */
+
+	/**
+	 * Cookie前缀
+	 *
+	 * @access private
+	 * @var string
+	 */
 	private static $_prefix = '';
-	/* @string Cookie存储路径 */
+
+	/**
+	 * Cookie存储路径
+	 *
+	 * @access private
+	 * @var string
+	 */
 	private static $_path = '/';
+
 
 
 	/**

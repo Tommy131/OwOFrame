@@ -25,11 +25,28 @@ use owoframe\utils\TextFormat as TF;
 
 class Console implements Manager
 {
-	/* @string 命名空间 */
+	/**
+	 * 命名空间
+	 *
+	 * @access private
+	 * @var string
+	 */
 	private static $namespace = '\\owoframe\\console\\command\\';
-	/* @array 指令池 */
+
+	/**
+	 * 指令池
+	 *
+	 * @access private
+	 * @var array
+	 */
 	private $commandPool = [];
-	/* @array 指令别名存放 */
+
+	/**
+	 * 指令别名存放
+	 *
+	 * @access private
+	 * @var array
+	 */
 	private $usedAliases = [];
 
 

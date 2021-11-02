@@ -7,11 +7,35 @@ use CurlHandle;
 
 class Curl
 {
+	/**
+	 * cURL
+	 *
+	 * @access protected
+	 * @var CurlHandle
+	 */
 	protected $curl;
+
+	/**
+	 * 请求URL地址
+	 *
+	 * @access protected
+	 * @var string
+	 */
 	protected $url;
+
+	/**
+	 * 获取到的上下文
+	 *
+	 * @access protected
+	 * @var string
+	 */
 	protected $content;
 
-	/* @array HTTP请求头 */
+	/**
+	 * HTTP请求头
+	 *
+	 * @var array
+	 */
 	public static $defaultHeader =
 	[
 		"Connection: Keep-Alive",
@@ -23,7 +47,11 @@ class Curl
 		'X-FORWARDED-FOR:{ip}'
 	];
 
-	/* @array IP组 */
+	/**
+	 * IP组
+	 *
+	 * @var array
+	 */
 	public $ip_long =
     [
         ['607649792', '608174079'],     //36.56.0.0   - 36.63.255.255

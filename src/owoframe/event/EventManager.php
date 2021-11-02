@@ -38,9 +38,19 @@ class EventManager implements \owoframe\contract\Manager
 	/* @int 监听优先级别: 最低 */
 	public const LOWEST_PRIORITY  = 1;
 
-	/* @array 事件列表 */
+
+	/**
+	 * 事件列表
+	 *
+	 * @var array
+	 */
 	private $eventList = [];
-	/* @array 监听者列表 */
+
+	/**
+	 * 监听者列表
+	 *
+	 * @var array
+	 */
 	private $listenerList = [];
 
 

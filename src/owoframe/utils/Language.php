@@ -24,14 +24,39 @@ use owoframe\exception\ResourceMissedException;
 
 class Language
 {
-	/* @string 语言包名 */
+	/**
+	 * 语言包名
+	 *
+	 * @access private
+	 * @var string
+	 */
 	private $package;
-	/* @string 文件路径 */
+
+	/**
+	 * 文件路径
+	 *
+	 * @access private
+	 * @var string
+	 */
 	private $file;
-	/* @string 语言标签 */
+
+	/**
+	 * 语言标签
+	 *
+	 * @access private
+	 * @var string
+	 */
 	private $lang;
-	/* @array 语言包存放数组 */
+
+	/**
+	 * 语言包存放数组
+	 *
+	 * @access private
+	 * @var array
+	 */
 	private $langPack;
+
+
 
 	public function __construct(string $file, string $package, array $pack, string $lang = 'en-US')
 	{

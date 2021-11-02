@@ -25,7 +25,7 @@ if(!defined('owohttp')) define('owohttp', 'owosuperget');
 
 /**
  * HTTP基础方法
-*/
+ */
 /**
  * $_SERVER 的简化版本
  *

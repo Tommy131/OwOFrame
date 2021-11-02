@@ -19,6 +19,8 @@
 declare(strict_types=1);
 namespace owoframe\contract;
 
-// This file just let the MasterManager know your class has implemented a Manager;
+/**
+ * This file just let the MasterManager know your class has implemented a Manager
+ */
 interface Manager
 {}

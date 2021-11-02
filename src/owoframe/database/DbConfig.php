@@ -26,9 +26,23 @@ use think\facade\Db;
 
 class DbConfig extends Db
 {
-	/* @array ThinkPHP-ORM 数据库配置文件 */
+	/**
+	 * ThinkPHP-ORM 数据库配置文件
+	 *
+	 * @access private
+	 * @var array
+	 */
 	private static $dbConfig = [];
 
+
+
+	/**
+	 * 初始化数据库配置
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @return void
+	 */
 	public static function init() : void
 	{
 		static::$dbConfig =
@@ -71,7 +85,7 @@ class DbConfig extends Db
 	 * @since  2020-09-10
 	 * @param  string      $default 配置文件标识
 	 * @return void
-	*/
+	 */
 	public static function setDefault(string $default) : void
 	{
 		if(self::hasDbConfig($default)) {
@@ -102,7 +116,7 @@ class DbConfig extends Db
 	 * @param  string      $index   配置索引
 	 * @param  string      $default 默认返回值
 	 * @return string
-	*/
+	 */
 	public static function getIndex(string $index, string $default = '') : string
 	{
 		return static::$dbConfig[$index] ?? DbConfig::getDefault($index) ?? $default;
@@ -114,7 +128,7 @@ class DbConfig extends Db
 	 * @author HanskiJay
 	 * @since  2020-09-19
 	 * @return string
-	*/
+	 */
 	public static function getAll() : array
 	{
 		return static::$dbConfig;
@@ -128,7 +142,7 @@ class DbConfig extends Db
 	 * @param  string      $index 配置索引
 	 * @param  string      $value 更新值
 	 * @return void
-	*/
+	 */
 	public static function setIndex(string $index, string $value) : void
 	{
 		// if(isset(DbConfig::DEFAULT_DB_CONFIG[$index])) {
@@ -143,7 +157,7 @@ class DbConfig extends Db
 	 * @since  2020-09-10
 	 * @param  string      $nickName 配置文件标识
 	 * @return boolean
-	*/
+	 */
 	public static function hasDbConfig(string $nickName) : bool
 	{
 		return isset(static::$dbConfig['connections'][$nickName]);
@@ -157,7 +171,7 @@ class DbConfig extends Db
 	 * @param  string      $nickName 配置文件标识
 	 * @param  array       $dbConfig 传入的数据
 	 * @return void
-	*/
+	 */
 	public static function addConfig(string $nickName, array $dbConfig) : void
 	{
 		static::$dbConfig['connections'][$nickName] = $dbConfig;

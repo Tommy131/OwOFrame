@@ -23,8 +23,14 @@ use owoframe\contract\StandardOutput;
 
 class OutputEvent extends \owoframe\event\Event implements StandardOutput
 {
-	/* @string 输出内容 */
+	/**
+	 * 输出内容
+	 *
+	 * @var string
+	 */
 	protected $output;
+
+
 
 	public function __construct(string $output = '')
 	{

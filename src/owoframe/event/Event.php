@@ -21,7 +21,12 @@ namespace owoframe\event;
 
 abstract class Event
 {
-	/* @bool 事件回调状态 */
+	/**
+	 * 事件回调状态
+	 *
+	 * @access protected
+	 * @var boolean
+	 */
 	protected $isCalled = false;
 
 	/**

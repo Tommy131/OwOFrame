@@ -21,15 +21,44 @@ namespace owoframe\object;
 
 abstract class Config
 {
-	/* @array 配置文件数组 */
+
+	/**
+	 * 配置文件数组
+	 *
+	 * @access protected
+	 * @var array
+	 */
 	protected $config;
-	/* @array 配置文件嵌套缓存数组 */
+
+	/**
+	 * 配置文件嵌套缓存数组
+	 *
+	 * @access protected
+	 * @var array
+	 */
 	protected $nestedCache;
-	/* @string 文件名 */
+
+	/**
+	 * 文件名
+	 *
+	 * @access protected
+	 * @var string
+	 */
 	protected $fileName;
-	/* @string 文件路径 */
+
+	/**
+	 * 文件路径
+	 *
+	 * @access protected
+	 * @var string
+	 */
 	protected $filePath;
-	/* @bool 自动保存 */
+
+	/**
+	 * 自动保存
+	 *
+	 * @var bool
+	 */
 	public $autoSave;
 
 
