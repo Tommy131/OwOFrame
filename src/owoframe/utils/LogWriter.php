@@ -162,6 +162,18 @@ class LogWriter
 	}
 
 	/**
+	 * 发送空行到CLI
+	 *
+	 * @author HanskiJay
+	 * @since  2021-11-02
+	 * @return void
+	 */
+	public static function sendEmpty() : void
+	{
+		echo PHP_EOL;
+	}
+
+	/**
 	 * 删除错误日志
 	 *
 	 * @author HanskiJay

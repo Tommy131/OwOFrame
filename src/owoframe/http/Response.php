@@ -127,11 +127,11 @@ class Response
 		if(is_array($called)) {
 			if($this->callback[0] instanceof DataEncoder) {
 				$called = $this->callback[0]->encode();
-			}
-			elseif($this->callback[0] instanceof JsonSerializable) {
+			} else {
 				$called = json_encode($called);
 			}
 			$this->header('Content-Type', MIMETypeConstant::MIMETYPE['json']);
+			$isJson = true;
 		}
 
 		// Check whether the callback result type is String;
@@ -144,6 +144,7 @@ class Response
 				$called->setStandardData(502, '[OwOResponseError] Cannot callback method ' . get_class($this->callback[0]) . '::' . $this->callback[1] . ' for response! (Method must be return string, ' . gettype($called) . ' is returned!', false);
 				$called = $called->encode();
 				$this->header('Content-Type', MIMETypeConstant::MIMETYPE['json']);
+				$isJson = true;
 			}
 		}
 
@@ -158,7 +159,9 @@ class Response
 		$eventManager->trigger($event);
 		$event->output();
 		unset($event);
-		self::getRunTimeDiv();
+		if(!isset($isJson)) {
+			self::getRunTimeDiv();
+		}
 
 		if(function_exists('fastcgi_finish_request')) fastcgi_finish_request();
 		$eventManager->trigger(AfterResponseEvent::class, [$this]);

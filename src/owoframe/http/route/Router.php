@@ -110,6 +110,7 @@ final class Router
 				if(!DataEncoder::isOnlyLettersAndNumbers($requestMethod)) {
 					$requestMethod = $controllerName;
 				}
+				$anonymousClass->methodName = $requestMethod;
 
 				// Check the url validity;     ↓ 传入 [RequestMethod] 之后的Url残余;
 				$urlRule = new UrlRule(implode('/', $pathInfo), UrlRule::TAG_USE_DEFAULT_STYLE);
@@ -149,7 +150,6 @@ final class Router
 				$callback = [$controller, $requestMethod];
 			}
 		}
-		$anonymousClass->methodName = $requestMethod;
 
 		$response = Http::Response($callback);
 		$response->sendResponse();

@@ -88,7 +88,10 @@ class Console implements \owoframe\constant\Manager
 	public function monitor(array $input = []) : void
 	{
 		array_shift($input);
-		if(count($input) <= 0) return;
+		if(count($input) <= 0) {
+			LogWriter::info("Hi there, welcome to use OwOFrame :) You can use command like '".TF::GOLD."php owo help".TF::WHITE."' to display the Helper.");
+			return;
+		}
 		$inputCommand = strtolower(array_shift($input));
 
 		if(($command = $this->getCommand($inputCommand)) === null) {
