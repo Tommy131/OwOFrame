@@ -111,11 +111,12 @@ final class Router
 					$requestMethod = $controllerName;
 				}
 
-				// Check the url validity;
-				$urlRule = new UrlRule(implode('/', $pathInfo));
-				if(!$urlRule->checkValid()) {
+				// Check the url validity;     ↓ 传入 [RequestMethod] 之后的Url残余;
+				$urlRule = new UrlRule(implode('/', $pathInfo), UrlRule::TAG_USE_DEFAULT_STYLE);
+				if(!$urlRule->checkValid($urlParameters)) {
 					$internalError('Illegal Url requested!', '502 BAD GATEWAY', 'Illegal Url requested!', 403);
 				}
+				$anonymousClass->urlParameters = $urlParameters;
 			}
 		}
 
@@ -256,6 +257,14 @@ final class Router
 
 			case 'controller':
 				return AppManager::getApp($closure->appName)->getController($closure->controllerName);
+
+			case 'param':
+			case 'params':
+			case 'parameter':
+			case 'parameters':
+			case 'args':
+			case 'arguments':
+				return $closure->urlParameters;
 		}
 	}
 

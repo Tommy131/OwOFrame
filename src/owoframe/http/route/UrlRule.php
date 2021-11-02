@@ -19,16 +19,11 @@
 declare(strict_types=1);
 namespace owoframe\http\route;
 
-class UrlRule
+use owoframe\constant\UrlRuleConstant;
+use owoframe\exception\ParameterTypeErrorException;
+
+class UrlRule implements UrlRuleConstant
 {
-	/* @constant 检查规则 */
-	public const URL_CHECK_RULES =
-	[
-		'[onlyMixedLetters]'           => '/[a-zA-Z]+/imU',
-		'[onlyUppercaseLetters]'       => '/[A-Z]+/imU',
-		'[onlyLowerLetters]'           => '/[a-z]+/imU',
-		'[onlyMixedLettersAndNumbers]' => '/[a-zA-Z0-9]+/imU',
-	];
 
 	/**
 	 * 请求路由
@@ -42,16 +37,16 @@ class UrlRule
 	 * 路由匹配规则
 	 *
 	 * @access private
-	 * @var array
+	 * @var string
 	 */
-	private $rules = [];
+	private $rule;
 
 
 
-	public function __construct(string $url, array $rules = [])
+	public function __construct(string $url, string $rule)
 	{
-		$this->url   = $url;
-		$this->rules = $rules;
+		$this->url  = $url;
+		$this->rule = $rule;
 	}
 
 
@@ -60,14 +55,55 @@ class UrlRule
 	 *
 	 * @author HanskiJay
 	 * @since  2021-11-02
+	 * @param  array             &$params   从URL取得的参数
+	 * @param  null|callable      $callback 回调方法, 可自定义检查URL的合法性 [传入参数到回调方法: 匹配规则 | URL地址 | URL解析数组]
 	 * @return boolean
 	 */
-	public function checkValid() : bool
+	public function checkValid(&$params = [], ?callable $callback = null) : bool
 	{
+		// Prevent empty URL;
 		if(strlen($this->url) === 0) {
 			return true;
 		}
-		$checkUrl = '/' . $this->url;
+		$parsed = parse_url('/' . $this->url);
+
+		// Check whether thr rule is in the list;
+		if(isset(self::URL_CHECK_RULES[$this->rule])) {
+			$rule = self::URL_CHECK_RULES[$this->rule];
+			// Cycle check the path;
+			$paths = array_filter(explode('/', $parsed['path']));
+			foreach($paths as $path) {
+				if(!(bool) preg_match($rule, $path)) {
+					return false;
+				}
+			}
+			$params['restPath'] = $paths;
+
+			if(isset($parsed['query'])) {
+				$params['get'] = [];
+				// Parse the rest query from the URL;
+				$queries = array_filter(explode('=', $parsed['query']));
+				foreach($queries as $name => $value) {
+					$params['get'][$name] = $value;
+				}
+				// Merge the both GET data from HTTP_REQUEST;
+				$params['get'] = array_merge($params['get'], $_GET);
+			}
+			return true;
+		} else {
+			// Check the custom regex validity;
+			if(!(bool) preg_match('/^\/.*\/(\w+)?$/m', $this->rule)) {
+				throw new ParameterTypeErrorException('$rule', 'regex', '');
+			}
+			// If the custom regex matched the URL;
+			if((bool) preg_match($this->rule, $this->url)) {
+				if(is_callable($callback)) {
+					return call_user_func_array($callback, [$this->rule, $this->url, $parsed]);
+				} else {
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 
@@ -87,12 +123,12 @@ class UrlRule
 	/**
 	 * Undocumented function
 	 *
-	 * @param  array   $rules
+	 * @param  string   $rule
 	 * @return UrlRule
 	 */
-	public function setRules(array $rules) : UrlRule
+	public function setRule(string $rule) : UrlRule
 	{
-		$this->rules = $rules;
+		$this->rule = $rule;
 		return $this;
 	}
 
