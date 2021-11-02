@@ -45,6 +45,8 @@ class BootStrapper
 			// Set up exception crawling;
 			set_error_handler([ExceptionOutput::class, 'ErrorHandler'], E_ALL);
 			set_exception_handler([ExceptionOutput::class, 'ExceptionHandler']);
+			// Define the GitHub Page;
+			if(!defined('GITHUB_PAGE'))  define('GITHUB_PAGE',        'https://github.com/Tommy131/OwOFrame/');
 			// Define OwOFrame start time;
 			if(!defined('START_MICROTIME'))  define('START_MICROTIME', microtime(true));
 			// Define Timezone;
