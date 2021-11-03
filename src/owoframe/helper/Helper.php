@@ -121,8 +121,22 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	 */
 	public static function isDomain(string $str, &$match = null) : bool
 	{
+		$str = str_replace(['http', 'https', '://'], '', $str);
 		if(strtolower($str) === 'localhost') return true;
-		return (strpos($str, '--') === false) && preg_match('/^([a-z0-9]+([a-z0-9-]*(?:[a-z0-9]+))?\.)?[a-z0-9]+([a-z0-9-]*(?:[a-z0-9]+))?[\.]([a-z]+)$/i', $str, $match);
+		return (strpos($str, '--') === false) && (bool) preg_match('/^([a-z0-9]+([a-z0-9-]*(?:[a-z0-9]+))?\.)?[a-z0-9]+([a-z0-9-]*(?:[a-z0-9]+))?[\.]([a-z]+)$/i', $str, $match);
+	}
+
+	/**
+	 * 判断字符串是否为Url地址
+	 *
+	 * @author HanskiJay
+	 * @since  2021-11-02
+	 * @param  string      $str 字符串
+	 * @return boolean
+	 */
+	public static function isUrl(string $str) : bool
+	{
+		return (bool) preg_match('/^((http|https):\/\/)?\w+\.\w+\//iU', $str);
 	}
 
 	/**

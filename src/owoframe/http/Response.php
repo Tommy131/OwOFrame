@@ -29,6 +29,7 @@ use owoframe\helper\BootStrapper;
 use owoframe\helper\Helper;
 
 use owoframe\http\HttpManager;
+use owoframe\http\route\Router;
 
 use owoframe\utils\DataEncoder;
 
@@ -160,7 +161,9 @@ class Response
 		$event->output();
 		unset($event);
 		if(!isset($isJson)) {
-			self::getRunTimeDiv();
+			if(Router::getCurrent('controller')::$showUsedTimeDiv) {
+				self::getRunTimeDiv();
+			}
 		}
 
 		if(function_exists('fastcgi_finish_request')) fastcgi_finish_request();

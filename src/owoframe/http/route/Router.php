@@ -68,8 +68,26 @@ final class Router
 			}
 		};
 
-		$pathInfo = static::getParameters(-1);
+		$pathInfo = self::getParameters(-1);
 		$appName  = array_shift($pathInfo);
+
+		// Check Domain bind rules;
+		include_once(FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'router.php');
+		if($to = DomainRule::get(server('HTTP_HOST'), $bindType)) {
+			switch($bindType) {
+				case DomainRule::TAG_BIND_TO_URL:
+					$parsed = parse_url($to);
+					self::setPathInfo($parsed['path']);
+					$pathInfo = self::getParameters(-1);
+					$appName  = array_shift($pathInfo);
+				break;
+
+				case DomainRule::TAG_BIND_TO_APPLICATION:
+					$appName = $to;
+				break;
+			}
+		}
+
 		// Check the valid of the name;
 		if(is_null($appName) || !DataEncoder::isOnlyLettersAndNumbers($appName)) {
 			$appName = DEFAULT_APP_NAME;
@@ -87,7 +105,7 @@ final class Router
 			$internalError('Cannot find any valid Application!', '', 'Invalid route URL!');
 		}
 		// Write appName in an anonymous class;
-		$anonymousClass = static::getAnonymousClass();
+		$anonymousClass = self::getAnonymousClass();
 		$anonymousClass->appName = $appName;
 
 		// Judge $pathInfo for ControllerName and RequestMethodName;
@@ -192,9 +210,9 @@ final class Router
 	public static function getPathInfo() : string
 	{
 		if(static::isEmptyPathInfo()) {
-			static::setPathInfo(str_replace(server('SCRIPT_NAME'), '', server('REQUEST_URI')));
+			self::setPathInfo(str_replace(server('SCRIPT_NAME'), '', server('REQUEST_URI')));
 			// ↓ Double check & set to '/' when last sentence does not work;
-			if(static::$_pathInfo === '') static::setPathInfo();
+			if(static::$_pathInfo === '') self::setPathInfo();
 		}
 		return static::$_pathInfo;
 	}
@@ -215,7 +233,7 @@ final class Router
 		#
 		# URI->@/index.php/{ApplicationName}/{ControllerName}/{RequestMethodName}/[GET]...
 		#
-		$param = array_filter(explode('/', static::getPathInfo()));
+		$param = array_filter(explode('/', self::getPathInfo()));
 		if(($getFrom >= 1) && ($getFrom <= 3)) {
 			return array_slice($param, $getFrom);
 		} else {

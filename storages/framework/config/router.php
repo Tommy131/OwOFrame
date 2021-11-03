@@ -17,3 +17,7 @@
 	* This configuration is for bind domain(s) to application.
 
 ************************************************************************/
+use owoframe\http\route\DomainRule as Domain;
+
+// Domain::bind('example.com', Domain::TAG_BIND_TO_APPLICATION, 'appName');
+// Domain::bind('example.com', Domain::TAG_BIND_TO_URL, 'https:://{domain}/appName/...');

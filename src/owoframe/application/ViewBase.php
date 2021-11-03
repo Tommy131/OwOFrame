@@ -96,8 +96,8 @@ class ViewBase extends ControllerBase
 			return;
 		}
 		if(!file_exists($filePath)) {
-			$controllerName = Router::getCurrent('controller');
-			$controllerName = ucfirst(strtolower($controllerName));
+			$controller = Router::getCurrent('controller');
+			$controllerName = ucfirst(strtolower($controller->getName()));
 			if(!Router::getCurrent('app')->getController($controllerName, false)) {
 				$controllerName = Router::getCurrent('app')->getDefaultController(true);
 			}
