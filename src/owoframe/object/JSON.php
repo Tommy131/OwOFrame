@@ -19,6 +19,8 @@
 declare(strict_types=1);
 namespace owoframe\object;
 
+use owoframe\helper\Helper;
+use owoframe\exception\FileMissedException;
 use owoframe\utils\LogWriter;
 
 class JSON extends Config
@@ -27,7 +29,6 @@ class JSON extends Config
 	public function __construct(string $file, array $defaultData = [], bool $autoSave = false)
 	{
 		parent::__construct($file, $defaultData, $autoSave);
-		$this->fileName = $this->fileName . '.json';
 
 		if(!file_exists($file)) {
 			$this->config = $defaultData;
@@ -47,8 +48,8 @@ class JSON extends Config
 	 */
 	public function backup(string $backupPath = '') : void
 	{
-		$backupPath = (strlen($backupPath) === 0) ? $this->filePath : dirname($backupPath);
-		$this->save($backupPath . @array_shift(explode('.', $this->fileName)) . '_' . date('Y_m_d') . '.json');
+		$backupPath = (strlen($backupPath) === 0) ? $this->getFilePath() : dirname($backupPath);
+		$this->save($backupPath . $this->getFileName() . '_' . date('Y_m_d') . $this->getExtensionName());
 	}
 
 	/**
@@ -64,7 +65,7 @@ class JSON extends Config
 		if($file !== null) {
 			$this->__construct($file, $this->config, $this->autoSave);
 		}
-		file_put_contents($file ?? $this->filePath . $this->fileName, json_encode($this->config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+		file_put_contents($file ?? $this->getPath(), json_encode($this->config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 	}
 
 	/**
@@ -76,11 +77,29 @@ class JSON extends Config
 	 */
 	public function reload() : void
 	{
-		if(is_file($this->filePath . $this->fileName)) {
+		if(is_file($this->getPath())) {
 			$this->nestedCache = [];
-			$this->config = json_decode(file_get_contents($this->filePath . $this->fileName), true) ?? [];
+			$this->config = json_decode(file_get_contents($this->getPath()), true) ?? [];
 		} else {
-			LogWriter::error("Cannot reload Config::{$this->fileName} because the file does not exists!");
+			$message = "Cannot reload Config::{$this->getFileName()}, because the file does not exists!";
+			if(Helper::isRunningWithCGI()) {
+				throw new FileMissedException($message);
+			} else {
+				LogWriter::$logPrefix = 'Config';
+				LogWriter::error($message);
+			}
 		}
+	}
+
+	/**
+	 * 返回配置文件扩展名称
+	 *
+	 * @author HanskiJay
+	 * @since  2021-11-05
+	 * @return string
+	 */
+	public function getExtensionName() : string
+	{
+		return '.json';
 	}
 }

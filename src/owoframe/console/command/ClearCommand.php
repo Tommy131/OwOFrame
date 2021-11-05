@@ -78,6 +78,7 @@ class ClearCommand extends \owoframe\console\CommandBase
 							}
 						} else {
 							Helper::removeDir($path);
+							mkdir($path);
 							file_put_contents($path . '.gitignore', base64_decode('KgohLmdpdGlnbm9yZQ=='));
 							LogWriter::success(TF::GREEN . 'Removed Cache path ' . TF::GOLD . $path . TF::GREEN . ' successfully.');
 						}

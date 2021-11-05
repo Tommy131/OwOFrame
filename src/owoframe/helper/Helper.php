@@ -42,23 +42,6 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 
 
 	/**
-	 * 检测是否为移动设备访问
-	 *
-	 * @author HanskiJay
-	 * @since  2021-01-10
-	 * @return boolean|string
-	 */
-	public static function isMobile()
-	{
-		//获取USER AGENT
-		$agent = strtolower(server('HTTP_USER_AGENT'));
-
-		if(preg_match('/(blackberry|configuration\/cldc|hp |hp-|htc |htc_|htc-|iemobile|kindle|midp|mmp|motorola|mobile|nokia|opera mini|opera |Googlebot-Mobile|YahooSeeker\/M1A1-R2D2|android|iphone|ipod|mobi|palm|palmos|pocket|portalmmm|ppc;|smartphone|sonyericsson|sqh|spv|symbian|treo|up.browser|up.link|vodafone|windows ce|xda |xda_)/i', $agent)) return true;
-		elseif(strpos($agent, 'windows nt')) return false;
-		else return $agent;
-	}
-
-	/**
 	 * 获取客户端信息
 	 *
 	 * @author HanskiJay
@@ -98,6 +81,58 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	}
 
 	/**
+	 * 返回当前系统类型
+	 *
+	 * @author HanskiJay
+	 * @since  2021-02-18
+	 * @return string
+	 */
+	public static function getOS() : string
+	{
+		$r  = null;
+		$os = php_uname('s');
+		if(stripos($os, 'linux') !== false) {
+			$r = @file_exists('/system/build.prop') ? self::OS_ANDROID : self::OS_LINUX;
+		}
+		elseif(stripos($os, 'windows') !== false) {
+			$r = self::OS_WINDOWS;
+		}
+		elseif((stripos($os, 'mac') !== false) || (stripos($os, 'darwin') !== false)) {
+			$r = self::OS_MACOS;
+		}
+		elseif(stripos($os, 'bsd') !== false) {
+			$r = self::OS_BSD;
+		}
+		return $r ?? self::OS_UNKNOWN;
+	}
+
+	/**
+	 * 获取所有的Mime类型
+	 *
+	 * @author HanskiJay
+	 * @return array
+	 */
+	public static function getMimeType() : array
+	{
+		return self::MIMETYPE;
+	}
+
+	/**
+	 * 检测是否为移动设备访问
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-10
+	 * @return boolean
+	 */
+	public static function isMobile(&$agent = null) : bool
+	{
+		//获取USER AGENT
+		$agent = server('HTTP_USER_AGENT');
+
+		return (bool) preg_match('/(blackberry|configuration\/cldc|hp |hp-|htc |htc_|htc-|iemobile|kindle|midp|mmp|motorola|mobile|nokia|opera mini|opera |Googlebot-Mobile|YahooSeeker\/M1A1-R2D2|android|iphone|ipod|mobi|palm|palmos|pocket|portalmmm|ppc;|smartphone|sonyericsson|sqh|spv|symbian|treo|up.browser|up.link|vodafone|windows ce|xda |xda_)/i', $agent);
+	}
+
+	/**
 	 * 判断传入的字符串是否为有效IP地址
 	 *
 	 * @author HanskiJay
@@ -108,22 +143,6 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	public static function isIp(string $ip) : bool
 	{
 		return (bool) preg_match("/((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}/", $ip);
-	}
-
-	/**
-	 * 判断字符串是否为域名
-	 *
-	 * @author HanskiJay
-	 * @since  2021-01-30
-	 * @param  string      $str 字符串
-	 * @param  &$match
-	 * @return boolean
-	 */
-	public static function isDomain(string $str, &$match = null) : bool
-	{
-		$str = str_replace(['http', 'https', '://'], '', $str);
-		if(strtolower($str) === 'localhost') return true;
-		return (strpos($str, '--') === false) && (bool) preg_match('/^([a-z0-9]+([a-z0-9-]*(?:[a-z0-9]+))?\.)?[a-z0-9]+([a-z0-9-]*(?:[a-z0-9]+))?[\.]([a-z]+)$/i', $str, $match);
 	}
 
 	/**
@@ -142,6 +161,7 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	/**
 	 * 检查是否是一个安全的主机名
 	 *
+	 * @author *
 	 * @param  string      $host 主机名
 	 * @return boolean
 	 */
@@ -188,34 +208,49 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	}
 
 	/**
-	 * 返回当前系统类型
+	 * 判断字符串是否为多级域名格式
 	 *
 	 * @author HanskiJay
-	 * @since  2021-02-18
-	 * @return string
+	 * @since  2021-01-30
+	 * @param  string $str    字符串
+	 * @param  array  &$match 允许的一级域名
+	 * @return boolean
 	 */
-	public static function getOS() : string
+	public static function isDomain(string $str, array &$match = ['localhost']) : bool
 	{
-		$r  = null;
-		$os = php_uname('s');
-		if(stripos($os, 'linux') !== false) {
-			$r = @file_exists('/system/build.prop') ? self::OS_ANDROID : self::OS_LINUX;
+		$str = str_replace(['http', 'https', '://'], '', trim($str));
+		if(in_array($str, $match)) {
+			$match = $str;
+			return true;
 		}
-		elseif(stripos($os, 'windows') !== false) {
-			$r = self::OS_WINDOWS;
+		// * Regex tested: https://regex101.com/r/IVQBwt/1/;
+		return (strpos($str, '--') === false) && (bool) preg_match('/^([a-z0-9]+([a-z0-9-]*(?:[a-z0-9]+))?\.)?[a-z0-9]+([a-z0-9-]*(?:[a-z0-9]+))?[\.]([a-z]+)$/i', $str, $match);
+	}
+
+	/**
+	 * 简单判断字符串是否为邮箱格式
+	 *
+	 * @author HanskiJay
+	 * @since  2021-11-05
+	 * @param  string  $str
+	 * @param  string   &$suffix 允许匹配的域名后缀 (e.g.: $suffix = 'com.com.cn|abc.cn'), 匹配完成后传入匹配结果到此参数
+	 * @return boolean
+	 */
+	public static function isEmail(string $str, string &$suffix = '') : bool
+	{
+		$preset = 'com|org|net|com.cn|org.cn|net.cn|cn';
+		// Judgement for the allowed suffix format;
+		if(preg_match('/[a-z.|]+/i', $suffix)) {
+			$preset .= '|' . $suffix;
 		}
-		elseif((stripos($os, 'mac') !== false) || (stripos($os, 'darwin') !== false)) {
-			$r = self::OS_MACOS;
-		}
-		elseif(stripos($os, 'bsd') !== false) {
-			$r = self::OS_BSD;
-		}
-		return $r ?? self::OS_UNKNOWN;
+		$preset = str_replace('.', '\.', $preset);
+		return (bool) preg_match('/^([\w+\-.]+)@([a-z0-9\-.]+)\.(' . $preset . ')$/i', trim($str), $suffix);
 	}
 
 	/**
 	 * 获取文件类型
 	 *
+	 * @author *
 	 * @param  string      $fileName 文件名
 	 * @return string
 	 */
@@ -238,8 +273,7 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 
 		$part = explode('.', $fileName);
 		$size = count($part);
-		if($size > 1)
-		{
+		if($size > 1) {
 			$ext = $part[$size - 1];
 			if(isset(self::MIMETYPE[$ext])) return self::MIMETYPE[$ext];
 		}
@@ -247,14 +281,27 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	}
 
 	/**
-	 * 获取所有的Mime类型
+	 * 生成随机字符串
 	 *
 	 * @author HanskiJay
-	 * @return array
+	 * @since  2021-11-05
+	 * @param  integer $length       生成长度
+	 * @param  boolean $specialChars 是否加入符号
+	 * @return string
 	 */
-	public static function getMimeType() : array
+	public static function randomString(int $length, bool $specialChars = false) : string
 	{
-		return self::MIMETYPE;
+		$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+		if($specialChars) {
+			$chars .= '!@#$%^&*()';
+		}
+
+		$result = '';
+		$max = strlen($chars) - 1; // 字符串指针从0开始, 也就是长度[$length - 1]；
+		for($i = 0; $i < $length; $i++) {
+			$result .= $chars[rand(0, $max)];
+		}
+		return $result;
 	}
 
 	/**
@@ -307,7 +354,7 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	 */
 	public static function isRunningWithCLI() : bool
 	{
-		return (bool) preg_match('/cli/i', self::getMode());
+		return strpos(self::getMode(), 'cli') !== false;
 	}
 
 	/**
@@ -319,7 +366,7 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	 */
 	public static function isRunningWithCGI() : bool
 	{
-		return (bool) preg_match('/cgi/i', self::getMode());
+		return strpos(self::getMode(), 'cgi') !== false;
 	}
 
 	/**
@@ -345,5 +392,19 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	public static function escapeSlash(string &$str) : string
 	{
 		return $str = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $str);
+	}
+
+	/**
+	 * 当前内存使用情况
+	 *
+	 * @author HanskiJay
+	 * @since  2021-11-05
+	 * @param  integer $to 到小数点后面几位
+	 * @return float
+	 */
+	public static function getCurrentMemoryUsage(bool $format = true, int $to = 2) : float
+	{
+		$memory = memory_get_usage();
+		return $format ? round($memory / 1024 / 1024, $to) : $memory;
 	}
 }

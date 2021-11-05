@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace owoframe\utils;
 
 use owoframe\helper\Helper;
+use owoframe\exception\UnknownErrorException;
 
 class LogWriter
 {

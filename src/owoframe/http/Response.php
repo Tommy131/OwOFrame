@@ -19,7 +19,6 @@
 declare(strict_types=1);
 namespace owoframe\http;
 
-use JsonSerializable;
 use ReflectionClass;
 
 use owoframe\constant\MIMETypeConstant;
@@ -29,7 +28,6 @@ use owoframe\helper\BootStrapper;
 use owoframe\helper\Helper;
 
 use owoframe\http\HttpManager;
-use owoframe\http\route\Router;
 
 use owoframe\utils\DataEncoder;
 
@@ -81,6 +79,13 @@ class Response
 	 * @var string
 	 */
 	public $defaultResponseMsg = '[OwOResponseError] Keine Ahnung...';
+
+	/**
+	 * 开启或关闭 UsedTimeDiv (Default:true)
+	 *
+	 * @var boolean
+	 */
+	public static $showUsedTimeDiv = true;
 
 
 
@@ -161,7 +166,7 @@ class Response
 		$event->output();
 		unset($event);
 		if(!isset($isJson)) {
-			if(Router::getCurrent('controller')::$showUsedTimeDiv) {
+			if(static::$showUsedTimeDiv) {
 				self::getRunTimeDiv();
 			}
 		}

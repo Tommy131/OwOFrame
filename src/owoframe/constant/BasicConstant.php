@@ -32,6 +32,8 @@ interface BasicConstant
 	public const ILLEGAL_NAME = 19000;
 	/* @int 通用状态码: 验证码错误 */
 	public const VERIFY_CODE_INCORRECT = 19001;
+	/* @int 无效的邮箱格式 */
+	public const INVALID_EMAIL_FORMAT = 19407;
 
 
 	# HTTP Request Mode Code #
@@ -71,5 +73,5 @@ interface BasicConstant
 	/* @int 用户操作状态码: 用户未登录 */
 	public const USER_HAS_NOT_LOGGED_IN = 10405;
 	/* @int 用户操作状态码: 无效的用户数据 */
-	public const INVALID_USERDATA = 10406;
+	public const USER_INVALID_DATA = 10406;
 }

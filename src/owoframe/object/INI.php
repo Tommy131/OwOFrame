@@ -19,6 +19,8 @@
 declare(strict_types=1);
 namespace owoframe\object;
 
+use owoframe\helper\Helper;
+use owoframe\exception\FileMissedException;
 use owoframe\utils\LogWriter;
 
 class INI extends Config
@@ -26,7 +28,6 @@ class INI extends Config
 	public function __construct(string $file, array $defaultData = [], bool $autoSave = false)
 	{
 		parent::__construct($file, $defaultData, $autoSave);
-		$this->fileName = $this->fileName . '.ini';
 
 		if(!file_exists($file)) {
 			$this->config = $defaultData;
@@ -36,6 +37,16 @@ class INI extends Config
 		}
 	}
 
+	/**
+	 * 加载配置文件到全局
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-09
+	 * @param  string  $file
+	 * @param  array   $defaultData
+	 * @param  boolean $autoSave
+	 * @return void
+	 */
 	public static function globalLoad(string $file, array $defaultData = [], bool $autoSave = false) : void
 	{
 		global $_global;
@@ -47,14 +58,14 @@ class INI extends Config
 	 *
 	 * @author HanskiJay
 	 * @since  2021-01-09
-	 * @param  string      $str
-	 * @param  mixed       $default 默认返回值
+	 * @param  string $index
+	 * @param  mixed  $default 默认返回值
 	 * @return mixed
 	 */
-	public static function _global(string $str, $default = null)
+	public static function _global(string $index, $default = null)
 	{
 		global $_global;
-		return ($_global instanceof INI) ? $_global->get($str, $default) : $default;
+		return ($_global instanceof INI) ? $_global->get($index, $default) : $default;
 	}
 
 	/**
@@ -62,45 +73,30 @@ class INI extends Config
 	 *
 	 * @author HanskiJay
 	 * @since  2021-01-30
-	 * @param  string|null      $file 文件
+	 * @param  string|null $file 文件
 	 * @return void
 	 */
 	public function save(?string $file = null) : void
 	{
-		if(empty($this->config)) {
-			return;
-		}
-
-		$parseDataType = function($value) {
-			if(is_null($value) || (strlen($value) === 0)) {
-				$value = 'null';
-			}
-			elseif(($value === false) || ($value === '0')) {
-				$value = 'false';
-			}
-			elseif(($value === true) || ($value === '1')) {
-				$value = 'true';
-			}
-			return $value;
-		};
-		$text = '';
-
-		foreach($this->config as $group => $subContent) {
-			$text .= "[{$group}]" . PHP_EOL;
-			foreach($subContent as $name => $value) {
-				if(!is_array($value)) {
-					$value = $parseDataType($value);
-					$text .= "{$name}={$value}" . PHP_EOL;
-				} else {
-					foreach($value as $k => $v) {
-						$value = $parseDataType($v);
-						$text .= "{$name}[{$k}]={$v}" . PHP_EOL;
-					}
-				}
-			}
-			$text .= PHP_EOL;
-		}
-		file_put_contents($this->filePath . $this->fileName, trim($text));
+		/** Code has been Base64 encoded;
+		 *
+		 * 目前暂不支持直接保存, 请手动修改后使用重载方法.
+		 * Currently does not support direct saving, please use the reload method after manual modification.
+		 *
+		 * aWYoZW1wdHkoJHRoaXMtPmNvbmZpZykpIHsKCQkJcmV0dXJuOwoJCX0KCgkJJHBhcnNlRGF0YVR5cGUgPSBmdW5jdGlvbigk
+		 * dmFsdWUpIHsKCQkJaWYoaXNfbnVsbCgkdmFsdWUpIHx8IChzdHJsZW4oJHZhbHVlKSA9PT0gMCkpIHsKCQkJCSR2YWx1ZSA9
+		 * ICdudWxsJzsKCQkJfQoJCQllbHNlaWYoKCR2YWx1ZSA9PT0gZmFsc2UpIHx8ICgkdmFsdWUgPT09ICcwJykpIHsKCQkJCSR2
+		 * YWx1ZSA9ICdmYWxzZSc7CgkJCX0KCQkJZWxzZWlmKCgkdmFsdWUgPT09IHRydWUpIHx8ICgkdmFsdWUgPT09ICcxJykpIHsK
+		 * CQkJCSR2YWx1ZSA9ICd0cnVlJzsKCQkJfQoJCQlyZXR1cm4gJHZhbHVlOwoJCX07CgkJJHRleHQgPSAnJzsKCgkJZm9yZWFj
+		 * aCgkdGhpcy0+Y29uZmlnIGFzICRncm91cCA9PiAkc3ViQ29udGVudCkgewoJCQkkdGV4dCAuPSAiW3skZ3JvdXB9XSIgLiBQ
+		 * SFBfRU9MOwoJCQlmb3JlYWNoKCRzdWJDb250ZW50IGFzICRuYW1lID0+ICR2YWx1ZSkgewoJCQkJaWYoIWlzX2FycmF5KCR2
+		 * YWx1ZSkpIHsKCQkJCQkkdmFsdWUgPSAkcGFyc2VEYXRhVHlwZSgkdmFsdWUpOwoJCQkJCSR0ZXh0IC49ICJ7JG5hbWV9PXsk
+		 * dmFsdWV9IiAuIFBIUF9FT0w7CgkJCQl9IGVsc2UgewoJCQkJCWZvcmVhY2goJHZhbHVlIGFzICRrID0+ICR2KSB7CgkJCQkJ
+		 * CSR2YWx1ZSA9ICRwYXJzZURhdGFUeXBlKCR2KTsKCQkJCQkJJHRleHQgLj0gInskbmFtZX1beyRrfV09eyR2fSIgLiBQSFBf
+		 * RU9MOwoJCQkJCX0KCQkJCX0KCQkJfQoJCQkkdGV4dCAuPSBQSFBfRU9MOwoJCX0KCQlmaWxlX3B1dF9jb250ZW50cygkdGhp
+		 * cy0+Z2V0UGF0aCgpLCB0cmltKCR0ZXh0KSk7
+		 *
+		 */
 	}
 
 	/**
@@ -112,12 +108,29 @@ class INI extends Config
 	 */
 	public function reload() : void
 	{
-		if(is_file($this->filePath . $this->fileName)) {
-			$this->config = parse_ini_file($this->filePath . $this->fileName, true);
+		if(is_file($this->getPath())) {
+			$this->config = parse_ini_file($this->getPath(), true);
 		} else {
-			LogWriter::$logPrefix = 'Config';
-			LogWriter::error("Cannot reload Config::{$this->fileName} because the file does not exists!");
+			$message = "Cannot reload Config::{$this->getFileName()}, because the file does not exists!";
+			if(Helper::isRunningWithCGI()) {
+				throw new FileMissedException($message);
+			} else {
+				LogWriter::$logPrefix = 'Config';
+				LogWriter::error($message);
+			}
 		}
+	}
+
+	/**
+	 * 返回配置文件扩展名称
+	 *
+	 * @author HanskiJay
+	 * @since  2021-11-05
+	 * @return string
+	 */
+	public function getExtensionName() : string
+	{
+		return '.ini';
 	}
 
 

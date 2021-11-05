@@ -31,22 +31,22 @@ class HelpCommand extends \owoframe\console\CommandBase
 		$commands = $console->getCommands();
 		ksort($commands, SORT_NATURAL | SORT_FLAG_CASE);
 		if(count($params) <= 0) {
-			LogWriter::info(TF::GOLD . "---------- Registered Commands: " . TF::GREEN . count($commands) . TF::GOLD . " ----------");
+			LogWriter::info(TF::GOLD . '---------- Registered Commands: ' . TF::GREEN . count($commands) . TF::GOLD . ' ----------');
 			foreach($commands as $command => $class) {
-				LogWriter::info(TF::GREEN . "{$command}: " . TF::WHITE . $class->getDescription());
+				LogWriter::info(TF::GREEN . $command . ': ' . TF::WHITE . $class->getDescription());
 			}
-			LogWriter::info(TF::WHITE . "Use '" . self::getUsage() . "'" . TF::WHITE . " to look details.");
+			LogWriter::info(TF::WHITE . 'Use \'' . self::getUsage() . TF::WHITE . '\' to look details.');
 		} else {
 			$command = strtolower(array_shift($params));
 			if(!isset($commands[$command])) {
-				LogWriter::info(TF::RED . "Command " . TF::GOLD . $command . TF::RED . " does not exists!");
+				LogWriter::info(TF::RED . 'Command ' . TF::GOLD . $command . TF::RED . ' does not exists!');
 			} else {
 				$command = $commands[$command];
-				LogWriter::info(TF::WHITE . "---[Details@" . TF::GREEN . $command->getName() . TF::WHITE . "]---");
-				LogWriter::info(TF::WHITE . "CommandName: " . $command->getName());
-				LogWriter::info(TF::WHITE . "AliasName:   " . implode(', ', $command->getAliases()));
-				LogWriter::info(TF::WHITE . "Usage:       " . $command->getUsage());
-				LogWriter::info(TF::WHITE . "Description: " . $command->getDescription());
+				LogWriter::info(TF::WHITE . '---[Details@' . TF::GREEN . $command->getName() . TF::WHITE . ']---');
+				LogWriter::info(TF::WHITE . 'CommandName: ' . $command->getName());
+				LogWriter::info(TF::WHITE . 'AliasName:   ' . implode(', ', $command->getAliases()));
+				LogWriter::info(TF::WHITE . 'Usage:       ' . $command->getUsage());
+				LogWriter::info(TF::WHITE . 'Description: ' . $command->getDescription());
 			}
 		}
 		return true;

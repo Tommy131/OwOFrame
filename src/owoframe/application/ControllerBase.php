@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace owoframe\application;
 
 use owoframe\helper\Helper;
+use owoframe\http\Response;
 use owoframe\http\route\Router;
 
 abstract class ControllerBase
@@ -31,13 +32,6 @@ abstract class ControllerBase
 	 * @var AppBase
 	 */
 	private $app = null;
-
-	/**
-	 * Front-End开启或关闭UsedTimeDiv(Default:true)
-	 *
-	 * @var boolean
-	 */
-	public static $showUsedTimeDiv = true;
 
 	/**
 	 * 若请求的Url中包含无效的请求方法, 则默认执行该方法
@@ -63,6 +57,19 @@ abstract class ControllerBase
 	public function methodNotFound()
 	{
 		return '[MethodMissed] Requested method \'' .Router::getCurrent('controllerName') . '::' . Router::getCurrent('methodName') . '\' not found!';
+	}
+
+	/**
+	 * 开启或关闭 UsedTimeDiv (Default:true)
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-10
+	 * @param  boolean      $_ 状态
+	 * @return string
+	 */
+	public static function showUsedTimeDiv(bool $_ = true) : void
+	{
+		Response::$showUsedTimeDiv = $_;
 	}
 
 	/**

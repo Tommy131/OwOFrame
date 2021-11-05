@@ -13,7 +13,7 @@ If you think this repository is helpful to you, please give this repository a `S
 > OwOFrame is a small framework that I developed using my free time. Of course, there are many shortcomings. The functions currently supported by this framework are listed below:
 
 #### Basic System Components
-- [x] `!!!IDE Freindly!!!`  All comments can be displayed well in `Visual Studio Code`, all are manual comments :) 
+- [x] `!!!IDE Friendly!!!`  All comments can be displayed well in `Visual Studio Code`, all are manual comments :) 
 - [x] `AppManager`          Judge the corresponding routing controller by identifying `HTTP_URI` and assign it to the corresponding Application
 - [x] `CommandManager`      Support some operations through the Command Line method on the CLI
 - [x] `ConfigurationParser` Configuration Parser

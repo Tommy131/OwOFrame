@@ -72,8 +72,16 @@ class UrlRule implements UrlRuleConstant
 			// Cycle check the path;
 			$paths = array_filter(explode('/', $parsed['path']));
 			foreach($paths as $path) {
-				if(!(bool) preg_match($rule, $path)) {
+				if(!(bool) preg_match($rule, $path, $match)) {
 					return false;
+				} else {
+					if(($this->rule !== self::TAG_ONLY_LOWERCASE_LETTERS) && ($this->rule !== self::TAG_ONLY_UPPERCASE_LETTERS) && ($this->rule !== self::TAG_ONLY_NUMBERS)) {
+						continue;
+					}
+					$path = str_replace($match, '', $path);
+					if(is_string($path) && (strlen($path) > 0)) {
+						return false;
+					}
 				}
 			}
 			$params['restPath'] = $paths;

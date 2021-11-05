@@ -79,8 +79,8 @@ abstract class Config
 	 *
 	 * @author HanskiJay
 	 * @since  2021-01-30
-	 * @param  string      $index   键值
-	 * @param  mixed       $default 默认返回值
+	 * @param  string $index   键值
+	 * @param  mixed  $default 默认返回值
 	 * @return mixed
 	 */
 	public function get(string $index, $default = null)
@@ -115,8 +115,8 @@ abstract class Config
 	 *
 	 * @author HanskiJay
 	 * @since  2021-01-30
-	 * @param  string      $index 键值
-	 * @param  mixed       $value 数据
+	 * @param  string $index 键值
+	 * @param  mixed  $value 数据
 	 * @return void
 	 */
 	public function set(string $index, $value) : void
@@ -124,13 +124,13 @@ abstract class Config
 		$arr = explode('.', $index);
 		if(count($arr) > 1) {
 			$base = array_shift($arr);
-			if(!isset($this->config[$base])){
+			if(!isset($this->config[$base])) {
 				$this->config[$base] = [];
 			}
 
 			$base =& $this->config[$base];
 
-			while(count($arr) > 0){
+			while(count($arr) > 0) {
 				$baseKey = array_shift($arr);
 				if(!isset($base[$baseKey])){
 					$base[$baseKey] = [];
@@ -150,7 +150,7 @@ abstract class Config
 	 *
 	 * @author HanskiJay
 	 * @since  2021-01-30
-	 * @param  array      $data 数据
+	 * @param  array $data 数据
 	 * @return void
 	 */
 	public function setAll(array $data) : void
@@ -164,20 +164,22 @@ abstract class Config
 	 *
 	 * @author HanskiJay
 	 * @since  2021-05-04
-	 * @param  string      $index 键名
+	 * @param  string $index 键名
 	 * @return void
 	 */
 	public function remove(string $index) : void
 	{
-		unset($this->config[$index]);
-		if($this->autoSave) $this->save();
+		if($this->exists($index)) {
+			unset($this->config[$index]);
+			if($this->autoSave) $this->save();
+		}
 	}
 
 	/**
 	 * 保存配置文件
 	 * @author HanskiJay
 	 * @since  2021-01-30
-	 * @param  string|null      $file 文件
+	 * @param  string|null $file 文件
 	 * @return void
 	 */
 	abstract public function save(?string $file = null) : void;
@@ -196,12 +198,15 @@ abstract class Config
 	 *
 	 * @author HanskiJay
 	 * @since  2021-01-30
-	 * @param  string      $backupPath 备份路径
+	 * @param  string $backupPath 备份路径
 	 * @return void
 	 */
 	public function backup(string $backupPath = '') : void
 	{
-		// Just a method if anywhere need;
+		if(!is_dir($backupPath)) {
+			$backupPath = $this->getFilePath();
+		}
+		$this->save($backupPath . $this->getFileName() . '_' . date('Y_m_d_H_i_s') . $this->getExtensionName());
 	}
 
 	/**
@@ -209,7 +214,7 @@ abstract class Config
 	 *
 	 * @author HanskiJay
 	 * @since  2021-01-30
-	 * @param  string      $index 键值
+	 * @param  string $index 键值
 	 * @return boolean
 	 */
 	public function exists(string $index) : bool
@@ -240,4 +245,49 @@ abstract class Config
 	{
 		return (object) $this->config;
 	}
+
+	/**
+	 * 返回当前配置文件路径
+	 *
+	 * @author HanskiJay
+	 * @since  2021-11-05
+	 * @return string
+	 */
+	public function getFilePath() : string
+	{
+		return $this->filePath;
+	}
+
+	/**
+	 * 返回当前配置文件名称
+	 *
+	 * @author HanskiJay
+	 * @since  2021-11-05
+	 * @return string
+	 */
+	public function getFileName() : string
+	{
+		return $this->fileName;
+	}
+
+	/**
+	 * 返回配置文件完整路径
+	 *
+	 * @author HanskiJay
+	 * @since  2021-11-05
+	 * @return string
+	 */
+	public function getPath() : string
+	{
+		return $this->filePath . $this->fileName . $this->getExtensionName();
+	}
+
+	/**
+	 * 返回配置文件扩展名称
+	 *
+	 * @author HanskiJay
+	 * @since  2021-11-05
+	 * @return string
+	 */
+	abstract public function getExtensionName() : string;
 }

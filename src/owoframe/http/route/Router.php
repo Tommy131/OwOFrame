@@ -130,8 +130,9 @@ final class Router
 				}
 				$anonymousClass->methodName = $requestMethod;
 
-				// Check the url validity;     ↓ 传入 [RequestMethod] 之后的Url残余;
-				$urlRule = new UrlRule(implode('/', $pathInfo), UrlRule::TAG_USE_DEFAULT_STYLE);
+				$urlRule = implode('/', $pathInfo);
+				// Check the url validity;                              ↓  传入 [RequestMethod] 之后的Url残余   ↓
+				$urlRule = isset($customizeUrlRule) ? $customizeUrlRule($urlRule) : new UrlRule($urlRule, UrlRule::TAG_USE_DEFAULT_STYLE);
 				if(!$urlRule->checkValid($urlParameters)) {
 					$internalError('Illegal Url requested!', '502 BAD GATEWAY', 'Illegal Url requested!', 403);
 				}
@@ -169,8 +170,8 @@ final class Router
 			}
 		}
 
-		$response = Http::Response($callback);
-		$response->sendResponse();
+		$anonymousClass->response = Http::Response($callback);
+		$anonymousClass->response->sendResponse();
 	}
 
 
@@ -283,6 +284,9 @@ final class Router
 			case 'args':
 			case 'arguments':
 				return $closure->urlParameters;
+
+			case 'response':
+				return $closure->response;
 		}
 	}
 
