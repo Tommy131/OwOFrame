@@ -26,42 +26,42 @@ class TextFormat
 
 	/* 定义标准颜色 | Define Standard Colors */
 	/* @string 水色(亮蓝色) */
-	public const AQUA = self::PREFIX . "0";
+	public const AQUA = self::PREFIX . '0';
 	/* @string 黑色 */
-	public const BLACK = self::PREFIX . "1";
+	public const BLACK = self::PREFIX . '1';
 	/* @string 蓝色(标准色) */
-	public const BLUE = self::PREFIX . "2";
+	public const BLUE = self::PREFIX . '2';
 	/* @string 金色 */
-	public const GOLD = self::PREFIX . "3";
+	public const GOLD = self::PREFIX . '3';
 	/* @string 灰色 */
-	public const GRAY = self::PREFIX . "4";
+	public const GRAY = self::PREFIX . '4';
 	/* @string 绿色 */
-	public const GREEN = self::PREFIX . "5";
+	public const GREEN = self::PREFIX . '5';
 	/* @string 紫色 */
-	public const PURPLE = self::PREFIX . "6";
-	public const LILA   = self::PREFIX . "a6";
+	public const PURPLE = self::PREFIX . '6';
+	public const LILA   = self::PREFIX . 'a6';
 	/* @string 红色 */
-	public const RED        = self::PREFIX . "7";
-	public const LIGHT_RED  = self::PREFIX . "a7";
-	public const STRONG_RED = self::PREFIX . "c7";
+	public const RED        = self::PREFIX . '7';
+	public const LIGHT_RED  = self::PREFIX . 'a7';
+	public const STRONG_RED = self::PREFIX . 'c7';
 	/* @string 白色 */
-	public const WHITE = self::PREFIX . "8";
+	public const WHITE = self::PREFIX . '8';
 	/* @string 黄色 */
-	public const YELLOW        = self::PREFIX . "9";
-	public const NORMAL_YELLOW = self::PREFIX . "a9";
+	public const YELLOW        = self::PREFIX . '9';
+	public const NORMAL_YELLOW = self::PREFIX . 'a9';
 
 	/* @string 加粗 */
-	public const BOLD = self::PREFIX . "b";
+	public const BOLD = self::PREFIX . 'b';
 	/* @string 斜体字 */
-	public const ITALIC = self::PREFIX . "i";
+	public const ITALIC = self::PREFIX . 'i';
 	/* @string 重置颜色 */
-	public const RESET = self::PREFIX . "r";
+	public const RESET = self::PREFIX . 'r';
 	/* @string 删除线 */
-	public const DELETE_LINE = self::PREFIX . "s";
+	public const DELETE_LINE = self::PREFIX . 's';
 	/* @string 删除线(正规叫法) */
 	public const STRIKETHROUGH = self::DELETE_LINE;
 	/* @string 下划线 */
-	public const UNDERLINE = self::PREFIX . "u";
+	public const UNDERLINE = self::PREFIX . 'u';
 
 	/**
 	 * 分割字符串
@@ -73,7 +73,7 @@ class TextFormat
 	 */
 	public static function split(string $str) : array
 	{
-		return preg_split("/(" . self::PREFIX . "[0-9birsu])|(" . self::PREFIX . "[a6a7a9c7]+)/", $str, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+		return preg_split('/(' . self::PREFIX . '[0-9birsu])|(' . self::PREFIX . '[a6a7a9c7]+)/', $str, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 	}
 
 	/**
@@ -86,7 +86,7 @@ class TextFormat
 	 */
 	public static function clean(string $str) : string
 	{
-		return str_replace(self::PREFIX, "", preg_replace("/" . self::PREFIX . "[0-9birsu]|" . self::PREFIX . "[a6a7a9c7]+/", "", $str));
+		return str_replace(self::PREFIX, '', preg_replace('/' . self::PREFIX . '[0-9birsu]|' . self::PREFIX . '[a6a7a9c7]+/', '', $str));
 	}
 
 	/**

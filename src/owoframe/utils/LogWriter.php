@@ -157,8 +157,8 @@ class LogWriter
 
 		if(Helper::isRunningWithCLI()) {
 			echo TextFormat::parse($message);
-			$message = TextFormat::clean($message);
 		}
+		$message = TextFormat::clean($message);
 		file_put_contents(static::$fileName, $message, FILE_APPEND | LOCK_EX);
 	}
 

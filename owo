@@ -34,7 +34,11 @@ foreach($config as $define => $param) {
 }
 
 // 引入自动加载文件 | require autoload file;
-$classLoader = require_once(__DIR__ . DIRECTORY_SEPARATOR . "vendor" . DIRECTORY_SEPARATOR . "autoload.php");
+$vendor_file = 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+if(!file_exists($vendor_file)) {
+	exit('Please execute command \'composer install\' at root path at first!');
+}
+$classLoader = require_once($vendor_file);
 $master  = new owoframe\MasterManager($classLoader);
 $console = $master->getManager('console');
 $console->monitor($argv);

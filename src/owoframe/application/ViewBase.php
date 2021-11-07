@@ -202,7 +202,8 @@ class ViewBase extends ControllerBase
 				if($matches[1][$key] === 'script') {
 					$tag = "{$tag}</script>";
 				}
-				$tag = str_replace(['.', '/', '|', '$'], ["\.", '\/', '\|', '\$'], $tag);
+				// TODO: 支持其他标签使用 @active 元素;
+				$tag = str_replace(['.', '/', '|', '$'], ['\.', '\/', '\|', '\$'], $tag);
 				$str = preg_replace("/(\s*?){1}{$tag}/i", '', $str);
 			} else {
 				$newTag = preg_replace($regex[3], '', preg_replace($regex[2], '', $tag));
@@ -291,7 +292,7 @@ class ViewBase extends ControllerBase
 			$finally   = '';
 			foreach($data as $k => $v) {
 				if(!is_array($v)) {
-					throw new ParameterTypeErrorException('不合法的使用方法!', 'array', gettype($v));
+					throw new ParameterTypeErrorException('不合法的使用方法!', 'array', $v);
 				}
 
 				foreach($loop as $n => $line) {

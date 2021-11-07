@@ -83,6 +83,7 @@ final class Router
 				break;
 
 				case DomainRule::TAG_BIND_TO_APPLICATION:
+					$pathInfo = self::getParameters(-1);
 					$appName = $to;
 				break;
 			}

@@ -68,23 +68,24 @@ class UrlRule implements UrlRuleConstant
 
 		// Check whether thr rule is in the list;
 		if(isset(self::URL_CHECK_RULES[$this->rule])) {
-			$rule = self::URL_CHECK_RULES[$this->rule];
-			// Cycle check the path;
+			$rule  = self::URL_CHECK_RULES[$this->rule];
 			$paths = array_filter(explode('/', $parsed['path']));
+			$clear = []; // An new Array with keys starting at 0;
+			// Cycle check the path;
 			foreach($paths as $path) {
 				if(!(bool) preg_match($rule, $path, $match)) {
 					return false;
 				} else {
-					if(($this->rule !== self::TAG_ONLY_LOWERCASE_LETTERS) && ($this->rule !== self::TAG_ONLY_UPPERCASE_LETTERS) && ($this->rule !== self::TAG_ONLY_NUMBERS)) {
-						continue;
-					}
-					$path = str_replace($match, '', $path);
-					if(is_string($path) && (strlen($path) > 0)) {
-						return false;
+					if(($this->rule === self::TAG_ONLY_LOWERCASE_LETTERS) || ($this->rule === self::TAG_ONLY_UPPERCASE_LETTERS) || ($this->rule === self::TAG_ONLY_NUMBERS)) {
+						$path = str_replace($match, '', $path);
+						if(is_string($path) && (strlen($path) > 0)) {
+							return false;
+						}
 					}
 				}
+				$clear[] = $path;
 			}
-			$params['restPath'] = $paths;
+			$params['restPath'] = $clear;
 
 			if(isset($parsed['query'])) {
 				$params['get'] = [];
