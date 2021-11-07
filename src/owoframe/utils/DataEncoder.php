@@ -99,16 +99,16 @@ class DataEncoder implements JsonSerializable, StandardOutputConstant
 	 * @param  int      $code       状态码
 	 * @param  string   $msg        返回信息
 	 * @param  bool     $result     执行结果
-	 * @return array
+	 * @return DataEncoder
 	 */
-	public function setStandardData(int $code, string $msg, bool $result) : array
+	public function setStandardData(int $code, string $msg, bool $result) : DataEncoder
 	{
 		$this->reset();
 		$this->setIndex('code',   $code);
 		$this->setIndex('msg',    $msg);
 		$this->setIndex('result', $result);
 		$this->setIndex('time',   date("Y-m-d H:i:s"));
-		return $this->originData;
+		return $this->this;
 	}
 
 	/**

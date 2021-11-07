@@ -157,6 +157,20 @@ function check(string $index, bool $autoUpper = false, &$method = 'NULL')
 }
 
 /**
+ * 通过 php://input 获取 HTTP_RAW_DATA
+ *
+ * * 修复了对前端使用fetch等方法时PHP无法取到数据的情况
+ *
+ * @author HanskiJay
+ * @since  2021-03-06
+ * @return null|string
+ */
+function fetch() : ?string
+{
+	return file_get_contents('php://input') ?? null;
+}
+
+/**
  * 返回请求模式的整型代码
  *
  * @author HanskiJay
