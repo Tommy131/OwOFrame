@@ -175,7 +175,8 @@ class ViewBase extends ControllerBase
 			'/<(img|script|link) (.*)>/imU',
 			'/@(src|href)="{\$(\w*)\|(.*)}"/imU',
 			'/@name="(\w*)"[\s]+?/mU',
-			'/@active="(\w*)"[\s]+?/imU'
+			'/@active="(\w*)"[\s]+?/imU',
+			'/{\$(\w*)\|(.*)}/imU'
 		];
 
 		if(!preg_match_all($regex[0], $str, $matches)) {
@@ -213,45 +214,68 @@ class ViewBase extends ControllerBase
 					$type = strtoupper($match[2] ?? 'unknown');
 					$file = $match[3];
 					$path = '';
-					switch($type)
-					{
-						case 'CSS':
-						case 'CSSPATH':
-							$path .= $this->getStaticPath('css');
-						break;
-						case 'RCSS':
-						case 'RCSSPATH':
-							$path .= $this->getResourcePath('css');
-						break;
 
-						case 'JS':
-						case 'JSPATH':
-							$path .= $this->getStaticPath('js');
-						break;
-						case 'RJS':
-						case 'RJSPATH':
-							$path .= $this->getResourcePath('js');
-						break;
-
-						case 'IMG':
-						case 'IMGPATH':
-							$path .= $this->getStaticPath('img');
-						break;
-						case 'RIMG':
-						case 'RIMGPATH':
-							$path .= $this->getResourcePath('img');
-						break;
-
-						case 'PACKAGE':
-						case 'PKGPATH':
-							$path .= $this->getStaticPath('package');
-						break;
-					}
+					$this->take($type, $path);
 
 					$src = $this->generateStaticUrl($path . $file);
 					$str = str_replace($match[0], $match[1] . "=\"{$src}\"", $str);
 				}
 			}
+		}
+		if(preg_match_all($regex[4], $str, $matches)) {
+			foreach($matches[0] as $key => $tag) {
+				$path = '';
+				$this->take($matches[1][$key], $path);
+				$src = $this->generateStaticUrl($path . $matches[2][$key]);
+				$str = str_replace($matches[0][$key], $src, $str);
+			}
+		}
+	}
+
+	/**
+	 * 获取资源定义类型及返回路径
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-03
+	 * @param  string $type
+	 * @param  &      $path
+	 * @return void
+	 */
+	protected function take(string $type, &$path) : void
+	{
+		switch(strtoupper($type))
+		{
+			case 'CSS':
+			case 'CSSPATH':
+				$path .= $this->getStaticPath('css');
+			break;
+			case 'RCSS':
+			case 'RCSSPATH':
+				$path .= $this->getResourcePath('css');
+			break;
+
+			case 'JS':
+			case 'JSPATH':
+				$path .= $this->getStaticPath('js');
+			break;
+			case 'RJS':
+			case 'RJSPATH':
+				$path .= $this->getResourcePath('js');
+			break;
+
+			case 'IMG':
+			case 'IMGPATH':
+				$path .= $this->getStaticPath('img');
+			break;
+			case 'RIMG':
+			case 'RIMGPATH':
+				$path .= $this->getResourcePath('img');
+			break;
+
+			case 'PACKAGE':
+			case 'PKGPATH':
+				$path .= $this->getStaticPath('package');
+			break;
 		}
 	}
 

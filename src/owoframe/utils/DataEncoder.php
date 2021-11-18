@@ -108,7 +108,7 @@ class DataEncoder implements JsonSerializable, StandardOutputConstant
 		$this->setIndex('msg',    $msg);
 		$this->setIndex('result', $result);
 		$this->setIndex('time',   date("Y-m-d H:i:s"));
-		return $this->this;
+		return $this;
 	}
 
 	/**

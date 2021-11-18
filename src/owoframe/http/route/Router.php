@@ -129,7 +129,6 @@ final class Router
 				if(!DataEncoder::isOnlyLettersAndNumbers($requestMethod)) {
 					$requestMethod = $controllerName;
 				}
-				$anonymousClass->methodName = $requestMethod;
 
 				$urlRule = implode('/', $pathInfo);
 				// Check the url validity;                              ↓  传入 [RequestMethod] 之后的Url残余   ↓
@@ -140,6 +139,7 @@ final class Router
 				$anonymousClass->urlParameters = $urlParameters;
 			}
 		}
+		$anonymousClass->methodName = $requestMethod;
 
 		// Initialize Controller;
 		if(!($controller = $app->getController($controllerName))) {
