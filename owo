@@ -34,7 +34,7 @@ foreach($config as $define => $param) {
 }
 
 // 引入自动加载文件 | require autoload file;
-$vendor_file = 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+$vendor_file = __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 if(!file_exists($vendor_file)) {
 	exit('Please execute command \'composer install\' at root path at first!');
 }
