@@ -26,6 +26,7 @@ use owoframe\http\route\Router;
 
 class ViewBase extends ControllerBase
 {
+	public const DISPLAY_CONTROL_PREFIX = 'display_id_';
 	/**
 	 * 视图文件路径
 	 *
@@ -139,6 +140,50 @@ class ViewBase extends ControllerBase
 	{
 		if(isset($this->bindValues[$searched])) {
 			unset($this->bindValues[$searched]);
+		}
+	}
+
+	/**
+	 * 绑定一个Display控制ID
+	 *
+	 * @author HanskiJay
+	 * @since  2021-12-21
+	 * @param  string      $cid     Display区域显示的控制ID
+	 * @param  boolean     $status 显示状态
+	 * @return void
+	 */
+	public function assignDisplay(string $cid, bool $status) : void
+	{
+		$this->bindValues[self::DISPLAY_CONTROL_PREFIX . $cid] = $status;
+	}
+
+	/**
+	 * 获取一个Display控制ID的状态
+	 *
+	 * @author HanskiJay
+	 * @since  2021-12-21
+	 * @param  string      $cid     Display区域显示的控制ID
+	 * @return null|boolean
+	 */
+	public function getDisplay(string $cid) : ?bool
+	{
+		$cid = self::DISPLAY_CONTROL_PREFIX . $cid;
+		return isset($this->bindValues[$cid]) ? (bool) $this->bindValues[$cid] : null;
+	}
+
+	/**
+	 * 移除一个Display控制ID
+	 *
+	 * @author HanskiJay
+	 * @since  2021-12-21
+	 * @param  string      $cid     Display区域显示的控制ID
+	 * @return void
+	 */
+	public function deleteDisplay(string $cid) : void
+	{
+		$cid = self::DISPLAY_CONTROL_PREFIX . $cid;
+		if(isset($this->bindValues[$cid])) {
+			unset($this->bindValues[$cid]);
 		}
 	}
 
@@ -363,6 +408,36 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
+	 * 解析前端模板存在的区域控制显示语法
+	 *
+	 * @author HanskiJay
+	 * @since  2021-12-21
+	 * @param  string      $str 需要解析的文本
+	 * @return void
+	 */
+	protected function parseDisplayArea(string &$str) : void
+	{
+		if(preg_match_all('/<\!--@display=(true|false)?(\|@cid=(\w+))?-->(.*)<\!--@display-->/imsU', $str, $matches)) {
+			foreach($matches[0] as $k => $v) {
+				// 区域ID绑定解析;
+				$cid = $matches[3][$k];
+				// 区域display默认状态 (布尔值);
+				$display = strtolower($matches[1][$k]);
+				$display = ($display === 'true') ? true : false;
+				if(strlen($cid) > 0) {
+					if(is_bool($value = $this->getDisplay($cid))) {
+						$display = $value;
+					}
+				}
+				// 区域原文;
+				$original = $matches[4][$k];
+				// 最终判断;
+				$str = str_replace($matches[0][$k], ($display) ? $original : '', $str);
+			}
+		}
+	}
+
+	/**
 	 * 解析字符串的传参
 	 *
 	 * @author HanskiJay
@@ -461,6 +536,9 @@ class ViewBase extends ControllerBase
 				}
 			}
 		}
+
+		// 解析@display用法;
+		$this->parseDisplayArea($this->viewTemplate);
 		// 绑定资源路径到路由;
 		$this->parseResourcePath($this->viewTemplate);
 
