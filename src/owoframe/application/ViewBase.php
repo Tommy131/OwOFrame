@@ -19,10 +19,12 @@
 declare(strict_types=1);
 namespace owoframe\application;
 
+use Error;
 use owoframe\exception\OwOFrameException;
 use owoframe\exception\ParameterTypeErrorException;
 use owoframe\helper\Helper;
 use owoframe\http\route\Router;
+use ReflectionFunction;
 
 class ViewBase extends ControllerBase
 {
@@ -212,6 +214,10 @@ class ViewBase extends ControllerBase
 	 */
 	/**
 	 * 解析模板中的资源路径绑定
+	 * ~usage  <img @src="{$IMG|File_Path}" @name="controlName" @active="false">
+	 * ~usage  <script @src="{$JS|File_Path}" @name="controlName" @active="false">
+	 * ~usage  <link @src="{$CSS|File_Path}" @name="controlName" @active="false">
+	 * ~usage  @name: 后端控制显示的ID, 配合 @active 使用
 	 *
 	 * @author HanskiJay
 	 * @since  2021-05-25
@@ -288,7 +294,7 @@ class ViewBase extends ControllerBase
 	 * @author HanskiJay
 	 * @since  2021-01-03
 	 * @param  string $type
-	 * @param  &      $path
+	 * @param  &$path
 	 * @return void
 	 */
 	protected function take(string $type, &$path) : void
@@ -331,6 +337,8 @@ class ViewBase extends ControllerBase
 
 	/**
 	 * 解析前端模板存在的循环语法
+	 * ~usage  {loop @bindLoopTag in $bindTag_from_assign}HTML-TAGS{/loop}
+	 * ~调用   @bindLoopTag.arrayElementKey@
 	 *
 	 * @author HanskiJay
 	 * @since  2021-01-03
@@ -341,15 +349,15 @@ class ViewBase extends ControllerBase
 	{
 		// $bindElement = "\\\$";
 		$bindElement = '@';
-		$loopHead    = "\{loop {$bindElement}([a-zA-Z0-9]+) in \\\$([a-zA-Z0-9]+)\}";
-		$loopBetween = "([\s\S]*)";
-		$loopEnd     = "\{\/loop\}";
+		$loopHead    = "{loop {$bindElement}([a-zA-Z0-9]+) in \\\$([a-zA-Z0-9]+)}";
+		$loopBetween = '([\s\S]*)';
+		$loopEnd     = '\{\/loop\}';
 		$loopRegex   = "/{$loopHead}{$loopBetween}{$loopEnd}/mU";
 
 		if(!preg_match_all($loopRegex, $loopArea, $matched, PREG_SET_ORDER, 0)) {
 			return;
 		}
-		foreach($matched as $loopGroup) {
+		foreach($matched as $num => $loopGroup) {
 			$bindTag  = trim($loopGroup[2]);                // 绑定的数组变量到模板;
 			$defined  = trim($loopGroup[1]);                // 定义的变量到模板;
 			// $loopArea = trim(preg_replace("/{$loopEnd}/im", '', preg_replace("/{$loopHead}/im", '', $loopArea)));
@@ -357,7 +365,7 @@ class ViewBase extends ControllerBase
 			$loop     = explode("\n", trim($loopGroup[0]));      // 匹配到的循环语句;
 
 			$data = $this->getValue($bindTag);
-			if(!$data || ($data && !is_array($data))) {
+			if(!is_array($data)) {
 				throw new OwOFrameException("[View-LoopParserError] Cannot find bindTag {\${$bindTag}} !");
 			}
 
@@ -407,13 +415,13 @@ class ViewBase extends ControllerBase
 					$finally .= $result . PHP_EOL;
 				}
 			}
+			$loopArea = str_replace($matched[$num][0], $finally, $loopArea);
 		}
-		$this->removeValue($bindTag);
-		$loopArea = preg_replace($loopRegex, $finally, $loopArea);
 	}
 
 	/**
 	 * 解析前端模板存在的区域控制显示语法
+	 * ~Usage  <\!--@display=true or false|@cid=control_id-->HTML-TAGS<!--@display-->
 	 *
 	 * @author HanskiJay
 	 * @since  2021-12-21
@@ -437,7 +445,7 @@ class ViewBase extends ControllerBase
 				// 区域原文;
 				$original = $matches[4][$k];
 				// 最终判断;
-				$str = str_replace($matches[0][$k], ($display) ? $original : '', $str);
+				$str = str_replace($v, ($display) ? $original : '', $str);
 			}
 		}
 	}
@@ -466,6 +474,64 @@ class ViewBase extends ControllerBase
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * 将模板语法替换成存在的函数方法并调用返回结果
+	 * Usage: {function_name|arguments...}
+	 *
+	 * @param  string $str
+	 * @return void
+	 */
+	protected function functionReplace(string &$str) : void
+	{
+		$regex = '/{(\w+)\|(.*)}/iU';
+		if(preg_match_all($regex, $str, $matches)) {
+			foreach($matches[0] as $k => $v) {
+				$function = $matches[1][$k];
+				if(function_exists($function)) {
+					$value = $matches[2][$k];
+
+					if(strpos($value, '$') !== false) {
+						$value = substr($value, 1, strlen($value));
+						if(!is_null($try = $this->getValue($value))) {
+							$str = str_replace($v, $function($try), $str);
+						}
+					} else {
+						try {
+							$values   = preg_split('/[, |,]/iU', $value);
+							$values   = array_filter($values);
+							$tmp      = [];
+							foreach($values as $t) {
+								$tmp[] = $t;
+							}
+							$values = $tmp;
+							unset($tmp);
+							$reflect  = new ReflectionFunction($function);
+							$params   = $reflect->getParameters();
+							$required = [];
+							foreach($params as $k => $param) {
+								$val = &$values[$k];
+								$type = $param->getType() ?? 'null or string';
+								if(!isset($val) && !$param->isDefaultValueAvailable()) {
+									throw new Error("Missing Parameter {{$k}}, should be {$type}!");
+								}
+								if(is_numeric($val)) {
+									$val = preg_match('/^[0-9]+\.[0-9]+$/', $val) ? (float) $val : (int) $val;
+								}
+								$val = (strtolower($val) === 'true') ? true : ((strtolower($val) === 'false') ? false : $val);
+								if($param->hasType() && ($type !== gettype($val))) {
+									throw new Error("Type {{$k}} Error, should be {$type}");
+								}
+							}
+							$str = str_replace($v, $function(...$values), $str);
+						} catch(Error $e) {
+							$str = str_replace($v, "[F-ERROR: {$function}] " . $e->getMessage(), $str);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -535,15 +601,17 @@ class ViewBase extends ControllerBase
 				$match = $matches[2][$k];
 
 				if($this->readString($match, $result)) {
-					$this->viewTemplate = str_replace("{\${$v}|def[{$match}]}", $result, $this->viewTemplate);
+					$this->viewTemplate = str_replace($matches[0][$k], $result, $this->viewTemplate);
 				} else {
-					$this->viewTemplate = str_replace("{\${$v}|def[{$match}]}", $this->getValue($v) ?? (($match === ':null') ? '' : $match), $this->viewTemplate);
+					$this->viewTemplate = str_replace($matches[0][$k], $this->getValue($v) ?? (($match === ':null') ? '' : $match), $this->viewTemplate);
 				}
 			}
 		}
 
 		// 解析@display用法;
 		$this->parseDisplayArea($this->viewTemplate);
+		// 解析模板语法之函数调用;
+		$this->functionReplace($this->viewTemplate);
 		// 绑定资源路径到路由;
 		$this->parseResourcePath($this->viewTemplate);
 
