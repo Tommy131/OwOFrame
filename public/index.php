@@ -38,8 +38,6 @@ if(!file_exists($vendor_file)) {
 }
 $classLoader = require_once($vendor_file);
 $master = new owoframe\MasterManager($classLoader);
-// If you do not need to start the database now, you can delete the following line;
-\owoframe\database\DbConfig::init();
 $http = $master->getManager('http');
 $http->start();
 $master->stop();

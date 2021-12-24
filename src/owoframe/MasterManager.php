@@ -29,8 +29,8 @@ use owoframe\helper\Helper;
 use owoframe\http\FileUploader;
 use owoframe\http\HttpManager as Http;
 use owoframe\module\ModuleLoader;
+use owoframe\object\INI;
 use owoframe\redis\RedisManager as Redis;
-use owoframe\user\UserManager;
 
 final class MasterManager implements Manager
 {
@@ -63,7 +63,6 @@ final class MasterManager implements Manager
 		'fileuploader' => FileUploader::class,
 		'http'         => Http::class,
 		'redis'        => Redis::class,
-		'usermanager'  => UserManager::class,
 		'unknown'      => null
 	];
 
@@ -98,6 +97,9 @@ final class MasterManager implements Manager
 				if(!defined($define)) {
 					throw error("Constant parameter '{$define}' not found!");
 				}
+			}
+			if(INI::_global('system.autoInitDatabase', true) == true) {
+				\owoframe\database\DbConfig::init();
 			}
 			AppManager::setPath(APP_PATH);
 			ModuleLoader::setPath(MODULE_PATH);
