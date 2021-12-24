@@ -69,7 +69,7 @@ abstract class Config
 		if(!is_dir($this->filePath)) {
 			mkdir($this->filePath, 755, true);
 		}
-		$fileName       = explode('.', $file); // e.g. abc.json | abc;
+		$fileName       = explode('.', basename($file)); // e.g. abc.json | abc;
 		$fileName       = array_shift($fileName);  // if yes, then shift 'abc' to $file;
 		$this->fileName = str_replace($this->filePath, '', $fileName);
 	}

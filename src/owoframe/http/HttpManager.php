@@ -81,20 +81,19 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 */
 	public function start(bool $autoDispatch = true) : void
 	{
-		// TODO: 将ClientRequestFilter中的方法移植过来;
-		LogWriter::$logPrefix = self::LOG_PREFIX;
 		$ip = Helper::getClientIp();
 		if(!self::isIpValid($ip)) {
 			LogWriter::info('[403@Banned] Client ' . $ip . '\'s IP is banned, request denied.');
 			self::setStatusCode(403);
 			return;
 		}
+		LogWriter::$logPrefix = self::LOG_PREFIX;
+		if(stripos(implode(',', static::$notLogUrl), server('REQUEST_URI')) === false) LogWriter::info('[REQUEST@' . server('REQUEST_METHOD') . '] ' . $ip . ' -> ' . self::getCompleteUrl());
 		if($autoDispatch) {
 			if(ob_get_level() === 0) ob_start();
 			Session::start();
 			Router::dispatch();
 		}
-		if(stripos(implode(',', static::$notLogUrl), server('REQUEST_URI')) === false) LogWriter::info('[B200@' . server('REQUEST_METHOD') . '] ' . $ip . ' -> ' . self::getCompleteUrl());
 	}
 
 	/**

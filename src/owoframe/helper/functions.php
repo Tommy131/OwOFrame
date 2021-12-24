@@ -251,7 +251,7 @@ function compareType($p1, $p2, &$types = []) : bool
  * @param  string      $missParam 返回缺少的参数
  * @return bool
  */
-function checkArrayValid(array $data, array $needle, ?string &$missParam = "") : bool
+function checkArrayValid(array $data, array $needle, &$missParam = null) : bool
 {
 	$data = array_filter($data);
 	$result = false;

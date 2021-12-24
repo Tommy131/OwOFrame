@@ -28,6 +28,7 @@ use owoframe\event\http\PageErrorEvent;
 use owoframe\exception\InvalidRouterException;
 use owoframe\http\HttpManager as Http;
 use owoframe\utils\DataEncoder;
+use owoframe\utils\LogWriter;
 
 final class Router
 {
@@ -67,6 +68,7 @@ final class Router
 				exit;
 			}
 		};
+		LogWriter::$logPrefix = 'HTTP/Router';
 
 		$pathInfo = self::getParameters(-1);
 		$appName  = array_shift($pathInfo);
@@ -103,7 +105,9 @@ final class Router
 
 		$app = AppManager::getApp($appName);
 		if($app === null) {
-			$internalError('Cannot find any valid Application!', '', 'Invalid route URL!');
+			$msg = 'Cannot find any valid Application!';
+			LogWriter::error('[403] ' . $msg);
+			$internalError($msg, '', 'Invalid route URL!');
 		}
 		// Write appName in an anonymous class;
 		$anonymousClass = self::getAnonymousClass();
@@ -134,7 +138,9 @@ final class Router
 				// Check the url validity;                              ↓  传入 [RequestMethod] 之后的Url残余   ↓
 				$urlRule = isset($customizeUrlRule) ? $customizeUrlRule($urlRule) : new UrlRule($urlRule, UrlRule::TAG_USE_DEFAULT_STYLE);
 				if(!$urlRule->checkValid($urlParameters)) {
-					$internalError('Illegal Url requested!', '502 BAD GATEWAY', 'Illegal Url requested!', 403);
+					$msg = 'Illegal Url requested!';
+					LogWriter::error('[502] ' . $msg);
+					$internalError($msg, '502 BAD GATEWAY', 'Illegal Url requested!', 403);
 				}
 				$anonymousClass->urlParameters = $urlParameters;
 			}
@@ -147,7 +153,9 @@ final class Router
 		}
 		// If not found any valid Controller;
 		if(!$controller) {
-			$internalError("Cannot find a valid Controller of Application [{$appName}]!", '', 'The requested Controller was not found!');
+			$msg = "Cannot find a valid Controller of Application [{$appName}]!";
+			LogWriter::error($msg);
+			$internalError($msg, '', 'The requested Controller was not found!');
 		}
 		$anonymousClass->controllerName = $controller->getName();
 
@@ -158,14 +166,18 @@ final class Router
 			if(!$app->isControllerMethodBanned($requestMethod, $controller->getName())) {
 				$callback = [$controller, $requestMethod];
 			} else {
-				$internalError("Requested method '{$requestMethod}' is banned, cannot be requested!", '403 Forbidden', 'Permission Denied!', 403);
+				$msg = "Requested method '{$requestMethod}' is banned, cannot be requested!";
+				LogWriter::error($msg);
+				$internalError($msg, '403 Forbidden', 'Permission Denied!', 403);
 			}
 		} else {
 			// If RequestMethod is invalid, then use the alternative methodName;
 			$requestMethod = $controller::$autoInvoke_methodNotFound;
 			// If the alternative method is the same invalid;
 			if(!$reflect->hasMethod($requestMethod)) {
-				$internalError("Requested method '{$requestMethod}' is invalid, cannot be requested!", '403 Forbidden', 'Unknown Error happened :(', 403);
+				$msg = "Requested method '{$requestMethod}' is invalid, cannot be requested!";
+				LogWriter::error($msg);
+				$internalError($msg, '403 Forbidden', 'Unknown Error happened :(', 403);
 			} else {
 				$callback = [$controller, $requestMethod];
 			}
