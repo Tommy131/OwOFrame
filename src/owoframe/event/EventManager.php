@@ -27,15 +27,30 @@ use owoframe\exception\ParameterTypeErrorException;
 
 class EventManager implements \owoframe\constant\Manager
 {
-	/* @int 监听优先级别: 最高 */
+
+	/**
+	 * 监听优先级别: 最高
+	 */
 	public const HIGHEST_PRIORITY = 5;
-	/* @int 监听优先级别: 中等 */
+
+	/**
+	 * 监听优先级别: 中等
+	 */
 	public const MEDIUM_PRIORITY  = 4;
-	/* @int 监听优先级别: 正常 */
+
+	/**
+	 * 监听优先级别: 正常
+	 */
 	public const NORMAL_PRIORITY  = 3;
-	/* @int 监听优先级别: 较低 */
+
+	/**
+	 * 监听优先级别: 较低
+	 */
 	public const LOW_PRIORITY     = 2;
-	/* @int 监听优先级别: 最低 */
+
+	/**
+	 * 监听优先级别: 最低
+	 */
 	public const LOWEST_PRIORITY  = 1;
 
 

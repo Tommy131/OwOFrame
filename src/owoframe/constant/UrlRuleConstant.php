@@ -25,30 +25,37 @@ interface UrlRuleConstant
 	 * 仅匹配混合字母
 	 */
 	public const TAG_ONLY_MIXED_LETTERS = '[onlyMixedLetters]';
+
 	/**
 	 * 仅匹配大写字母
 	 */
 	public const TAG_ONLY_UPPERCASE_LETTERS = '[onlyUppercaseLetters]';
+
 	/**
 	 * 仅匹配小写字母
 	 */
 	public const TAG_ONLY_LOWERCASE_LETTERS = '[onlyLowercaseLetters]';
+
 	/**
 	 * 仅匹配混合字母与数字
 	 */
 	public const TAG_ONLY_MIXED_LETTERS_AND_NUMBERS = '[onlyMixedLettersAndNumbers]';
+
 	/**
 	 * 仅匹配普通字符串;
 	 */
 	public const TAG_NORMAL_CHARACTER = '[normalCharacter]';
+
 	/**
 	 * 仅匹配数字
 	 */
 	public const TAG_ONLY_NUMBERS = '[onlyNumbers]';
+
 	/**
 	 * 仅匹配Get格式: /?param1=1&param2=2
 	 */
 	public const TAG_ONLY_GET_STYLE = '[onlyGetStyle]';
+
 	/**
 	 * 使用默认匹配格式
 	 */

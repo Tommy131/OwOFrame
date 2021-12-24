@@ -27,7 +27,9 @@ use owoframe\exception\ResourceMissedException;
 
 class ModuleLoader
 {
-	/* @string 模块信息识别文件名称 */
+	/**
+	 * 模块信息识别文件名称
+	 */
 	public const IDENTIFY_FILE_NAME = 'info.ini';
 
 	/**

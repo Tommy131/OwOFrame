@@ -25,8 +25,6 @@ use owoframe\redis\RedisConnector;
 
 class Session
 {
-
-
 	/**
 	 * 启动Session
 	 *

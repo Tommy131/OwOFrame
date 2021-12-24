@@ -26,7 +26,12 @@ use owoframe\http\route\Router;
 
 class ViewBase extends ControllerBase
 {
+
+	/**
+	 * 显示控制区域变量绑定前缀
+	 */
 	public const DISPLAY_CONTROL_PREFIX = 'display_id_';
+
 	/**
 	 * 视图文件路径
 	 *

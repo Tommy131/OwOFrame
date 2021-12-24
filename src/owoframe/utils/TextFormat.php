@@ -21,46 +21,96 @@ namespace owoframe\utils;
 
 class TextFormat
 {
-	/* @string 定义§的编码 */
+
+	/**
+	 * 定义§的编码
+	 */
 	public const PREFIX = "\xc2\xa7";
 
 	/* 定义标准颜色 | Define Standard Colors */
-	/* @string 水色(亮蓝色) */
+	/**
+	 * 水色(亮蓝色)
+	 */
 	public const AQUA = self::PREFIX . '0';
-	/* @string 黑色 */
+
+	/**
+	 * 黑色
+	 */
 	public const BLACK = self::PREFIX . '1';
-	/* @string 蓝色(标准色) */
+
+	/**
+	 * 蓝色(标准色)
+	 */
 	public const BLUE = self::PREFIX . '2';
-	/* @string 金色 */
+
+	/**
+	 * 金色
+	 */
 	public const GOLD = self::PREFIX . '3';
-	/* @string 灰色 */
+
+	/**
+	 * 灰色
+	 */
 	public const GRAY = self::PREFIX . '4';
-	/* @string 绿色 */
+
+	/**
+	 * 绿色
+	 */
 	public const GREEN = self::PREFIX . '5';
-	/* @string 紫色 */
+
+	/**
+	 * 紫色
+	 */
 	public const PURPLE = self::PREFIX . '6';
 	public const LILA   = self::PREFIX . 'a6';
-	/* @string 红色 */
+
+	/**
+	 * 红色
+	 */
 	public const RED        = self::PREFIX . '7';
 	public const LIGHT_RED  = self::PREFIX . 'a7';
 	public const STRONG_RED = self::PREFIX . 'c7';
-	/* @string 白色 */
+
+	/**
+	 * 白色
+	 */
 	public const WHITE = self::PREFIX . '8';
-	/* @string 黄色 */
+
+	/**
+	 * 黄色
+	 */
 	public const YELLOW        = self::PREFIX . '9';
 	public const NORMAL_YELLOW = self::PREFIX . 'a9';
 
-	/* @string 加粗 */
+
+	/**
+	 * 加粗
+	 */
 	public const BOLD = self::PREFIX . 'b';
-	/* @string 斜体字 */
+
+	/**
+	 * 斜体字
+	 */
 	public const ITALIC = self::PREFIX . 'i';
-	/* @string 重置颜色 */
+
+	/**
+	 * 重置颜色
+	 */
 	public const RESET = self::PREFIX . 'r';
-	/* @string 删除线 */
+
+	/**
+	 * 删除线
+	 */
 	public const DELETE_LINE = self::PREFIX . 's';
-	/* @string 删除线(正规叫法) */
+
+	/**
+	 * 删除线(正规叫法)
+	 */
 	public const STRIKETHROUGH = self::DELETE_LINE;
-	/* @string 下划线 */
+
+	/**
+	 * 下划线
+	 */
 	public const UNDERLINE = self::PREFIX . 'u';
 
 	/**

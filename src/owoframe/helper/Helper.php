@@ -27,17 +27,35 @@ use owoframe\constant\MIMETypeConstant;
 
 class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 {
-	/* @string Android系统标识 */
+
+	/**
+	 * Android系统标识
+	 */
 	public const OS_ANDROID = 'android';
-	/* @string Linux系统标识 */
+
+	/**
+	 * Linux系统标识
+	 */
 	public const OS_LINUX   = 'linux';
-	/* @string Windows系统标识 */
+
+	/**
+	 * Windows系统标识
+	 */
 	public const OS_WINDOWS = 'windows';
-	/* @string Mac系统标识 */
+
+	/**
+	 * Mac系统标识
+	 */
 	public const OS_MACOS   = 'mac';
-	/* @string BSD系统标识 */
+
+	/**
+	 * BSD系统标识
+	 */
 	public const OS_BSD     = 'bsd';
-	/* @string 未识别的系统标识 */
+
+	/**
+	 * 未识别的系统标识
+	 */
 	public const OS_UNKNOWN = 'unknown';
 
 

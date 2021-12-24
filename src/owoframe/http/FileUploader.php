@@ -24,7 +24,9 @@ use owoframe\exception\JSONException;
 
 class FileUploader implements \owoframe\constant\Manager
 {
-	/* @array 默认允许上传的文件类型集合 */
+	/**
+	 * 默认允许上传的文件类型集合
+	 */
 	private const DEFAULT_ALLOWED_EXTS = ["mp4", "gif", "jpeg", "jpg", "png"];
 
 	/**
@@ -88,7 +90,7 @@ class FileUploader implements \owoframe\constant\Manager
 	 * @author HanskiJay
 	 * @since  2020-09-10 18:49
 	 * @param  string      $ext 文件类型
-	 * @return boolean
+	 * @return void
 	 */
 	public function addAllowedExt(string $ext) : void
 	{
@@ -103,7 +105,7 @@ class FileUploader implements \owoframe\constant\Manager
 	 * @author HanskiJay
 	 * @since  2020-09-10 18:49
 	 * @param  string      $ext 文件类型
-	 * @return boolean
+	 * @return void
 	 */
 	public function delAllowedExt(string $ext) : void
 	{
@@ -132,7 +134,7 @@ class FileUploader implements \owoframe\constant\Manager
 	 * @author HanskiJay
 	 * @since  2020-09-10 18:49
 	 * @param  string      $ext 文件类型
-	 * @return boolean
+	 * @return array
 	 */
 	public function getAllowedExts() : array
 	{

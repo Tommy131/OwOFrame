@@ -25,9 +25,14 @@ use owoframe\helper\Helper;
 
 class DomainRule
 {
-	/* @int 绑定到URL标签 */
+	/**
+	 * 绑定到URL标签
+	 */
 	public const TAG_BIND_TO_URL = 0;
-	/* @int 绑定到应用程序标签 */
+
+	/**
+	 * 绑定到应用程序标签
+	 */
 	public const TAG_BIND_TO_APPLICATION = 1;
 
 	/**

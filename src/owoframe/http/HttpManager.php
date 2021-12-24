@@ -31,9 +31,14 @@ use owoframe\utils\LogWriter;
 
 class HttpManager implements HTTPStatusCodeConstant, Manager
 {
-	/* @string const 日志识别前缀 */
+	/**
+	 * 日志识别前缀
+	 */
 	public const LOG_PREFIX = 'CRF/BeforeRoute';
-	/* @array 默认的用于过滤的正则表达式 */
+
+	/**
+	 * 默认的用于过滤的正则表达式
+	 */
 	public const DEFAULT_XSS_FILTER =
 	[
 		"/<(\\/?)(script|i?frame|style|html|body|title|link|meta|object|\\?|\\%)([^>]*?)>/isU",

@@ -21,7 +21,9 @@ namespace owoframe\constant;
 
 interface MIMETypeConstant
 {
-	/* @array MIME类型常量数组 */
+	/**
+	 * MIME类型常量数组
+	 */
 	public const MIMETYPE =
 	[
 		'ez' => 'application/andrew-inset',

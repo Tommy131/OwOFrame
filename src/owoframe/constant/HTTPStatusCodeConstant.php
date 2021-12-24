@@ -21,7 +21,9 @@ namespace owoframe\constant;
 
 interface HTTPStatusCodeConstant
 {
-	/* @array HTTP状态响应码常量数组 */
+	/**
+	 * HTTP状态响应码常量数组
+	*/
 	public const HTTP_CODE =
 	[
 		100 => 'Continue',

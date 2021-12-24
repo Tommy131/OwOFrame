@@ -24,9 +24,14 @@ use owoframe\exception\UnknownErrorException;
 
 class LogWriter
 {
-	/* @string 默认日志记录文件名称 */
+	/**
+	 * 默认日志记录文件名称
+	 */
 	public const DEFAULT_LOG_NAME = "owoblog_run.log";
-	/* @string 日志记录格式 */
+
+	/**
+	 * 日志记录格式
+	 */
 	public const LOG_FORMAT = "[%s][%s][%s/%s] > %s";
 
 
