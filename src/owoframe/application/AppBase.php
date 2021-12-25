@@ -206,6 +206,19 @@ abstract class AppBase
 	}
 
 	/**
+	 * 返回本Application的存储目录
+	 *
+	 * @author HanskiJay
+	 * @since  2021-12-24
+	 * @param  string     $option 可选参数(文件/文件夹路径)
+	 * @return string
+	 */
+	public static function getStoragePath(string $option = '') : string
+	{
+		return STORAGE_PATH . 'application' . DIRECTORY_SEPARATOR . static::getName() . DIRECTORY_SEPARATOR . $option;
+	}
+
+	/**
 	 * 获取当前App目录
 	 *
 	 * @author HanskiJay

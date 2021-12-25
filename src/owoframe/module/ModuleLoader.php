@@ -119,7 +119,7 @@ class ModuleLoader
 	 */
 	public static function existsModule(string $name, &$info = null) : bool
 	{
-		if(isset(self::$modulePool[$name])) return true;
+		if(isset(self::$modulePool[strtolower($name)])) return true;
 		// Start judgment;
 		$hisPath = self::getPath() . $name . DIRECTORY_SEPARATOR;
 		if(!is_dir($hisPath)) return false;
@@ -147,7 +147,7 @@ class ModuleLoader
 	 */
 	public static function getModule(string $name) : ?ModuleBase
 	{
-		return self::$modulePool[$name] ?? null;
+		return self::$modulePool[strtolower($name)] ?? null;
 	}
 
 	/**
@@ -167,7 +167,7 @@ class ModuleLoader
 			$class     = $namespace . '\\' . $info->className;
 
 			if(class_exists($class)) {
-				$class = self::$modulePool[$class] = new $class($dir, $info, $master);
+				$class = self::$modulePool[strtolower($info->name)] = new $class($dir, $info, $master);
 				$class->onLoad();
 				$class->setEnabled();
 			}
@@ -186,6 +186,7 @@ class ModuleLoader
 	 */
 	public static function disableModule(string $name) : bool
 	{
+		$name = strtolower($name);
 		if(($module = self::getModule($name)) !== null) {
 			self::$modulePool[$name]->onDisable();
 			self::$modulePool[$name]->setDisabled();

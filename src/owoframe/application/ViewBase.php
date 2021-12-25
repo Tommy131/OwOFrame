@@ -66,6 +66,14 @@ class ViewBase extends ControllerBase
 	 */
 	protected $constants = [];
 
+	/**
+	 * 自定义资源路径
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $customPath = [];
+
 
 
 	public function __construct(\owoframe\application\AppBase $app)
@@ -87,6 +95,39 @@ class ViewBase extends ControllerBase
 	public function mergeConstants(array $arr) : void
 	{
 		$this->constants = array_merge($this->constants, $arr);
+	}
+
+	/**
+	 * 绑定自定义资源路径
+	 *
+	 * @author HanskiJay
+	 * @since  2021-12-24
+	 * @param  [type] $mixed
+	 * @return void
+	 */
+	public function bindCustomPath($mixed) : void
+	{
+		if(is_array($mixed)) {
+			$this->customPath = array_merge($this->customPath, $mixed);
+		}
+		elseif(is_string($mixed) && isset(func_get_args()[1]) && is_string(func_get_args()[1])) {
+			$this->customPath[$mixed] = func_get_args()[1];
+		}
+	}
+
+	/**
+	 * 删除一个自定义资源路径
+	 *
+	 * @author HanskiJay
+	 * @since  2021-12-24
+	 * @param  string $tag
+	 * @return void
+	 */
+	public function deleteCustomPath(string $tag) : void
+	{
+		if(isset($this->customPath[$tag])) {
+			unset($this->customPath[$tag]);
+		}
 	}
 
 	/**
@@ -269,8 +310,6 @@ class ViewBase extends ControllerBase
 				if(preg_match($regex[1], $tag, $match)) {
 					$type = strtoupper($match[2] ?? 'unknown');
 					$file = $match[3];
-					$path = '';
-
 					$this->take($type, $path);
 
 					$src = $this->generateStaticUrl($path . $file);
@@ -280,7 +319,6 @@ class ViewBase extends ControllerBase
 		}
 		if(preg_match_all($regex[4], $str, $matches)) {
 			foreach($matches[0] as $key => $tag) {
-				$path = '';
 				$this->take($matches[1][$key], $path);
 				$src = $this->generateStaticUrl($path . $matches[2][$key]);
 				$str = str_replace($matches[0][$key], $src, $str);
@@ -303,34 +341,40 @@ class ViewBase extends ControllerBase
 		{
 			case 'CSS':
 			case 'CSSPATH':
-				$path .= $this->getStaticPath('css');
+				$path = $this->getStaticPath('css');
 			break;
 			case 'RCSS':
 			case 'RCSSPATH':
-				$path .= $this->getResourcePath('css');
+				$path = $this->getResourcePath('css');
 			break;
 
 			case 'JS':
 			case 'JSPATH':
-				$path .= $this->getStaticPath('js');
+				$path = $this->getStaticPath('js');
 			break;
 			case 'RJS':
 			case 'RJSPATH':
-				$path .= $this->getResourcePath('js');
+				$path = $this->getResourcePath('js');
 			break;
 
 			case 'IMG':
 			case 'IMGPATH':
-				$path .= $this->getStaticPath('img');
+				$path = $this->getStaticPath('img');
 			break;
 			case 'RIMG':
 			case 'RIMGPATH':
-				$path .= $this->getResourcePath('img');
+				$path = $this->getResourcePath('img');
 			break;
 
 			case 'PACKAGE':
 			case 'PKGPATH':
-				$path .= $this->getStaticPath('package');
+				$path = $this->getStaticPath('package');
+			break;
+
+			default:
+				if(isset($this->customPath[$type])) {
+					$path = $this->customPath[$type] . DIRECTORY_SEPARATOR;
+				}
 			break;
 		}
 	}
@@ -357,6 +401,7 @@ class ViewBase extends ControllerBase
 		if(!preg_match_all($loopRegex, $loopArea, $matched, PREG_SET_ORDER, 0)) {
 			return;
 		}
+		$currentKey = 1;
 		foreach($matched as $num => $loopGroup) {
 			$bindTag  = trim($loopGroup[2]);                // 绑定的数组变量到模板;
 			$defined  = trim($loopGroup[1]);                // 定义的变量到模板;
@@ -390,7 +435,7 @@ class ViewBase extends ControllerBase
 							array_shift($parseArray);                // 去除第一级原始绑定标签;
 
 							if((count($parseArray) === 0) && (($num = count($data)) > 1)) {
-								$complied[$k][$n] = str_replace($bindElement . $matchedTag . '@', "Array(n:{$bindElement}{$bindTag})[{$num}]", $line);
+								$complied[$k][$n] = str_replace($bindElement . $matchedTag . $bindElement, "Array(n:{$bindElement}{$bindTag})[{$num}]", $line);
 							} else {
 								$current = $v;
 								while($parseArray) {
@@ -403,11 +448,14 @@ class ViewBase extends ControllerBase
 										}
 									}
 								}
-								$complied[$k][$n] = str_replace($bindElement . $matchedTag . '@', $current, $complied[$k][$n] ?? $line);
+								$complied[$k][$n] = str_replace($bindElement . $matchedTag . $bindElement, $current, $complied[$k][$n] ?? $line);
 							}
 						}
 					} else {
 						$complied[$k][$n] = $line;
+					}
+					if(preg_match_all("/{$bindElement}currentKey{$bindElement}/", $line, $match)) {
+						$complied[$k][$n] = str_replace($bindElement . 'currentKey' . $bindElement, (string) $currentKey++, $complied[$k][$n] ?? $line);
 					}
 				}
 				ksort($complied[$k]);
