@@ -316,6 +316,38 @@ function str2UTF8(string $str) : string
 	}
 }
 
+/**
+ * 更改变量类型
+ *
+ * @author HanskiJay
+ * @since  2021-01-31
+ * @param  string $var
+ * @param  mixed $done
+ * @return void
+ */
+function changeType(string $var, &$done) : void
+{
+	if(is_numeric($var)) {
+		$done = preg_match('/^[0-9]+\.[0-9]+$/', $var) ? (float) $var : (int) $var;
+	} else {
+		$tmp_var = (strtolower($var) === 'true') ? true : ((strtolower($var) === 'false') ? false : $var);
+		$done = ($tmp_var === $var) ? ((strtolower($var) === 'null') ? null : $tmp_var) : $tmp_var;
+	}
+}
+
+/**
+ * 将布尔值转换为字符串
+ *
+ * @author HanskiJay
+ * @since  2021-01-31
+ * @param  null|boolean $bool
+ * @param  mixed        $done
+ * @return void
+ */
+function changeBool2String(?bool $bool, &$done) : void
+{
+	$done = $bool ? 'true' : 'false';
+}
 
 /**
  * 系统特殊方法

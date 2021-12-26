@@ -24,6 +24,7 @@ use owoframe\exception\OwOFrameException;
 use owoframe\exception\ParameterTypeErrorException;
 use owoframe\helper\Helper;
 use owoframe\http\route\Router;
+use owoframe\object\INI;
 use ReflectionFunction;
 
 class ViewBase extends ControllerBase
@@ -109,9 +110,11 @@ class ViewBase extends ControllerBase
 	{
 		if(is_array($mixed)) {
 			$this->customPath = array_merge($this->customPath, $mixed);
-		}
-		elseif(is_string($mixed) && isset(func_get_args()[1]) && is_string(func_get_args()[1])) {
-			$this->customPath[$mixed] = func_get_args()[1];
+		} else {
+			$arg = func_get_args()[1];
+			if(is_string($mixed) && isset($arg) && is_string($arg)) {
+				$this->customPath[$mixed] = $arg;
+			}
 		}
 	}
 
@@ -269,43 +272,55 @@ class ViewBase extends ControllerBase
 	{
 		$regex =
 		[
-			'/<(img|script|link) (.*)>/imU',
-			'/@(src|href)="{\$(\w*)\|(.*)}"/imU',
-			'/@name="(\w*)"[\s]+?/mU',
-			'/@active="(\w*)"[\s]+?/imU',
-			'/{\$(\w*)\|(.*)}/imU'
+			'/<(img|script|link) (.*)>/imuU',
+			'/@(src|href)="{\$(\w*)\|(.*)}"/imuU',
+			'/@name="(\w*)"[\s]+?/muU',
+			'/@active="(\w*)"[\s]+?/imuU',
+			'/{\$(\w*)\|(.*)}/imuU'
 		];
 
 		if(!preg_match_all($regex[0], $str, $matches)) {
 			return;
 		}
 
-		foreach($matches[0] as $key => $tag) {
+		$strings = $replace =  [];
+
+		foreach($matches[0] as $k => $tag) {
 			if(preg_match($regex[2], $tag, $match)) {
 				$name = $match[1];
 			} else {
 				$name = '';
 			}
 
-			if(($active = $this->getValue($name)) !== null) {
-				$active = (($active === true) || ($active === 'true')) ? true : false;
+			if(preg_match($regex[3], $tag, $match)) {
+				changeType($match[1], $active);
 			}
-			elseif(preg_match($regex[3], $tag, $match)) {
-				$active = ($match[1] === 'true') ? true : (($match[1] === 'false') ? false : null);
-			} else {
-				$active = null;
+			if(!isset($active) || ($active === 'unset')) {
+				$_ = $this->getValue($name);
+				if(($_ !== null) && is_string($_)) {
+					changeType($_, $active);
+				} else {
+					$active = null;
+				}
 			}
 
 			if(is_bool($active) && !$active) {
-				if($matches[1][$key] === 'script') {
+				if($matches[1][$k] === 'script') {
 					$tag = "{$tag}</script>";
 				}
 				// TODO: 支持其他标签使用 @active 元素;
 				$tag = str_replace(['.', '/', '|', '$'], ['\.', '\/', '\|', '\$'], $tag);
-				$str = preg_replace("/(\s*?){1}{$tag}/i", '', $str);
+				// $str = preg_replace("/(\s*?){1}{$tag}/i", '', $str);
+				if(preg_match("/(\s*?){1}{$tag}/i", $str, $m)) {
+					$strings[] = $m[0];
+					$replace[] = '';
+				}
+				$active = 'unset';
 			} else {
 				$newTag = preg_replace($regex[3], '', preg_replace($regex[2], '', $tag));
-				$str    = str_replace($tag, $newTag, $str);
+
+				$strings[] = $tag;
+				$replace[] = $newTag;
 
 				if(preg_match($regex[1], $tag, $match)) {
 					$type = strtoupper($match[2] ?? 'unknown');
@@ -313,17 +328,22 @@ class ViewBase extends ControllerBase
 					$this->take($type, $path);
 
 					$src = $this->generateStaticUrl($path . $file);
-					$str = str_replace($match[0], $match[1] . "=\"{$src}\"", $str);
+
+					$strings[] = $match[0];
+					$replace[] = $match[1] . "=\"{$src}\"";
 				}
 			}
 		}
 		if(preg_match_all($regex[4], $str, $matches)) {
-			foreach($matches[0] as $key => $tag) {
-				$this->take($matches[1][$key], $path);
-				$src = $this->generateStaticUrl($path . $matches[2][$key]);
-				$str = str_replace($matches[0][$key], $src, $str);
+			foreach($matches[0] as $k => $tag) {
+				$this->take($matches[1][$k], $path);
+				$src = $this->generateStaticUrl($path . $matches[2][$k]);
+				$strings[] = $matches[0][$k];
+				$replace[] = $src;
 			}
 		}
+		// optimized: 集中替换节约内存开支;
+		$str = str_replace($strings, $replace, $str);
 	}
 
 	/**
@@ -387,16 +407,17 @@ class ViewBase extends ControllerBase
 	 * @author HanskiJay
 	 * @since  2021-01-03
 	 * @param  string      $loopArea 需要解析的文本
+	 * @param  null|int    $level    循环次数
 	 * @return void
 	 */
-	protected function parseLoopArea(string &$loopArea) : void
+	protected function parseLoopArea(string &$loopArea, ?int $level = null) : void
 	{
 		// $bindElement = "\\\$";
 		$bindElement = '@';
-		$loopHead    = "{loop {$bindElement}([a-zA-Z0-9]+) in \\\$([a-zA-Z0-9]+)}";
+		$loopHead    = "{{$level}loop {$bindElement}([a-zA-Z0-9]+) in \\\$([a-zA-Z0-9]+)}";
 		$loopBetween = '([\s\S]*)';
-		$loopEnd     = '\{\/loop\}';
-		$loopRegex   = "/{$loopHead}{$loopBetween}{$loopEnd}/mU";
+		$loopEnd     = "{\/{$level}loop}";
+		$loopRegex   = "/{$loopHead}{$loopBetween}{$loopEnd}/muU";
 
 		if(!preg_match_all($loopRegex, $loopArea, $matched, PREG_SET_ORDER, 0)) {
 			return;
@@ -434,8 +455,8 @@ class ViewBase extends ControllerBase
 							$parseArray = explode('.', $matchedTag); // 解析并分级绑定标签;
 							array_shift($parseArray);                // 去除第一级原始绑定标签;
 
-							if((count($parseArray) === 0) && (($num = count($data)) > 1)) {
-								$complied[$k][$n] = str_replace($bindElement . $matchedTag . $bindElement, "Array(n:{$bindElement}{$bindTag})[{$num}]", $line);
+							if((count($parseArray) === 0) && (($cnum = count($data)) > 1)) {
+								$complied[$k][$n] = str_replace($bindElement . $matchedTag . $bindElement, "Array(n:{$bindElement}{$bindTag})[{$cnum}]", $line);
 							} else {
 								$current = $v;
 								while($parseArray) {
@@ -468,6 +489,147 @@ class ViewBase extends ControllerBase
 	}
 
 	/**
+	 * IF-ELSE语句解析区域
+	 *
+	 * *ATTENTION: 这个语法支持简单判断, 判断顺序依次为从左往右!
+	 * ~Usage  {if condition1 Judgement condition2 and|&& condition3 Judgement condition4...}
+	 * @see    Tested picture in /tests/Function_[View-parseJudgementArea()]_test_log.png
+	 * @author HanskiJay
+	 * @since  2021-12-25
+	 * @param  string      $str   需要解析的文本
+	 * @param  null|int    $level 循环次数
+	 * @return void
+	 */
+	protected function parseJudgementArea(string &$str, ?int $level = null) : void
+	{
+		$regex = "/{{$level}if (.*)}(.*){\/{$level}if}/msuU";
+		if(preg_match_all($regex, $str, $matches)) {
+			$strings = $replace =  [];
+			foreach($matches[1] as $k => $v)
+			{
+				$strings[$k] = $matches[0][$k];
+				$lastResult = null;
+				$lastJudge  = null;
+				while(strlen($v) > 0)
+				{
+					if(preg_match('/(\w+) ([\w!=<>]+) (\w+)/', $v, $matched))
+					{
+						$currentSentence = $matched[0];
+						$v = trim(str_replace($currentSentence, '', $v));
+						// echo '[0] Current Judgement sentence: ' . $currentSentence . PHP_EOL;
+						$result = self::checkJudgement($matched[2], $matched[1], $matched[3]);
+						// changeBool2String($result, $r);
+						// echo '[1] Current Judgement result: ' . ($r) . PHP_EOL;
+
+						if(is_string($lastJudge)) {
+							// changeBool2String($lastResult, $r);
+							// echo '[2] Last result (not compared): ' . ($r) . PHP_EOL . PHP_EOL;
+							switch(strtolower($lastJudge)) {
+								case 'and':
+								case '&&':
+									$lastResult = $lastResult && $result;
+								break;
+
+								case 'or':
+								case '||':
+									$lastResult = $lastResult || $result;
+								break;
+							}
+							// changeBool2String($lastResult, $r);
+							// echo '[3] Compared result: ' . ($r) . PHP_EOL . PHP_EOL;
+						}
+
+						if(preg_match('/[\w\|&]+/', $v, $lastJudge)) {
+							$lastJudge = array_shift($lastJudge);
+							// echo '[4] Compare Judgement grammar: ' . $lastJudge . PHP_EOL;
+						}
+
+						if(is_string($lastJudge)) {
+							$v = substr($v, strlen($lastJudge), strlen($v));
+							// echo '[5] Next sentence (not Judgement): ' . $v . PHP_EOL . PHP_EOL;
+							if(strlen($v) > 0) {
+								$lastResult = $result;
+							}
+						}
+					} else {
+						echo '[ERROR] Grammar mistake: Invalid Judgement Sentence \'' . $v . '\'' . PHP_EOL;
+						break;
+					}
+				}
+				$replace[$k] = ($lastResult ?? $result) ? $matches[2][$k] : '';
+			}
+			$str = str_replace($strings, $replace, $str);
+		}
+	}
+
+	/**
+	 * 判断语句拆分
+	 *
+	 * @author HanskiJay
+	 * @since  2021-12-25
+	 * @param  string  $type
+	 * @param  mixed  $condition1
+	 * @param  mixed  $condition2
+	 * @return boolean
+	 */
+	private static function checkJudgement(string $type, $condition1, $condition2) : bool
+	{
+		$result = false;
+		switch(strtolower($type)) {
+			case '==';
+			case 'eq':
+			case 'equal':
+				$result = $condition1 == $condition2;
+			break;
+
+			case '===':
+			case 'eqs':
+			case 'equals':
+				$result = $condition1 === $condition2;
+			break;
+
+			case '!=':
+			case '!eq':
+			case 'neq':
+			case '!equal':
+			case 'nequal':
+				$result = $condition1 != $condition2;
+			break;
+
+			case '!==':
+			case '!eqs':
+			case 'neqs':
+			case '!equals':
+			case 'nequals':
+				$result = $condition1 !== $condition2;
+			break;
+
+			case '>':
+			case 'gt':
+			case 'bigger':
+			case 'big':
+				$result = $condition1 > $condition2;
+			break;
+
+			case '>=':
+				$result = $condition1 >= $condition2;
+			break;
+
+			case '<':
+			case 'lt':
+			case 'smaller':
+			case 'small':
+				$result = $condition1 < $condition2;
+			break;
+
+			case '<=':
+				$result = $condition1 <= $condition2;
+			break;
+		}
+		return $result;
+	}
+
+	/**
 	 * 解析前端模板存在的区域控制显示语法
 	 * ~Usage  <\!--@display=true or false|@cid=control_id-->HTML-TAGS<!--@display-->
 	 *
@@ -478,7 +640,8 @@ class ViewBase extends ControllerBase
 	 */
 	protected function parseDisplayArea(string &$str) : void
 	{
-		if(preg_match_all('/<\!--@display=(true|false)?(\|@cid=(\w+))?-->(.*)<\!--@display-->/imsU', $str, $matches)) {
+		if(preg_match_all('/<\!--@display=(true|false)?(\|@cid=(\w+))?-->(.*)<\!--@display-->/imsuU', $str, $matches)) {
+			$strings = $replace =  [];
 			foreach($matches[0] as $k => $v) {
 				// 区域ID绑定解析;
 				$cid = $matches[3][$k];
@@ -493,8 +656,10 @@ class ViewBase extends ControllerBase
 				// 区域原文;
 				$original = $matches[4][$k];
 				// 最终判断;
-				$str = str_replace($v, ($display) ? $original : '', $str);
+				$strings[] = $v;
+				$replace[] = ($display) ? $original : '';
 			}
+			$str = str_replace($strings, $replace, $str);
 		}
 	}
 
@@ -528,57 +693,48 @@ class ViewBase extends ControllerBase
 	 * 将模板语法替换成存在的函数方法并调用返回结果
 	 * Usage: {function_name|arguments...}
 	 *
+	 * @author HanskiJay
+	 * @since  2021-05-29
 	 * @param  string $str
 	 * @return void
 	 */
 	protected function functionReplace(string &$str) : void
 	{
-		$regex = '/{(\w+)\|(.*)}/iU';
+		$regex = '/{(\w+)\|(.*)}/iuU';
 		if(preg_match_all($regex, $str, $matches)) {
-			foreach($matches[0] as $k => $v) {
+			$strings = $replace = [];
+			foreach($matches[0] as $k => $v)
+			{
 				$function = $matches[1][$k];
-				if(function_exists($function)) {
-					$value = $matches[2][$k];
+				if(!function_exists($function)) {
+					continue;
+				}
 
-					if(strpos($value, '$') !== false) {
-						$value = substr($value, 1, strlen($value));
-						if(!is_null($try = $this->getValue($value))) {
-							$str = str_replace($v, $function($try), $str);
-						}
-					} else {
-						try {
-							$values   = preg_split('/[, |,]/iU', $value);
-							$values   = array_filter($values);
-							$tmp      = [];
-							foreach($values as $t) {
-								$tmp[] = $t;
+				try {
+					$values   = preg_split('/[, |,]/iU', $matches[2][$k]);
+					$values   = array_filter($values);
+					$tmp      = [];
+					foreach($values as $value) {
+						if(strpos($value, '$') !== false) {
+							$value = substr($value, 1, strlen($value));
+							if(!is_null($value = $this->getValue($value))) {
+								$tmp[] = $value;
+								continue;
 							}
-							$values = $tmp;
-							unset($tmp);
-							$reflect  = new ReflectionFunction($function);
-							$params   = $reflect->getParameters();
-							$required = [];
-							foreach($params as $k => $param) {
-								$val = &$values[$k];
-								$type = $param->getType() ?? 'null or string';
-								if(!isset($val) && !$param->isDefaultValueAvailable()) {
-									throw new Error("Missing Parameter {{$k}}, should be {$type}!");
-								}
-								if(is_numeric($val)) {
-									$val = preg_match('/^[0-9]+\.[0-9]+$/', $val) ? (float) $val : (int) $val;
-								}
-								$val = (strtolower($val) === 'true') ? true : ((strtolower($val) === 'false') ? false : $val);
-								if($param->hasType() && ($type !== gettype($val))) {
-									throw new Error("Type {{$k}} Error, should be {$type}");
-								}
-							}
-							$str = str_replace($v, $function(...$values), $str);
-						} catch(Error $e) {
-							$str = str_replace($v, "[F-ERROR: {$function}] " . $e->getMessage(), $str);
 						}
+						$tmp[] = $value;
 					}
+					$values = $tmp;
+					unset($tmp);
+					// ReflectionFunction 反射类获取 ReflectionParameter 有问题, 因此跳过做类型检测;
+					$strings[] = $v;
+					$replace[] = $function(...$values);
+				} catch(Error $e) {
+					$strings[] = $v;
+					$replace[] = "[F-ERROR: {$function}] " . $e->getMessage();
 				}
 			}
+			$str = str_replace($strings, $replace, $str);
 		}
 	}
 
@@ -597,15 +753,70 @@ class ViewBase extends ControllerBase
 		if(!is_int($value) && !is_string($value) && !is_bool($value)) {
 			return;
 		}
-		if(preg_match('/{\$' . $key . '\|def\[(.*)\]}/mU', $str, $match)) {
-			if($this->readString($str, $result)) {
-				$str = str_replace($match[0], $result, $str);
-			} else {
-				$str = str_replace($match[0], $value ?? (($match[1] === ':null') ? '' : $match[1]), $str);
-			}
+		if(preg_match('/{\$' . $key . '\|def\[(.*)\]}/muU', $str, $match)) {
+			$str = str_replace($match[0], $this->readString($str, $result) ? $result : ($value ?? (($match[1] === ':null') ? '' : $match[1])), $str);
 		}
 		$str = str_replace("{\${$key}}", $value, $str);
 	}
+
+	/**
+	 * 替换绑定变量
+	 *
+	 * @author HanskiJay
+	 * @since  2021-05-29
+	 * @param  string      &$str  原始字符串
+	 * @return void
+	 */
+	protected function replaceBindValues(string &$str) : void
+	{
+		if(preg_match_all('/{\$(\w+)(\|def\[(.*)\])?}/muU', $str, $matches)) {
+			$strings = $replace = [];
+			foreach($matches[1] as $k => $bindTag) {
+				$strings[$k] = $matches[0][$k];
+				// 从绑定变量数组中获取绑定值;
+				if($result = $this->getValue($bindTag)) {
+					$replace[$k] = $result;
+				} else {
+					// 判断是否存在默认值;
+					$replace[$k] = isset($matches[3][$k]) ? ($this->readString($matches[3][$k], $result) ? $result : (($matches[3][$k] === ':null') ? '' : $matches[0][$k])) : $matches[0][$k];
+				}
+			}
+			$str = str_replace($strings, $replace, $str);
+		}
+	}
+
+	/**
+	 * 替换绑定数组
+	 *
+	 * !ATTENTION: 目前仅支持一维数组!!!
+	 * @author HanskiJay
+	 * @since  2021-12-25
+	 * @param  string $str
+	 * @return void
+	 */
+	protected function replaceBindArrays(string &$str) : void
+	{
+		if(preg_match_all('/{\$(\w+)\.(\w+)(\|def\[(.*)\])?}/muU', $str, $matches)) {
+			$strings = $replace = [];
+			foreach($matches[1] as $k => $bindTag) {
+				$strings[$k] = $matches[0][$k];
+				// 从绑定变量数组中获取绑定值;
+				if($result = $this->getValue($bindTag)) {
+					$key = $matches[2][$k];
+					if(isset($result[$key])) {
+						$replace[$k] = $result[$key];
+					} else {
+						// 判断是否存在默认值;
+						$replace[$k] = (isset($matches[4][$k])) ? (($matches[4][$k] === ':null') ? '' : $matches[0][$k]) : $matches[0][$k];
+					}
+				} else {
+					$replace[$k] = '';
+				}
+			}
+			$str = str_replace($strings, $replace, $str);
+		}
+	}
+
 
 	/**
 	 * 渲染视图到前端
@@ -630,36 +841,36 @@ class ViewBase extends ControllerBase
 		}
 		// 转换常量绑定;
 		if(preg_match_all('/{([0-9A-Z_]*)}/mU', $this->viewTemplate, $matches)) {
+			$strings = $replace = [];
 			foreach($matches[1] as $k => $constName) {
 				if(defined($constName) || isset($this->constants[$constName])) {
-					$this->viewTemplate = str_replace($matches[0][$k], @constant($constName) ?? $this->constants[$constName], $this->viewTemplate);
+					$strings[] = $matches[0][$k];
+					$replace[] = @constant($constName) ?? $this->constants[$constName];
 				}
 			}
+			$this->viewTemplate = str_replace($strings, $replace, $this->viewTemplate);
+			$strings = $replace = []; // 重置;
 		}
+		// 解析绑定数组;
+		$this->replaceBindArrays($this->viewTemplate);
 		// 解析循环语句;
 		$this->parseLoopArea($this->viewTemplate);
+		changeType(INI::_global('view.loopLevel', 3), $l);
+		for($i = 1; $i <= $l; $i++) {
+			$this->parseLoopArea($this->viewTemplate, $i);
+		}
 		// 绑定变量;
-		foreach($this->bindValues as $k => $v) {
-			$this->replaceBindValue($k, $v, $this->viewTemplate);
-		}
-		// 解析剩余的变量(包含默认值);
-		if(preg_match_all('/{\$(.*)\|def\[(.*)\]}/mU', $this->viewTemplate, $matches))
-		{
-			foreach($matches[1] as $k => $v) {
-				$match = $matches[2][$k];
-
-				if($this->readString($match, $result)) {
-					$this->viewTemplate = str_replace($matches[0][$k], $result, $this->viewTemplate);
-				} else {
-					$this->viewTemplate = str_replace($matches[0][$k], $this->getValue($v) ?? (($match === ':null') ? '' : $match), $this->viewTemplate);
-				}
-			}
-		}
-
-		// 解析@display用法;
+		$this->replaceBindValues($this->viewTemplate);
+		// 解析@display语法;
 		$this->parseDisplayArea($this->viewTemplate);
 		// 解析模板语法之函数调用;
 		$this->functionReplace($this->viewTemplate);
+		// 解析IF-ELSE语法区域;
+		$this->parseJudgementArea($this->viewTemplate);
+		changeType(INI::_global('view.judgementLevel', 3), $l);
+		for($i = 1; $i <= $l; $i++) {
+			$this->parseJudgementArea($this->viewTemplate, $i);
+		}
 		// 绑定资源路径到路由;
 		$this->parseResourcePath($this->viewTemplate);
 
