@@ -67,7 +67,7 @@ class DbConfig extends Db
 					// 数据库表前缀
 					'prefix'   => INI::_global('mysql.prefix', 'owo_'),
 					// 数据库调试模式
-					'debug'    => true
+					'debug'    => INI::_global('mysql.debugMode', true)
 				]
 			]
 		];
@@ -83,19 +83,19 @@ class DbConfig extends Db
 	 *
 	 * @author HanskiJay
 	 * @since  2020-09-10
-	 * @param  string      $default 配置文件标识
+	 * @param  string      $tag 配置文件标识
 	 * @return void
 	 */
-	public static function setDefault(string $default) : void
+	public static function setDefaultConfig(string $tag) : void
 	{
-		if(self::hasDbConfig($default)) {
-			static::$dbConfig['default'] = $default;
+		if(self::hasDbConfig($tag)) {
+			static::$dbConfig['default'] = $tag;
 		}
-		throw new OwOFrameException("Database configuration '{$default}' doesn't exists!");
+		throw new OwOFrameException("Database configuration '{$tag}' doesn't exists!");
 	}
 
 	/**
-	 * 获取默认的配置文件
+	 * 从默认的配置文件获取配置
 	 *
 	 * @author HanskiJay
 	 * @since  2021-01-09
@@ -103,9 +103,24 @@ class DbConfig extends Db
 	 * @param  mixed       $default 默认返回值
 	 * @return mixed
 	 */
-	public static function getDefault(string $index, $default ='')
+	public static function getIndexFromDefault(string $index, $default = '')
 	{
 		return static::$dbConfig['connections'][static::$dbConfig['default']][$index] ?? $default;
+	}
+
+	/**
+	 * 设置数据库配置某项元素的值
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-19
+	 * @param  string      $tag     配置文件标识
+	 * @param  string      $index 配置索引
+	 * @param  string      $value 更新值
+	 * @return void
+	 */
+	public static function setIndex(string $tag, string $index, string $value) : void
+	{
+		static::$dbConfig['connections'][$tag][$index] = $value;
 	}
 
 	/**
@@ -113,17 +128,18 @@ class DbConfig extends Db
 	 *
 	 * @author HanskiJay
 	 * @since  2020-09-19 18:03
+	 * @param  string      $tag     配置文件标识
 	 * @param  string      $index   配置索引
 	 * @param  string      $default 默认返回值
 	 * @return string
 	 */
-	public static function getIndex(string $index, string $default = '') : string
+	public static function getIndex(string $tag, string $index, string $default = '') : string
 	{
-		return static::$dbConfig[$index] ?? DbConfig::getDefault($index) ?? $default;
+		return static::$dbConfig['connections'][$tag][$index] ?? $default;
 	}
 
 	/**
-	 * 获取数据库配置
+	 * 获取所有数据库配置
 	 *
 	 * @author HanskiJay
 	 * @since  2020-09-19
@@ -135,32 +151,28 @@ class DbConfig extends Db
 	}
 
 	/**
-	 * 设置数据库配置某项元素的值
-	 *
-	 * @author HanskiJay
-	 * @since  2020-09-19
-	 * @param  string      $index 配置索引
-	 * @param  string      $value 更新值
-	 * @return void
-	 */
-	public static function setIndex(string $index, string $value) : void
-	{
-		// if(isset(DbConfig::DEFAULT_DB_CONFIG[$index])) {
-			static::$dbConfig[$index] = $value;
-		// }
-	}
-
-	/**
 	 * 判断是否存在某一个数据库配置文件
 	 *
 	 * @author HanskiJay
 	 * @since  2020-09-10
-	 * @param  string      $nickName 配置文件标识
+	 * @param  string      $tag 配置文件标识
 	 * @return boolean
 	 */
-	public static function hasDbConfig(string $nickName) : bool
+	public static function hasDbConfig(string $tag) : bool
 	{
-		return isset(static::$dbConfig['connections'][$nickName]);
+		return isset(static::$dbConfig['connections'][$tag]);
+	}
+
+	/**
+	 * 返回默认配置文件标识
+	 *
+	 * @author HanskiJay
+	 * @since  2021-12-27
+	 * @return string
+	 */
+	public static function getDefaultTag() : string
+	{
+		return static::$dbConfig['default'];
 	}
 
 	/**
@@ -168,13 +180,13 @@ class DbConfig extends Db
 	 *
 	 * @author HanskiJay
 	 * @since  2020-09-10
-	 * @param  string      $nickName 配置文件标识
+	 * @param  string      $tag 配置文件标识
 	 * @param  array       $dbConfig 传入的数据
 	 * @return void
 	 */
-	public static function addConfig(string $nickName, array $dbConfig) : void
+	public static function addConfig(string $tag, array $dbConfig) : void
 	{
-		static::$dbConfig['connections'][$nickName] = $dbConfig;
+		static::$dbConfig['connections'][$tag] = $dbConfig;
 	}
 
 }
