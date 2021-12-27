@@ -25,7 +25,6 @@ use owoframe\exception\ParameterTypeErrorException;
 use owoframe\helper\Helper;
 use owoframe\http\route\Router;
 use owoframe\object\INI;
-use ReflectionFunction;
 
 class ViewBase extends ControllerBase
 {
@@ -214,7 +213,7 @@ class ViewBase extends ControllerBase
 	 * @author HanskiJay
 	 * @since  2021-12-21
 	 * @param  string      $cid     Display区域显示的控制ID
-	 * @return null|boolean
+	 * @return boolean|null
 	 */
 	public function getDisplay(string $cid) : ?bool
 	{
@@ -407,7 +406,7 @@ class ViewBase extends ControllerBase
 	 * @author HanskiJay
 	 * @since  2021-01-03
 	 * @param  string      $loopArea 需要解析的文本
-	 * @param  null|int    $level    循环次数
+	 * @param  integer|null    $level    循环次数
 	 * @return void
 	 */
 	protected function parseLoopArea(string &$loopArea, ?int $level = null) : void
@@ -497,7 +496,7 @@ class ViewBase extends ControllerBase
 	 * @author HanskiJay
 	 * @since  2021-12-25
 	 * @param  string      $str   需要解析的文本
-	 * @param  null|int    $level 循环次数
+	 * @param  integer|null    $level 循环次数
 	 * @return void
 	 */
 	protected function parseJudgementArea(string &$str, ?int $level = null) : void
@@ -512,11 +511,20 @@ class ViewBase extends ControllerBase
 				$lastJudge  = null;
 				while(strlen($v) > 0)
 				{
-					if(preg_match('/(\w+) ([\w!=<>]+) (\w+)/', $v, $matched))
+					if(preg_match('/([\$\w]+) ([\w!=<>]+) ([\$\w]+)/', $v, $matched))
 					{
 						$currentSentence = $matched[0];
 						$v = trim(str_replace($currentSentence, '', $v));
 						// echo '[0] Current Judgement sentence: ' . $currentSentence . PHP_EOL;
+
+						if(strpos($matched[1], '$') !== false) {
+							$matched[1] = $this->getValue(substr($matched[1], 1, strlen($matched[1])));
+						}
+						if(strpos($matched[3], '$') !== false) {
+							$matched[3] = $this->getValue(substr($matched[3], 1, strlen($matched[3])));
+						}
+						changeType($matched[1], $matched[1]);
+						changeType($matched[3], $matched[3]);
 						$result = self::checkJudgement($matched[2], $matched[1], $matched[3]);
 						// changeBool2String($result, $r);
 						// echo '[1] Current Judgement result: ' . ($r) . PHP_EOL;
@@ -552,7 +560,7 @@ class ViewBase extends ControllerBase
 							}
 						}
 					} else {
-						echo '[ERROR] Grammar mistake: Invalid Judgement Sentence \'' . $v . '\'' . PHP_EOL;
+						throw new OwOFrameException('[ERROR] Grammar mistake: Invalid Judgement Sentence \'' . $v . '\'');
 						break;
 					}
 				}
@@ -774,11 +782,11 @@ class ViewBase extends ControllerBase
 			foreach($matches[1] as $k => $bindTag) {
 				$strings[$k] = $matches[0][$k];
 				// 从绑定变量数组中获取绑定值;
-				if($result = $this->getValue($bindTag)) {
+				if(!is_null($result = $this->getValue($bindTag))) {
 					$replace[$k] = $result;
 				} else {
 					// 判断是否存在默认值;
-					$replace[$k] = isset($matches[3][$k]) ? ($this->readString($matches[3][$k], $result) ? $result : (($matches[3][$k] === ':null') ? '' : $matches[0][$k])) : $matches[0][$k];
+					$replace[$k] = isset($matches[3][$k]) ? ($this->readString($matches[3][$k], $result) ? $result : (($matches[3][$k] === ':null') ? '' : $matches[3][$k])) : $matches[0][$k];
 				}
 			}
 			$str = str_replace($strings, $replace, $str);
@@ -801,13 +809,13 @@ class ViewBase extends ControllerBase
 			foreach($matches[1] as $k => $bindTag) {
 				$strings[$k] = $matches[0][$k];
 				// 从绑定变量数组中获取绑定值;
-				if($result = $this->getValue($bindTag)) {
+				if(!is_null($result = $this->getValue($bindTag))) {
 					$key = $matches[2][$k];
 					if(isset($result[$key])) {
 						$replace[$k] = $result[$key];
 					} else {
 						// 判断是否存在默认值;
-						$replace[$k] = (isset($matches[4][$k])) ? (($matches[4][$k] === ':null') ? '' : $matches[0][$k]) : $matches[0][$k];
+						$replace[$k] = (isset($matches[4][$k])) ? (($matches[4][$k] === ':null') ? '' : $matches[4][$k]) : $matches[0][$k];
 					}
 				} else {
 					$replace[$k] = '';
@@ -1047,7 +1055,7 @@ class ViewBase extends ControllerBase
 	 *
 	 * @author HanskiJay
 	 * @since  2021-05-29
-	 * @return null|string
+	 * @return string|null
 	 */
 	protected function &getTemplate() : ?string
 	{
