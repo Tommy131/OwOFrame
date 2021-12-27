@@ -155,7 +155,7 @@ final class MasterManager implements Manager
 	 *
 	 * @author HanskiJay
 	 * @since  2021-03-06
-	 * @return null|ClassLoader
+	 * @return ClassLoader|null
 	 */
 	public static function getClassLoader() : ?ClassLoader
 	{

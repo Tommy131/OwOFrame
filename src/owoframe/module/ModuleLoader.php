@@ -143,7 +143,7 @@ class ModuleLoader
 	 * @author HanskiJay
 	 * @since  2021-02-08
 	 * @param  string      $name 模块名称
-	 * @return null|ModuleBase
+	 * @return ModuleBase|null
 	 */
 	public static function getModule(string $name) : ?ModuleBase
 	{

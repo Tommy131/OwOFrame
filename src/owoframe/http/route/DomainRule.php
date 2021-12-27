@@ -102,7 +102,7 @@ class DomainRule
 	 * @since  2021-11-03
 	 * @param  string      $domain
 	 * @param  &$bindType
-	 * @return null|string
+	 * @return string|null
 	 */
 	public static function get(string $domain, &$bindType = null) : ?string
 	{

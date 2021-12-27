@@ -124,7 +124,7 @@ class AppManager implements \owoframe\constant\Manager
 	 *
 	 * @author HanskiJay
 	 * @since  2020-09-09
-	 * @return null|AppBase
+	 * @return AppBase|null
 	 */
 	public static function getDefaultApp() : ?AppBase
 	{
@@ -137,7 +137,7 @@ class AppManager implements \owoframe\constant\Manager
 	 * @author HanskiJay
 	 * @since  2020-09-09
 	 * @param  string      $appName App名称
-	 * @return null|AppBase
+	 * @return AppBase|null
 	 */
 	public static function getApp(string $appName) : ?AppBase
 	{

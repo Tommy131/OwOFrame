@@ -133,7 +133,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 *
 	 * @author HanskiJay
 	 * @since  2021-03-18
-	 * @param  null|callable    $callback 可回调参数
+	 * @param  callable|null    $callback 可回调参数
 	 * @param  array            $params   回调参数传递
 	 * @param  bool             $reload   重新生成响应实例
 	 * @return Response

@@ -250,7 +250,7 @@ abstract class AppBase
 	 * @author HanskiJay
 	 * @since  2021-02-08
 	 * @param  string      $name 插件名称
-	 * @return null|ModuleBase
+	 * @return ModuleBase|null
 	 * @access protected
 	 */
 	final protected function getModule(string $name) : ?ModuleBase
@@ -275,7 +275,7 @@ abstract class AppBase
 	 *
 	 * @author HanskiJay
 	 * @since  2020-09-09
-	 * @return null|AppBase
+	 * @return AppBase|null
 	 */
 	public static function getInstance() : ?AppBase
 	{

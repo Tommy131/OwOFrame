@@ -54,8 +54,8 @@ class UrlRule implements UrlRuleConstant
 	 *
 	 * @author HanskiJay
 	 * @since  2021-11-02
-	 * @param  array             &$params   从URL取得的参数
-	 * @param  null|callable      $callback 回调方法, 可自定义检查URL的合法性 [传入参数到回调方法: 匹配规则 | URL地址 | URL解析数组]
+	 * @param  array              &$params   从URL取得的参数
+	 * @param  callable|null      $callback 回调方法, 可自定义检查URL的合法性 [传入参数到回调方法: 匹配规则 | URL地址 | URL解析数组]
 	 * @return boolean
 	 */
 	public function checkValid(&$params = [], ?callable $callback = null) : bool
@@ -120,7 +120,7 @@ class UrlRule implements UrlRuleConstant
 	 *
 	 * @author HanskiJay
 	 * @since  2021-11-02
-	 * @param  null|string      $rule
+	 * @param  string|null      $rule
 	 * @see   类型可参考写法: /[onlyNumbers]/[onlyLowercaseLetters]/...
 	 * @see   具体标签代表请参考\owoframe\constant\UrlRuleConstant
 	 * @return boolean

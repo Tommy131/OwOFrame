@@ -34,7 +34,7 @@ If you think this repository is helpful to you, please give this repository a `S
 - [x] `EmptyAppGenerator`   Generate a new Application template with one click
 - [x] `FileUploadClass`     File upload support
 - [x] `Helper`              An integrated method class (see the source code for details)
-- [x] `SessionClass`        An common Session class
+- [x] `SessionClass`        A common Session class
 
 #### Third Party Resources
 - [x] [`PasswordHash`](http://www.openwall.com/phpass/)

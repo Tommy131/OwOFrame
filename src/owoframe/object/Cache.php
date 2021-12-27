@@ -92,7 +92,7 @@ class Cache
 	 *
 	 * @author HanskiJay
 	 * @since  2021-11-05
-	 * @return null|string
+	 * @return string|null
 	 */
 	public static function getCurrentIndex() : ?string
 	{
@@ -188,9 +188,9 @@ class Cache
 	 *
 	 * @author HanskiJay
 	 * @since  2021-11-05
-	 * @param  null|string $savedTag
+	 * @param  string|null $savedTag
 	 * @param  string      $path
-	 * @return null|JSON
+	 * @return JSON|null
 	 */
 	/** */
 	public static function save(?string $savedTag = null, string $path = F_CACHE_PATH) : ?JSON
@@ -345,7 +345,7 @@ class Cache
 			 * @since  2021-11-05
 			 * @param  string $index
 			 * @param  mixed  $default 默认返回数据
-			 * @return null|mixed
+			 * @return mixed
 			 */
 			public function get(string $index, $default = null)
 			{

@@ -156,7 +156,7 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	 * @author HanskiJay
 	 * @since  2020-10-24
 	 * @param  string      $ip 字符串
-	 * @return bool
+	 * @return boolean
 	 */
 	public static function isIp(string $ip) : bool
 	{

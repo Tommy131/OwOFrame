@@ -163,7 +163,7 @@ function check(string $index, bool $autoUpper = false, &$method = 'NULL')
  *
  * @author HanskiJay
  * @since  2021-03-06
- * @return null|string
+ * @return string|null
  */
 function fetch() : ?string
 {
@@ -249,7 +249,7 @@ function compareType($p1, $p2, &$types = []) : bool
  * @param  array       $data      需要检查的数组
  * @param  array       $needle    需要检查的键名
  * @param  string      $missParam 返回缺少的参数
- * @return bool
+ * @return boolean
  */
 function checkArrayValid(array $data, array $needle, &$missParam = null) : bool
 {
@@ -340,7 +340,7 @@ function changeType(string $var, &$done) : void
  *
  * @author HanskiJay
  * @since  2021-01-31
- * @param  null|boolean $bool
+ * @param  boolean|null $bool
  * @param  mixed        $done
  * @return void
  */

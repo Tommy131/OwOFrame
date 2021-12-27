@@ -117,7 +117,7 @@ class Console implements \owoframe\constant\Manager
 	 * @author HanskiJay
 	 * @since  2021-01-26
 	 * @param  string      $commandString 指令
-	 * @return null|CommandBase
+	 * @return CommandBase|null
 	 */
 	public function getCommand(string $commandString) : ?CommandBase
 	{

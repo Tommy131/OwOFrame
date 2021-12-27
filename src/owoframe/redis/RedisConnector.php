@@ -73,7 +73,7 @@ class RedisConnector
 	 *
 	 * @author HanskiJay
 	 * @since  2021-02-14
-	 * @return null|Redis
+	 * @return Redis|null
 	 */
 	public function getConnection() : ?Redis
 	{
@@ -214,7 +214,7 @@ class RedisConnector
 	 *
 	 * @author HanskiJay
 	 * @since  2021-02-14
-	 * @return null|Redis
+	 * @return Redis|null
 	 */
 	public function getHandler() : ?Redis
 	{

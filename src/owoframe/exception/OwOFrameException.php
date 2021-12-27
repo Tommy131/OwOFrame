@@ -93,7 +93,7 @@ class OwOFrameException extends \Exception
 	 *
 	 * @author HanskiJay
 	 * @since  2021-04-30
-	 * @return null|callable
+	 * @return callable|null
 	 */
 	public function getAlternativeCall() : ?callable
 	{
