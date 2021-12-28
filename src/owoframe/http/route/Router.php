@@ -54,7 +54,6 @@ final class Router
 	{
 		// Closure Method for throw or display an error;
 		$internalError = function(string $errorMessage, string $title, string $outputMessage, int $statusCode = 404) : void {
-			Http::setStatusCode($statusCode);
 			if(DEBUG_MODE) {
 				throw new InvalidRouterException($errorMessage);
 			} else {
@@ -64,6 +63,7 @@ final class Router
 				if(strlen($outputMessage) > 0) {
 					PageErrorEvent::$output = $outputMessage;
 				}
+				PageErrorEvent::$statusCode = $statusCode;
 				MasterManager::getInstance()->getManager('event')->trigger(new PageErrorEvent());
 				exit;
 			}
@@ -156,6 +156,11 @@ final class Router
 			$msg = "Cannot find a valid Controller of Application [{$appName}]!";
 			LogWriter::error($msg);
 			$internalError($msg, '', 'The requested Controller was not found!');
+		}
+		if($app->isControllerBanned($controllerName)) {
+			$msg = "Controller {$controllerName} has been banned from the Application!";
+			LogWriter::error($msg);
+			$internalError($msg, 'ACCESS FORBIDDEN', 'Request denied (Too low permission)', 403);
 		}
 		$anonymousClass->controllerName = $controller->getName();
 

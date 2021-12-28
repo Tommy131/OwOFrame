@@ -69,6 +69,48 @@ abstract class AppBase
 	}
 
 	/**
+	 * 判断控制器是否在过滤组中
+	 *
+	 * @author HanskiJay
+	 * @since  2021-12-28
+	 * @param  string  $controllerName
+	 * @return boolean
+	 */
+	public function isControllerInFilter(string $controllerName) : bool
+	{
+		$controllerName =ucfirst(strtolower($controllerName));
+		return isset($this->controllerFilter[$controllerName]);
+	}
+
+	/**
+	 * 直接禁止整个控制器通过URL访问
+	 *
+	 * @author HanskiJay
+	 * @since  2021-12-28
+	 * @param  string $controllerName
+	 * @return void
+	 */
+	public function banController(string $controllerName) : void
+	{
+		$controllerName =ucfirst(strtolower($controllerName));
+		$this->controllerFilter[$controllerName] = 'all';
+	}
+
+	/**
+	 * 判断指定的控制器是否被封禁
+	 *
+	 * @author HanskiJay
+	 * @since  2021-12-28
+	 * @param  string  $controllerName
+	 * @return boolean
+	 */
+	public function isControllerBanned(string $controllerName) : bool
+	{
+		$controllerName =ucfirst(strtolower($controllerName));
+		return $this->isControllerInFilter($controllerName) && ($this->controllerFilter[$controllerName] === 'all');
+	}
+
+	/**
 	 * 判断控制器的方法是否不允许直接访问
 	 *
 	 * @author HanskiJay
@@ -80,7 +122,7 @@ abstract class AppBase
 	public function isControllerMethodBanned(string $controllerName, string $methodName) : bool
 	{
 		$controllerName =ucfirst(strtolower($controllerName));
-		return isset($this->controllerFilter[$controllerName]) && in_array($methodName, $this->controllerFilter[$controllerName]);
+		return $this->isControllerInFilter($controllerName) && in_array($methodName, $this->controllerFilter[$controllerName]);
 	}
 
 	/**
@@ -98,7 +140,7 @@ abstract class AppBase
 		if(!$this->getController($controllerName, false)) {
 			throw new InvalidControllerException(static::getName(), $controllerName);
 		}
-		if(!isset($this->controllerFilter[$controllerName])) {
+		if(!$this->isControllerInFilter($controllerName)) {
 			$this->controllerFilter[$controllerName] = [];
 		}
 		$this->controllerFilter[$controllerName] = array_merge($this->controllerFilter[$controllerName], $args);
@@ -172,7 +214,7 @@ abstract class AppBase
 		}
 
 		$controller = '\\application\\' . static::getName() . '\\controller\\' . $controllerName;
-		if(class_exists($controller)) {
+		if(class_exists($controller) && is_a($controller, ControllerBase::class, true)) {
 			return ($autoMake) ? ($controller = new $controller($this)) : true;
 		} else {
 			return false;
