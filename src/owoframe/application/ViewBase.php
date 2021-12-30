@@ -272,7 +272,6 @@ class ViewBase extends ControllerBase
 		$regex =
 		[
 			'/<(img|script|link) (.*)>/imuU',
-			'/@(src|href)="{\$(\w*)\|(.*)}"/imuU',
 			'/@name="(\w*)"[\s]+?/muU',
 			'/@active="(\w*)"[\s]+?/imuU',
 			'/{\$(\w*)\|(.*)}/imuU'
@@ -315,25 +314,9 @@ class ViewBase extends ControllerBase
 					$replace[] = '';
 				}
 				$active = 'unset';
-			} else {
-				$newTag = preg_replace($regex[3], '', preg_replace($regex[2], '', $tag));
-
-				$strings[] = $tag;
-				$replace[] = $newTag;
-
-				if(preg_match($regex[1], $tag, $match)) {
-					$type = strtoupper($match[2] ?? 'unknown');
-					$file = $match[3];
-					$this->take($type, $path);
-
-					$src = $this->generateStaticUrl($path . $file);
-
-					$strings[] = $match[0];
-					$replace[] = $match[1] . "=\"{$src}\"";
-				}
 			}
 		}
-		if(preg_match_all($regex[4], $str, $matches)) {
+		if(preg_match_all($regex[3], $str, $matches)) {
 			foreach($matches[0] as $k => $tag) {
 				$this->take($matches[1][$k], $path);
 				$src = $this->generateStaticUrl($path . $matches[2][$k]);
@@ -840,12 +823,15 @@ class ViewBase extends ControllerBase
 
 		/* 开始解析模板组件 */
 		$regex = '/{require (.*)}/imU';
+		$strings = $replace = [];
 		while(preg_match_all($regex, $this->viewTemplate, $matches) && (count($matches[1]) > 0)) {
 			foreach($matches[1] as $key => $path) {
 				$path = $this->getViewPath($path);
 				Helper::escapeSlash($path);
-				$this->viewTemplate = str_replace($matches[0][$key], is_file($path) ? file_get_contents($path) : "Template {$path} Not Found", $this->viewTemplate);
+				$strings[] = $matches[0][$key];
+				$replace[] = is_file($path) ? file_get_contents($path) : "Template {$path} Not Found";
 			}
+			$this->viewTemplate = str_replace($strings, $replace, $this->viewTemplate);
 		}
 		// 转换常量绑定;
 		if(preg_match_all('/{([0-9A-Z_]*)}/mU', $this->viewTemplate, $matches)) {
