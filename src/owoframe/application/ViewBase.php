@@ -494,7 +494,7 @@ class ViewBase extends ControllerBase
 				$lastJudge  = null;
 				while(strlen($v) > 0)
 				{
-					if(preg_match('/([\$\w]+) ([\w!=<>]+) ([\$\w]+)/', $v, $matched))
+					if(preg_match('/([\$\w]+) ([\w!=<>]+) ([\$\w]+)/u', $v, $matched))
 					{
 						$currentSentence = $matched[0];
 						$v = trim(str_replace($currentSentence, '', $v));
