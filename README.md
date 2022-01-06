@@ -21,7 +21,7 @@ If you think this repository is helpful to you, please give this repository a `S
 - [x] `Exception`           Error capture and Stack output (I know that advanced frameworks have them and are better than mine QAQ)
 - [x] `PluginLoader`        Plug-in loader (a support method that can be flexibly changed independent of Application)
 - [x] `Language`            Custom languages packages supported
-- [x] `LogWriter`           Support the most basic logging
+- [x] `Logger`              Support the most basic logging
 - [x] `Redis`               Support basic Redis operations
 - [x] `RouterManager`       Router Manager
 - [ ] `BetterRouter`        Better Router (More personalized routing binding settings)

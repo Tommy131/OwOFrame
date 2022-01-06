@@ -30,7 +30,7 @@ use owoframe\helper\Helper;
 use owoframe\http\HttpManager;
 
 use owoframe\utils\DataEncoder;
-use owoframe\utils\LogWriter;
+use owoframe\utils\Logger;
 
 use owoframe\event\http\{BeforeResponseEvent, AfterResponseEvent};
 use owoframe\event\system\OutputEvent;
@@ -150,8 +150,8 @@ class Response
 				$called = new DataEncoder();
 				$called->setStandardData(502, '[OwOResponseError] Cannot callback method ' . get_class($this->callback[0]) . '::' . $this->callback[1] . ' for response! (Method must be return string, ' . gettype($called) . ' is returned!', false);
 				$called = $called->encode();
-				LogWriter::$logPrefix = 'HTTP/Response';
-				LogWriter::debug($called);
+				Logger::$logPrefix = 'HTTP/Response';
+				Logger::debug($called);
 				$this->header('Content-Type', MIMETypeConstant::MIMETYPE['json']);
 				$isJson = true;
 			}
@@ -177,8 +177,8 @@ class Response
 		$eventManager->trigger(AfterResponseEvent::class, [$this]);
 		$this->hasSent = true;
 
-		LogWriter::$logPrefix = 'HTTP/Response';
-		LogWriter::debug("[{$this->code}] Status: Sent; Length: " . strlen($event->getOutput()));
+		Logger::$logPrefix = 'HTTP/Response';
+		Logger::debug("[{$this->code}] Status: Sent; Length: " . strlen($event->getOutput()));
 	}
 
 	/**

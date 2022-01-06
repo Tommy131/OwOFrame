@@ -32,13 +32,13 @@ $classLoader = require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . 
 use owoframe\helper\Helper;
 use owoframe\http\HttpManager as HTTP;
 use owoframe\http\route\Router;
-use owoframe\utils\LogWriter;
+use owoframe\utils\Logger;
 
 $master = new owoframe\MasterManager($classLoader);
 $http = $master->getManager('http');
 $http->start(false);
 
-LogWriter::$logPrefix = 'static.php';
+Logger::$logPrefix = 'static.php';
 $parser = Router::getParameters(-1);
 
 if(count($parser) === 2) {
@@ -51,7 +51,7 @@ if(count($parser) === 2) {
 			if(isset($tempData['expireTime'])) {
 				if(microtime(true) - $tempData['expireTime'] <= 0) {
 					$reason = 'FILE ALLOED ACCESS TIME HAS EXPIRED';
-					LogWriter::info('[403@Access Denied=' . $reason . '] ' . Helper::getClientIp() . ' -> ' . HTTP::getCompleteUrl());
+					Logger::info('[403@Access Denied=' . $reason . '] ' . Helper::getClientIp() . ' -> ' . HTTP::getCompleteUrl());
 					stdDie($reason, '', 403);
 				}
 			}
@@ -60,11 +60,11 @@ if(count($parser) === 2) {
 			}
 		}
 	} else {
-		LogWriter::info('[404@Not Found] ' . Helper::getClientIp() . ' -> ' . HTTP::getCompleteUrl());
+		Logger::info('[404@Not Found] ' . Helper::getClientIp() . ' -> ' . HTTP::getCompleteUrl());
 		stdDie('REQUESTED FILE NOT FOUND', '<p>FILE: ' . $hashTag . '.' . $type . '</p>');
 	}
 } else {
-	LogWriter::info('[403@Access Denied] ' . Helper::getClientIp() . ' -> ' . HTTP::getCompleteUrl());
+	Logger::info('[403@Access Denied] ' . Helper::getClientIp() . ' -> ' . HTTP::getCompleteUrl());
 	stdDie('', '', 403);
 }
 $master->stop();

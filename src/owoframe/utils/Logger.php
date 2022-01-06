@@ -20,9 +20,8 @@ declare(strict_types=1);
 namespace owoframe\utils;
 
 use owoframe\helper\Helper;
-use owoframe\exception\UnknownErrorException;
 
-class LogWriter
+class Logger
 {
 	/**
 	 * 默认日志记录文件名称
@@ -61,6 +60,8 @@ class LogWriter
 	/**
 	 * 日志写入: INFO 等级(仅颜色显示不同)
 	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
 	 * @param  string      $message 日志内容
 	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
 	 * @return void
@@ -73,6 +74,8 @@ class LogWriter
 	/**
 	 * 日志写入: INFO 等级
 	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
 	 * @param  string      $message 日志内容
 	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
 	 * @return void
@@ -85,6 +88,8 @@ class LogWriter
 	/**
 	 * 日志写入: NOTICE 等级
 	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
 	 * @param  string      $message 日志内容
 	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
 	 * @return void
@@ -97,6 +102,8 @@ class LogWriter
 	/**
 	 * 日志写入: WARNING 等级
 	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
 	 * @param  string      $message 日志内容
 	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
 	 * @return void
@@ -109,6 +116,8 @@ class LogWriter
 	/**
 	 * 日志写入: ERROR 等级
 	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
 	 * @param  string      $message 日志内容
 	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
 	 * @return void
@@ -121,6 +130,8 @@ class LogWriter
 	/**
 	 * 日志写入: EMERGENCY 等级
 	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
 	 * @param  string      $message 日志内容
 	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
 	 * @return void
@@ -133,6 +144,8 @@ class LogWriter
 	/**
 	 * 日志写入: DEBUG 等级
 	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
 	 * @param  string      $message 日志内容
 	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
 	 * @return void

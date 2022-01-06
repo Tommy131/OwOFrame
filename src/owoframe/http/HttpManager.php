@@ -27,7 +27,7 @@ use owoframe\http\Session;
 use owoframe\http\route\Router;
 
 use owoframe\object\JSON;
-use owoframe\utils\LogWriter;
+use owoframe\utils\Logger;
 
 class HttpManager implements HTTPStatusCodeConstant, Manager
 {
@@ -83,12 +83,12 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	{
 		$ip = Helper::getClientIp();
 		if(!self::isIpValid($ip)) {
-			LogWriter::info('[403@Banned] Client ' . $ip . '\'s IP is banned, request denied.');
+			Logger::info('[403@Banned] Client ' . $ip . '\'s IP is banned, request denied.');
 			self::setStatusCode(403);
 			return;
 		}
-		LogWriter::$logPrefix = self::LOG_PREFIX;
-		if(stripos(implode(',', static::$notLogUrl), server('REQUEST_URI')) === false) LogWriter::info('[REQUEST@' . server('REQUEST_METHOD') . '] ' . $ip . ' -> ' . self::getCompleteUrl());
+		Logger::$logPrefix = self::LOG_PREFIX;
+		if(stripos(implode(',', static::$notLogUrl), server('REQUEST_URI')) === false) Logger::info('[REQUEST@' . server('REQUEST_METHOD') . '] ' . $ip . ' -> ' . self::getCompleteUrl());
 		if($autoDispatch) {
 			if(ob_get_level() === 0) ob_start();
 			Session::start();

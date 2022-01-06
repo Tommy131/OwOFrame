@@ -19,7 +19,7 @@
 declare(strict_types=1);
 namespace owoframe\console;
 
-use owoframe\utils\LogWriter;
+use owoframe\utils\Logger;
 use owoframe\utils\TextFormat as TF;
 
 class Console implements \owoframe\constant\Manager
@@ -57,8 +57,8 @@ class Console implements \owoframe\constant\Manager
 	 */
 	public function __construct()
 	{
-		LogWriter::setLogFileName('owoblog_cli_run.log');
-		LogWriter::$logPrefix = 'OwOCMD';
+		Logger::setLogFileName('owoblog_cli_run.log');
+		Logger::$logPrefix = 'OwOCMD';
 		$cmdPath  = __DIR__ . DIRECTORY_SEPARATOR . 'command' . DIRECTORY_SEPARATOR;
 		$dirArray = scandir($cmdPath);
 		unset($dirArray[array_search('.', $dirArray)], $dirArray[array_search('..', $dirArray)]);
@@ -69,7 +69,7 @@ class Console implements \owoframe\constant\Manager
 				$commandString = strtolower($class::getName());
 				if(!$class::autoLoad() || isset($this->commandPool[$commandString])) continue;
 				if(count(array_intersect($class::getAliases(), $this->usedAliases)) >= 1) {
-					LogWriter::error(TF::RED."Cannot register command '".TF::GOLD.$class::getName().TF::RED."' because the alias name has been registered in somewhere.");
+					Logger::error(TF::RED."Cannot register command '".TF::GOLD.$class::getName().TF::RED."' because the alias name has been registered in somewhere.");
 					return;
 				}
 				$class = $this->commandPool[$commandString] = new $class();
@@ -89,7 +89,7 @@ class Console implements \owoframe\constant\Manager
 	{
 		array_shift($input);
 		if(count($input) <= 0) {
-			LogWriter::info("Hi there, welcome to use OwOFrame :) You can use command like '".TF::GOLD."php owo help".TF::WHITE."' to display the Helper.");
+			Logger::info("Hi there, welcome to use OwOFrame :) You can use command like '".TF::GOLD."php owo help".TF::WHITE."' to display the Helper.");
 			return;
 		}
 		$inputCommand = strtolower(array_shift($input));
@@ -105,10 +105,10 @@ class Console implements \owoframe\constant\Manager
 
 		if($command instanceof CommandBase) {
 			if(!$command->execute($input)) {
-				LogWriter::debug("Command '{$inputCommand}' may not execute successfully, please check the issue.");
+				Logger::debug("Command '{$inputCommand}' may not execute successfully, please check the issue.");
 			}
 		} else {
-			LogWriter::debug("Command '{$inputCommand}' not found, please use '".TF::GOLD."php owo help".TF::GRAY."' to check the details.");
+			Logger::debug("Command '{$inputCommand}' not found, please use '".TF::GOLD."php owo help".TF::GRAY."' to check the details.");
 		}
 	}
 	/**

@@ -24,8 +24,8 @@ use Throwable;
 use owoframe\helper\BootStrapper as BS;
 use owoframe\helper\Helper;
 use owoframe\http\HttpManager as Http;
-use owoframe\http\route\Router;
-use owoframe\utils\LogWriter;
+use owoframe\http\Response;
+use owoframe\utils\Logger;
 
 class ExceptionOutput
 {
@@ -85,7 +85,7 @@ class ExceptionOutput
 			if(($exception instanceof MethodMissedException) && $exception->getJudgement()) {
 				$response = Http::Response($exception->getAlternativeCall());
 				$response->sendResponse();
-				Router::getRunTimeDiv($exception::toggleRunTimeDivOutput(false));
+				Response::getRunTimeDiv($exception::toggleRunTimeDivOutput(false));
 				return;
 			}
 
@@ -110,9 +110,9 @@ class ExceptionOutput
 	private static function log(string $msg) : void
 	{
 		$isCLI = Helper::isRunningWithCGI() ? '' : 'cli_';
-		LogWriter::setLogFileName("owoblog_{$isCLI}error.log");
-		LogWriter::$logPrefix = 'OwOBlogErrorHandler';
-		LogWriter::emergency(trim(str2UTF8($msg)));
+		Logger::setLogFileName("owoblog_{$isCLI}error.log");
+		Logger::$logPrefix = 'OwOBlogErrorHandler';
+		Logger::emergency(trim(str2UTF8($msg)));
 	}
 
 	public static function getTemplate() : string

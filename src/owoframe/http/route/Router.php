@@ -28,7 +28,7 @@ use owoframe\event\http\PageErrorEvent;
 use owoframe\exception\InvalidRouterException;
 use owoframe\http\HttpManager as Http;
 use owoframe\utils\DataEncoder;
-use owoframe\utils\LogWriter;
+use owoframe\utils\Logger;
 
 final class Router
 {
@@ -68,7 +68,7 @@ final class Router
 				exit;
 			}
 		};
-		LogWriter::$logPrefix = 'HTTP/Router';
+		Logger::$logPrefix = 'HTTP/Router';
 
 		$pathInfo = self::getParameters(-1);
 		$appName  = array_shift($pathInfo);
@@ -106,7 +106,7 @@ final class Router
 		$app = AppManager::getApp($appName);
 		if($app === null) {
 			$msg = 'Cannot find any valid Application!';
-			LogWriter::error('[403] ' . $msg);
+			Logger::error('[403] ' . $msg);
 			$internalError($msg, '', 'Invalid route URL!');
 		}
 		// Write appName in an anonymous class;
@@ -139,7 +139,7 @@ final class Router
 				$urlRule = isset($customizeUrlRule) ? $customizeUrlRule($urlRule) : new UrlRule($urlRule, UrlRule::TAG_USE_DEFAULT_STYLE);
 				if(!$urlRule->checkValid($urlParameters)) {
 					$msg = 'Illegal Url requested!';
-					LogWriter::error('[502] ' . $msg);
+					Logger::error('[502] ' . $msg);
 					$internalError($msg, '502 BAD GATEWAY', 'Illegal Url requested!', 403);
 				}
 				$anonymousClass->urlParameters = $urlParameters;
@@ -154,12 +154,12 @@ final class Router
 		// If not found any valid Controller;
 		if(!$controller) {
 			$msg = "Cannot find a valid Controller of Application [{$appName}]!";
-			LogWriter::error($msg);
+			Logger::error($msg);
 			$internalError($msg, '', 'The requested Controller was not found!');
 		}
 		if($app->isControllerBanned($controllerName)) {
 			$msg = "Controller {$controllerName} has been banned from the Application!";
-			LogWriter::error($msg);
+			Logger::error($msg);
 			$internalError($msg, 'ACCESS FORBIDDEN', 'Request denied (Too low permission)', 403);
 		}
 		$anonymousClass->controllerName = $controller->getName();
@@ -172,7 +172,7 @@ final class Router
 				$callback = [$controller, $requestMethod];
 			} else {
 				$msg = "Requested method '{$requestMethod}' is banned, cannot be requested!";
-				LogWriter::error($msg);
+				Logger::error($msg);
 				$internalError($msg, '403 Forbidden', 'Permission Denied!', 403);
 			}
 		} else {
@@ -181,7 +181,7 @@ final class Router
 			// If the alternative method is the same invalid;
 			if(!$reflect->hasMethod($requestMethod)) {
 				$msg = "Requested method '{$requestMethod}' is invalid, cannot be requested!";
-				LogWriter::error($msg);
+				Logger::error($msg);
 				$internalError($msg, '403 Forbidden', 'Unknown Error happened :(', 403);
 			} else {
 				$callback = [$controller, $requestMethod];

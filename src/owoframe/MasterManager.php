@@ -79,9 +79,7 @@ final class MasterManager implements Manager
 	public function __construct(?ClassLoader $classLoader = null)
 	{
 		if(!BS::isRunning()) {
-			if(!static::$instance instanceof Container) {
-				static::$instance = $this;
-			}
+			static::$instance = $this;
 			if($classLoader !== null) {
 				static::$classLoader = $classLoader;
 			}

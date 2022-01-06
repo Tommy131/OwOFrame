@@ -84,8 +84,8 @@ class BootStrapper
 			if(!is_dir(LOG_PATH))      mkdir(LOG_PATH,      755, true);
 			if(!is_dir(RESOURCE_PATH)) mkdir(RESOURCE_PATH, 755, true);
 			date_default_timezone_set(TIME_ZONE);
-			MasterManager::getClassLoader()->addPsr4('application\\', APP_PATH);
-			MasterManager::getClassLoader()->addPsr4('module\\',      MODULE_PATH);
+			MasterManager::getClassLoader()->addPsr4('application' . DIRECTORY_SEPARATOR, APP_PATH);
+			MasterManager::getClassLoader()->addPsr4('module' . DIRECTORY_SEPARATOR,      MODULE_PATH);
 		}
 		INI::globalLoad(FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'global.ini');
 	}

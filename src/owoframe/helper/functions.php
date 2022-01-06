@@ -19,7 +19,7 @@
 declare(strict_types=1);
 use owoframe\constant\BasicConstant as BC;
 use owoframe\exception\OwOFrameException;
-use owoframe\utils\LogWriter;
+use owoframe\utils\Logger;
 
 if(!defined('owohttp')) define('owohttp', 'owosuperget');
 
@@ -384,6 +384,6 @@ function error(string $message, int $code = 0) : OwOFrameException
  */
 function ask(string $output, $default = null, string $logLevel = 'info')
 {
-	LogWriter::{$logLevel}($output . (!is_null($default) ? "[Default: {$default}]" : ''));
+	Logger::{$logLevel}($output . (!is_null($default) ? "[Default: {$default}]" : ''));
 	return trim(fgets(STDIN) ?? $default);
 }

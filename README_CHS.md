@@ -20,7 +20,7 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 - [x] `Exception`           错误异常抓取及Stack输出(我知道高级的框架都拥有且比我的更好QAQ)
 - [x] `PluginLoader`        插件加载器(独立于Application之外的可灵活更改的一种支持方法)
 - [x] `Language`            自定义语言包支持
-- [x] `LogWriter`           支持最基础的日志记录
+- [x] `Logger`              支持最基础的日志记录
 - [x] `Redis`               支持基本Redis操作
 - [x] `RouterManager`       路由管理器
 - [ ] `BetterRouter`        更好的路由控制器(更加个性化的路由绑定设置)

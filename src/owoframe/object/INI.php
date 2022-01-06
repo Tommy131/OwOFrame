@@ -21,7 +21,7 @@ namespace owoframe\object;
 
 use owoframe\helper\Helper;
 use owoframe\exception\FileMissedException;
-use owoframe\utils\LogWriter;
+use owoframe\utils\Logger;
 
 class INI extends Config
 {
@@ -115,8 +115,8 @@ class INI extends Config
 			if(Helper::isRunningWithCGI()) {
 				throw new FileMissedException($message);
 			} else {
-				LogWriter::$logPrefix = 'Config';
-				LogWriter::error($message);
+				Logger::$logPrefix = 'Config';
+				Logger::error($message);
 			}
 		}
 	}
