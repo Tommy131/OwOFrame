@@ -357,8 +357,8 @@ function changeBool2String(?bool $bool, &$done) : void
  *
  * @author HanskiJay
  * @since  2021-03-06
- * @param  int         $code    状态码
  * @param  string      $message 错误信息
+ * @param  int         $code    状态码
  * @return OwOFrameException
  */
 function error(string $message, int $code = 0) : OwOFrameException

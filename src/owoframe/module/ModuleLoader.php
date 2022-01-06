@@ -22,7 +22,7 @@ namespace owoframe\module;
 use owoframe\MasterManager;
 use owoframe\helper\Helper;
 use owoframe\object\INI;
-use owoframe\utils\LogWriter;
+use owoframe\utils\Logger;
 use owoframe\exception\ResourceMissedException;
 
 class ModuleLoader
@@ -98,12 +98,8 @@ class ModuleLoader
 					$path[$name] = $dir;
 				}
 			}
-			// TODO: 读取配置文件后加载模块(Method::existsModule);
 			foreach($path as $name => $dir) {
-				if(!self::loadModule($dir, $name, $master)) {
-					LogWriter::$logPrefix = 'ModuleLoader';
-					LogWriter::warning("Load module '{$name}' failed!");
-				}
+				self::loadModule($dir, $name, $master);
 			}
 		// } catch(\Throwable $e) {
 
@@ -155,12 +151,14 @@ class ModuleLoader
 	 *
 	 * @author HanskiJay
 	 * @since  2021-01-23
-	 * @param  string      $dir  模块所在的路径
-	 * @param  string      $name 模块名称
+	 * @param  string             $dir  模块所在的路径
+	 * @param  string             $name 模块名称
+	 * @param  MasterManager      $master 主进程实例
 	 * @return boolean
 	 */
 	public static function loadModule(string $dir, string $name, MasterManager $master) : bool
 	{
+		Logger::$logPrefix = 'ModuleLoader';
 		if(self::existsModule($name, $info)) {
 			// include_once($dir . $info->className . '.php');
 			$namespace = $info->namespace ?? '';
@@ -170,8 +168,12 @@ class ModuleLoader
 				$class = self::$modulePool[strtolower($info->name)] = new $class($dir, $info, $master);
 				$class->onLoad();
 				$class->setEnabled();
+				return true;
+			} else {
+				Logger::error("Load module '{$info->name}' failed: The NameSpace or ClassName may incorrect!");
 			}
-			return true;
+		} else {
+			Logger::error("Module '{$name}' not exists! Please check the module information file '" . self::IDENTIFY_FILE_NAME . "' !");
 		}
 		return false;
 	}
