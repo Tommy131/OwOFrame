@@ -26,6 +26,11 @@ use owoframe\exception\OwOFrameException;
 class Cache
 {
 	/**
+	 * 文件命名格式
+	 */
+	public const FILE_NAME_FORMAT = 'cached_zone_%s.json';
+
+	/**
 	 * 缓存池
 	 *
 	 * @access protected
@@ -200,7 +205,7 @@ class Cache
 			if(!is_dir($path)) {
 				throw new OwOFrameException('[CACHE-SAVER] Path \'' . $path . '\' does not exists!');
 			}
-			$json = new JSON($path . 'cached_zone_' . $savedTag . date('Y_m_d_H_i_s') . '.json', static::$cachePool[$savedTag]->getAll(), true);
+			$json = new JSON($path . sprintf(self::FILE_NAME_FORMAT, $savedTag), static::$cachePool[$savedTag]->getAll(), true);
 			return $json;
 		}
 		return null;
@@ -211,24 +216,25 @@ class Cache
 	 *
 	 * @author HanskiJay
 	 * @since  2021-11-05
-	 * @param  string $file       文件路径
-	 * @param  string $toSavedTag 到缓存区存储名称
+	 * @param  string $path       文件路径
+	 * @param  string $savedTag   缓存区存储标识
 	 * @return void
 	 */
-	public static function load(string $file, string $toSavedTag) : void
+	public static function load(string $path, string $savedTag) : void
 	{
-		$error = function($message) use ($file) {
-			return new FileMissedException('Could not load file \'' . $file . '\': ' . $message);
+		$path = $path . sprintf(self::FILE_NAME_FORMAT, $savedTag);
+		$error = function($message) use ($path) {
+			return new FileMissedException('Could not load file \'' . $path . '\': ' . $message);
 		};
 
-		if(!file_exists($file)) {
+		if(!file_exists($path)) {
 			throw $error('File does not exists!');
 		}
-		if(strpos('json', $file) === false) {
+		if(strpos('json', $path) === false) {
 			throw $error('File must be JSON Format!');
 		}
 
-		self::create($toSavedTag, json_decode(file_get_contents($file), true));
+		self::create($savedTag, json_decode(file_get_contents($path), true));
 	}
 
 	/**

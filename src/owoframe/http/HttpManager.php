@@ -336,7 +336,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	public static function ipList() : JSON
 	{
 		if(!static::$ipList instanceof JSON) {
-			static::$ipList = new JSON(FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'ipList.json');
+			static::$ipList = new JSON(F_CACHE_PATH . 'config' . DIRECTORY_SEPARATOR . 'ipList.json');
 		}
 		return static::$ipList;
 	}
