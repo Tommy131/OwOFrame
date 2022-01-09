@@ -323,6 +323,25 @@ class Helper implements HTTPStatusCodeConstant, MIMETypeConstant
 	}
 
 	/**
+	 * 创建一个随机的UUID
+	 *
+	 * @author HanskiJay
+	 * @since  2022-01-08
+	 * @return string
+	 */
+	public static function generateUUID() : string
+	{
+		$str   = md5(uniqid(self::randomString(5), true));
+		$uuid  = '';
+		$array = [0, 8, 12, 16, 20];
+		foreach([8, 4, 4, 4, 12] as $k => $v) {
+			$uuid .= substr($str, $array[$k], $v) . '-';
+		}
+		$uuid = rtrim($uuid, '-');
+		return $uuid;
+	}
+
+	/**
 	 * 删除文件夹
 	 *
 	 * @author HanskiJay
