@@ -65,7 +65,7 @@ class JSON extends Config
 		if($file !== null) {
 			$this->__construct($file, $this->config, $this->autoSave);
 		}
-		file_put_contents($file ?? $this->getPath(), json_encode($this->config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+		file_put_contents($file ?? $this->getFullPath(), json_encode($this->config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 	}
 
 	/**
@@ -77,9 +77,9 @@ class JSON extends Config
 	 */
 	public function reload() : void
 	{
-		if(is_file($this->getPath())) {
+		if(is_file($this->getFullPath())) {
 			$this->nestedCache = [];
-			$this->config = json_decode(file_get_contents($this->getPath()), true) ?? [];
+			$this->config = json_decode(file_get_contents($this->getFullPath()), true) ?? [];
 		} else {
 			$message = "Cannot reload Config::{$this->getFileName()}, because the file does not exists!";
 			if(Helper::isRunningWithCGI()) {

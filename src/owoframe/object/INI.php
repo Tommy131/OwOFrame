@@ -108,8 +108,8 @@ class INI extends Config
 	 */
 	public function reload() : void
 	{
-		if(is_file($this->getPath())) {
-			$this->config = parse_ini_file($this->getPath(), true);
+		if(is_file($this->getFullPath())) {
+			$this->config = parse_ini_file($this->getFullPath(), true);
 		} else {
 			$message = "Cannot reload Config::{$this->getFileName()}, because the file does not exists!";
 			if(Helper::isRunningWithCGI()) {

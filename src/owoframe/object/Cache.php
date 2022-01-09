@@ -200,12 +200,13 @@ class Cache
 	/** */
 	public static function save(?string $savedTag = null, string $path = F_CACHE_PATH) : ?JSON
 	{
-		if(static::isSavedTagExists($savedTag ?? static::getCurrentIndex())) {
-			$savedTag = static::getCurrentIndex();
+		$savedTag = $savedTag ?? static::getCurrentIndex();
+		if(static::isSavedTagExists($savedTag)) {
 			if(!is_dir($path)) {
 				throw new OwOFrameException('[CACHE-SAVER] Path \'' . $path . '\' does not exists!');
 			}
-			$json = new JSON($path . sprintf(self::FILE_NAME_FORMAT, $savedTag), static::$cachePool[$savedTag]->getAll(), true);
+			$json = new JSON($path . sprintf(self::FILE_NAME_FORMAT, $savedTag), [], true);
+			$json->setAll(static::$cachePool[$savedTag]->getAll());
 			return $json;
 		}
 		return null;
@@ -230,7 +231,7 @@ class Cache
 		if(!file_exists($path)) {
 			throw $error('File does not exists!');
 		}
-		if(strpos('json', $path) === false) {
+		if(strtolower(@end(explode('.', $path))) !== 'json') {
 			throw $error('File must be JSON Format!');
 		}
 

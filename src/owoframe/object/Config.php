@@ -247,18 +247,6 @@ abstract class Config
 	}
 
 	/**
-	 * 返回当前配置文件路径
-	 *
-	 * @author HanskiJay
-	 * @since  2021-11-05
-	 * @return string
-	 */
-	public function getFilePath() : string
-	{
-		return $this->filePath;
-	}
-
-	/**
 	 * 返回当前配置文件名称
 	 *
 	 * @author HanskiJay
@@ -271,13 +259,25 @@ abstract class Config
 	}
 
 	/**
+	 * 返回当前配置文件路径
+	 *
+	 * @author HanskiJay
+	 * @since  2021-11-05
+	 * @return string
+	 */
+	public function getFilePath() : string
+	{
+		return $this->filePath;
+	}
+
+	/**
 	 * 返回配置文件完整路径
 	 *
 	 * @author HanskiJay
 	 * @since  2021-11-05
 	 * @return string
 	 */
-	public function getPath() : string
+	public function getFullPath() : string
 	{
 		return $this->filePath . $this->fileName . $this->getExtensionName();
 	}
