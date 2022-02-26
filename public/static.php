@@ -50,7 +50,7 @@ if(count($parser) === 2) {
 		if(is_array($tempData)) {
 			if(isset($tempData['expireTime'])) {
 				if(microtime(true) - $tempData['expireTime'] <= 0) {
-					$reason = 'FILE ALLOED ACCESS TIME HAS EXPIRED';
+					$reason = 'FILE ALLOWED ACCESS TIME HAS EXPIRED';
 					Logger::info('[403@Access Denied=' . $reason . '] ' . Helper::getClientIp() . ' -> ' . HTTP::getCompleteUrl());
 					stdDie($reason, '', 403);
 				}

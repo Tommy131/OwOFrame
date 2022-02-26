@@ -204,15 +204,10 @@ abstract class AppBase
 	 * @author HanskiJay
 	 * @since  2020-09-09
 	 * @param  string      $controllerName 控制器名称
-	 * @return boolean|ControllerBase
+	 * @return mixed|boolean|ControllerBase
 	 */
 	public function getController(string $controllerName, bool $autoMake = true)
 	{
-		static $controller;
-		if($controller instanceof ControllerBase) {
-			return $controller;
-		}
-
 		$controller = '\\application\\' . static::getName() . '\\controller\\' . $controllerName;
 		if(class_exists($controller) && is_a($controller, ControllerBase::class, true)) {
 			return ($autoMake) ? ($controller = new $controller($this)) : true;

@@ -506,8 +506,12 @@ class ViewBase extends ControllerBase
 						if(strpos($matched[3], '$') !== false) {
 							$matched[3] = $this->getValue(substr($matched[3], 1, strlen($matched[3])));
 						}
-						changeType($matched[1], $matched[1]);
-						changeType($matched[3], $matched[3]);
+						if(is_string($matched[1])) {
+							changeType($matched[1], $matched[1]);
+						}
+						if(is_string($matched[3])) {
+							changeType($matched[3], $matched[3]);
+						}
 						$result = self::checkJudgement($matched[2], $matched[1], $matched[3]);
 						// changeBool2String($result, $r);
 						// echo '[1] Current Judgement result: ' . ($r) . PHP_EOL;
@@ -857,14 +861,14 @@ class ViewBase extends ControllerBase
 		$this->replaceBindValues($this->viewTemplate);
 		// 解析@display语法;
 		$this->parseDisplayArea($this->viewTemplate);
-		// 解析模板语法之函数调用;
-		$this->functionReplace($this->viewTemplate);
 		// 解析IF-ELSE语法区域;
 		$this->parseJudgementArea($this->viewTemplate);
 		changeType(INI::_global('view.judgementLevel', 3), $l);
 		for($i = 1; $i <= $l; $i++) {
 			$this->parseJudgementArea($this->viewTemplate, $i);
 		}
+		// 解析模板语法之函数调用;
+		$this->functionReplace($this->viewTemplate);
 		// 绑定资源路径到路由;
 		$this->parseResourcePath($this->viewTemplate);
 
