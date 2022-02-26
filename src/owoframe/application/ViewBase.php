@@ -157,7 +157,7 @@ class ViewBase extends ControllerBase
 			$this->filePath = $filePath;
 		}
 
-		$this->viewTemplate = is_file($this->filePath) ? file_get_contents($this->filePath) : '';
+		$this->viewTemplate = file_get_contents($this->filePath);
 	}
 
 	/**
@@ -926,6 +926,21 @@ class ViewBase extends ControllerBase
 	{
 		$path = $this->getViewPath('component') . DIRECTORY_SEPARATOR . Helper::escapeSlash($index);
 		return ($mode === 0) ? $path : (is_file($path) ? file_get_contents($path) : "[VIEW-COMPONENT] File '{$path}' Not Found");
+	}
+
+	/**
+	 * 绑定标签到模板
+	 *
+	 * @author HanskiJay
+	 * @since  2022-02-26
+	 * @param  string      $tagName
+	 * @param  string      $filePath
+	 * @return string
+	 */
+	public function bindComponent(string $tagName, string $filePath) : ViewBase
+	{
+		$this->replaceBindValue($tagName, $this->getComponent($filePath, 1), $this->getTemplate());
+		return $this;
 	}
 
 	/**
