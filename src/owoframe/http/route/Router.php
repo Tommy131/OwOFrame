@@ -109,6 +109,11 @@ final class Router
 			Logger::error('[403] ' . $msg);
 			$internalError($msg, '', 'Invalid route URL!');
 		}
+		if($app::isCLIOnly()) {
+			$msg = 'This Application can only run in CLI Mode!';
+			Logger::error('[403] ' . $msg);
+			$internalError($msg, '', 'Application is banned!');
+		}
 		// Write appName in an anonymous class;
 		$anonymousClass = self::getAnonymousClass();
 		$anonymousClass->appName = $appName;

@@ -67,12 +67,13 @@ class Console implements \owoframe\constant\Manager
 			$class = @array_shift(explode('.', $fileName));
 			if(class_exists(($class = self::$namespace . $class))) {
 				$commandString = strtolower($class::getName());
-				if(!$class::autoLoad() || isset($this->commandPool[$commandString])) continue;
+				if(!$class::autoLoad() || $this->hasCommand($commandString)) continue;
 				if(count(array_intersect($class::getAliases(), $this->usedAliases)) >= 1) {
 					Logger::error(TF::RED."Cannot register command '".TF::GOLD.$class::getName().TF::RED."' because the alias name has been registered in somewhere.");
 					return;
 				}
-				$class = $this->commandPool[$commandString] = new $class();
+				$class = new $class();
+				$this->registerCommand($commandString, $class);
 				$this->usedAliases = array_merge($class::getAliases(), $this->usedAliases);
 			}
 		}
@@ -95,9 +96,9 @@ class Console implements \owoframe\constant\Manager
 		$inputCommand = strtolower(array_shift($input));
 
 		if(($command = $this->getCommand($inputCommand)) === null) {
-			foreach($this->commandPool as $command => $tmp) {
-				if(in_array($inputCommand, $tmp->getAliases())) {
-					$command = $tmp;
+			foreach($this->commandPool as $command => $class) {
+				if(in_array($inputCommand, $class->getAliases())) {
+					$command = $class;
 					break;
 				}
 			}
@@ -147,5 +148,23 @@ class Console implements \owoframe\constant\Manager
 	public function hasCommand(string $commandString) : bool
 	{
 		return isset($this->commandPool[strtolower($commandString)]);
+	}
+
+	/**
+	 * 注册指令
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-26
+	 * @param  string      $commandString
+	 * @param  CommandBase $class
+	 * @return boolean
+	 */
+	public function registerCommand(string $commandString, CommandBase $class) : bool
+	{
+		if(!$this->hasCommand($commandString)) {
+			$this->commandPool[strtolower($commandString)] = $class;
+			return true;
+		}
+		return false;
 	}
 }

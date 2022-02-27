@@ -27,6 +27,11 @@ class IndexApp extends \owoframe\application\AppBase
 		// $this->setDefaultController("Index");
 	}
 
+	public static function isCLIOnly() : bool
+	{
+		return false;
+	}
+
 	public static function getName() : string
 	{
 		return 'index';
@@ -35,6 +40,16 @@ class IndexApp extends \owoframe\application\AppBase
 	public static function autoTo404Page() : bool
 	{
 		return true;
+	}
+
+	public static function getAuthor() : string
+	{
+		return 'HanskiJay';
+	}
+
+	public static function getDescription() : string
+	{
+		return 'An Example Application For OwOFrame';
 	}
 }
 ?>

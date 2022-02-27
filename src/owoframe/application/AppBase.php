@@ -333,6 +333,15 @@ abstract class AppBase
 	abstract public function initialize() : void;
 
 	/**
+	 * 判断此Application是否仅允许在CLI模式下加载
+	 *
+	 * @author HanskiJay
+	 * @since  2022-02-27
+	 * @return boolean
+	 */
+	abstract public static function isCLIOnly() : bool;
+
+	/**
 	 * 告知路由组件是否自动跳转到404页面(如果指定)
 	 *
 	 * @author HanskiJay
@@ -349,5 +358,41 @@ abstract class AppBase
 	 * @return string
 	 */
 	abstract public static function getName() : string;
+
+	/**
+	 * 获取此Application的作者
+	 *
+	 * @author HanskiJay
+	 * @since  2022-02-27
+	 * @return string
+	 */
+	public static function getAuthor() : string
+	{
+		return '';
+	}
+
+	/**
+	 * 获取此Application的版本
+	 *
+	 * @author HanskiJay
+	 * @since  2022-02-27
+	 * @return string
+	 */
+	public static function getVersion() : string
+	{
+		return '1.0.0';
+	}
+
+	/**
+	 * 获取此Application的描述内容
+	 *
+	 * @author HanskiJay
+	 * @since  2022-02-27
+	 * @return string
+	 */
+	public static function getDescription() : string
+	{
+		return '';
+	}
 }
 ?>

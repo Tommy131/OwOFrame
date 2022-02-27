@@ -43,8 +43,8 @@ class Curl
 		"Pragma: no-cache",
 		"Accept-Language: zh-Hans-CN,zh-Hans;q=0.8,en-US;q=0.5,en;q=0.3",
 		"User-Agent: Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)",
-		'CLIENT-IP:{ip}',
-		'X-FORWARDED-FOR:{ip}'
+		'CLIENT-IP: {ip}',
+		'X-FORWARDED-FOR: {ip}'
 	];
 
 	/**
@@ -52,19 +52,19 @@ class Curl
 	 *
 	 * @var array
 	 */
-	public $ip_long =
-    [
-        ['607649792', '608174079'],     //36.56.0.0   - 36.63.255.255
-        ['1038614528', '1039007743'],   //61.232.0.0  - 61.237.255.255
-        ['1783627776', '1784676351'],   //106.80.0.0  - 106.95.255.255
-        ['2035023872', '2035154943'],   //121.76.0.0  - 121.77.255.255
-        ['2078801920', '2079064063'],   //123.232.0.0 - 123.235.255.255
-        ['-1950089216', '-1948778497'], //139.196.0.0 - 139.215.255.255
-        ['-1425539072', '-1425014785'], //171.8.0.0   - 171.15.255.255
-        ['-1236271104', '-1235419137'], //182.80.0.0  - 182.92.255.255
-        ['-770113536', '-768606209'],   //210.25.0.0  - 210.47.255.255
-        ['-569376768', '-564133889'],   //222.16.0.0  - 222.95.255.255
-    ];
+	public static $ip_long =
+	[
+		['607649792', '608174079'],     //36.56.0.0   - 36.63.255.255
+		['1038614528', '1039007743'],   //61.232.0.0  - 61.237.255.255
+		['1783627776', '1784676351'],   //106.80.0.0  - 106.95.255.255
+		['2035023872', '2035154943'],   //121.76.0.0  - 121.77.255.255
+		['2078801920', '2079064063'],   //123.232.0.0 - 123.235.255.255
+		['-1950089216', '-1948778497'], //139.196.0.0 - 139.215.255.255
+		['-1425539072', '-1425014785'], //171.8.0.0   - 171.15.255.255
+		['-1236271104', '-1235419137'], //182.80.0.0  - 182.92.255.255
+		['-770113536', '-768606209'],   //210.25.0.0  - 210.47.255.255
+		['-569376768', '-564133889'],   //222.16.0.0  - 222.95.255.255
+	];
 
 
 
@@ -73,9 +73,8 @@ class Curl
 	 *
 	 * @author HanskiJay
 	 * @since  2021-08-14
-	 * @return object@Curl
 	 */
-	public function init() : Curl
+	public function __construct()
 	{
 		if($this->curl instanceof CurlHandle) {
 			curl_close($this->curl);
@@ -86,7 +85,6 @@ class Curl
 		curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
 		$this->returnHeader(true);
 		$this->setTimeout(10);
-		return $this;
 	}
 
 	/**
@@ -94,12 +92,24 @@ class Curl
 	 *
 	 * @author HanskiJay
 	 * @since  2021-08-14
-	 * @return string
+	 * @return Curl
 	 */
-	public function exec()
+	public function exec() : Curl
 	{
 		$this->content = curl_exec($this->curl);
-		return $this->content;
+		return $this;
+	}
+
+	/**
+	 * 返回CURL资源
+	 *
+	 * @author HanskiJay
+	 * @since  2022-02-27
+	 * @return resource|null
+	 */
+	public function getResource()
+	{
+		return $this->curl ?? null;
 	}
 
 	/**
@@ -370,9 +380,9 @@ class Curl
 	 * @since  2021-08-14
 	 * @return string
 	 */
-	public function getRadomIp()
+	public static function getRadomIp()
 	{
 		$rand_key = mt_rand(0, 9);
-    	return long2ip(mt_rand((int) $this->ip_long[$rand_key][0], (int) $this->ip_long[$rand_key][1]));
-    }
+		return long2ip(mt_rand((int) static::$ip_long[$rand_key][0], (int) static::$ip_long[$rand_key][1]));
+	}
 }
