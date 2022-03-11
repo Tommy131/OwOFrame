@@ -384,6 +384,6 @@ function error(string $message, int $code = 0) : OwOFrameException
  */
 function ask(string $output, $default = null, string $logLevel = 'info')
 {
-	Logger::{$logLevel}($output . (!is_null($default) ? "[Default: {$default}]" : ''));
+	Logger::{$logLevel}($output . (!is_null($default) ? " [Default: {$default}]" : ''));
 	return trim(fgets(STDIN) ?? $default);
 }
