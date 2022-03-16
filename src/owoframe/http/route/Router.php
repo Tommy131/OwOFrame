@@ -74,7 +74,7 @@ final class Router
 		$appName  = array_shift($pathInfo);
 
 		// Check Domain bind rules;
-		include_once(FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'router.php');
+		include_once(owoConfigFile('router'));
 		if($to = DomainRule::get(server('HTTP_HOST'), $bindType)) {
 			switch($bindType) {
 				case DomainRule::TAG_BIND_TO_URL:

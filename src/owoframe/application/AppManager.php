@@ -19,10 +19,12 @@
 declare(strict_types=1);
 namespace owoframe\application;
 
+use FilesystemIterator as FI;
 use owoframe\exception\InvalidAppException;
 use owoframe\exception\ResourceMissedException;
 use owoframe\http\HttpManager as Http;
 use owoframe\http\route\Router;
+use owoframe\utils\Logger;
 
 class AppManager implements \owoframe\constant\Manager
 {
@@ -88,35 +90,18 @@ class AppManager implements \owoframe\constant\Manager
 	 */
 	public static function hasApp(string $appName, &$class = null) : bool
 	{
-		$appName   = strtolower($appName);
-		$file      = self::$appPath . $appName . DIRECTORY_SEPARATOR;
-		$file      = $file . ucfirst($appName) . 'App.php';
-		$namespace = null;
-		$class     = null;
-		if(is_file($file)) {
-			$content = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-			foreach($content as $line) {
-				if(preg_match('/^namespace\s(.*);$/i', $line, $match)) {
-					$namespace = trim($match[1]);
-				}
-				elseif(preg_match('/^class\s(.*)$/i', $line, $match)) {
-					$class = @array_shift(explode(" ", trim($match[1])));
-					break;
-				}
-			}
+		$name    = strtolower($appName);
+		$appName = ucfirst($name);
+		$class   = "\\application\\{$name}\\{$appName}" . 'App';
 
-			include_once($file);
-			$class = "\\{$namespace}\\{$class}";
-			if(!class_exists($class)) {
-				throw new ResourceMissedException("Class", $class);
-			}
-			if((new \ReflectionClass($class))->getParentClass()->getName() !== self::$basicAppClass) {
-				throw new InvalidAppException($appName, "Parent class should be interfaced by ".self::$basicAppClass);
-			}
-			return true;
-		} else {
+		if(!class_exists($class)) {
+			if(DEBUG_MODE) throw new ResourceMissedException("Class", $class);
 			return false;
 		}
+		if((new \ReflectionClass($class))->getParentClass()->getName() !== self::$basicAppClass) {
+			if(DEBUG_MODE) throw new InvalidAppException($appName, "Parent class should be interfaced by ".self::$basicAppClass);
+		}
+		return true;
 	}
 
 	/**
@@ -148,8 +133,21 @@ class AppManager implements \owoframe\constant\Manager
 
 		if(self::hasApp($appName, $class)) {
 			return $application[$appName] = new $class(Http::getCompleteUrl(), Router::getParameters());
-		} else {
-			return null;
+		}
+		return null;
+	}
+
+
+	public function initializeApplications() : void
+	{
+		$path = new FI(APP_PATH, FI::KEY_AS_PATHNAME | FI::KEY_AS_FILENAME | FI::SKIP_DOTS);
+		foreach($path as $info) {
+			if(is_dir($info->getPathName())) {
+				$appName = $info->getFileName();
+				// 过滤文件名;
+				if(!preg_match('/[a-z0-9]+/i', $appName)) continue;
+				self::getApp($appName);
+			}
 		}
 	}
 }

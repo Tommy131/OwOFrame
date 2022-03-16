@@ -69,6 +69,8 @@ class BootStrapper
 			if(!defined('FRAMEWORK_PATH'))   define('FRAMEWORK_PATH',  STORAGE_PATH . 'framework' . DIRECTORY_SEPARATOR);
 			// Cache files directory for Framework(absolute path);
 			if(!defined('F_CACHE_PATH'))     define('F_CACHE_PATH',    FRAMEWORK_PATH . 'cache' . DIRECTORY_SEPARATOR);
+			// Configuration files directory for Framework(absolute path);
+			if(!defined('CONFIG_PATH'))     define('CONFIG_PATH',      FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR);
 			// Cache files directory for Application(absolute path);
 			if(!defined('A_CACHE_PATH'))     define('A_CACHE_PATH',    STORAGE_PATH . 'application' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR);
 			// Log files directory (absolute path);
@@ -80,6 +82,7 @@ class BootStrapper
 
 			if(!is_dir(STORAGE_PATH))  mkdir(STORAGE_PATH,  755, true);
 			if(!is_dir(F_CACHE_PATH))  mkdir(F_CACHE_PATH,  755, true);
+			if(!is_dir(CONFIG_PATH))  mkdir(CONFIG_PATH,    755, true);
 			if(!is_dir(A_CACHE_PATH))  mkdir(A_CACHE_PATH,  755, true);
 			if(!is_dir(LOG_PATH))      mkdir(LOG_PATH,      755, true);
 			if(!is_dir(RESOURCE_PATH)) mkdir(RESOURCE_PATH, 755, true);
@@ -87,7 +90,7 @@ class BootStrapper
 			MasterManager::getClassLoader()->addPsr4('application' . DIRECTORY_SEPARATOR, APP_PATH);
 			MasterManager::getClassLoader()->addPsr4('module' . DIRECTORY_SEPARATOR,      MODULE_PATH);
 		}
-		INI::globalLoad(FRAMEWORK_PATH . 'config' . DIRECTORY_SEPARATOR . 'global.ini');
+		INI::globalLoad(owoConfigFile('global', 'ini'));
 	}
 
 	/**
