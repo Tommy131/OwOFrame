@@ -7,10 +7,10 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 
 ------
 
-## What can I do?
+## 我能做什么?
 > OwOFrame 是我利用个人的空闲时间以及数不尽多少天熬夜开发出来的小框架, 当然也有很多不足之处. 本框架目前支持的功能请参见下列:
 
-#### Basic System Components
+#### 基础系统组件
 - [x] `!!!IDE友好!!!`       所有注释都能在 `Visul Studio Code` 中获得良好的显示效果, 全为手动注释 :)
 - [x] ~~`ApiProcessor`      一个独立的API处理模块, 用于分离与AppManager的区别~~ (在 [`dev@v1.0.1-ALPHA27`](https://github.com/Tommy131/OwOFrame/commit/317ec78fa53b5a684a899cb664e486d1fc8ae971) 中已被移除)
 - [x] `AppManager`          本框架为多应用共存框架, 通过HTTP_URI识别当前的应用
@@ -28,23 +28,29 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 - [x] `TextFormat`          支持ANSI控制码在CMD&Shell输出色彩
 - [x] `WMI`                 针对Windows系统编写的WMI操作类
 
-#### Basic Util Components
+#### 基础功能组件
 - [x] `CookieClass`         一个普通的Cookie处理类
 - [x] `EmptyAppGenerator`   一键生成新的Application模板
 - [x] `FileUploadClass`     文件上传类支持
 - [x] `Helper`              一个集成化的方法类(具体请看源代码)
 - [x] `SessionClass`        一个普通的Session处理类
 
-#### Third Party Resources
+#### 第三方资源
 - [x] [`PasswordHash`](http://www.openwall.com/phpass/) 在此项目中包含/集成了该类库
 - [x] [`Think-ORM`](https://github.com/top-think/think-orm) 使用此项目达到了OwOFrame的ModelBase目的实现
 
 
 
-## How to use me?
-打开命令行 `CMD` 或Linux的 `Shell` 之后, 进入到项目根目录并且输入指令 `cd owoframe && composer install`安装所需的依赖包.
+## 如何使用?
+### §1. 安装方法
+1.1. 可以使用 `git clone https://github.com/Tommy131/OwOFrame.git` 方法直接将项目克隆到本地.<br/>
+1.2. 或使用 `composer create-project tommy131/owoframe -s dev` 将本项目在本地创建.
 
-然后介绍一下目录格式吧.
+### §2. 命令行运行方法
+打开命令行 `CMD` 或Linux的 `Shell` 之后, 进入到项目根目录并且输入指令 `cd owoframe && composer install` 安装所需的依赖包.<br/>
+如果你选择的第二种安装方法, 则不需要执行上述命令.
+
+### §3. 然后介绍一下目录格式吧.
 
 - 引导文件为根目录下的 `/public/index.php`, 通过此文件初始化框架.
 - TODO
@@ -63,11 +69,12 @@ location / {
 ```
 
 #### 如何在CLI模式下运行OwOFrame?
-打开你的CMD或者Shell后, 进入OwOFrame的工程路径, 在控制台输入 `php owo [command]` 即可.
+打开命令行 `CMD` 或Linux的 `Shell` 之后, 进入OwOFrame的工程路径, 在控制台输入 `owo [command]` 即可.<br/>
+Linux用户需使用 `./owo.sh [command]` 执行注册的命令.
 
 ------
 
-## Statement
+## 项目声明
 &copy; 2016-2021 [`OwOBlog-DGMT`](https://www.owoblog.com). Please comply with the open source license of this project for modification, derivative or commercial use of this project.
 
 > My Contacts:
@@ -76,5 +83,5 @@ location / {
 - E-Mail: [`HanskiJay`](mailto:support@owoblog.com)
 
 
-## Stargazers over time
+## 快给这个项目一个Star吧!
 [![Stargazers over time](https://starchart.cc/Tommy131/OwOFrame.svg)](https://starchart.cc/Tommy131/OwOFrame)

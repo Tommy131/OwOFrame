@@ -13,7 +13,7 @@ If you think this repository is helpful to you, please give this repository a `S
 > OwOFrame is a small framework that I developed using my free time. Of course, there are many shortcomings. The functions currently supported by this framework are listed below:
 
 #### Basic System Components
-- [x] `!!!IDE Friendly!!!`  All comments can be displayed well in `Visual Studio Code`, all are manual comments :) 
+- [x] `!!!IDE Friendly!!!`  All comments can be displayed well in `Visual Studio Code`, all are manual comments :)
 - [x] `AppManager`          Judge the corresponding routing controller by identifying `HTTP_URI` and assign it to the corresponding Application
 - [x] `CommandManager`      Support some operations through the Command Line method on the CLI
 - [x] `ConfigurationParser` Configuration Parser
@@ -42,7 +42,13 @@ If you think this repository is helpful to you, please give this repository a `S
 
 
 ## How to use me?
-At first you need to open `CMD` or `Shell` and get in to the root path then use command `cd owoframe && composer install` to install environment.
+### §1. Installation
+1.1. First way can use command `git clone https://github.com/Tommy131/OwOFrame.git` to clone the repository from Github to location.<br/>
+1.2. Or you can use the second way with command `composer create-project tommy131/owoframe -s dev` to create the repository to location.
+
+### §2. Next Step
+After open `CMD` in Windows or `Shell` in Linux, use command `cd owoframe && composer install` to change work path on owoframe.<br/>
+If you used composer to install this repository, you may not to run the command from the top.
 
 
 #### Do I need modify my Web configuration (e.g. for Nginx) ?
@@ -59,7 +65,8 @@ location / {
 ```
 
 #### How to running my Application in CLI-Mode with OwOFrame?
-In the OwOFrame, I built the Command Manager. You can customize the registration management of the implementation Commands, and you can also modify the entry file in the CLI-Mode to touch your project requirements. The basically usage will be called in the root path like `php owo [command]`.
+In the OwOFrame, I built the Command Manager. You can customize the registration management of the implementation Commands, and you can also modify the entry file in the CLI-Mode to touch your project requirements. The basically usage will be called in the root path like `owo [command]`.<br/>
+Linux users need use command `./owo.sh [command]` to run the registed commands.
 
 ------
 
