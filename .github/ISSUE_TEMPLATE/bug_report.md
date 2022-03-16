@@ -7,25 +7,27 @@ assignees: Tommy131
 
 ---
 
-请按照以下格式发布您的Issue。
+Please post your issue in the format below.
 ------
 
 
-#### 问题描述: 遇见了什么问题？
-> --- 您的问题 ---
+#### BUG description: What BUG did you encounter?
+> --- Please write some to description this bug. ---
 
 
-#### 错误日志/截图：
-> --- 错误日志 ---
+#### Error log / screenshot:
+> --- Put your log or pictrue below ---
 
-#### 这个错误是如何产生的？
-> --- 问题产生原因 ---
 
-#### 您的服务器运行环境
-> --- 服务器环境描述(例如下方) ---
-系统：Linux/CentOS 7.x
-OwO版本：开发版(dev@v1.0.0)
-web环境：
+#### How did this BUG come about?
+> --- the cause of the bug ---
+
+
+#### Your server operating environment:
+> --- Environment description (e.g. below) ---
+System: Linux/CentOS 7.x
+OwO-Version: Development(dev@v1.0.0)
+Web Environment:
     - Nginx 1.18.0
     - PHP 7.4
     - MySQL 5.7
