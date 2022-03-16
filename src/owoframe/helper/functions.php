@@ -385,5 +385,20 @@ function error(string $message, int $code = 0) : OwOFrameException
 function ask(string $output, $default = null, string $logLevel = 'info')
 {
 	Logger::{$logLevel}($output . (!is_null($default) ? " [Default: {$default}]" : ''));
-	return trim(fgets(STDIN) ?? $default);
+	$_ = trim(fgets(STDIN));
+	return (strlen($_) === 0) ? $default : $_;
+}
+
+/**
+ * 返回指定的配置文件路径
+ *
+ * @author HanskiJay
+ * @since  2022-03-16
+ * @param  string $type
+ * @return string
+ */
+function owoConfigFile(string $type, string $ext = 'php') : string
+{
+	$path = CONFIG_PATH . strtolower($type) . '.' . $ext;
+	return is_file($path) ? $path : '';
 }
