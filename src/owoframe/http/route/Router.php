@@ -27,6 +27,7 @@ use owoframe\application\AppManager;
 use owoframe\event\http\PageErrorEvent;
 use owoframe\exception\InvalidRouterException;
 use owoframe\http\HttpManager as Http;
+use owoframe\object\INI;
 use owoframe\utils\DataEncoder;
 use owoframe\utils\Logger;
 
@@ -54,7 +55,7 @@ final class Router
 	{
 		// Closure Method for throw or display an error;
 		$internalError = function(string $errorMessage, string $title, string $outputMessage, int $statusCode = 404) : void {
-			if(DEBUG_MODE) {
+			if(INI::_global('owo.debugMode', true)) {
 				throw new InvalidRouterException($errorMessage);
 			} else {
 				if(strlen($title) > 0) {
@@ -98,7 +99,7 @@ final class Router
 		$appName = strtolower($appName);
 
 		// Judge whether the Application is in the banned list;
-		if(in_array($appName, DENY_APP_LIST)) {
+		if(in_array($appName, explode(',', INI::_global('owo.denyList')))) {
 			Http::setStatusCode(403);
 			return;
 		}

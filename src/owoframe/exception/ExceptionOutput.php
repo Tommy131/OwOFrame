@@ -21,10 +21,11 @@ namespace owoframe\exception;
 
 use Throwable;
 
-use owoframe\helper\BootStrapper as BS;
+use owoframe\MasterManager as Master;
 use owoframe\helper\Helper;
 use owoframe\http\HttpManager as Http;
 use owoframe\http\Response;
+use owoframe\object\INI;
 use owoframe\utils\Logger;
 
 class ExceptionOutput
@@ -51,7 +52,7 @@ class ExceptionOutput
 			E_DEPRECATED        => 'E_DEPRECATED',
 			E_USER_DEPRECATED   => 'E_USER_DEPRECATED',
 		];
-		$errno = isset($errorConversion[$errno]) ? $errorConversion[$errno] : $errno;
+		$errno = $errorConversion[$errno] ?? $errno;
 		if(($pos = strpos($errstr, "\n")) !== false) $errstr = substr($errstr, 0, $pos);
 		if(!preg_match('/Cannot use "parent" when current class scope has no parent/i', $errstr)) {
 			$msg = "{$errno} happened: {$errstr} in {$errfile} at line {$errline}";
@@ -59,7 +60,7 @@ class ExceptionOutput
 				/* if(!DEBUG_MODE) {
 					return false;
 				} */
-				if(defined('LOG_ERROR') && LOG_ERROR) {
+				if(INI::_global('owo.enableLog', true)) {
 					$logged = '<span id="logged">--- Logged ---</span>';
 					self::log($msg);
 				} else {
@@ -67,7 +68,7 @@ class ExceptionOutput
 				}
 				echo str_replace(
 					['{logged}', '{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'],
-					[$logged, $errno, $msg, $errfile, $errline, null, BS::getRunTime()],
+					[$logged, $errno, $msg, $errfile, $errline, null, Master::getRunTime()],
 				self::getTemplate());
 			} else {
 				self::log($msg);
@@ -89,7 +90,7 @@ class ExceptionOutput
 				return;
 			}
 
-			if(defined('LOG_ERROR') && LOG_ERROR) {
+			if(INI::_global('owo.enableLog', true)) {
 				$logged = '<span id="logged">--- Logged ---</span>';
 				self::log($exception->__toString());
 			} else {
@@ -99,7 +100,7 @@ class ExceptionOutput
 			$realName = method_exists($exception, 'getRealLine') ? $exception->getRealLine() : $exception->getLine();
 			echo str_replace(
 				['{logged}', '{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'],
-				[$logged, $type, $exception->getMessage(),  $fileName, $realName, $exception->getTraceAsString(), BS::getRunTime()],
+				[$logged, $type, $exception->getMessage(),  $fileName, $realName, $exception->getTraceAsString(), Master::getRunTime()],
 			self::getTemplate());
 		} else {
 			self::log($exception->__toString());
@@ -117,7 +118,7 @@ class ExceptionOutput
 
 	public static function getTemplate() : string
 	{
-		$debugMode = (DEBUG_MODE) ? '<span id="debugMode">DebugMode</span>' : '';
+		$debugMode = (INI::_global('owo.debugMode', true)) ? '<span id="debugMode">DebugMode</span>' : '';
 		return str_replace('{debugMode}', $debugMode, file_get_contents(FRAMEWORK_PATH . 'template' . DIRECTORY_SEPARATOR . 'ExceptionOutputTemplate.html'));
 	}
 }
