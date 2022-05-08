@@ -38,7 +38,7 @@ final class MasterManager implements Manager
 	/**
 	 * 主进程实例
 	 *
-	 * @access protected
+	 * @access private
 	 * @var MasterManager
 	 */
 	private static $instance = null;
