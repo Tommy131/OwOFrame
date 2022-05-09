@@ -19,7 +19,7 @@
 declare(strict_types=1);
 namespace owoframe\console;
 
-use owoframe\logger\Logger;
+use owoframe\utils\Logger;
 
 abstract class CommandBase
 {
