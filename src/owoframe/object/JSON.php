@@ -19,25 +19,9 @@
 declare(strict_types=1);
 namespace owoframe\object;
 
-use owoframe\helper\Helper;
-use owoframe\exception\FileMissedException;
-use owoframe\utils\Logger;
 
 class JSON extends Config
 {
-
-	public function __construct(string $file, array $defaultData = [], bool $autoSave = false)
-	{
-		parent::__construct($file, $defaultData, $autoSave);
-
-		if(!file_exists($file)) {
-			$this->config = $defaultData;
-			$this->save();
-		} else {
-			$this->reload();
-		}
-	}
-
 	/**
 	 * 备份配置文件
 	 *
@@ -75,20 +59,10 @@ class JSON extends Config
 	 * @since  2021-01-30
 	 * @return void
 	 */
-	public function reload() : void
+	protected function reloadCallback() : void
 	{
-		if(is_file($this->getFullPath())) {
-			$this->nestedCache = [];
-			$this->config = json_decode(file_get_contents($this->getFullPath()), true) ?? [];
-		} else {
-			$message = "Cannot reload Config::{$this->getFileName()}, because the file does not exists!";
-			if(Helper::isRunningWithCGI()) {
-				throw new FileMissedException($message);
-			} else {
-				Logger::$logPrefix = 'Config';
-				Logger::error($message);
-			}
-		}
+		$this->nestedCache = [];
+		$this->config = json_decode(file_get_contents($this->getFullPath()), true) ?? [];
 	}
 
 	/**

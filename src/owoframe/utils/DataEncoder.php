@@ -21,7 +21,7 @@ namespace owoframe\utils;
 
 use JsonSerializable;
 
-use owoframe\constant\StandardOutputConstant;
+use owoframe\constants\StandardOutputConstant;
 
 class DataEncoder implements JsonSerializable, StandardOutputConstant
 {

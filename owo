@@ -1,6 +1,6 @@
 <?php
 
-/************************************************************************
+/*********************************************************************
 	 _____   _          __  _____   _____   _       _____   _____
 	/  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
 	| | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
@@ -12,36 +12,17 @@
 	* Developer: HanskiJay(Tommy131)
 	* Telegram:  https://t.me/HanskiJay
 	* E-Mail:    support@owoblog.com
-	* Github:    https://github.com/Tommy131
-	*
-	* CLI入口 & 配置文件
+	* GitHub:    https://github.com/Tommy131
 
-************************************************************************/
+**********************************************************************/
 
-// 基础全局配置 | Base Global Configuration;
-$config =
-[
-	/* Normal Settings */
-	// 开发者模式 | DEBUG_MODE;
-	"DEBUG_MODE" => true,
-	// 记录错误日志 | LOG_ERROR;
-	"LOG_ERROR"  => false,
-	// 默认时区 | Default timezone;
-	"TIME_ZONE"  => "Europe/Berlin"
-];
-foreach($config as $define => $param) {
-	if(!defined($define)) define($define, $param);
-}
+require_once('./src/bootstrap.php');
+use owoframe\MasterManager;
 
-// 引入自动加载文件 | require autoload file;
-$vendor_file = __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-if(!file_exists($vendor_file)) {
-	exit('Please execute command \'composer install\' at root path at first!');
-}
-$classLoader = require_once($vendor_file);
-$master  = new owoframe\MasterManager($classLoader);
-$master->getManager('app')->initializeApplications();
-$console = $master->getManager('console');
+$master = new MasterManager($classLoader);
+$master->getUnit('logger')->createLogger('cli')->updateConfig('cli', [
+	'fileName'  => 'owoblog_cli_run.log',
+	'logPrefix' => 'OwOCLI'
+]);
+$console = $master->getUnit('console');
 $console->monitor($argv);
-$master->stop();
-?>

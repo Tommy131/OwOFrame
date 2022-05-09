@@ -17,7 +17,7 @@
 **********************************************************************/
 
 declare(strict_types=1);
-namespace owoframe\system\windows;
+namespace owoframe\utils\windows;
 
 class WMIService extends WMI
 {

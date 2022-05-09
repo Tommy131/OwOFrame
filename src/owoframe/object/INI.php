@@ -19,26 +19,10 @@
 declare(strict_types=1);
 namespace owoframe\object;
 
-use owoframe\helper\Helper;
-use owoframe\exception\FileMissedException;
-use owoframe\utils\Logger;
-
 class INI extends Config
 {
-	public function __construct(string $file, array $defaultData = [], bool $autoSave = false)
-	{
-		parent::__construct($file, $defaultData, $autoSave);
-
-		if(!file_exists($file)) {
-			$this->config = $defaultData;
-			$this->save();
-		} else {
-			$this->reload();
-		}
-	}
-
 	/**
-	 * 加载配置文件到全局
+	 * 从配置文件到全局
 	 *
 	 * @author HanskiJay
 	 * @since  2021-01-09
@@ -47,10 +31,22 @@ class INI extends Config
 	 * @param  boolean $autoSave
 	 * @return void
 	 */
-	public static function globalLoad(string $file, array $defaultData = [], bool $autoSave = false) : void
+	public static function loadFile2Global(string $file, array $defaultData = [], bool $autoSave = false) : void
 	{
 		global $_global;
 		$_global = new static($file, $defaultData, $autoSave);
+	}
+
+	/**
+	 * 从配置文件实例加载到全局
+	 *
+	 * @param  INI  $object
+	 * @return void
+	 */
+	public static function loadObject2Global(INI $object) : void
+	{
+		global $_global;
+		$_global = $object;
 	}
 
 	/**
@@ -78,25 +74,37 @@ class INI extends Config
 	 */
 	public function save(?string $file = null) : void
 	{
-		/** Code has been Base64 encoded;
-		 *
-		 * 目前暂不支持直接保存, 请手动修改后使用重载方法.
-		 * Currently does not support direct saving, please use the reload method after manual modification.
-		 *
-		 * aWYoZW1wdHkoJHRoaXMtPmNvbmZpZykpIHsKCQkJcmV0dXJuOwoJCX0KCgkJJHBhcnNlRGF0YVR5cGUgPSBmdW5jdGlvbigk
-		 * dmFsdWUpIHsKCQkJaWYoaXNfbnVsbCgkdmFsdWUpIHx8IChzdHJsZW4oJHZhbHVlKSA9PT0gMCkpIHsKCQkJCSR2YWx1ZSA9
-		 * ICdudWxsJzsKCQkJfQoJCQllbHNlaWYoKCR2YWx1ZSA9PT0gZmFsc2UpIHx8ICgkdmFsdWUgPT09ICcwJykpIHsKCQkJCSR2
-		 * YWx1ZSA9ICdmYWxzZSc7CgkJCX0KCQkJZWxzZWlmKCgkdmFsdWUgPT09IHRydWUpIHx8ICgkdmFsdWUgPT09ICcxJykpIHsK
-		 * CQkJCSR2YWx1ZSA9ICd0cnVlJzsKCQkJfQoJCQlyZXR1cm4gJHZhbHVlOwoJCX07CgkJJHRleHQgPSAnJzsKCgkJZm9yZWFj
-		 * aCgkdGhpcy0+Y29uZmlnIGFzICRncm91cCA9PiAkc3ViQ29udGVudCkgewoJCQkkdGV4dCAuPSAiW3skZ3JvdXB9XSIgLiBQ
-		 * SFBfRU9MOwoJCQlmb3JlYWNoKCRzdWJDb250ZW50IGFzICRuYW1lID0+ICR2YWx1ZSkgewoJCQkJaWYoIWlzX2FycmF5KCR2
-		 * YWx1ZSkpIHsKCQkJCQkkdmFsdWUgPSAkcGFyc2VEYXRhVHlwZSgkdmFsdWUpOwoJCQkJCSR0ZXh0IC49ICJ7JG5hbWV9PXsk
-		 * dmFsdWV9IiAuIFBIUF9FT0w7CgkJCQl9IGVsc2UgewoJCQkJCWZvcmVhY2goJHZhbHVlIGFzICRrID0+ICR2KSB7CgkJCQkJ
-		 * CSR2YWx1ZSA9ICRwYXJzZURhdGFUeXBlKCR2KTsKCQkJCQkJJHRleHQgLj0gInskbmFtZX1beyRrfV09eyR2fSIgLiBQSFBf
-		 * RU9MOwoJCQkJCX0KCQkJCX0KCQkJfQoJCQkkdGV4dCAuPSBQSFBfRU9MOwoJCX0KCQlmaWxlX3B1dF9jb250ZW50cygkdGhp
-		 * cy0+Z2V0UGF0aCgpLCB0cmltKCR0ZXh0KSk7
-		 *
-		 */
+		if(empty($this->config)) {
+			return;
+		}
+
+		$parseDataType = function($value) {
+			if(is_null($value) || (is_string($value) && (strlen($value) === 0))) {
+				$value = 'null';
+			}
+			elseif(($value === false)) {
+				$value = 'false';
+			}
+			elseif(($value === true)) {
+				$value = 'true';
+			}
+			return $value;
+		};
+		$text = '';
+
+		foreach($this->config as $group => $subContent) {
+			$text .= "[{$group}]" . PHP_EOL;
+			foreach($subContent as $name => $value) {
+				if(!is_array($value)) {
+					$value = $parseDataType($value);
+					$text .= "{$name}={$value}" . PHP_EOL;
+				} else {
+					$value = $name . '=' . implode(',', $value);
+				}
+			}
+			$text .= PHP_EOL;
+		}
+		file_put_contents($file ?? $this->getFullPath(), trim($text));
 	}
 
 	/**
@@ -106,19 +114,9 @@ class INI extends Config
 	 * @since  2021-01-30
 	 * @return void
 	 */
-	public function reload() : void
+	protected function reloadCallback() : void
 	{
-		if(is_file($this->getFullPath())) {
-			$this->config = parse_ini_file($this->getFullPath(), true);
-		} else {
-			$message = "Cannot reload Config::{$this->getFileName()}, because the file does not exists!";
-			if(Helper::isRunningWithCGI()) {
-				throw new FileMissedException($message);
-			} else {
-				Logger::$logPrefix = 'Config';
-				Logger::error($message);
-			}
-		}
+		$this->config = parse_ini_file($this->getFullPath(), true);
 	}
 
 	/**

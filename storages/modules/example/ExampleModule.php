@@ -16,17 +16,13 @@
 
 **********************************************************************/
 
-declare(strict_types=1);
-namespace owoframe\constant;
+namespace modules\example;
 
-interface StandardOutputConstant
+class ExampleModule extends \owoframe\module\ModuleBase
 {
-	/**
-	 * 标准输出方法
-	 *
-	 * @author HanskiJay
-	 * @since  2021-04-16
-	 * @return string
-	 */
-	public function getOutput() : string;
+
+	public function onLoad() : void
+	{
+		// echo "I'm loaded!";
+	}
 }

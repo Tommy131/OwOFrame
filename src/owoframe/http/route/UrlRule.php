@@ -19,7 +19,7 @@
 declare(strict_types=1);
 namespace owoframe\http\route;
 
-use owoframe\constant\UrlRuleConstant;
+use owoframe\constants\UrlRuleConstant;
 use owoframe\exception\ParameterTypeErrorException;
 
 class UrlRule implements UrlRuleConstant

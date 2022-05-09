@@ -56,16 +56,10 @@ class DomainRule
 	public static function bind(string $domain, int $bindType, string $to) : bool
 	{
 		if(self::isBound($domain)) {
-			if(DEBUG_MODE) {
-				throw new DomainRuleException("Domain {$domain} has already bound with " . static::$bind[$domain] . '!');
-			}
-			return false;
+			throw new DomainRuleException("Domain {$domain} has already bound with " . static::$bind[$domain] . '!');
 		}
 		if(!Helper::isDomain($domain)) {
-			if(DEBUG_MODE) {
-				throw new DomainRuleException('First argument must be a domain!');
-			}
-			return false;
+			throw new DomainRuleException('First argument must be a domain!');
 		}
 
 		switch($bindType) {
@@ -75,19 +69,13 @@ class DomainRule
 			case self::TAG_BIND_TO_URL:
 				$to = str_replace('{domain}', $domain, $to);
 				if(!Helper::isUrl($to)) {
-					if(DEBUG_MODE) {
-						throw new DomainRuleException('Second argument must be an URL!');
-					}
-					return false;
+					throw new DomainRuleException('Second argument must be an URL!');
 				}
 			break;
 
 			case self::TAG_BIND_TO_APPLICATION:
 				if(!AppManager::getApp($to)) {
-					if(DEBUG_MODE) {
-						throw new DomainRuleException('Invalid Application Name!');
-					}
-					return false;
+					throw new DomainRuleException('Invalid Application Name!');
 				}
 			break;
 		}

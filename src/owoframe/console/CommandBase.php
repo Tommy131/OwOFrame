@@ -19,8 +19,23 @@
 declare(strict_types=1);
 namespace owoframe\console;
 
+use owoframe\logger\Logger;
+
 abstract class CommandBase
 {
+	/**
+	 * 日志记录容器实例
+	 *
+	 * @var Logger
+	 */
+	private $logger;
+
+	public function __construct(Logger $logger)
+	{
+		$this->logger = $logger;
+	}
+
+
 	/**
 	 * 触发该指令时调用此方法执行指令
 	 *
@@ -82,4 +97,15 @@ abstract class CommandBase
 		return true;
 	}
 
+	/**
+	 * 返回日志记录容器实例
+	 *
+	 * @author HanskiJay
+	 * @since  2022-05-09
+	 * @return Logger
+	 */
+	public function getLogger() : Logger
+	{
+		return $this->logger;
+	}
 }

@@ -21,11 +21,11 @@ namespace owoframe\event;
 
 use ReflectionClass;
 use ReflectionMethod;
-use owoframe\constant\Cancellable;
+use owoframe\interfaces\Cancellable;
 use owoframe\exception\OwOFrameException;
 use owoframe\exception\ParameterTypeErrorException;
 
-class EventManager implements \owoframe\constant\Manager
+class EventManager implements \owoframe\interfaces\Unit
 {
 
 	/**
@@ -71,6 +71,14 @@ class EventManager implements \owoframe\constant\Manager
 
 
 	/**
+	 * 构造函数
+	 */
+	public function __construct()
+	{}
+
+
+
+	/**
 	 * 触发事件, 从而启动监听回调
 	 *
 	 * @author HanskiJay
@@ -89,9 +97,7 @@ class EventManager implements \owoframe\constant\Manager
 		}
 
 		if(!self::isEvent($eventClass)) {
-			if(defined('DEBUG_MODE') && DEBUG_MODE) {
-				throw new OwOFrameException('[Event_Register_Failed] Call in unknown event ' . $eventClass);
-			}
+			throw new OwOFrameException('[Event_Register_Failed] Call in unknown event ' . $eventClass);
 			return;
 		}
 		if(!isset($this->eventList[$eventClass])) {
@@ -124,7 +130,7 @@ class EventManager implements \owoframe\constant\Manager
 	 * @author HanskiJay
 	 * @since  2021-04-06
 	 * @param  string       $registerTag  注册识别标签
-	 * @param  mixed        $listener     监听者(类型可为 callable, callback, object)
+	 * @param  mixed        $listener     监听者(类型可为 callable, object)
 	 * @param  integer      $priority     监听优先级别
 	 * @param  boolean      $reload       允许重新注册
 	 * @return void
@@ -136,7 +142,7 @@ class EventManager implements \owoframe\constant\Manager
 		}
 		switch(gettype($listener)) {
 			default:
-				throw new ParameterTypeErrorException('listener', 'callable|callback|object', $listener);
+				throw new ParameterTypeErrorException('listener', 'callable|object', $listener);
 			break;
 
 			case 'object':

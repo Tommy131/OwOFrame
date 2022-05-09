@@ -19,10 +19,10 @@
 declare(strict_types=1);
 namespace owoframe\http;
 
-use owoframe\constant\MIMETypeConstant;
+use owoframe\constants\MIMETypeConstant;
 use owoframe\exception\JSONException;
 
-class FileUploader implements \owoframe\constant\Manager
+class FileUploader
 {
 	/**
 	 * 默认允许上传的文件类型集合

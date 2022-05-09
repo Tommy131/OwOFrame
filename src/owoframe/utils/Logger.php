@@ -20,139 +20,151 @@ declare(strict_types=1);
 namespace owoframe\utils;
 
 use owoframe\helper\Helper;
+use owoframe\object\INI;
+use owoframe\utils\TextFormat;
 
-class Logger
+class Logger implements \owoframe\interfaces\Unit
 {
+
 	/**
-	 * 默认日志记录文件名称
+	 * 默认绑定标签
 	 */
-	public const DEFAULT_LOG_NAME = "owoblog_run.log";
+	public const DEFAULT_BIND_TAG = 'main';
 
 	/**
-	 * 日志记录格式
+	 * 默认配置文件
 	 */
-	public const LOG_FORMAT = "[%s][%s][%s/%s] > %s";
-
-
-	/**
-	 * 日志记录文件名称
-	 *
-	 * @access private
-	 * @var string
-	 */
-	private static $fileName;
+	public const DEFAULT_CONFIG =
+	[
+		'fileName'    => 'owoblog_run.log',      // 默认日志文件名称;
+		'logFormat'   => '[%s][%s][%s/%s] > %s', // 日志记录格式;
+		'maximumSize' => '1024',                 // 最大文件大小, MB;
+		'logPrefix'   => 'OwO',                  // 日志记录前缀;
+	];
 
 	/**
-	 * 日志记录称号
+	 * 当前绑定的日志记录标签
 	 *
 	 * @var string
 	 */
-	public static $logPrefix = 'OwOWeb';
+	private $selected;
 
 	/**
-	 * 最大文件大小(mb)
+	 * 已占用的日志记录绑定标签
 	 *
-	 * @var integer
+	 * @var array
 	 */
-	public static $maxFileSize = 1024; // mb, 日志文件大小大于这个值时自动截断并且生成新的日志;
+	private $usedBindTags = [];
 
 
 	/**
-	 * 日志写入: INFO 等级(仅颜色显示不同)
-	 *
-	 * @author HanskiJay
-	 * @since  2021-01-23
-	 * @param  string      $message 日志内容
-	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
-	 * @return void
+	 * 构造函数
 	 */
-	public static function success(string $message, string $color = TextFormat::GREEN) : void
+	public function __construct()
 	{
-		self::write($message, 'SUCCESS', $color);
+		$this->createLogger(self::DEFAULT_BIND_TAG, [], true);
 	}
 
 	/**
-	 * 日志写入: INFO 等级
+	 * 检测是否存在一个日志记录容器
 	 *
 	 * @author HanskiJay
-	 * @since  2021-01-23
-	 * @param  string      $message 日志内容
-	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
-	 * @return void
+	 * @since  2022-05-08
+	 * @param  string  $bindTag
+	 * @return boolean
 	 */
-	public static function info(string $message, string $color = TextFormat::WHITE) : void
+	public function hasLogger(string $bindTag) : bool
 	{
-		self::write($message, 'INFO', $color);
+		return isset($this->usedBindTags[$bindTag]);
 	}
 
 	/**
-	 * 日志写入: NOTICE 等级
+	 * 返回当前选择的日志记录容器标签;
 	 *
 	 * @author HanskiJay
-	 * @since  2021-01-23
-	 * @param  string      $message 日志内容
-	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
-	 * @return void
+	 * @since  2022-05-08
+	 * @return string
 	 */
-	public static function notice(string $message, string $color = TextFormat::AQUA) : void
+	public function getCurrentLogger() : string
 	{
-		self::write($message, 'NOTICE', $color);
+		return $this->selected;
 	}
 
 	/**
-	 * 日志写入: WARNING 等级
+	 * 选择日志记录容器
 	 *
 	 * @author HanskiJay
-	 * @since  2021-01-23
-	 * @param  string      $message 日志内容
-	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
-	 * @return void
+	 * @since  2022-05-08
+	 * @param  string  $bindTag
+	 * @return Logger
 	 */
-	public static function warning(string $message, string $color = TextFormat::GOLD) : void
+	public function selectLogger(string $bindTag) : Logger
 	{
-		self::write($message, 'WARNING', $color);
+		$this->selected = (!$this->hasLogger($bindTag)) ? self::DEFAULT_BIND_TAG : $bindTag;
+		return $this;
 	}
 
 	/**
-	 * 日志写入: ERROR 等级
+	 * 创建一个日志记录容器
 	 *
 	 * @author HanskiJay
-	 * @since  2021-01-23
-	 * @param  string      $message 日志内容
-	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
-	 * @return void
+	 * @since  2022-05-08
+	 * @param  string  $bindTag
+	 * @param  array   $config
+	 * @param  boolean $autoSelect
+	 * @return Logger
 	 */
-	public static function error(string $message, string $color = TextFormat::RED) : void
+	public function createLogger(string $bindTag, array $config = [], bool $autoSelect = true) : Logger
 	{
-		self::write($message, 'ERROR', $color);
+		if(!$this->hasLogger($bindTag)) {
+			$this->usedBindTags[$bindTag] = checkArrayValid($config, self::DEFAULT_CONFIG, $missParam) ? $config : self::DEFAULT_CONFIG;
+		}
+		if($autoSelect) {
+			$this->selectLogger($bindTag);
+		}
+		return $this;
 	}
 
 	/**
-	 * 日志写入: EMERGENCY 等级
+	 * 返回一个日志记录容器的配置文件
 	 *
 	 * @author HanskiJay
-	 * @since  2021-01-23
-	 * @param  string      $message 日志内容
-	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
-	 * @return void
+	 * @since  2022-05-08
+	 * @param  string      $bindTag
+	 * @return object|null
 	 */
-	public static function emergency(string $message, string $color = TextFormat::LIGHT_RED) : void
+	public function getConfig(string $bindTag) : ?object
 	{
-		self::write($message, 'EMERGENCY', $color);
+		if(!$this->hasLogger($bindTag)) {
+			return null;
+		}
+		return (object) $this->usedBindTags[$bindTag];
 	}
 
 	/**
-	 * 日志写入: DEBUG 等级
+	 * 更新配置文件
 	 *
 	 * @author HanskiJay
-	 * @since  2021-01-23
-	 * @param  string      $message 日志内容
-	 * @param  string      $color   默认输出颜色(仅在CLI模式下)
-	 * @return void
+	 * @since  2022-05-08
+	 * @param  string  $bindTag
+	 * @param  [type]  $var
+	 * @param  string  $val
+	 * @return boolean
 	 */
-	public static function debug(string $message, string $color = TextFormat::GRAY) : void
+	public function updateConfig(string $bindTag, $var, string $val = '') : bool
 	{
-		self::write($message, 'DEBUG', $color);
+		if(!$this->hasLogger($bindTag)) {
+			return false;
+		}
+		if(is_array($var)) {
+			$this->usedBindTags[$bindTag] = array_merge($this->usedBindTags[$bindTag], $var);
+		}
+		elseif(is_string($var)) {
+			$this->usedBindTags[$bindTag][$var] = $val;
+		} else {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -164,20 +176,125 @@ class Logger
 	 * @param  string      $level   日志等级
 	 * @return void
 	 */
-	public static function write(string $message, string $level, string $color = TextFormat::WHITE) : void
+	public function write(string $message, string $level, string $color = TextFormat::WHITE) : void
 	{
-		if(is_null(static::$fileName)) static::$fileName = LOG_PATH . self::DEFAULT_LOG_NAME;
+		// Get currently Logger's configuration;
+		$config = $this->getConfig($this->selected);
 
-		if(is_file(static::$fileName) && (filesize(static::$fileName) >= static::$maxFileSize * 1000)) {
-			rename(static::$fileName, str_replace('.log', '', static::$fileName) . date('_Y_m_d') . '.log');
+		// Check currently log file size;
+		if(is_file($config->fileName) && (filesize($config->fileName) >= $config->maximumSize * 1000)) {
+			rename($config->fileName, str_replace('.log', '', $config->fileName) . date('_Y_m_d') . '.log');
 		}
-		$message = $color . sprintf(self::LOG_FORMAT, date('Y-m-d'), date('H:i:s'), static::$logPrefix, $level, $message) . PHP_EOL;
+
+		// Format output message;
+		$message = $color . sprintf($config->logFormat, date('Y-m-d'), date('H:i:s'), $config->logPrefix, strtoupper($level), $message) . PHP_EOL;
 
 		if(Helper::isRunningWithCLI()) {
 			echo TextFormat::parse($message);
 		}
 		$message = TextFormat::clean($message);
-		file_put_contents(static::$fileName, $message, FILE_APPEND | LOCK_EX);
+		if(INI::_global('owo.enableLog', true)) {
+			file_put_contents(LOG_PATH . $config->fileName, $message, FILE_APPEND | LOCK_EX);
+		}
+	}
+
+
+	/**
+	 * 日志写入: INFO 等级 (仅颜色显示不同)
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
+	 * @param  string      $message 日志内容
+	 * @param  string      $color   默认输出颜色 (仅在CLI模式下)
+	 * @return void
+	 */
+	public function success(string $message, string $color = TextFormat::GREEN) : void
+	{
+		$this->write($message, __FUNCTION__, $color);
+	}
+
+	/**
+	 * 日志写入: INFO 等级
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
+	 * @param  string      $message 日志内容
+	 * @param  string      $color   默认输出颜色 (仅在CLI模式下)
+	 * @return void
+	 */
+	public function info(string $message, string $color = TextFormat::WHITE) : void
+	{
+		$this->write($message, __FUNCTION__, $color);
+	}
+
+	/**
+	 * 日志写入: NOTICE 等级
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
+	 * @param  string      $message 日志内容
+	 * @param  string      $color   默认输出颜色 (仅在CLI模式下)
+	 * @return void
+	 */
+	public function notice(string $message, string $color = TextFormat::AQUA) : void
+	{
+		$this->write($message, __FUNCTION__, $color);
+	}
+
+	/**
+	 * 日志写入: WARNING 等级
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
+	 * @param  string      $message 日志内容
+	 * @param  string      $color   默认输出颜色 (仅在CLI模式下)
+	 * @return void
+	 */
+	public function warning(string $message, string $color = TextFormat::GOLD) : void
+	{
+		$this->write($message, __FUNCTION__, $color);
+	}
+
+	/**
+	 * 日志写入: ERROR 等级
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
+	 * @param  string      $message 日志内容
+	 * @param  string      $color   默认输出颜色 (仅在CLI模式下)
+	 * @return void
+	 */
+	public function error(string $message, string $color = TextFormat::RED) : void
+	{
+		$this->write($message, __FUNCTION__, $color);
+	}
+
+	/**
+	 * 日志写入: EMERGENCY 等级
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
+	 * @param  string      $message 日志内容
+	 * @param  string      $color   默认输出颜色 (仅在CLI模式下)
+	 * @return void
+	 */
+	public function emergency(string $message, string $color = TextFormat::LIGHT_RED) : void
+	{
+		$this->write($message, __FUNCTION__, $color);
+	}
+
+	/**
+	 * 日志写入: DEBUG 等级
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-23
+	 * @param  string      $message 日志内容
+	 * @param  string      $color   默认输出颜色 (仅在CLI模式下)
+	 * @return void
+	 */
+	public function debug(string $message, string $color = TextFormat::GRAY) : void
+	{
+		$this->write($message, __FUNCTION__, $color);
 	}
 
 	/**
@@ -202,21 +319,8 @@ class Logger
 	 */
 	public static function cleanLog(string $fileName = '') : void
 	{
-		if(is_null($fileName)) $fileName = LOG_PATH . static::$fileName;
+		if(is_null($fileName)) $fileName = LOG_PATH . self::DEFAULT_CONFIG['fileName'];
 		if(is_file($fileName)) unlink($fileName);
-	}
-
-	/**
-	 * 设置日志名称
-	 *
-	 * @author HanskiJay
-	 * @since  2021-01-23
-	 * @param  string      $fileName 日志名称
-	 * @return void
-	 */
-	public static function setLogFileName(string $fileName) : void
-	{
-		static::$fileName = LOG_PATH . $fileName;
 	}
 }
 ?>

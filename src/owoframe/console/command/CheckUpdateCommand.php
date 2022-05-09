@@ -19,18 +19,17 @@
 declare(strict_types=1);
 namespace owoframe\console\command;
 
-use owoframe\utils\Logger;
 use owoframe\utils\TextFormat as TF;
 
 class CheckUpdateCommand extends \owoframe\console\CommandBase
 {
 	public function execute(array $params) : bool
 	{
-		Logger::notice("Current version is: " . APP_VERSION . ', checking update......');
-		$json = json_decode(file_get_contents('https://www.owoblog.com/checkUpdate/OwOFrame/?version=' . APP_VERSION));
-		Logger::sendEmpty();
+		$this->getLogger()->notice("Current version is: " . FRAME_VERSION . ', checking update......');
+		$json = json_decode(file_get_contents('https://www.owoblog.com/checkUpdate/OwOFrame/?version=' . FRAME_VERSION));
+		$this->getLogger()->sendEmpty();
 		if($json->result === true) {
-			Logger::success('Currently is the newest version.');
+			$this->getLogger()->success('Currently is the newest version.');
 		} else {
 			if($json->msg === 'lower') {
 				$message = 'Outdated version! Please go to the GitHub ' . TF::YELLOW . GITHUB_PAGE . TF::AQUA . ' or use command ' . TF::YELLOW . 'git pull'. TF::AQUA . ' to update! ';
@@ -40,7 +39,7 @@ class CheckUpdateCommand extends \owoframe\console\CommandBase
 			} else {
 				$message = TF::LIGHT_RED . $json->msg;
 			}
-			Logger::notice($message);
+			$this->getLogger()->notice($message);
 		}
 		return true;
 	}

@@ -19,7 +19,7 @@
 declare(strict_types=1);
 namespace owoframe\event\http;
 
-use owoframe\http\HttpManager as Http;
+use owoframe\MasterManager;
 
 class PageErrorEvent extends \owoframe\event\Event
 {
@@ -66,7 +66,7 @@ class PageErrorEvent extends \owoframe\event\Event
 
 	public function __construct(array $replaceTags = [], array $replace = [])
 	{
-		$response = Http::Response([$this, 'call'], [$replaceTags, $replace]);
+		$response = MasterManager::getInstance()->getUnit('http')::Response([$this, 'call'], [$replaceTags, $replace]);
 		$response->setResponseCode(static::$statusCode);
 		$response->sendResponse();
 	}

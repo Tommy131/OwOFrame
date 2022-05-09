@@ -23,60 +23,18 @@ use FilesystemIterator as FI;
 use owoframe\exception\InvalidAppException;
 use owoframe\exception\ResourceMissedException;
 use owoframe\http\HttpManager as Http;
-use owoframe\http\route\Router;
-use owoframe\utils\Logger;
+use owoframe\object\INI;
 
-class AppManager implements \owoframe\constant\Manager
+class AppManager implements \owoframe\interfaces\Unit
 {
 	/**
 	 * AppBase basic namespace
-	 *
-	 * @access private
-	 * @var string
 	 */
-	private static $basicAppClass = "owoframe\\application\\AppBase";
-
-	/**
-	 * Application路径
-	 *
-	 * @access private
-	 * @var string
-	 */
-	private static $appPath = "";
+	public const BASIC_CLASS = "owoframe\\application\\AppBase";
 
 
-
-	/**
-	 * 设置App目录
-	 *
-	 * @author HanskiJay
-	 * @since  2020-09-09
-	 * @param  string      $path 目录
-	 * @return void
-	 */
-	public static function setPath(string $path) : void
+	public function __construct()
 	{
-		if(is_dir($path)) {
-			self::$appPath = $path;
-		} else {
-			throw new ResourceMissedException("Path", $path);
-		}
-	}
-
-	/**
-	 * 获取App目录
-	 *
-	 * @return string
-	 * @author HanskiJay
-	 * @since  2020-09-09
-	 */
-	public static function getPath() : string
-	{
-		if(is_dir(self::$appPath)) {
-			return self::$appPath;
-		} else {
-			throw new ResourceMissedException("Path", self::$appPath);
-		}
 	}
 
 	/**
@@ -88,18 +46,17 @@ class AppManager implements \owoframe\constant\Manager
 	 * @param  &           &$class  向上传递存在的应用对象
 	 * @return boolean
 	 */
-	public static function hasApp(string $appName, &$class = null) : bool
+	public function hasApp(string $appName, &$class = null) : bool
 	{
 		$name    = strtolower($appName);
 		$appName = ucfirst($name);
 		$class   = "\\application\\{$name}\\{$appName}" . 'App';
 
 		if(!class_exists($class)) {
-			if(DEBUG_MODE) throw new ResourceMissedException("Class", $class);
-			return false;
+			throw new ResourceMissedException('Class', $class);
 		}
-		if((new \ReflectionClass($class))->getParentClass()->getName() !== self::$basicAppClass) {
-			if(DEBUG_MODE) throw new InvalidAppException($appName, "Parent class should be interfaced by ".self::$basicAppClass);
+		if((new \ReflectionClass($class))->getParentClass()->getName() !== self::BASIC_CLASS) {
+			throw new InvalidAppException($appName, 'Parent class should be interfaced by ' . self::BASIC_CLASS);
 		}
 		return true;
 	}
@@ -111,9 +68,9 @@ class AppManager implements \owoframe\constant\Manager
 	 * @since  2020-09-09
 	 * @return AppBase|null
 	 */
-	public static function getDefaultApp() : ?AppBase
+	public function getDefaultApp() : ?AppBase
 	{
-		return self::getApp(DEFAULT_APP_NAME);
+		return self::getApp(INI::_global('owo.defaultApp'));
 	}
 
 	/**
@@ -124,7 +81,7 @@ class AppManager implements \owoframe\constant\Manager
 	 * @param  string      $appName App名称
 	 * @return AppBase|null
 	 */
-	public static function getApp(string $appName) : ?AppBase
+	public function getApp(string $appName) : ?AppBase
 	{
 		static $application;
 		if(isset($application[$appName]) && $application[$appName] instanceof AppBase) {
@@ -132,7 +89,7 @@ class AppManager implements \owoframe\constant\Manager
 		}
 
 		if(self::hasApp($appName, $class)) {
-			return $application[$appName] = new $class(Http::getCompleteUrl(), Router::getParameters());
+			return $application[$appName] = new $class(Http::getCompleteUrl(), Http::getParameters());
 		}
 		return null;
 	}

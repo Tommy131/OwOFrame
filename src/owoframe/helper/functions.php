@@ -17,9 +17,8 @@
 **********************************************************************/
 
 declare(strict_types=1);
-use owoframe\constant\BasicConstant as BC;
-use owoframe\exception\OwOFrameException;
-use owoframe\utils\Logger;
+
+use owoframe\constants\HTTPConstant;
 
 if(!defined('owohttp')) define('owohttp', 'owosuperget');
 
@@ -70,8 +69,6 @@ function session(string $index, $default = '') {
 function get(string $index, bool $autoUpper = false)
 {
 	if($autoUpper) $index = strtoupper($index);
-	// if(strtolower($index) === owohttp) return $_GET;
-	// return $_GET[$index] ?? null;
 	if(isset($_GET['s'])) unset($_GET['s']);
 	return (strtolower($index) === owohttp) ? ($_GET ?? null) : ($_GET[$index] ?? null);
 }
@@ -88,8 +85,6 @@ function get(string $index, bool $autoUpper = false)
 function post(string $index, bool $autoUpper = false)
 {
 	if($autoUpper) $index = strtoupper($index);
-	// if(strtolower($index) === owohttp) return $_POST;
-	// return $_POST[$index] ?? null;
 	return (strtolower($index) === owohttp) ? ($_POST ?? null) : ($_POST[$index] ?? null);
 }
 
@@ -105,8 +100,6 @@ function post(string $index, bool $autoUpper = false)
 function put(string $index, bool $autoUpper = false)
 {
 	if($autoUpper) $index = strtoupper($index);
-	// if(strtolower($index) === owohttp) return $_PUT;
-	// return $_PUT[$index] ?? null;
 	return (strtolower($index) === owohttp) ? ($_PUT ?? null) : ($_PUT[$index] ?? null);
 }
 
@@ -122,8 +115,6 @@ function put(string $index, bool $autoUpper = false)
 function files(string $index, bool $autoUpper = false)
 {
 	if($autoUpper) $index = strtoupper($index);
-	// if(strtolower($index) === owohttp) return $_FILES;
-	// return $_FILES[$index] ?? null;
 	return (strtolower($index) === owohttp) ? ($_FILES ?? null) : ($_FILES[$index] ?? null);
 }
 
@@ -157,20 +148,6 @@ function check(string $index, bool $autoUpper = false, &$method = 'NULL')
 }
 
 /**
- * 通过 php://input 获取 HTTP_RAW_DATA
- *
- * * 修复了对前端使用fetch等方法时PHP无法取到数据的情况
- *
- * @author HanskiJay
- * @since  2021-03-06
- * @return string|null
- */
-function fetch() : ?string
-{
-	return file_get_contents('php://input') ?? null;
-}
-
-/**
  * 返回请求模式的整型代码
  *
  * @author HanskiJay
@@ -183,25 +160,47 @@ function requestMode() : int
 	$ajaxMode = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
 
 	if($ajaxMode) {
-		if($httpMode === 'get') {
-			return BC::AJAX_P_GET_MODE;
+		switch($httpMode) {
+			default:
+			return HTTPConstant::AJAX_MODE;
+
+			case 'get':
+			return HTTPConstant::AJAX_P_GET_MODE;
+			return -1;
+
+			case 'post':
+			return HTTPConstant::AJAX_P_POST_MODE;
 		}
-		elseif($httpMode === 'post') {
-			return BC::AJAX_P_POST_MODE;
-		}
-		return BC::AJAX_MODE;
-	}
-	elseif($httpMode === 'get') {
-		return BC::GET_MODE;
-	}
-	elseif($httpMode === 'post') {
-		return BC::POST_MODE;
-	}
-	elseif($httpMode === 'put') {
-		return BC::PUT_MODE;
 	} else {
-		return -1;
+		switch($httpMode) {
+			default:
+			return -1;
+
+			case 'get':
+			return HTTPConstant::GET_MODE;
+			return -1;
+
+			case 'post':
+			return HTTPConstant::POST_MODE;
+
+			case 'put':
+			return HTTPConstant::PUT_MODE;
+		}
 	}
+}
+
+/**
+ * 通过 php://input 获取 HTTP_RAW_DATA
+ *
+ * * 修复了对前端使用fetch等方法时PHP无法取到数据的情况
+ *
+ * @author HanskiJay
+ * @since  2021-03-06
+ * @return string|null
+ */
+function fetch() : ?string
+{
+	return file_get_contents('php://input') ?? null;
 }
 
 
@@ -273,7 +272,6 @@ function checkArrayValid(array $data, array $needle, &$missParam = null) : bool
 /**
  * 判断传入的数据是否已序列化
  *
- * @author HanskiJay
  * @since  2021-01-31
  * @param  string      $data 需要判断的数据
  * @return boolean
@@ -350,30 +348,6 @@ function changeBool2String(?bool $bool, &$done) : void
 }
 
 /**
- * 系统特殊方法
- */
-/**
- * 创建一个简单的错误信息
- *
- * @author HanskiJay
- * @since  2021-03-06
- * @param  string      $message 错误信息
- * @param  int         $code    状态码
- * @return OwOFrameException
- */
-function error(string $message, int $code = 0) : OwOFrameException
-{
-	return new class($code, $message) extends OwOFrameException implements BC
-	{
-		public function __construct(int $code, ?string $message)
-		{
-			$this->code    = $code;
-			$this->message = $message ?? 'unknown';
-		}
-	};
-}
-
-/**
  * 用作在CMD & SHELL下获取标准输入的方法
  *
  * @author HanskiJay
@@ -384,7 +358,8 @@ function error(string $message, int $code = 0) : OwOFrameException
  */
 function ask(string $output, $default = null, string $logLevel = 'info')
 {
-	Logger::{$logLevel}($output . (!is_null($default) ? " [Default: {$default}]" : ''));
+	// TODO: 加入Logger组件日志记录;
+	echo $output . (!is_null($default) ? " (Default: {$default})" : '') . PHP_EOL;
 	$_ = trim(fgets(STDIN));
 	return (strlen($_) === 0) ? $default : $_;
 }
@@ -395,10 +370,10 @@ function ask(string $output, $default = null, string $logLevel = 'info')
  * @author HanskiJay
  * @since  2022-03-16
  * @param  string $type
- * @return string
+ * @return string|null
  */
-function owoConfigFile(string $type, string $ext = 'php') : string
+function config_path(string $fileName) : ?string
 {
-	$path = CONFIG_PATH . strtolower($type) . '.' . $ext;
-	return is_file($path) ? $path : '';
+	$path = CONFIG_PATH . $fileName;
+	return is_file($path) ? $path : null;
 }

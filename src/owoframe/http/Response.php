@@ -21,19 +21,15 @@ namespace owoframe\http;
 
 use ReflectionClass;
 
-use owoframe\constant\MIMETypeConstant;
-use owoframe\constant\StandardOutputConstant;
+use owoframe\MasterManager;
 
-use owoframe\helper\BootStrapper;
-use owoframe\helper\Helper;
-
-use owoframe\http\HttpManager;
-
-use owoframe\utils\DataEncoder;
-use owoframe\utils\Logger;
+use owoframe\constants\MIMETypeConstant;
+use owoframe\constants\StandardOutputConstant;
 
 use owoframe\event\http\{BeforeResponseEvent, AfterResponseEvent};
 use owoframe\event\system\OutputEvent;
+
+use owoframe\utils\DataEncoder;
 
 class Response
 {
@@ -79,14 +75,7 @@ class Response
 	 *
 	 * @var string
 	 */
-	public $defaultResponseMsg = '[OwOResponseError] Keine Ahnung...';
-
-	/**
-	 * 开启或关闭 UsedTimeDiv (Default:true)
-	 *
-	 * @var boolean
-	 */
-	public static $showUsedTimeDiv = true;
+	public $defaultResponseMsg = '[OwOResponseError] Unknown Error...';
 
 
 
@@ -120,7 +109,11 @@ class Response
 	 */
 	public function sendResponse() : void
 	{
-		$eventManager = \owoframe\MasterManager::getInstance()->getManager('event');
+		$logger = \owoframe\MasterManager::getInstance()->getUnit('logger');
+		$logger->createLogger('http')->updateConfig('http', [
+			'logPrefix' => 'HTTP/Response'
+		]);
+		$eventManager = \owoframe\MasterManager::getInstance()->getUnit('event');
 		$eventManager->trigger(BeforeResponseEvent::class, [$this]);
 
 		// If the callback is invalid;
@@ -150,8 +143,7 @@ class Response
 				$called = new DataEncoder();
 				$called->setStandardData(502, '[OwOResponseError] Cannot callback method ' . get_class($this->callback[0]) . '::' . $this->callback[1] . ' for response! (Method must be return string, ' . gettype($called) . ' is returned!', false);
 				$called = $called->encode();
-				Logger::$logPrefix = 'HTTP/Response';
-				Logger::debug($called);
+				$logger->debug($called);
 				$this->header('Content-Type', MIMETypeConstant::MIMETYPE['json']);
 				$isJson = true;
 			}
@@ -168,7 +160,7 @@ class Response
 		$eventManager->trigger($event);
 		$event->output();
 		if(!isset($isJson)) {
-			if(static::$showUsedTimeDiv) {
+			if(HttpManager::getCurrent('controller')::$showUsedTimeDiv) {
 				self::getRunTimeDiv();
 			}
 		}
@@ -177,8 +169,8 @@ class Response
 		$eventManager->trigger(AfterResponseEvent::class, [$this]);
 		$this->hasSent = true;
 
-		Logger::$logPrefix = 'HTTP/Response';
-		Logger::debug("[{$this->code}] Status: Sent; Length: " . strlen($event->getOutput()));
+		$logger->debug("[{$this->code}] Status: Sent; Length: " . strlen($event->getOutput()));
+		$logger->selectLogger($logger::DEFAULT_BIND_TAG);
 	}
 
 	/**
@@ -191,7 +183,7 @@ class Response
 	 */
 	public function setResponseCode(int $code) : bool
 	{
-		if(!isset(Helper::HTTP_CODE[$code])) return false;
+		if(!isset(HttpManager::HTTP_CODE[$code])) return false;
 		$this->code = $code;
 		return true;
 	}
@@ -274,8 +266,8 @@ class Response
 	 */
 	public static function getRunTimeDiv(bool $condition = true) : void
 	{
-		if(DEBUG_MODE || $condition) {
-			echo str_replace('{runTime}', (string) BootStrapper::getRunTime(), base64_decode('PGRpdiBzdHlsZT0icG9zaXRpb246IGFic29sdXRlOyB6LWluZGV4OiA5OTk5OTk7IGJvdHRvbTogMDsgcmlnaHQ6IDA7IG1hcmdpbjogNXB4OyBwYWRkaW5nOiA1cHg7IGJhY2tncm91bmQtY29sb3I6ICNhYWFhYWE7IGJvcmRlci1yYWRpdXM6IDVweDsiPgoJPGRpdj5Vc2VkVGltZTogPGI+e3J1blRpbWV9czwvYj48L2Rpdj4KPC9kaXY+'));
+		if($condition) {
+			echo str_replace('{runTime}', (string) MasterManager::getRunTime(), base64_decode('PGRpdiBzdHlsZT0icG9zaXRpb246IGFic29sdXRlOyB6LWluZGV4OiA5OTk5OTk7IGJvdHRvbTogMDsgcmlnaHQ6IDA7IG1hcmdpbjogNXB4OyBwYWRkaW5nOiA1cHg7IGJhY2tncm91bmQtY29sb3I6ICNhYWFhYWE7IGJvcmRlci1yYWRpdXM6IDVweDsiPgoJPGRpdj5Vc2VkVGltZTogPGI+e3J1blRpbWV9czwvYj48L2Rpdj4KPC9kaXY+'));
 		}
 	}
 }

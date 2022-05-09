@@ -20,7 +20,6 @@ declare(strict_types=1);
 namespace owoframe\console\command;
 
 use owoframe\application\AppManager;
-use owoframe\utils\Logger;
 
 class AppCheckCommand extends \owoframe\console\CommandBase
 {
@@ -28,7 +27,7 @@ class AppCheckCommand extends \owoframe\console\CommandBase
 	{
 		$appName = array_shift($params);
 		if(empty($appName)) {
-			Logger::info('Please enter a valid appName. Usage: ' . self::getUsage() . ' [string:appName]');
+			$this->getLogger()->info('Please enter a valid appName. Usage: ' . self::getUsage() . ' [string:appName]');
 			return false;
 		}
 		$appName = strtolower($appName);
@@ -36,14 +35,14 @@ class AppCheckCommand extends \owoframe\console\CommandBase
 		$class   = '\\application\\' . $appName . '\\' . ucfirst($appName) . 'App';
 
 		if(is_dir($appPath) && class_exists($class)) {
-			Logger::success("Application '{$appName}' is exists.");
-			Logger::info("----------[INFO-LIST]'{$appName}'----------");
-			Logger::info('Author: ' . $class::getAuthor());
-			Logger::info('Description: ' . $class::getDescription());
-			Logger::info('Version: ' . $class::getVersion());
+			$this->getLogger()->success("Application '{$appName}' is exists.");
+			$this->getLogger()->info("----------[INFO-LIST]'{$appName}'----------");
+			$this->getLogger()->info('Author: ' . $class::getAuthor());
+			$this->getLogger()->info('Description: ' . $class::getDescription());
+			$this->getLogger()->info('Version: ' . $class::getVersion());
 			return true;
 		}
-		Logger::info("Application '{$appName}' does not exists.");
+		$this->getLogger()->info("Application '{$appName}' does not exists.");
 		return false;
 	}
 

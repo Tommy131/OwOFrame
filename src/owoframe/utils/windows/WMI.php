@@ -23,7 +23,7 @@
 ************************************************************************/
 
 declare(strict_types=1);
-namespace owoframe\system\windows;
+namespace owoframe\utils\windows;
 
 use COM;
 use Variant;

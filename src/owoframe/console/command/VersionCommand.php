@@ -19,13 +19,11 @@
 declare(strict_types=1);
 namespace owoframe\console\command;
 
-use owoframe\utils\Logger;
-
 class VersionCommand extends \owoframe\console\CommandBase
 {
 	public function execute(array $params) : bool
 	{
-		Logger::info("Welcome to use OwOFrame :) Current version is: " . APP_VERSION);
+		$this->getLogger()->info("Welcome to use OwOFrame :) Current version is: " . FRAME_VERSION);
 		return true;
 	}
 

@@ -21,7 +21,6 @@ namespace owoframe\console\command;
 
 use owoframe\application\AppManager;
 use owoframe\helper\Helper;
-use owoframe\utils\Logger;
 
 class RemoveAppCommand extends \owoframe\console\CommandBase
 {
@@ -29,22 +28,22 @@ class RemoveAppCommand extends \owoframe\console\CommandBase
 	{
 		$appName = array_shift($params);
 		if(empty($appName)) {
-			Logger::info('Please enter a valid appName. Usage: ' . self::getUsage() . ' [string:appName]');
+			$this->getLogger()->info('Please enter a valid appName. Usage: ' . self::getUsage() . ' [string:appName]');
 			return false;
 		}
 		$appName = strtolower($appName);
 		if(!AppManager::hasApp($appName)) {
-			Logger::error("Cannot find appName called '{$appName}'!");
+			$this->getLogger()->error("Cannot find appName called '{$appName}'!");
 			return false;
 		}
 		$answer = (string) ask('[WARNING] ARE YOU SURE THAT YOU WANT TO DELETE/REMOVE THIS APPLICATION? THIS OPERATION IS IRREVERSIBLE! [Y/N]', 'N', 'warning');
 		if(strtolower($answer) === 'y') {
-			Logger::warning('Now will remove this application forever...');
+			$this->getLogger()->warning('Now will remove this application forever...');
 			Helper::removeDir($path = AppManager::getPath() . $appName . DIRECTORY_SEPARATOR);
 			if(!is_dir($path)) {
-				Logger::success("Removed Application '{$appName}' successfully.");
+				$this->getLogger()->success("Removed Application '{$appName}' successfully.");
 			} else {
-				Logger::error('Somewhere was wrong that cannot remove this application!');
+				$this->getLogger()->error('Somewhere was wrong that cannot remove this application!');
 				return false;
 			}
 		}

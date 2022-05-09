@@ -23,7 +23,7 @@ use Error;
 use owoframe\exception\OwOFrameException;
 use owoframe\exception\ParameterTypeErrorException;
 use owoframe\helper\Helper;
-use owoframe\http\route\Router;
+use owoframe\http\HttpManager;
 use owoframe\object\INI;
 
 class ViewBase extends ControllerBase
@@ -147,10 +147,10 @@ class ViewBase extends ControllerBase
 			return;
 		}
 		if(!file_exists($filePath)) {
-			$controller = Router::getCurrent('controller');
+			$controller = HttpManager::getCurrent('controller');
 			$controllerName = ucfirst(strtolower($controller->getName()));
-			if(!Router::getCurrent('app')->getController($controllerName, false)) {
-				$controllerName = Router::getCurrent('app')->getDefaultController(true);
+			if(!HttpManager::getCurrent('app')->getController($controllerName, false)) {
+				$controllerName = HttpManager::getCurrent('app')->getDefaultController(true);
 			}
 			$this->filePath = $this->getViewPath($controllerName . '.html');
 		} else {
@@ -902,8 +902,9 @@ class ViewBase extends ControllerBase
 							? '; charset=utf-8' : null;
 				file_put_contents($basePath, "<?php /* Cached in " . date("Y-m-d H:i:s") . "@{$hashTag} */ header('Content-Type: " . Helper::MIMETYPE[$type] . "" . $charset . "'); header('X-Content-Type-Options: nosniff'); header('Cache-Control: max-age=31536000, immutable'); echo file_get_contents('" . $filePath . "'); ?>");
 			}
-			$filePath = "/static.php/{$type}/{$hashTag}.{$type}";
+			$filePath = "/static.owo/{$type}/{$hashTag}.{$type}";
 		} else {
+			var_dump($filePath);
 			$filePath = null;
 		}
 		return $filePath ?? '(unknown)';

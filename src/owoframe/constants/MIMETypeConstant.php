@@ -17,7 +17,7 @@
 **********************************************************************/
 
 declare(strict_types=1);
-namespace owoframe\constant;
+namespace owoframe\constants;
 
 interface MIMETypeConstant
 {

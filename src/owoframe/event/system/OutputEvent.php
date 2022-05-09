@@ -19,7 +19,7 @@
 declare(strict_types=1);
 namespace owoframe\event\system;
 
-use owoframe\constant\StandardOutputConstant;
+use owoframe\constants\StandardOutputConstant;
 
 class OutputEvent extends \owoframe\event\Event implements StandardOutputConstant
 {

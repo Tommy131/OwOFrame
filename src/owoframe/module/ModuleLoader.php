@@ -22,7 +22,6 @@ namespace owoframe\module;
 use owoframe\MasterManager;
 use owoframe\helper\Helper;
 use owoframe\object\INI;
-use owoframe\utils\Logger;
 use owoframe\exception\ResourceMissedException;
 
 class ModuleLoader
@@ -33,49 +32,12 @@ class ModuleLoader
 	public const IDENTIFY_FILE_NAME = 'info.ini';
 
 	/**
-	 * 模块加载路径
-	 *
-	 * @access private
-	 * @var string
-	 */
-	private static $loadPath = '';
-
-	/**
 	 * 模块池
 	 *
 	 * @access private
 	 * @var array
 	 */
 	private static $modulePool = [];
-
-	/**
-	 * 设置模块加载路径
-	 *
-	 * @author HanskiJay
-	 * @since  2020-09-09 18:03
-	 * @param  string      $path 路径
-	 * @return void
-	 */
-	public static function setPath(string $path) : void
-	{
-		if(is_dir($path)) {
-			self::$loadPath = $path;
-		} else {
-			throw new ResourceMissedException("Path", $path);
-		}
-	}
-
-	/**
-	 * 获取模块加载路径
-	 *
-	 * @author HanskiJay
-	 * @since  2020-09-09 18:03
-	 * @return string
-	 */
-	public static function getPath() : string
-	{
-		return self::$loadPath;
-	}
 
 
 	/**
@@ -89,12 +51,12 @@ class ModuleLoader
 	public static function autoLoad(MasterManager $master) : void
 	{
 		// try {
-			$dirArray = scandir(self::getPath());
+			$dirArray = scandir(MODULE_PATH);
 			// unset dots and pathname;
 			unset($dirArray[array_search('.', $dirArray)], $dirArray[array_search('..', $dirArray)]);
 			$path = [];
 			foreach($dirArray as $name) {
-				if(is_dir($dir = self::getPath() . $name . DIRECTORY_SEPARATOR) && is_file($dir . self::IDENTIFY_FILE_NAME)) {
+				if(is_dir($dir = MODULE_PATH . $name . DIRECTORY_SEPARATOR) && is_file($dir . self::IDENTIFY_FILE_NAME)) {
 					$path[$name] = $dir;
 				}
 			}
@@ -117,7 +79,7 @@ class ModuleLoader
 	{
 		if(isset(self::$modulePool[strtolower($name)])) return true;
 		// Start judgment;
-		$hisPath = self::getPath() . $name . DIRECTORY_SEPARATOR;
+		$hisPath = MODULE_PATH . $name . DIRECTORY_SEPARATOR;
 		if(!is_dir($hisPath)) return false;
 		if(!file_exists($ic = $hisPath . self::IDENTIFY_FILE_NAME)) return false;
 		$info = new INI($ic);
@@ -158,7 +120,7 @@ class ModuleLoader
 	 */
 	public static function loadModule(string $dir, string $name, MasterManager $master) : bool
 	{
-		Logger::$logPrefix = 'ModuleLoader';
+		$logger = MasterManager::getInstance()->getUnit('logger');
 		if(self::existsModule($name, $info)) {
 			// include_once($dir . $info->className . '.php');
 			$namespace = $info->namespace ?? '';
@@ -170,10 +132,10 @@ class ModuleLoader
 				$class->setEnabled();
 				return true;
 			} else {
-				Logger::error("Load module '{$info->name}' failed: The NameSpace or ClassName may incorrect!");
+				$logger->error("ModuleLoader > Load module '{$info->name}' failed: The NameSpace or ClassName may incorrect!");
 			}
 		} else {
-			Logger::error("Module '{$name}' not exists! Please check the module information file '" . self::IDENTIFY_FILE_NAME . "' !");
+			$logger->error("ModuleLoader > Module '{$name}' not exists! Please check the module information file '" . self::IDENTIFY_FILE_NAME . "' !");
 		}
 		return false;
 	}

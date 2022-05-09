@@ -26,7 +26,6 @@ use owoframe\helper\Helper;
 use owoframe\http\HttpManager as Http;
 use owoframe\http\Response;
 use owoframe\object\INI;
-use owoframe\utils\Logger;
 
 class ExceptionOutput
 {
@@ -57,18 +56,9 @@ class ExceptionOutput
 		if(!preg_match('/Cannot use "parent" when current class scope has no parent/i', $errstr)) {
 			$msg = "{$errno} happened: {$errstr} in {$errfile} at line {$errline}";
 			if(Helper::isRunningWithCGI()) {
-				/* if(!DEBUG_MODE) {
-					return false;
-				} */
-				if(INI::_global('owo.enableLog', true)) {
-					$logged = '<span id="logged">--- Logged ---</span>';
-					self::log($msg);
-				} else {
-					$logged = '';
-				}
 				echo str_replace(
-					['{logged}', '{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'],
-					[$logged, $errno, $msg, $errfile, $errline, null, Master::getRunTime()],
+					['{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'],
+					[$errno, $msg, $errfile, $errline, null, Master::getRunTime()],
 				self::getTemplate());
 			} else {
 				self::log($msg);
@@ -110,10 +100,13 @@ class ExceptionOutput
 
 	private static function log(string $msg) : void
 	{
-		$isCLI = Helper::isRunningWithCGI() ? '' : 'cli_';
-		Logger::setLogFileName("owoblog_{$isCLI}error.log");
-		Logger::$logPrefix = 'OwOBlogErrorHandler';
-		Logger::emergency(trim(str2UTF8($msg)));
+		$logger   = Master::getInstance()->getUnit('logger');
+		$selected = Helper::isRunningWithCGI() ? 'main' : 'cli';
+		$logger->selectLogger($selected)->updateConfig($selected, [
+			'fileName'  => 'owoblog_error.log',
+			'logPrefix' => 'OwOBlogErrorHandler'
+		]);
+		$logger->emergency(trim(str2UTF8($msg)));
 	}
 
 	public static function getTemplate() : string

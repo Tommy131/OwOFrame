@@ -63,7 +63,7 @@ class Session
 				session_start();
 			}
 		} catch(\Throwable $e) {
-			throw error($e->getMessage());
+			throw new OwOFrameException($e->getMessage());
 		}
 	}
 

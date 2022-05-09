@@ -35,7 +35,7 @@ class Index extends \owoframe\application\ControllerBase
 		 '</style>'.
 		 '<div style="margin: 100px; padding: 24px 48px; background-color: rgba(93, 137, 179, 0.8); color: #fff; border-radius: 10px;">'.
 		 '	<h1>:)</h1>'.
-			 '<p> OwOFrame [<span style="color: rgb(51, 65, 241)"><b>'.APP_VERSION.'</b></span>]<br/><span style="font-size:30px;">洋工总能磨出针.</span></p>'.
+			 '<p> OwOFrame [<span style="color: rgb(51, 65, 241)"><b>'.FRAME_VERSION.'</b></span>]<br/><span style="font-size:30px;">洋工总能磨出针.</span></p>'.
 			 '<span style="font-size:22px;">"总有一天, 你能开发出属于自己的后端框架, 尽管不起眼." -- Hanski Jay</span><br/>'.
 			 '<div style="margin: 20px 0; padding: 10px; background-color: rgb(0, 99, 152); border-radius: 5px; width: 320px;">GitHub Link: <a href="https://github.com/Tommy131/OwOFrame" target="_blank">Tommy131/OwOFrame</a></div>'.
 		 	'<div style="font-size: 32px;"><h5>Hello World! This is a example for developer to use a owoframe Class.</h5></div>'.

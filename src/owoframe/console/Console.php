@@ -19,10 +19,11 @@
 declare(strict_types=1);
 namespace owoframe\console;
 
+use owoframe\MasterManager;
 use owoframe\utils\Logger;
 use owoframe\utils\TextFormat as TF;
 
-class Console implements \owoframe\constant\Manager
+class Console implements \owoframe\interfaces\Unit
 {
 	/**
 	 * 命名空间
@@ -48,6 +49,13 @@ class Console implements \owoframe\constant\Manager
 	 */
 	private $usedAliases = [];
 
+	/**
+	 * 日至记录容器实例
+	 *
+	 * @var Logger
+	 */
+	private $logger;
+
 
 	/**
 	 * 实例化Console类的构造函数
@@ -57,8 +65,7 @@ class Console implements \owoframe\constant\Manager
 	 */
 	public function __construct()
 	{
-		Logger::setLogFileName('owoblog_cli_run.log');
-		Logger::$logPrefix = 'OwOCMD';
+		$this->logger = MasterManager::getInstance()->getUnit('logger');
 		$cmdPath  = __DIR__ . DIRECTORY_SEPARATOR . 'command' . DIRECTORY_SEPARATOR;
 		$dirArray = scandir($cmdPath);
 		unset($dirArray[array_search('.', $dirArray)], $dirArray[array_search('..', $dirArray)]);
@@ -69,10 +76,10 @@ class Console implements \owoframe\constant\Manager
 				$commandString = strtolower($class::getName());
 				if(!$class::autoLoad() || $this->hasCommand($commandString)) continue;
 				if(count(array_intersect($class::getAliases(), $this->usedAliases)) >= 1) {
-					Logger::error(TF::RED."Cannot register command '".TF::GOLD.$class::getName().TF::RED."' because the alias name has been registered in somewhere.");
+					$this->logger->error(TF::RED."Cannot register command '".TF::GOLD.$class::getName().TF::RED."' because the alias name has been registered in somewhere.");
 					return;
 				}
-				$class = new $class();
+				$class = new $class($this->logger);
 				$this->registerCommand($commandString, $class);
 				$this->usedAliases = array_merge($class::getAliases(), $this->usedAliases);
 			}
@@ -90,7 +97,7 @@ class Console implements \owoframe\constant\Manager
 	{
 		array_shift($input);
 		if(count($input) <= 0) {
-			Logger::info("Hi there, welcome to use OwOFrame :) You can use command like '".TF::GOLD."php owo help".TF::WHITE."' to display the Helper.");
+			$this->logger->info("Hi there, welcome to use OwOFrame :) You can use command like '".TF::GOLD."php owo help".TF::WHITE."' to display the Helper.");
 			return;
 		}
 		$inputCommand = strtolower(array_shift($input));
@@ -106,10 +113,10 @@ class Console implements \owoframe\constant\Manager
 
 		if($command instanceof CommandBase) {
 			if(!$command->execute($input)) {
-				Logger::debug("Command '{$inputCommand}' may not execute successfully, please check the issue.");
+				$this->logger->debug("Command '{$inputCommand}' may not execute successfully, please check the issue.");
 			}
 		} else {
-			Logger::debug("Command '{$inputCommand}' not found, please use '".TF::GOLD."php owo help".TF::GRAY."' to check the details.");
+			$this->logger->debug("Command '{$inputCommand}' not found, please use '".TF::GOLD."php owo help".TF::GRAY."' to check the details.");
 		}
 	}
 	/**

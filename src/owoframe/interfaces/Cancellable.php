@@ -17,10 +17,27 @@
 **********************************************************************/
 
 declare(strict_types=1);
-namespace owoframe\constant;
+namespace owoframe\interfaces;
 
-/**
- * This file just let the MasterManager know your class has implemented a Manager
- */
-interface Manager
-{}
+// This file is for EventManager to recognize which event is cancelable;
+// Cancellable: American English | Cancelable: British English;
+interface Cancellable
+{
+	/**
+	 * 返回该事件是否已经取消回调
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-10
+	 * @return boolean
+	 */
+	public function isCancelled() : bool;
+
+	/**
+	 * 设置事件取消状态
+	 *
+	 * @author HanskiJay
+	 * @since  2021-04-10
+	 * @param  bool        $status 状态
+	 */
+	public function setCancelled(bool $status) : void;
+}

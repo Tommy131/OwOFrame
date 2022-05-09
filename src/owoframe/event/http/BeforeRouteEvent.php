@@ -16,13 +16,9 @@
 
 **********************************************************************/
 
-namespace module\example;
+declare(strict_types=1);
+namespace owoframe\event\http;
 
-class ExampleModule extends \owoframe\module\ModuleBase
+class BeforeRouteEvent extends \owoframe\event\Event
 {
-
-	public function onLoad() : void
-	{
-		// echo "I'm loaded!";
-	}
 }

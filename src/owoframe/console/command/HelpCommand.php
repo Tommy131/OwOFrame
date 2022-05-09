@@ -20,33 +20,32 @@ declare(strict_types=1);
 namespace owoframe\console\command;
 
 use owoframe\MasterManager;
-use owoframe\utils\Logger;
 use owoframe\utils\TextFormat as TF;
 
 class HelpCommand extends \owoframe\console\CommandBase
 {
 	public function execute(array $params) : bool
 	{
-		$console  = MasterManager::getInstance()->getManager('console');
+		$console  = MasterManager::getInstance()->getUnit('console');
 		$commands = $console->getCommands();
 		ksort($commands, SORT_NATURAL | SORT_FLAG_CASE);
 		if(count($params) <= 0) {
-			Logger::info(TF::GOLD . '---------- Registered Commands: ' . TF::GREEN . count($commands) . TF::GOLD . ' ----------');
+			$this->getLogger()->info(TF::GOLD . '---------- Registered Commands: ' . TF::GREEN . count($commands) . TF::GOLD . ' ----------');
 			foreach($commands as $command => $class) {
-				Logger::info(TF::GREEN . $command . ': ' . TF::WHITE . $class->getDescription());
+				$this->getLogger()->info(TF::GREEN . $command . ': ' . TF::WHITE . $class->getDescription());
 			}
-			Logger::info(TF::WHITE . 'Use \'' . self::getUsage() . TF::WHITE . '\' to look details.');
+			$this->getLogger()->info(TF::WHITE . 'Use \'' . self::getUsage() . TF::WHITE . '\' to look details.');
 		} else {
 			$command = strtolower(array_shift($params));
 			if(!isset($commands[$command])) {
-				Logger::info(TF::RED . 'Command ' . TF::GOLD . $command . TF::RED . ' does not exists!');
+				$this->getLogger()->info(TF::RED . 'Command ' . TF::GOLD . $command . TF::RED . ' does not exists!');
 			} else {
 				$command = $commands[$command];
-				Logger::info(TF::WHITE . '---[Details@' . TF::GREEN . $command->getName() . TF::WHITE . ']---');
-				Logger::info(TF::WHITE . 'CommandName: ' . $command->getName());
-				Logger::info(TF::WHITE . 'AliasName:   ' . implode(', ', $command->getAliases()));
-				Logger::info(TF::WHITE . 'Usage:       ' . $command->getUsage());
-				Logger::info(TF::WHITE . 'Description: ' . $command->getDescription());
+				$this->getLogger()->info(TF::WHITE . '---[Details@' . TF::GREEN . $command->getName() . TF::WHITE . ']---');
+				$this->getLogger()->info(TF::WHITE . 'CommandName: ' . $command->getName());
+				$this->getLogger()->info(TF::WHITE . 'AliasName:   ' . implode(', ', $command->getAliases()));
+				$this->getLogger()->info(TF::WHITE . 'Usage:       ' . $command->getUsage());
+				$this->getLogger()->info(TF::WHITE . 'Description: ' . $command->getDescription());
 			}
 		}
 		return true;

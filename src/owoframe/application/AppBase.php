@@ -20,8 +20,6 @@ declare(strict_types=1);
 namespace owoframe\application;
 
 use owoframe\exception\InvalidControllerException;
-use owoframe\module\ModuleBase;
-use owoframe\module\ModuleLoader;
 
 abstract class AppBase
 {
@@ -265,7 +263,7 @@ abstract class AppBase
 	 */
 	final public static function getAppPath(bool $selectMode = true) : string
 	{
-		return (($selectMode) ? AppManager::getPath() : static::getNameSpace()) . static::getName() . DIRECTORY_SEPARATOR;
+		return (($selectMode) ? APP_PATH : static::getNameSpace()) . static::getName() . DIRECTORY_SEPARATOR;
 	}
 
 	/**
@@ -279,20 +277,6 @@ abstract class AppBase
 	{
 		$ns = explode("\\", __CLASS__);
 		return implode("\\", array_slice($ns, 0, count($ns) - 1));
-	}
-
-	/**
-	 * 获取模块实例化对象
-	 *
-	 * @author HanskiJay
-	 * @since  2021-02-08
-	 * @param  string      $name 插件名称
-	 * @return ModuleBase|null
-	 * @access protected
-	 */
-	final protected function getModule(string $name) : ?ModuleBase
-	{
-		return ModuleLoader::getModule($name);
 	}
 
 	/**

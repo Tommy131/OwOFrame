@@ -17,57 +17,17 @@
 **********************************************************************/
 
 declare(strict_types=1);
-namespace owoframe\constant;
+namespace owoframe\interfaces;
 
-interface BasicConstant
+/**
+ * This file just let the MasterManager know your class has implemented a Unit
+ */
+interface Unit
 {
-	# System Basic Status Code #
-
 	/**
-	 * 操作成功
+	 * 构造函数
+	 *
+	 * @see Just disallow parameters in construction method
 	 */
-	public const SUCCESS = 200;
-
-	/**
-	 * 访问被拒绝状态码
-	 */
-	public const ACCESS_DENIED = 403;
-
-	/**
-	 * 服务器内部错误状态码
-	 */
-	public const SERVER_INTERVAL_ERROR = 500;
-
-
-	# HTTP Request Mode Code #
-
-	/**
-	 * HTTP GET请求模式
-	 */
-	public const GET_MODE = 0;
-
-	/**
-	 * HTTP POST请求模式
-	 */
-	public const POST_MODE = 1;
-
-	/**
-	 * HTTP PUT请求模式
-	 */
-	public const PUT_MODE = 2;
-
-	/**
-	 * HTTP AJAX请求模式
-	 */
-	public const AJAX_MODE = 3;
-
-	/**
-	 * HTTP AJAX + GET请求模式
-	 */
-	public const AJAX_P_GET_MODE = 4;
-
-	/**
-	 *  HTTP AJAX + POST请求模式
-	 */
-	public const AJAX_P_POST_MODE = 5;
+	public function __construct();
 }

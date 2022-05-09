@@ -19,24 +19,26 @@
 declare(strict_types=1);
 namespace owoframe\http;
 
-use owoframe\constant\HTTPStatusCodeConstant;
-use owoframe\constant\Manager;
+use ReflectionClass;
 
-use owoframe\helper\Helper;
-use owoframe\http\Session;
-use owoframe\http\route\Router;
+use owoframe\MasterManager;
+use owoframe\constants\HTTPConstant;
+use owoframe\interfaces\Unit;
 
-use owoframe\object\JSON;
-use owoframe\utils\Logger;
+use owoframe\http\route\DomainRule;
+use owoframe\http\route\UrlRule;
 
-class HttpManager implements HTTPStatusCodeConstant, Manager
+use owoframe\event\http\BeforeRouteEvent;
+use owoframe\event\http\PageErrorEvent;
+
+use owoframe\exception\InvalidRouterException;
+
+use owoframe\object\INI;
+use owoframe\utils\DataEncoder;
+
+class HttpManager implements HTTPConstant, Unit
 {
-	/**
-	 * 日志识别前缀
-	 */
-	public const LOG_PREFIX = 'CRF/BeforeRoute';
-
-	/**
+    /**
 	 * 默认的用于过滤的正则表达式
 	 */
 	public const DEFAULT_XSS_FILTER =
@@ -48,14 +50,27 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 		// "/[`~!@#$%^&*()_\-+=<>?:\\\"{}|,.\/;'\\[\]·~！#￥%……&*（）——\-+={}|《》？：“”【】、；‘'，。、]/im"
 	];
 
-
 	/**
-	 * 黑名单配置文件
+	 * 路由全路径
 	 *
-	 * @access protected
-	 * @var Config
+	 * @access private
+	 * @var string
 	 */
-	protected static $ipList;
+	private static $_pathInfo = null;
+
+    /**
+     * 日志记录容器实例
+     *
+     * @var Logger
+     */
+    private $logger;
+
+    /**
+	 * 自定义的用于过滤的正则表达式
+	 *
+	 * @var array
+	 */
+	public static $customFilter = [];
 
 	/**
 	 * 不记录日志的路由
@@ -64,70 +79,167 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 */
 	public static $notLogUrl = [];
 
-	/**
-	 * 自定义的用于过滤的正则表达式
-	 *
-	 * @var array
-	 */
-	public static $customFilter = [];
 
+    /**
+     * 构造函数
+     */
+    public function __construct()
+    {
+		$this->logger = MasterManager::getInstance()->getUnit('logger');
+		$this->logger->createLogger('http')->updateConfig('http', ['logPrefix' => 'HTTP/Router']);
+		MasterManager::getInstance()->getUnit('event')->trigger(new BeforeRouteEvent());
+    }
 
-	/**
-	 * 启动HttpManager
-	 *
-	 * @author HanskiJay
-	 * @since  2021-03-07
-	 * @return void
-	 */
-	public function start(bool $autoDispatch = true) : void
+	public function start() : void
 	{
-		$ip = Helper::getClientIp();
-		if(!self::isIpValid($ip)) {
-			Logger::info('[403@Banned] Client ' . $ip . '\'s IP is banned, request denied.');
+		// Closure Method for throw or display an error;
+		$internalError = function(string $errorMessage, string $title, string $outputMessage, int $statusCode = 404) : void {
+			if(INI::_global('owo.debugMode', true)) {
+				throw new InvalidRouterException($errorMessage);
+			} else {
+				if(strlen($title) > 0) {
+					PageErrorEvent::$title  = $title;
+				}
+				if(strlen($outputMessage) > 0) {
+					PageErrorEvent::$output = $outputMessage;
+				}
+				PageErrorEvent::$statusCode = $statusCode;
+				MasterManager::getInstance()->getUnit('event')->trigger(new PageErrorEvent());
+				exit;
+			}
+		};
+
+		$pathInfo = self::getParameters(-1);
+		$appName  = array_shift($pathInfo);
+
+		// Check Domain bind rules;
+		include_once(config_path('router.php'));
+		if($to = DomainRule::get(server('HTTP_HOST'), $bindType)) {
+			switch($bindType) {
+				case DomainRule::TAG_BIND_TO_URL:
+					$parsed = parse_url($to);
+					self::setPathInfo($parsed['path']);
+					$pathInfo = self::getParameters(-1);
+					$appName  = array_shift($pathInfo);
+				break;
+
+				case DomainRule::TAG_BIND_TO_APPLICATION:
+					$pathInfo = self::getParameters(-1);
+					$appName = $to;
+				break;
+			}
+		}
+
+		// Check the valid of the name;
+		if(is_null($appName) || !DataEncoder::isOnlyLettersAndNumbers($appName)) {
+			$appName = INI::_global('owo.defaultApp');
+		}
+		$appName = strtolower($appName);
+
+		// Judge whether the Application is in the banned list;
+		if(in_array($appName, explode(',', INI::_global('owo.denyList')))) {
 			self::setStatusCode(403);
 			return;
 		}
-		Logger::$logPrefix = self::LOG_PREFIX;
-		if(stripos(implode(',', static::$notLogUrl), server('REQUEST_URI')) === false) Logger::info('[REQUEST@' . server('REQUEST_METHOD') . '] ' . $ip . ' -> ' . self::getCompleteUrl());
-		if($autoDispatch) {
-			if(ob_get_level() === 0) ob_start();
-			Session::start();
-			Router::dispatch();
+
+		$app = MasterManager::getInstance()->getUnit('app')->getApp($appName);
+		if($app === null) {
+			$msg = 'Cannot find any valid Application!';
+			$this->logger->error('[403] ' . $msg);
+			$internalError($msg, '', 'Invalid route URL!');
 		}
-	}
-
-	/**
-	 * 日志记录过滤方法
-	 *
-	 * @author HanskiJay
-	 * @since  2021-11-01
-	 * @param  string      $uri URL地址
-	 * @return void
-	 */
-	public static function pushInLogFilter(string $uri) : void
-	{
-		static::$notLogUrl[] = $uri;
-	}
-
-
-	/**
-	 * HTTP 参数操作方法
-	 */
-	/**
-	 * 设置HTTP状态码
-	 *
-	 * @author HanskiJay
-	 * @since  2021-01-10
-	 * @param  int      $code 状态码
-	 * @return void
-	 */
-	public static function setStatusCode(int $code) : void
-	{
-		if(isset(self::HTTP_CODE[$code])) {
-			header(((server('SERVER_PROTOCOL') !== null) ? server('SERVER_PROTOCOL') : 'HTTP/1.1') . " {$code} " . self::HTTP_CODE[$code], true, $code);
+		if($app::isCLIOnly()) {
+			$msg = 'This Application can only run in CLI Mode!';
+			$this->logger->error('[403] ' . $msg);
+			$internalError($msg, '', 'Application is banned!');
 		}
+		// Write appName in an anonymous class;
+		$anonymousClass = self::getAnonymousClass();
+		$anonymousClass->appName = $appName;
+
+		// Judge $pathInfo for ControllerName and RequestMethodName;
+		if(count($pathInfo) === 0) {
+			$requestMethod = $controllerName = ucfirst($appName);
+		}
+		elseif(count($pathInfo) >= 1) {
+			$controllerName = array_shift($pathInfo);
+			// Judge whether the path is legal;
+			if(!DataEncoder::isOnlyLettersAndNumbers($controllerName)) {
+				$controllerName = $appName;
+			}
+			// Because until this line of IF-ELSE statement counts the result of $pathInfo equal to 1;
+			$requestMethod = $controllerName;
+
+			// If $pathInfo still exceeds 1 parameter;
+			if(count($pathInfo) >= 1) {
+				$requestMethod = array_shift($pathInfo);
+				// Judge whether the path is legal;
+				if(!DataEncoder::isOnlyLettersAndNumbers($requestMethod)) {
+					$requestMethod = $controllerName;
+				}
+
+				$urlRule = implode('/', $pathInfo);
+				// Check the url validity;                              ↓  传入 [RequestMethod] 之后的Url残余   ↓
+				$urlRule = isset($customizeUrlRule) ? $customizeUrlRule($urlRule) : new UrlRule($urlRule, UrlRule::TAG_USE_DEFAULT_STYLE);
+				if(!$urlRule->checkValid($urlParameters)) {
+					$msg = 'Illegal Url requested!';
+					$this->logger->error('[502] ' . $msg);
+					$internalError($msg, '502 BAD GATEWAY', 'Illegal Url requested!', 403);
+				}
+				$anonymousClass->urlParameters = $urlParameters;
+			}
+		}
+		$anonymousClass->methodName = $requestMethod;
+
+		// Initialize Controller;
+		if(!($controller = $app->getController($controllerName))) {
+			$controller = $app->getDefaultController();
+		}
+		// If not found any valid Controller;
+		if(!$controller) {
+			$msg = "Cannot find a valid Controller of Application [{$appName}]!";
+			$this->logger->error($msg);
+			$internalError($msg, '', 'The requested Controller was not found!');
+		}
+		if($app->isControllerBanned($controllerName)) {
+			$msg = "Controller {$controllerName} has been banned from the Application!";
+			$this->logger->error($msg);
+			$internalError($msg, 'ACCESS FORBIDDEN', 'Request denied (Too low permission)', 403);
+		}
+		$anonymousClass->controllerName = $controller->getName();
+
+		// Start to instance a Controller;
+		$reflect = new ReflectionClass($controller);
+		// Check RequestMethod validity;
+		if($reflect->hasMethod($requestMethod) && $reflect->getMethod($requestMethod)->isPublic()) {
+			if(!$app->isControllerMethodBanned($requestMethod, $controller->getName())) {
+				$callback = [$controller, $requestMethod];
+			} else {
+				$msg = "Requested method '{$requestMethod}' is banned, cannot be requested!";
+				$this->logger->error($msg);
+				$internalError($msg, '403 Forbidden', 'Permission Denied!', 403);
+			}
+		} else {
+			// If RequestMethod is invalid, then use the alternative methodName;
+			$requestMethod = $controller::$autoInvoke_methodNotFound;
+			// If the alternative method is the same invalid;
+			if(!$reflect->hasMethod($requestMethod)) {
+				$msg = "Requested method '{$requestMethod}' is invalid, cannot be requested!";
+				$this->logger->error($msg);
+				$internalError($msg, '403 Forbidden', 'Unknown Error happened :(', 403);
+			} else {
+				$callback = [$controller, $requestMethod];
+			}
+		}
+
+		$anonymousClass->response = self::Response($callback);
+		$anonymousClass->response->sendResponse();
 	}
 
+
+	/**
+	 * ~ HTTP 参数操作方法
+	 */
 	/**
 	 * 快速新建响应头实例
 	 *
@@ -149,6 +261,21 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 			$response = new Response($callback, $params);
 		}
 		return $response;
+	}
+
+	/**
+	 * 设置HTTP状态码
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-10
+	 * @param  int      $code 状态码
+	 * @return void
+	 */
+	public static function setStatusCode(int $code) : void
+	{
+		if(isset(self::HTTP_CODE[$code])) {
+			header(((server('SERVER_PROTOCOL') !== null) ? server('SERVER_PROTOCOL') : 'HTTP/1.1') . " {$code} " . self::HTTP_CODE[$code], true, $code);
+		}
 	}
 
 	/**
@@ -179,7 +306,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	}
 
 	/**
-	 * 返回整个的请求数据(默认返回原型)
+	 * 返回整个的请求数据 (默认返回原型)
 	 *
 	 * @author HanskiJay
 	 * @since  2021-02-06
@@ -213,137 +340,8 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	}
 
 
-	/**
-	 * ClientIp 操作方法
-	 */
-	/**
-	 * 封禁一个IP
-	 *
-	 * @author HanskiJay
-	 * @since  2021-03-09
-	 * @param  string      $ip     IP地址
-	 * @param  int|integer $toTime 封禁到时间(默认10分钟)
-	 * @param  string      $reason 封禁理由
-	 * @return void
-	 */
-	public static function banIp(string $ip, int $toTime = 10, string $reason = '') : void
-	{
-		if(Helper::isIp($ip)) {
-			$encodedIp = base64_encode($ip);
-		}
-		$toTime = microtime(true) + $toTime * 60;
-		if(!static::isBanned($ip)) {
-			static::ipList()->set($encodedIp,
-			[
-				'origin'  => $ip,
-				'banTime' => $toTime,
-				'reason'  => $reason
-			]);
-		} else {
-			static::ipList()->set($encodedIp.'.banTime', $toTime);
-		}
-		static::ipList()->save();
-	}
-
-	/**
-	 * 判断IP地址是否被带时间封禁
-	 *
-	 * @author HanskiJay
-	 * @since  2021-03-07
-	 * @param  string      $ip IP地址
-	 * @return boolean
-	 */
-	public static function isBanned(string $ip) : bool
-	{
-		if(Helper::isIp($ip)) {
-			$ip = base64_encode($ip);
-		}
-		$ipData = static::ipList()->get($ip);
-		return ($ipData !== null) && isset($ipData['banTime']);
-	}
-
-	/**
-	 * 判断IP地址是否被永久封禁
-	 *
-	 * @author HanskiJay
-	 * @since  2021-03-07
-	 * @param  string      $ip IP地址
-	 * @return boolean
-	 */
-	public static function isForeverBanned(string $ip) : bool
-	{
-		if(Helper::isIp($ip)) {
-			$ip = base64_encode($ip);
-		}
-		if(!static::isBanned($ip)) {
-			return false;
-		}
-		return static::ipList()->get($ip.'.banTime') == true;
-	}
-
-	/**
-	 * 设置IP信息集
-	 *
-	 * @author HanskiJay
-	 * @since  2021-03-09
-	 * @param  string      $ip   IP地址
-	 * @param  array       $data 自定义设置信息集
-	 * @return JSON
-	 */
-	public static function setIpData(string $ip, array $data) : JSON
-	{
-		if(Helper::isIp($ip)) {
-			$encodedIp = base64_encode($ip);
-		}
-		$ipData    = static::ipList()->get($encodedIp) ?? [];
-		$ipData    = array_merge($ipData, $data);
-		if(!isset($ipData['origin'])) {
-			$ipData['origin'] = $ip;
-		}
-		static::ipList()->set($encodedIp, $ipData);
-		static::ipList()->save();
-		return static::ipList();
-	}
-
-	/**
-	 * 判断当前IP的访问有效性
-	 *
-	 * @author HanskiJay
-	 * @since  2021-03-13
-	 * @param  string      $ip IP地址
-	 * @return boolean
-	 */
-	private static function isIpValid(string $ip) : bool
-	{
-		if(Helper::isIp($ip)) {
-			$encodedIp = base64_encode($ip);
-		}
-		if(!static::isBanned($ip)) {
-			return true;
-		}
-		if(static::isForeverBanned($ip) || (microtime(true) - static::ipList()->get($encodedIp.'.banTime') > 0)) {
-			return false;
-		}
-	}
-
-	/**
-	 * 返回黑名单配置文件实例
-	 *
-	 * @author HanskiJay
-	 * @since  2021-03-07
-	 * @return JSON
-	 */
-	public static function ipList() : JSON
-	{
-		if(!static::$ipList instanceof JSON) {
-			static::$ipList = new JSON(F_CACHE_PATH . 'config' . DIRECTORY_SEPARATOR . 'ipList.json');
-		}
-		return static::$ipList;
-	}
-
-
-	/**
-	 * URI/URL 方法
+    /**
+	 * ~ URI/URL 方法
 	 */
 	/**
 	 * 判断是否为HTTPS协议
@@ -367,7 +365,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	*/
 	public static function getCompleteUrl() : string
 	{
-		return server('REQUEST_SCHEME').'://'.server('HTTP_HOST').server('REQUEST_URI');
+		return server('REQUEST_SCHEME') . '://' . server('HTTP_HOST') . server('REQUEST_URI');
 	}
 
 	/**
@@ -379,7 +377,7 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 */
 	public static function getRootUrl() : string
 	{
-		return server('REQUEST_SCHEME').'://'.server('HTTP_HOST');
+		return server('REQUEST_SCHEME') . '://' . server('HTTP_HOST');
 	}
 
 	/**
@@ -393,6 +391,158 @@ class HttpManager implements HTTPStatusCodeConstant, Manager
 	 */
 	public static function betterUrl(string $name, string $path) : string
 	{
-		return trim($path, '/').'/'.str_replace('//', '/', ltrim(((0 === strpos($name, './')) ? substr($name, 2) : $name), '/'));
+		return trim($path, '/') . '/' . str_replace('//', '/', ltrim(((strpos($name, './') === 0) ? substr($name, 2) : $name), '/'));
+	}
+
+	/**
+	 * 设置全路径
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09 18:03
+	 * @param  string      $pathInfo 路径
+	 * @return void
+	 */
+	public static function setPathInfo(string $pathInfo = '/') : void
+	{
+		static::$_pathInfo = trim($pathInfo);
+	}
+
+	/**
+	 * 检查全路径是否为空
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09 18:03
+	 * @return boolean
+	 */
+	public static function isEmptyPathInfo() : bool
+	{
+		return static::$_pathInfo === null;
+	}
+
+	/**
+	 * 获取全路径
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09 18:03
+	 * @return string
+	 */
+	public static function getPathInfo() : string
+	{
+		if(static::isEmptyPathInfo()) {
+			self::setPathInfo(str_replace(server('SCRIPT_NAME'), '', server('REQUEST_URI')));
+			// ↓ Double check & set to '/' when last sentence does not work;
+			if(static::$_pathInfo === '') self::setPathInfo();
+		}
+		return static::$_pathInfo;
+	}
+	/**
+	 * 获取路径参数传递
+	 *
+	 * @author HanskiJay
+	 * @since  2020-09-09 18:03
+	 * @param  int      $getFrom 从第几个参数开始获取
+	 *                       1:       返回 ApplicationName 之后的参数;
+	 *                       2:       返回 ControllerName 之后的参数;
+	 *                       3:       返回 RequestMethodName 之后的参数;
+	 * @return array
+	 */
+	public static function getParameters(int $getFrom = 1) : array
+	{
+		#
+		# URI->@/index.php/{ApplicationName}/{ControllerName}/{RequestMethodName}/[GET]...
+		#
+		$param = array_filter(explode('/', self::getPathInfo()));
+		if(($getFrom >= 1) && ($getFrom <= 3)) {
+			return array_slice($param, $getFrom);
+		} else {
+			return $param;
+		}
+	}
+
+
+	/**
+	 * ~ 其他操作方法
+	 */
+	/**
+	 * 返回当前路由选取名称
+	 *
+	 * @author HanskiJay
+	 * @since  2021-11-01
+	 * @param  string      $nameType 名称类型
+	 * @return mixed
+	 */
+	public static function getCurrent(string $nameType)
+	{
+		$app = MasterManager::getInstance()->getUnit('app');
+		$closure = self::getAnonymousClass();
+		switch($nameType) {
+			default:
+				return null;
+
+			case 'appName':
+			case 'applicationName':
+				return $closure->appName;
+
+			case 'cName':
+			case 'controllerName':
+				return $closure->controllerName;
+
+			case 'mName':
+			case 'methodName':
+				return $closure->methodName;
+
+			case 'app':
+			case 'application':
+				return $app->getApp($closure->appName);
+
+			case 'controller':
+				return $app->getApp($closure->appName)->getController($closure->controllerName);
+
+			case 'param':
+			case 'params':
+			case 'parameter':
+			case 'parameters':
+			case 'args':
+			case 'arguments':
+				return $closure->urlParameters;
+
+			case 'response':
+				return $closure->response;
+		}
+	}
+
+	/**
+	 * 创建或返回一个匿名类
+	 *
+	 * @author HanskiJay
+	 * @since  2021-11-01
+	 * @return class@anonymous
+	 * @access private
+	 */
+	private static function getAnonymousClass()
+	{
+		static $anonymousClass;
+		if(is_null($anonymousClass)) {
+			$anonymousClass = new class()
+			{
+				public function __set(string $name, $value)
+				{
+					$this->{$name} = $value;
+				}
+
+				public function __get(string $name)
+				{
+					return $this->{$name} ?? null;
+				}
+
+				public function __unset(string $name)
+				{
+					if(isset($this->{$name})) {
+						unset($this->{$name});
+					}
+				}
+			};
+		}
+		return $anonymousClass;
 	}
 }

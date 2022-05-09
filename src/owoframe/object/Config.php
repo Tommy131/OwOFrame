@@ -19,9 +19,10 @@
 declare(strict_types=1);
 namespace owoframe\object;
 
+use owoframe\MasterManager;
+
 abstract class Config
 {
-
 	/**
 	 * 配置文件数组
 	 *
@@ -72,6 +73,14 @@ abstract class Config
 		$fileName       = explode('.', basename($file)); // e.g. abc.json | abc;
 		$fileName       = array_shift($fileName);  // if yes, then shift 'abc' to $file;
 		$this->fileName = str_replace($this->filePath, '', $fileName);
+
+
+		if(!file_exists($file) || (filesize($file) === 0)) {
+			$this->config = $defaultData;
+			$this->save();
+		} else {
+			$this->reload();
+		}
 	}
 
 	/**
@@ -191,7 +200,23 @@ abstract class Config
 	 * @since  2021-01-30
 	 * @return void
 	 */
-	abstract public function reload() : void;
+	abstract protected function reloadCallback() : void;
+
+	/**
+	 * 重新读取配置文件
+	 *
+	 * @author HanskiJay
+	 * @since  2021-01-30
+	 * @return void
+	 */
+	public function reload() : void
+	{
+		if(is_file($this->getFullPath())) {
+			$this->reloadCallback();
+		} else {
+			MasterManager::getInstance()->getUnit('logger')->error("Cannot reload Config::{$this->getFileName()}, because the file does not exists!");
+		}
+	}
 
 	/**
 	 * 备份配置文件

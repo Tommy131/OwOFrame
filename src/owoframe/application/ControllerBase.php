@@ -20,8 +20,7 @@ declare(strict_types=1);
 namespace owoframe\application;
 
 use owoframe\helper\Helper;
-use owoframe\http\Response;
-use owoframe\http\route\Router;
+use owoframe\http\HttpManager;
 
 abstract class ControllerBase
 {
@@ -40,6 +39,13 @@ abstract class ControllerBase
 	 */
 	public static $autoInvoke_methodNotFound = 'methodNotFound';
 
+	/**
+	 * 显示加载时间DIV的开关
+	 *
+	 * @var boolean
+	 */
+	public static $showUsedTimeDiv = true;
+
 
 
 	public function __construct(AppBase $app)
@@ -56,7 +62,7 @@ abstract class ControllerBase
 	 */
 	public function methodNotFound()
 	{
-		return '[MethodMissed] Requested method \'' .Router::getCurrent('controllerName') . '::' . Router::getCurrent('methodName') . '\' not found!';
+		return '[MethodMissed] Requested method \'' .HttpManager::getCurrent('controllerName') . '::' . HttpManager::getCurrent('methodName') . '\' not found!';
 	}
 
 	/**
@@ -69,7 +75,7 @@ abstract class ControllerBase
 	 */
 	public static function showUsedTimeDiv(bool $_ = true) : void
 	{
-		Response::$showUsedTimeDiv = $_;
+		static::$showUsedTimeDiv = $_;
 	}
 
 	/**
