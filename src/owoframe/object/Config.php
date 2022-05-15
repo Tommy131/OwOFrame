@@ -19,7 +19,7 @@
 declare(strict_types=1);
 namespace owoframe\object;
 
-use owoframe\MasterManager;
+use owoframe\utils\Logger;
 
 abstract class Config
 {
@@ -214,7 +214,7 @@ abstract class Config
 		if(is_file($this->getFullPath())) {
 			$this->reloadCallback();
 		} else {
-			MasterManager::getInstance()->getUnit('logger')->error("Cannot reload Config::{$this->getFileName()}, because the file does not exists!");
+			Logger::getInstance()->error("Cannot reload Config::{$this->getFileName()}, because the file does not exists!");
 		}
 	}
 

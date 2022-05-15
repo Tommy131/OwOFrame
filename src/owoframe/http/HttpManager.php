@@ -24,6 +24,7 @@ use ReflectionClass;
 use owoframe\MasterManager;
 use owoframe\constants\HTTPConstant;
 use owoframe\interfaces\Unit;
+use owoframe\utils\Logger;
 
 use owoframe\http\route\DomainRule;
 use owoframe\http\route\UrlRule;
@@ -85,7 +86,7 @@ class HttpManager implements HTTPConstant, Unit
      */
     public function __construct()
     {
-		$this->logger = MasterManager::getInstance()->getUnit('logger');
+		$this->logger = Logger::getInstance();
 		$this->logger->createLogger('http')->updateConfig('http', ['logPrefix' => 'HTTP/Router']);
 		MasterManager::getInstance()->getUnit('event')->trigger(new BeforeRouteEvent());
     }

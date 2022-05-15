@@ -65,7 +65,7 @@ class Console implements \owoframe\interfaces\Unit
 	 */
 	public function __construct()
 	{
-		$this->logger = MasterManager::getInstance()->getUnit('logger');
+		$this->logger = Logger::getInstance();
 		$cmdPath  = __DIR__ . DIRECTORY_SEPARATOR . 'command' . DIRECTORY_SEPARATOR;
 		$dirArray = scandir($cmdPath);
 		unset($dirArray[array_search('.', $dirArray)], $dirArray[array_search('..', $dirArray)]);

@@ -22,6 +22,7 @@ namespace owoframe\http;
 use ReflectionClass;
 
 use owoframe\MasterManager;
+use owoframe\utils\Logger;
 
 use owoframe\constants\MIMETypeConstant;
 use owoframe\constants\StandardOutputConstant;
@@ -109,7 +110,7 @@ class Response
 	 */
 	public function sendResponse() : void
 	{
-		$logger = \owoframe\MasterManager::getInstance()->getUnit('logger');
+		$logger = Logger::getInstance();
 		$logger->createLogger('http')->updateConfig('http', [
 			'logPrefix' => 'HTTP/Response'
 		]);
@@ -170,7 +171,7 @@ class Response
 		$this->hasSent = true;
 
 		$logger->debug("[{$this->code}] Status: Sent; Length: " . strlen($event->getOutput()));
-		$logger->selectLogger($logger::DEFAULT_BIND_TAG);
+		$logger->selectLogger(Logger::DEFAULT_BIND_TAG);
 	}
 
 	/**

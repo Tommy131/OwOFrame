@@ -43,6 +43,13 @@ class Logger implements \owoframe\interfaces\Unit
 	];
 
 	/**
+	 * 自身实例对象
+	 *
+	 * @var object
+	 */
+	private static $instance = null;
+
+	/**
 	 * 当前绑定的日志记录标签
 	 *
 	 * @var string
@@ -62,7 +69,10 @@ class Logger implements \owoframe\interfaces\Unit
 	 */
 	public function __construct()
 	{
-		$this->createLogger(self::DEFAULT_BIND_TAG, [], true);
+		if(!static::$instance instanceof Logger) {
+			static::$instance = $this;
+			$this->createLogger(self::DEFAULT_BIND_TAG, [], true);
+		}
 	}
 
 	/**
@@ -321,6 +331,18 @@ class Logger implements \owoframe\interfaces\Unit
 	{
 		if(is_null($fileName)) $fileName = LOG_PATH . self::DEFAULT_CONFIG['fileName'];
 		if(is_file($fileName)) unlink($fileName);
+	}
+
+	/**
+	 * 返回自身实例
+	 *
+	 * @author HanskiJay
+	 * @since  2022-05-15
+	 * @return Logger|null
+	 */
+	public static function getInstance() : ?Logger
+	{
+		return static::$instance;
 	}
 }
 ?>

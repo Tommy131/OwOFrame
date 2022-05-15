@@ -16,7 +16,7 @@
 
 **********************************************************************/
 
-require_once('./src/bootstrap.php');
+require_once(__DIR__ . '/src/bootstrap.php');
 use owoframe\MasterManager;
 
 $master = new MasterManager($classLoader);

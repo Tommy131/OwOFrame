@@ -22,7 +22,7 @@ namespace owoframe\module;
 use owoframe\MasterManager;
 use owoframe\helper\Helper;
 use owoframe\object\INI;
-use owoframe\exception\ResourceMissedException;
+use owoframe\utils\Logger;
 
 class ModuleLoader
 {
@@ -120,7 +120,7 @@ class ModuleLoader
 	 */
 	public static function loadModule(string $dir, string $name, MasterManager $master) : bool
 	{
-		$logger = MasterManager::getInstance()->getUnit('logger');
+		$logger = Logger::getInstance();
 		if(self::existsModule($name, $info)) {
 			// include_once($dir . $info->className . '.php');
 			$namespace = $info->namespace ?? '';

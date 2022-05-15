@@ -105,6 +105,8 @@ final class MasterManager
 			\owoframe\database\DbConfig::init();
 		}
 		ModuleLoader::autoLoad($this);
+		// Auto create instance for Logger;
+		$this->getUnit('logger');
 	}
 
 	/**
