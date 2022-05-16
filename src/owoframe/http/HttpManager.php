@@ -94,7 +94,10 @@ class HttpManager implements HTTPConstant, Unit
 	public function start() : void
 	{
 		// Closure Method for throw or display an error;
-		$internalError = function(string $errorMessage, string $title, string $outputMessage, int $statusCode = 404) : void {
+		$externalError = function(string $errorMessage, string $title = '', string $outputMessage = '', int $statusCode = 404) : void {
+			$clientIP = server('REMOTE_ADDR');
+			$this->logger->error("[{$statusCode}] Client @{$clientIP} -> URL='" . self::getCompleteUrl() . "', error cause: {$errorMessage}.");
+
 			if(INI::_global('owo.debugMode', true)) {
 				throw new InvalidRouterException($errorMessage);
 			} else {
@@ -139,21 +142,27 @@ class HttpManager implements HTTPConstant, Unit
 
 		// Judge whether the Application is in the banned list;
 		if(in_array($appName, explode(',', INI::_global('owo.denyList')))) {
-			self::setStatusCode(403);
+			$statusCode = 403;
+			$this->logger->notice("[{$code}] Client '{$clientIP}' -> Application[denyList]='{$appName}', request is blocked.");
+			self::setStatusCode($code);
 			return;
 		}
 
 		$app = MasterManager::getInstance()->getUnit('app')->getApp($appName);
 		if($app === null) {
-			$msg = 'Cannot find any valid Application!';
-			$this->logger->error('[403] ' . $msg);
-			$internalError($msg, '', 'Invalid route URL!');
+			$statusCode    = 403;
+			$errorMessage = 'Cannot find any valid Application!';
+			$externalOutputErrorMessage = 'Invalid route URL!';
 		}
 		if($app::isCLIOnly()) {
-			$msg = 'This Application can only run in CLI Mode!';
-			$this->logger->error('[403] ' . $msg);
-			$internalError($msg, '', 'Application is banned!');
+			$statusCode    = 403;
+			$errorMessage = 'This Application can only run in CLI Mode!';
+			$externalOutputErrorMessage = 'Unsupported Application in HTTP-Request-Mode, please contact the Administrator.';
 		}
+		if(isset($errorMessage, $externalOutputErrorMessage, $statusCode)) {
+			$externalError($errorMessage, $title ?? '', $externalOutputErrorMessage, $statusCode);
+		}
+
 		// Write appName in an anonymous class;
 		$anonymousClass = self::getAnonymousClass();
 		$anonymousClass->appName = $appName;
@@ -183,9 +192,8 @@ class HttpManager implements HTTPConstant, Unit
 				// Check the url validity;                              ↓  传入 [RequestMethod] 之后的Url残余   ↓
 				$urlRule = isset($customizeUrlRule) ? $customizeUrlRule($urlRule) : new UrlRule($urlRule, UrlRule::TAG_USE_DEFAULT_STYLE);
 				if(!$urlRule->checkValid($urlParameters)) {
-					$msg = 'Illegal Url requested!';
-					$this->logger->error('[502] ' . $msg);
-					$internalError($msg, '502 BAD GATEWAY', 'Illegal Url requested!', 403);
+					$errorMessage = 'Illegal Url requested!';
+					$externalError($errorMessage, '502 BAD GATEWAY', $errorMessage, 502);
 				}
 				$anonymousClass->urlParameters = $urlParameters;
 			}
@@ -198,14 +206,18 @@ class HttpManager implements HTTPConstant, Unit
 		}
 		// If not found any valid Controller;
 		if(!$controller) {
-			$msg = "Cannot find a valid Controller of Application [{$appName}]!";
-			$this->logger->error($msg);
-			$internalError($msg, '', 'The requested Controller was not found!');
+			$statusCode    = 404;
+			$errorMessage = "Cannot find a valid Controller of Application [{$appName}]!";
+			$externalOutputErrorMessage = 'The requested Controller was not found!';
 		}
-		if($app->isControllerBanned($controllerName)) {
-			$msg = "Controller {$controllerName} has been banned from the Application!";
-			$this->logger->error($msg);
-			$internalError($msg, 'ACCESS FORBIDDEN', 'Request denied (Too low permission)', 403);
+		elseif($app->isControllerBanned($controllerName)) {
+			$statusCode    = 403;
+			$errorMessage = "Controller {$controllerName} has been banned from the Application!";
+			$title        = 'ACCESS FORBIDDEN';
+			$externalOutputErrorMessage = 'Request denied (Too low permission)';
+		}
+		if(isset($errorMessage, $externalOutputErrorMessage, $statusCode)) {
+			$externalError($errorMessage, $title ?? '', $externalOutputErrorMessage, $statusCode);
 		}
 		$anonymousClass->controllerName = $controller->getName();
 
@@ -216,18 +228,14 @@ class HttpManager implements HTTPConstant, Unit
 			if(!$app->isControllerMethodBanned($requestMethod, $controller->getName())) {
 				$callback = [$controller, $requestMethod];
 			} else {
-				$msg = "Requested method '{$requestMethod}' is banned, cannot be requested!";
-				$this->logger->error($msg);
-				$internalError($msg, '403 Forbidden', 'Permission Denied!', 403);
+				$externalError("Requested method '{$requestMethod}' is banned, cannot be requested!", '403 Forbidden', 'Permission Denied!', 403);
 			}
 		} else {
 			// If RequestMethod is invalid, then use the alternative methodName;
 			$requestMethod = $controller::$autoInvoke_methodNotFound;
 			// If the alternative method is the same invalid;
 			if(!$reflect->hasMethod($requestMethod)) {
-				$msg = "Requested method '{$requestMethod}' is invalid, cannot be requested!";
-				$this->logger->error($msg);
-				$internalError($msg, '403 Forbidden', 'Unknown Error happened :(', 403);
+				$externalError("Requested method '{$requestMethod}' is invalid, cannot be requested!", '403 Forbidden', 'Unknown Error happened :(', 403);
 			} else {
 				$callback = [$controller, $requestMethod];
 			}

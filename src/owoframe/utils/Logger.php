@@ -338,10 +338,13 @@ class Logger implements \owoframe\interfaces\Unit
 	 *
 	 * @author HanskiJay
 	 * @since  2022-05-15
-	 * @return Logger|null
+	 * @return Logger
 	 */
-	public static function getInstance() : ?Logger
+	public static function getInstance() : Logger
 	{
+		if(!static::$instance instanceof Logger) {
+			new static;
+		}
 		return static::$instance;
 	}
 }
