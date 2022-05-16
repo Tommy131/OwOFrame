@@ -19,7 +19,7 @@
 declare(strict_types=1);
 namespace owoframe\http\route;
 
-use owoframe\application\AppManager;
+use owoframe\MasterManager;
 use owoframe\exception\DomainRuleException;
 use owoframe\helper\Helper;
 
@@ -74,7 +74,7 @@ class DomainRule
 			break;
 
 			case self::TAG_BIND_TO_APPLICATION:
-				if(!AppManager::getApp($to)) {
+				if(!MasterManager::getInstance()->getUnit('app')->getApp($to)) {
 					throw new DomainRuleException('Invalid Application Name!');
 				}
 			break;
