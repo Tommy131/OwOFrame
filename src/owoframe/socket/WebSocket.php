@@ -73,6 +73,8 @@ class WebSocket
 	/**
 	 * 构造函数
 	 *
+	 * @author HanskiJay
+	 * @since  2022-05-15
 	 * @param  string  $ip
 	 * @param  integer $port
 	 * @param  boolean $autoCreate
@@ -82,7 +84,10 @@ class WebSocket
 		$this->ip   = $ip;
 		$this->port = $port;
 
-		Logger::getInstance()->createLogger('ws')->updateConfig('ws', 'logPrefix', 'WebSocket');
+		Logger::getInstance()->createLogger('ws')->updateConfig('ws', [
+			'fileName'  => 'websocket_run.log',
+			'logPrefix' => 'WebSocket'
+		]);
 
 		if($autoCreate) {
 			$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
@@ -101,7 +106,16 @@ class WebSocket
 		}
 	}
 
-	public function run() : void
+	/**
+	 * 执行方法
+	 *
+	 * @author HanskiJay
+	 * @since  2022-05-15
+	 * @param  callable|null $callback
+	 * @param  array|null    $args
+	 * @return void
+	 */
+	public function run(?callable $callback = null, ?array $args = null) : void
 	{
 		static $isRunning;
 		if(!$this->created) {
@@ -138,7 +152,10 @@ class WebSocket
 					}
 					$this->decodeData($data);
 					Logger::getInstance()->info("Received data from Client[{$ip}]: " . $data);
-					$response = Helper::randomString(134);
+					$response = 'Hello World! Welcome to use OwOFrame Easy Websocket Widget!';
+					if($_ = call_user_func_array($callback, $args)) {
+						$response = $_;
+					}
 					$this->send($client, $response);
 					Logger::getInstance()->debug('Response to Client with: ' . $response);
 				}
@@ -149,6 +166,8 @@ class WebSocket
 	/**
 	 * 握手处理
 	 *
+	 * @author HanskiJay
+	 * @since  2022-05-15
 	 * @param Socket $newClient
 	 * @return int|false
 	 */
@@ -185,6 +204,8 @@ class WebSocket
 	/**
 	 * 解析接收数据
 	 *
+	 * @author From Internet
+	 * @since  Unknown
 	 * @param string $buffer
 	 * @return string|null
 	 */
@@ -210,9 +231,14 @@ class WebSocket
 
 	/**
 	 * 发送数据
+	 *
+	 * @author From Internet
+	 * @since  Unknown
 	 * @param Socket $client 新接入的socket
 	 * @param string $data   要发送的数据
+	 *
 	 * @link  https://www.sky8g.com/technology/2048/
+	 *
 	 * @return int|false
 	 */
 	public function send($client, string $data)
