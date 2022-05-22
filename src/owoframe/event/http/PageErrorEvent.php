@@ -67,6 +67,7 @@ class PageErrorEvent extends \owoframe\event\Event
 	public function __construct(array $replaceTags = [], array $replace = [])
 	{
 		$response = MasterManager::getInstance()->getUnit('http')::Response([$this, 'call'], [$replaceTags, $replace]);
+		$response::$showRuntimeDiv = false;
 		$response->setResponseCode(static::$statusCode);
 		$response->sendResponse();
 	}

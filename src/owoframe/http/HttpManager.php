@@ -109,8 +109,8 @@ class HttpManager implements HTTPConstant, Unit
 				}
 				PageErrorEvent::$statusCode = $statusCode;
 				MasterManager::getInstance()->getUnit('event')->trigger(new PageErrorEvent());
-				exit;
 			}
+			exit;
 		};
 
 		$pathInfo = self::getParameters(-1);
@@ -242,6 +242,7 @@ class HttpManager implements HTTPConstant, Unit
 		}
 
 		$anonymousClass->response = self::Response($callback);
+		$anonymousClass->response::$showRuntimeDiv = $controller::$showUsedTimeDiv;
 		$anonymousClass->response->sendResponse();
 	}
 

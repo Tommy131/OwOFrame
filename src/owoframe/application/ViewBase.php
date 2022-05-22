@@ -904,7 +904,6 @@ class ViewBase extends ControllerBase
 			}
 			$filePath = "/static.owo/{$type}/{$hashTag}.{$type}";
 		} else {
-			var_dump($filePath);
 			$filePath = null;
 		}
 		return $filePath ?? '(unknown)';

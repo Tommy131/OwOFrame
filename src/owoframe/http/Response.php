@@ -72,6 +72,13 @@ class Response
 	];
 
 	/**
+	 * 是否显示运行时间
+	 *
+	 * @var boolean
+	 */
+	public static $showRuntimeDiv = true;
+
+	/**
 	 * 默认响应信息
 	 *
 	 * @var string
@@ -161,8 +168,8 @@ class Response
 		$eventManager->trigger($event);
 		$event->output();
 		if(!isset($isJson)) {
-			if(HttpManager::getCurrent('controller')::$showUsedTimeDiv) {
-				self::getRunTimeDiv();
+			if(static::$showRuntimeDiv) {
+				self::getRuntimeDiv();
 			}
 		}
 
@@ -265,7 +272,7 @@ class Response
 	 * @param  boolean      $condition
 	 * @return void
 	 */
-	public static function getRunTimeDiv(bool $condition = true) : void
+	public static function getRuntimeDiv(bool $condition = true) : void
 	{
 		if($condition) {
 			echo str_replace('{runTime}', (string) MasterManager::getRunTime(), base64_decode('PGRpdiBzdHlsZT0icG9zaXRpb246IGFic29sdXRlOyB6LWluZGV4OiA5OTk5OTk7IGJvdHRvbTogMDsgcmlnaHQ6IDA7IG1hcmdpbjogNXB4OyBwYWRkaW5nOiA1cHg7IGJhY2tncm91bmQtY29sb3I6ICNhYWFhYWE7IGJvcmRlci1yYWRpdXM6IDVweDsiPgoJPGRpdj5Vc2VkVGltZTogPGI+e3J1blRpbWV9czwvYj48L2Rpdj4KPC9kaXY+'));
