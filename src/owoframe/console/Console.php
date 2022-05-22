@@ -67,6 +67,10 @@ class Console implements \owoframe\interfaces\Unit
 	public function __construct()
 	{
 		$this->logger = Logger::getInstance();
+		$this->logger->createLogger('cli')->updateConfig('cli', [
+			'fileName'  => 'owoblog_cli_run.log',
+			'logPrefix' => 'OwOCLI'
+		]);
 		$cmdPath  = __DIR__ . DIRECTORY_SEPARATOR . 'command' . DIRECTORY_SEPARATOR;
 		$dirArray = scandir($cmdPath);
 		unset($dirArray[array_search('.', $dirArray)], $dirArray[array_search('..', $dirArray)]);

@@ -20,10 +20,6 @@ require_once(__DIR__ . '/src/bootstrap.php');
 use owoframe\MasterManager;
 
 $master = new MasterManager($classLoader);
-$master->getUnit('logger')->createLogger('cli')->updateConfig('cli', [
-	'fileName'  => 'owoblog_cli_run.log',
-	'logPrefix' => 'OwOCLI'
-]);
 $master->getUnit('app')->initializeApplications();
 $console = $master->getUnit('console');
 $console->monitor($argv);
