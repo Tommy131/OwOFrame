@@ -27,8 +27,10 @@ class CheckUpdateCommand extends \owoframe\console\CommandBase
 	{
 		$this->getLogger()->notice("Current version is: " . FRAME_VERSION . ', checking update......');
 		$json = json_decode(file_get_contents('https://www.owoblog.com/checkUpdate/OwOFrame/?version=' . FRAME_VERSION));
-		$this->getLogger()->sendEmpty();
-		if($json->result === true) {
+		if(!$json) {
+			$this->getLogger()->error('Unknown Error caused, no data received.');
+		}
+		elseif($json->result === true) {
 			$this->getLogger()->success('Currently is the newest version.');
 		} else {
 			if($json->msg === 'lower') {

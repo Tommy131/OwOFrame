@@ -79,22 +79,14 @@ class ExceptionOutput
 				Response::getRunTimeDiv($exception::toggleRunTimeDivOutput(false));
 				return;
 			}
-
-			if(INI::_global('owo.enableLog', true)) {
-				$logged = '<span id="logged">--- Logged ---</span>';
-				self::log($exception->__toString());
-			} else {
-				$logged = '';
-			}
 			$fileName = method_exists($exception, 'getRealFile') ? $exception->getRealFile() : $exception->getFile();
 			$realName = method_exists($exception, 'getRealLine') ? $exception->getRealLine() : $exception->getLine();
 			echo str_replace(
-				['{logged}', '{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'],
-				[$logged, $type, $exception->getMessage(),  $fileName, $realName, $exception->getTraceAsString(), Master::getRunTime()],
+				['{type}', '{message}', '{file}', '{line}', '{trace}', '{runTime}'],
+				[$type, $exception->getMessage(),  $fileName, $realName, $exception->getTraceAsString(), Master::getRunTime()],
 			self::getTemplate());
-		} else {
-			self::log($exception->__toString());
 		}
+		self::log($exception->__toString());
 		exit(1);
 	}
 
@@ -102,8 +94,8 @@ class ExceptionOutput
 	{
 		$logger   = Master::getInstance()->getUnit('logger');
 		$selected = Helper::isRunningWithCGI() ? 'main' : 'cli';
-		$logger->selectLogger($selected)->updateConfig($selected, [
-			'fileName'  => 'owoblog_error.log',
+		$logger->createLogger($selected)->updateConfig($selected, [
+			'fileName'  => "owoblog_{$selected}_error.log",
 			'logPrefix' => 'OwOBlogErrorHandler'
 		]);
 		$logger->emergency(trim(str2UTF8($msg)));

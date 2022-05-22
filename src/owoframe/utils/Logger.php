@@ -127,7 +127,7 @@ class Logger implements \owoframe\interfaces\Unit
 	public function createLogger(string $bindTag, array $config = [], bool $autoSelect = true) : Logger
 	{
 		if(!$this->hasLogger($bindTag)) {
-			$this->usedBindTags[$bindTag] = checkArrayValid($config, self::DEFAULT_CONFIG, $missParam) ? $config : self::DEFAULT_CONFIG;
+			$this->usedBindTags[$bindTag] = checkArrayValid($config, self::DEFAULT_CONFIG) ? $config : self::DEFAULT_CONFIG;
 		}
 		if($autoSelect) {
 			$this->selectLogger($bindTag);

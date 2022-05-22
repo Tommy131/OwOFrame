@@ -96,7 +96,7 @@ class HttpManager implements HTTPConstant, Unit
 		// Closure Method for throw or display an error;
 		$externalError = function(string $errorMessage, string $title = '', string $outputMessage = '', int $statusCode = 404) : void {
 			$clientIP = server('REMOTE_ADDR');
-			$this->logger->error("[{$statusCode}] Client @{$clientIP} -> URL='" . self::getCompleteUrl() . "', error cause: {$errorMessage}.");
+			$this->logger->error("[{$statusCode}] Client @{$clientIP} -> URL='" . self::getCompleteUrl() . "', error cause: {$errorMessage}");
 
 			if(INI::_global('owo.debugMode', true)) {
 				throw new InvalidRouterException($errorMessage);
