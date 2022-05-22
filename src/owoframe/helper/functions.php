@@ -377,3 +377,31 @@ function config_path(string $fileName) : ?string
 	$path = CONFIG_PATH . $fileName;
 	return is_file($path) ? $path : null;
 }
+
+/**
+ * DEBUG调试使用, 输出追踪
+ *
+ * @author HanskiJay
+ * @since  2022-05-22
+ * @return void
+ */
+function debug() : void
+{
+	echo '<pre>';
+	debug_print_backtrace();
+	echo '</pre>';
+}
+
+/**
+ * DEBUG调试使用, 输出追踪栈
+ *
+ * @author HanskiJay
+ * @since  2022-05-22
+ * @return void
+ */
+function dump_debug() : void
+{
+	echo '<pre>';
+	var_dump(debug_backtrace());
+	echo '</pre>';
+}
