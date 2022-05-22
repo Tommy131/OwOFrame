@@ -26,20 +26,21 @@ class CheckUpdateCommand extends \owoframe\console\CommandBase
 	public function execute(array $params) : bool
 	{
 		$this->getLogger()->notice("Current version is: " . FRAME_VERSION . ', checking update......');
-		$json = json_decode(file_get_contents('https://www.owoblog.com/checkUpdate/OwOFrame/?version=' . FRAME_VERSION));
-		if(!$json) {
+		$raw = file_get_contents('https://raw.githubusercontent.com/Tommy131/Tommy131/main/VERSION.owo');
+		if(!$raw) {
 			$this->getLogger()->error('Unknown Error caused, no data received.');
 		}
-		elseif($json->result === true) {
+		$compare = version_compare($raw, FRAME_VERSION);
+		if($compare === 0) {
 			$this->getLogger()->success('Currently is the newest version.');
 		} else {
-			if($json->msg === 'lower') {
+			if($compare === 1) {
 				$message = 'Outdated version! Please go to the GitHub ' . TF::YELLOW . GITHUB_PAGE . TF::AQUA . ' or use command ' . TF::YELLOW . 'git pull'. TF::AQUA . ' to update! ';
 			}
-			elseif($json->msg === 'higher') {
+			elseif($compare === -1) {
 				$message = TF::LIGHT_RED . 'Your version is too high? What have you done?';
 			} else {
-				$message = TF::LIGHT_RED . $json->msg;
+				$message = TF::LIGHT_RED . $compare;
 			}
 			$this->getLogger()->notice($message);
 		}
