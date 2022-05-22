@@ -22,6 +22,7 @@ namespace owoframe\console;
 use owoframe\MasterManager;
 use owoframe\utils\Logger;
 use owoframe\utils\TextFormat as TF;
+use ReflectionClass;
 
 class Console implements \owoframe\interfaces\Unit
 {
@@ -163,12 +164,19 @@ class Console implements \owoframe\interfaces\Unit
 	 * @author HanskiJay
 	 * @since  2021-01-26
 	 * @param  string      $commandString
-	 * @param  CommandBase $class
+	 * @param  string|CommandBase $class
 	 * @return boolean
 	 */
-	public function registerCommand(string $commandString, CommandBase $class) : bool
+	public function registerCommand(string $commandString, $class) : bool
 	{
 		if(!$this->hasCommand($commandString)) {
+			if(is_string($class) && (new ReflectionClass($class))->getParentClass()->getName() === CommandBase::class) {
+				$class = new $class($this->logger);
+			}
+			if(!is_object($class)) {
+				$this->logger->error("Command '{$commandString}' cannot be register!");
+				return false;
+			}
 			$this->commandPool[strtolower($commandString)] = $class;
 			return true;
 		}
