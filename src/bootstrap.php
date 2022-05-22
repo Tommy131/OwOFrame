@@ -48,6 +48,9 @@ if(!defined('PUBLIC_PATH'))      define('PUBLIC_PATH',     ROOT_PATH . 'public' 
 // Define storage path;
 if(!defined('STORAGE_PATH'))     define('STORAGE_PATH',    ROOT_PATH . 'storages' . DIRECTORY_SEPARATOR);
 
+// Define storage path;
+if(!defined('STORAGE_A_PATH'))   define('STORAGE_A_PATH',  ROOT_PATH . 'storages' . DIRECTORY_SEPARATOR . 'application' . DIRECTORY_SEPARATOR);
+
 // Define module path;
 if(!defined('MODULE_PATH'))      define('MODULE_PATH',     STORAGE_PATH . 'modules' . DIRECTORY_SEPARATOR);
 

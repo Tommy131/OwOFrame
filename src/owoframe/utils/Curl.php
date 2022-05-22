@@ -277,7 +277,7 @@ class Curl
 	 */
 	public function returnBody(bool $bool) : Curl
 	{
-		curl_setopt($this->curl, CURLOPT_NOBODY, $bool);
+		curl_setopt($this->curl, CURLOPT_NOBODY, !$bool);
 		return $this;
 	}
 
@@ -354,9 +354,9 @@ class Curl
 	 *
 	 * @author HanskiJay
 	 * @since  2021-08-14
-	 * @return string
+	 * @return string|boolean
 	 */
-	public function getContent() : string
+	public function getContent()
 	{
 		return $this->content;
 	}
