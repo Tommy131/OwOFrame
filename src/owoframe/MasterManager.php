@@ -235,4 +235,33 @@ final class MasterManager
 		}
 		return static::$instance;
 	}
+
+	/**
+	 * 设置类加载器
+	 *
+	 * @author HanskiJay
+	 * @since  2022-05-27
+	 * @param  ClassLoader $classLoader
+	 * @param  boolean     $forceUpdate
+	 * @return void
+	 */
+	public static function setClassLoader(ClassLoader $classLoader, bool $forceUpdate = false) : void
+	{
+		if(($classLoader === null) || $forceUpdate) {
+			static::$classLoader = $classLoader;
+		}
+	}
+
+	/**
+	 * 允许通过静态调用 `getUnit` 方法
+	 *
+	 * @author HanskiJay
+	 * @since  2022-05-27
+	 * @param  string $name 绑定标识
+	 * @return Unit|AppManager|Console|EventManager|HttpManager|Logger
+	 */
+	public static function _getUnit(string $name) : ?Unit
+	{
+		return self::getInstance()->getUnit($name);
+	}
 }
