@@ -138,10 +138,13 @@ abstract class Config
 			}
 
 			$base =& $this->config[$base];
+			if(!is_array($base)) {
+				return;
+			}
 
 			while(count($arr) > 0) {
 				$baseKey = array_shift($arr);
-				if(!isset($base[$baseKey])){
+				if(!isset($base[$baseKey])) {
 					$base[$baseKey] = [];
 				}
 				$base =& $base[$baseKey];

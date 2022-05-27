@@ -177,7 +177,7 @@ class Curl
 	 * @param  array      $data
 	 * @return Curl
 	 */
-	public function setGetData($data) : Curl
+	public function setGetData(array $data) : Curl
 	{
 		$payload = '?';
 		foreach($data as $key => $content)
@@ -196,7 +196,7 @@ class Curl
 	 * @param  array      $data
 	 * @return Curl
 	 */
-	public function setPostData($data) : Curl
+	public function setPostData(array $data) : Curl
 	{
 		$payload = '';
 		foreach($data as $key => $content)

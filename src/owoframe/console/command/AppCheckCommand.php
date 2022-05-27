@@ -19,19 +19,16 @@
 declare(strict_types=1);
 namespace owoframe\console\command;
 
-use owoframe\application\AppManager;
-
 class AppCheckCommand extends \owoframe\console\CommandBase
 {
 	public function execute(array $params) : bool
 	{
 		$appName = array_shift($params);
 		if(empty($appName)) {
-			$this->getLogger()->info('Please enter a valid appName. Usage: ' . self::getUsage() . ' [string:appName]');
 			return false;
 		}
 		$appName = strtolower($appName);
-		$appPath = AppManager::getPath() . $appName . DIRECTORY_SEPARATOR;
+		$appPath = APP_PATH . $appName . DIRECTORY_SEPARATOR;
 		$class   = '\\application\\' . $appName . '\\' . ucfirst($appName) . 'App';
 
 		if(is_dir($appPath) && class_exists($class)) {
@@ -59,5 +56,10 @@ class AppCheckCommand extends \owoframe\console\CommandBase
 	public static function getDescription() : string
 	{
 		return 'Check if an app exists.';
+	}
+
+	public function sendUsage() : void
+	{
+		$this->getLogger()->info('Please enter a valid appName. Usage: ' . self::getUsage() . ' [string:appName]');
 	}
 }

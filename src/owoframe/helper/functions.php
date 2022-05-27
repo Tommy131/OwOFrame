@@ -19,6 +19,7 @@
 declare(strict_types=1);
 
 use owoframe\constants\HTTPConstant;
+use owoframe\helper\Helper;
 
 if(!defined('owohttp')) define('owohttp', 'owosuperget');
 
@@ -401,7 +402,22 @@ function debug() : void
  */
 function dump_debug() : void
 {
-	echo '<pre>';
-	var_dump(debug_backtrace());
-	echo '</pre>';
+	dump(debug_backtrace());
+}
+
+/**
+ * 以 <pre> 标签在前端输出字符串
+ *
+ * @author HanskiJay
+ * @since  2022-05-27
+ * @param  mixed $str
+ * @return void
+ */
+function dump($str) : void
+{
+	if(Helper::isRunningWithCGI()) {
+		echo '<pre>';
+		var_dump($str);
+		echo '</pre>';
+	}
 }

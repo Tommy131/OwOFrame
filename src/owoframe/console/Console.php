@@ -118,7 +118,8 @@ class Console implements \owoframe\interfaces\Unit
 
 		if($command instanceof CommandBase) {
 			if(!$command->execute($input)) {
-				$this->logger->debug("Command '{$inputCommand}' may not execute successfully, please check the issue.");
+				$command->sendUsage();
+				// $this->logger->debug("Command '{$inputCommand}' may not execute successfully, please check the issue.");
 			}
 		} else {
 			$this->logger->debug("Command '{$inputCommand}' not found, please use '".TF::GOLD."php owo help".TF::GRAY."' to check the details.");

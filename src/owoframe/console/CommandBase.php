@@ -86,6 +86,18 @@ abstract class CommandBase
 	}
 
 	/**
+	 * 自定义输出使用信息 (当指令未正确执行时)
+	 *
+	 * @author HanskiJay
+	 * @since  2022-05-27
+	 * @return void
+	 */
+	public function sendUsage() : void
+	{
+		return;
+	}
+
+	/**
 	 * 给出加载器获悉是否自动加载并注册此指令
 	 *
 	 * @author HanskiJay

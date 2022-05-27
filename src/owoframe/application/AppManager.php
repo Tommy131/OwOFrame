@@ -22,6 +22,7 @@ namespace owoframe\application;
 use FilesystemIterator as FI;
 use owoframe\exception\InvalidAppException;
 use owoframe\exception\ResourceMissedException;
+use owoframe\helper\Helper;
 use owoframe\http\HttpManager as Http;
 use owoframe\object\INI;
 
@@ -53,6 +54,9 @@ class AppManager implements \owoframe\interfaces\Unit
 		$class   = "\\application\\{$name}\\{$appName}" . 'App';
 
 		if(!class_exists($class)) {
+			if(Helper::isRunningWithCLI()) {
+				return false;
+			}
 			throw new ResourceMissedException('Class', $class);
 		}
 		if((new \ReflectionClass($class))->getParentClass()->getName() !== self::BASIC_CLASS) {
