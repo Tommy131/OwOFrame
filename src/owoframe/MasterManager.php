@@ -83,8 +83,8 @@ final class MasterManager
 		}
 		if($classLoader !== null) {
 			static::$classLoader = $classLoader;
-			$classLoader->addPsr4('application' . DIRECTORY_SEPARATOR, APP_PATH);
-			$classLoader->addPsr4('modules' . DIRECTORY_SEPARATOR,     MODULE_PATH);
+			$classLoader->addPsr4('application\\', APP_PATH);
+			$classLoader->addPsr4('modules\\',     MODULE_PATH);
 		}
 
 		// Initialize storages directory folder;
