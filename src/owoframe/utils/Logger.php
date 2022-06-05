@@ -202,9 +202,8 @@ class Logger implements \owoframe\interfaces\Unit
 		if(Helper::isRunningWithCLI()) {
 			echo TextFormat::parse($message);
 		}
-		$message = TextFormat::clean($message);
 		if(INI::_global('owo.enableLog', true)) {
-			file_put_contents(LOG_PATH . $config->fileName, $message, FILE_APPEND | LOCK_EX);
+			file_put_contents(LOG_PATH . $config->fileName, TextFormat::clean($message), FILE_APPEND | LOCK_EX);
 		}
 	}
 
