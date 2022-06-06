@@ -902,7 +902,7 @@ class ViewBase extends ControllerBase
 							? '; charset=utf-8' : null;
 				file_put_contents($basePath, "<?php /* Cached in " . date("Y-m-d H:i:s") . "@{$hashTag} */ header('Content-Type: " . Helper::MIMETYPE[$type] . "" . $charset . "'); header('X-Content-Type-Options: nosniff'); header('Cache-Control: max-age=31536000, immutable'); echo file_get_contents('" . $filePath . "'); ?>");
 			}
-			$filePath = "/static.owo/{$type}/{$hashTag}.{$type}";
+			$filePath = "/static.owo/{$type}/{$hashTag}";
 		} else {
 			$filePath = null;
 		}

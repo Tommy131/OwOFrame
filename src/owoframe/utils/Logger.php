@@ -71,8 +71,8 @@ class Logger implements \owoframe\interfaces\Unit
 	{
 		if(!static::$instance instanceof Logger) {
 			static::$instance = $this;
-			$this->createLogger(self::DEFAULT_BIND_TAG, [], true);
 		}
+		$this->createLogger(self::DEFAULT_BIND_TAG, [], true);
 	}
 
 	/**
