@@ -1,10 +1,16 @@
 @echo off
-title OwOFrame Git Toolbox
-set VERSION=v1.0.0
+set TITLE=OwOFrame Git ToolScript
+title %TITLE%
+set VERSION=v1.0.1
 set PREFIX=[OwOTools]
+set GIT="C:\Program Files\Git\bin\git.exe"
+
+if not exist %GIT% (
+	set GIT=git
+)
 
 echo -------------------------------------------------------------
-echo          OwOFrame Git Toolbox is Running @%VERSION%
+echo          %TITLE% is Running @%VERSION%
 echo -------------------------------------------------------------
 echo Git Enviroment needed!
 echo.
@@ -27,21 +33,21 @@ echo.
 echo.
 
 
-if "%input%"=="0" goto 0
-if "%input%"=="1" goto 1
-if "%input%"=="2" goto 2
-if "%input%"=="3" goto 3
-if "%input%"=="4" goto 4
-if "%input%"=="5" goto 5
-if "%input%"=="6" goto 6
-if "%input%"=="x" goto x
-goto :begin
+if %input% == 0 goto 0
+if %input% == 1 goto 1
+if %input% == 2 goto 2
+if %input% == 3 goto 3
+if %input% == 4 goto 4
+if %input% == 5 goto 5
+if %input% == 6 goto 6
+if %input% == x goto x
+goto begin
 
 
 :0
 cls
 echo Checking upstrem...
-git pull
+%GIT% pull
 echo.
 echo.
 echo.
@@ -51,7 +57,7 @@ goto begin
 :1
 cls
 echo Checking locate status...
-git status
+%GIT% status
 echo.
 echo.
 echo.
@@ -59,12 +65,12 @@ goto begin
 
 
 :2
-git checkout master
+%GIT% checkout master
 goto x
 
 
 :3
-git checkout dev-alpha
+%GIT% checkout dev-alpha
 goto x
 
 
