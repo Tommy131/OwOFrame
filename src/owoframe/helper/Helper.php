@@ -240,8 +240,8 @@ class Helper implements HTTPConstant, MIMETypeConstant
 			$match = $str;
 			return true;
 		}
-		// * Regex tested: https://regex101.com/r/IVQBwt/1/;
-		return (strpos($str, '--') === false) && (bool) preg_match('/^([a-z0-9]+([a-z0-9-]*(?:[a-z0-9]+))?\.)?[a-z0-9]+([a-z0-9-]*(?:[a-z0-9]+))?[\.]([a-z]+)$/i', $str, $match);
+		// * Regex verified: https://regex101.com/r/rhSD1e/1;
+		return (strpos($str, '--') === false) && (bool) preg_match('/^([a-z0-9]+([a-z0-9-]*(?:[a-z0-9]+))?[\.]*)+?([a-z]+)$/i', $str, $match);
 	}
 
 	/**

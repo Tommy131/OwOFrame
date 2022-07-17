@@ -47,6 +47,8 @@ class Curl
 		'X-FORWARDED-FOR: {ip}'
 	];
 
+	public $header = [];
+
 	/**
 	 * IP组
 	 *
@@ -151,7 +153,7 @@ class Curl
 	 */
 	public function setHeader(array $header) : Curl
 	{
-		curl_setopt($this->curl, CURLOPT_HTTPHEADER, $header);
+		curl_setopt($this->curl, CURLOPT_HTTPHEADER, array_merge($header, $this->header));
 		return $this;
 	}
 
@@ -179,12 +181,7 @@ class Curl
 	 */
 	public function setGetData(array $data) : Curl
 	{
-		$payload = '?';
-		foreach($data as $key => $content)
-		{
-			$payload .= urlencode($key) . '=' . urlencode($content) . '&';
-		}
-		curl_setopt($this->curl, CURLOPT_URL, $this->url . $payload);
+		curl_setopt($this->curl, CURLOPT_URL, $this->url . http_build_query($data));
 		return $this;
 	}
 
@@ -194,29 +191,25 @@ class Curl
 	 * @author HanskiJay
 	 * @since  2021-08-14
 	 * @param  array      $data
+	 * @param  boolean    $withJson
 	 * @return Curl
 	 */
-	public function setPostData(array $data) : Curl
+	public function setPostData(array $data, bool $withJson = false) : Curl
 	{
-		$payload = '';
-		foreach($data as $key => $content)
-		{
-			$payload .= urlencode($key) . '=' . urlencode($content) . '&';
-		}
 		curl_setopt($this->curl, CURLOPT_POST, 1);
-		curl_setopt($this->curl, CURLOPT_POSTFIELDS, $payload);
+		curl_setopt($this->curl, CURLOPT_POSTFIELDS, $withJson ? json_encode($data) : http_build_query($data));
 		return $this;
 	}
 
 	/**
-	 * 设置Post请求的数据
+	 * 设置原始Post请求的数据
 	 *
 	 * @author HanskiJay
 	 * @since  2021-08-14
-	 * @param  mixed
+	 * @param  string      $post
 	 * @return Curl
 	 */
-	public function setEncPostData($post) : Curl
+	public function setPostDataRaw(string $post) : Curl
 	{
 		curl_setopt($this->curl, CURLOPT_POST, 1);
 		curl_setopt($this->curl, CURLOPT_POSTFIELDS, $post);
@@ -292,8 +285,7 @@ class Curl
 	public function setCookie(array $cookies) : Curl
 	{
 		$payload = '';
-		foreach($cookies as $key => $cookie)
-		{
+		foreach($cookies as $key => $cookie) {
 			$payload .= "$key=$cookie; ";
 		}
 		curl_setopt($this->curl, CURLOPT_COOKIE, $payload);
@@ -301,13 +293,25 @@ class Curl
 	}
 
 	/**
-	 * 保持Cookie
+	 * 设置原始Cookies数据
+	 *
+	 * @param  string $cookies
+	 * @return Curl
+	 */
+	public function setCookieRaw(string $cookies) : Curl
+	{
+		curl_setopt($this->curl, CURLOPT_COOKIE, $cookies);
+		return $this;
+	}
+
+	/**
+	 * 清空Cookie
 	 *
 	 * @author HanskiJay
 	 * @since  2021-08-14
 	 * @return Curl
 	 */
-	public function keepCookie() : Curl
+	public function clearCookie() : Curl
 	{
 		curl_setopt($this->curl, CURLOPT_COOKIEJAR, '');
 		curl_setopt($this->curl, CURLOPT_COOKIEFILE, '');
@@ -366,11 +370,23 @@ class Curl
 	 *
 	 * @author HanskiJay
 	 * @since  2021-08-14
-	 * @return boolean
+	 * @return int
 	 */
-	public function isError()
+	public function isError() : int
 	{
-		return curl_errno($this->curl) ? true : false;
+		return curl_errno($this->curl);
+	}
+
+	/**
+	 * 返回错误信息
+	 *
+	 * @author HanskiJay
+	 * @since  2022-07-17
+	 * @return string|null
+	 */
+	public function getError() : ?string
+	{
+		return curl_error($this->curl) ?? null;
 	}
 
 	/**
