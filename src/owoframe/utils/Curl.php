@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace owoframe\utils;
 
 use CurlHandle;
+use owoframe\exception\OwOFrameException;
+use owoframe\helper\Helper;
 
 class Curl
 {
@@ -112,6 +114,25 @@ class Curl
 	public function getResource()
 	{
 		return $this->curl ?? null;
+	}
+
+	/**
+	 * 设置代理服务器
+	 *
+	 * @author HanskiJay
+	 * @since  2022-07-24
+	 * @param  string  $address
+	 * @param  integer $port
+	 * @return Curl
+	 */
+	public function useProxy(string $address, int $port) : Curl
+	{
+		if(!Helper::isIp($address) && !Helper::isDomain($address)) {
+			throw new OwOFrameException('无效的代理地址!');
+		}
+		curl_setopt($this->curl, CURLOPT_PROXY, $address);
+		curl_setopt($this->curl, CURLOPT_PROXYPORT, $port);
+		return $this;
 	}
 
 	/**
