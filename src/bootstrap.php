@@ -28,7 +28,7 @@ if(!defined('START_MICROTIME'))  define('START_MICROTIME',  microtime(true));
 if(!defined('GITHUB_PAGE'))      define('GITHUB_PAGE',     'https://github.com/Tommy131/OwOFrame/');
 
 // Define OwOFrame start time;
-if(!defined('FRAME_VERSION'))    define('FRAME_VERSION',   '1.0.2-dev');
+if(!defined('FRAME_VERSION'))    define('FRAME_VERSION',   '1.0.3-dev');
 
 // Check whether the current environment supports mbstring extension;
 if(!defined('MB_SUPPORTED'))     define('MB_SUPPORTED',    extension_loaded('mbstring'));

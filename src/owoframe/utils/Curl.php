@@ -40,11 +40,11 @@ class Curl
 	 */
 	public static $defaultHeader =
 	[
-		"Connection: Keep-Alive",
-		"Accept: text/html, application/xhtml+xml, */*",
-		"Pragma: no-cache",
-		"Accept-Language: zh-Hans-CN,zh-Hans;q=0.8,en-US;q=0.5,en;q=0.3",
-		"User-Agent: Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)",
+		'Connection: Keep-Alive',
+		'Accept: text/html, application/xhtml+xml, */*',
+		'Pragma: no-cache',
+		'Accept-Language: zh-Hans-CN,zh-Hans;q=0.8,en-US;q=0.5,en;q=0.3',
+		'User-Agent: {userAgent}',
 		'CLIENT-IP: {ip}',
 		'X-FORWARDED-FOR: {ip}'
 	];
@@ -147,6 +147,30 @@ class Curl
 	{
 		curl_setopt($this->curl, CURLOPT_USERAGENT, $ua);
 		return $this;
+	}
+
+	/**
+	 * 将UA设置为移动端 (iPhone 12 Pro)
+	 *
+	 * @author HanskiJay
+	 * @since  2022-07-24
+	 * @return Curl
+	 */
+	public function userAgentInMobile() : Curl
+	{
+		return $this->setUA('Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/103.0.5060.114');
+	}
+
+	/**
+	 * 将UA设置为PC端 (Edge)
+	 *
+	 * @author HanskiJay
+	 * @since  2022-07-24
+	 * @return Curl
+	 */
+	public function userAgentInPC() : Curl
+	{
+		return $this->setUA('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 Edg/103.0.1264.62');
 	}
 
 	/**
@@ -303,7 +327,7 @@ class Curl
 	 * @param  array      $cookies
 	 * @return Curl
 	 */
-	public function setCookie(array $cookies) : Curl
+	public function setCookies(array $cookies) : Curl
 	{
 		$payload = '';
 		foreach($cookies as $key => $cookie) {
@@ -319,7 +343,7 @@ class Curl
 	 * @param  string $cookies
 	 * @return Curl
 	 */
-	public function setCookieRaw(string $cookies) : Curl
+	public function setCookiesInRaw(string $cookies) : Curl
 	{
 		curl_setopt($this->curl, CURLOPT_COOKIE, $cookies);
 		return $this;
@@ -344,17 +368,15 @@ class Curl
 	 *
 	 * @author HanskiJay
 	 * @since  2021-08-14
-	 * @return string
+	 * @return array
 	 */
-	public function getCookie()
+	public function getCookies() : array
 	{
 		preg_match_all('/Set-Cookie: (.*);/iU', $this->content, $cookies);
 		$payload = [];
-		foreach($cookies[1] as $cookie)
-		{
+		foreach($cookies[1] as $cookie) {
 			$key = explode('=', $cookie);
-			if(isset($payload[$key[0]]) and $payload[$key[0]] !== '')
-			{
+			if(isset($payload[$key[0]]) and $payload[$key[0]] !== '') {
 				continue;
 			}
 			$payload[$key[0]] = $key[1];
