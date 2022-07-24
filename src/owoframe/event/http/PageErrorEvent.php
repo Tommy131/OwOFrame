@@ -102,8 +102,8 @@ class PageErrorEvent extends \owoframe\event\Event
 		if($update || (is_null(static::$temp)))
 		{
 			$template     = file_get_contents(static::$templateFile);
-			$replaceTags  = array_merge(array_filter($replaceTags), ['{title}', '{description}']);
-			$replace      = array_merge(array_filter($replace),     [static::$title, static::$output]);
+			$replaceTags  = array_merge(array_filter($replaceTags), ['{title}', '{description}', '{thisYear}']);
+			$replace      = array_merge(array_filter($replace),     [static::$title, static::$output, date('Y')]);
 			static::$temp = str_replace($replaceTags, $replace, $template);
 		}
 		return static::$temp;
