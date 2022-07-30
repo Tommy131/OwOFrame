@@ -392,16 +392,18 @@ class Curl
 	 */
 	public function getCookies() : array
 	{
-		$content = $this->getContent($headers);
-		$content = !$this->returnHeader ? $content : $headers;
-		preg_match_all('/Set-Cookie: (.*);/iU', $content, $cookies);
 		$payload = [];
-		foreach($cookies[1] as $cookie) {
-			$key = explode('=', $cookie);
-			if(isset($payload[$key[0]]) and $payload[$key[0]] !== '') {
-				continue;
+		$content = $this->getContent($headers);
+		$content = (!$this->returnHeader ? $content : $headers) ?? '';
+
+		if(preg_match_all('/Set-Cookie: (.*);/iU', $content, $cookies)) {
+			foreach($cookies[1] as $cookie) {
+				$key = explode('=', $cookie);
+				if(isset($payload[$key[0]]) and $payload[$key[0]] !== '') {
+					continue;
+				}
+				$payload[$key[0]] = $key[1];
 			}
-			$payload[$key[0]] = $key[1];
 		}
 		return $payload;
 	}
