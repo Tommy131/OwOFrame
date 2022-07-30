@@ -26,6 +26,13 @@ class Curl
 	protected $url;
 
 	/**
+	 * 返回头部信息的变量
+	 *
+	 * @var boolean
+	 */
+	protected $returnHeader;
+
+	/**
 	 * 获取到的上下文
 	 *
 	 * @access protected
@@ -189,6 +196,18 @@ class Curl
 	}
 
 	/**
+	 * 返回设置的请求地址
+	 *
+	 * @author HanskiJay
+	 * @since  2021-08-14
+	 * @return string
+	 */
+	public function getUrl() : string
+	{
+		return $this->url;
+	}
+
+	/**
 	 * 设置HTTP Header
 	 *
 	 * @author HanskiJay
@@ -301,6 +320,7 @@ class Curl
 	 */
 	public function returnHeader(bool $bool) : Curl
 	{
+		$this->returnHeader = $bool;
 		curl_setopt($this->curl, CURLOPT_HEADER, $bool);
 		return $this;
 	}
@@ -372,7 +392,9 @@ class Curl
 	 */
 	public function getCookies() : array
 	{
-		preg_match_all('/Set-Cookie: (.*);/iU', $this->content, $cookies);
+		$content = $this->getContent($headers);
+		$content = !$this->returnHeader ? $content : $headers;
+		preg_match_all('/Set-Cookie: (.*);/iU', $content, $cookies);
 		$payload = [];
 		foreach($cookies[1] as $cookie) {
 			$key = explode('=', $cookie);
@@ -385,27 +407,37 @@ class Curl
 	}
 
 	/**
-	 * 返回设置的请求地址
-	 *
-	 * @author HanskiJay
-	 * @since  2021-08-14
-	 * @return string
-	 */
-	public function getUrl() : string
-	{
-		return $this->url;
-	}
-
-	/**
 	 * 返回CURL执行结果
 	 *
 	 * @author HanskiJay
 	 * @since  2021-08-14
-	 * @return string|boolean
+	 * @param  string &$headers
+	 * @return string
 	 */
-	public function getContent()
+	public function getContent(&$headers = '') : string
 	{
-		return $this->content;
+		$_ = $this->content;
+		if($_ === false) {
+			return '';
+		}
+		if($this->returnHeader) {
+			$headerSize = curl_getinfo($this->curl, CURLINFO_HEADER_SIZE);
+			$headers    = substr($_, 0, $headerSize);
+			$_          = substr($_, $headerSize);
+		}
+		return $_;
+	}
+
+	/**
+	 * 以Json格式解码
+	 *
+	 * @author HanskiJay
+	 * @since  2022-07-28
+	 * @return array|object|null
+	 */
+	public function decodeWithJson(bool $toObject = true)
+	{
+		return json_decode($this->getContent(), !$toObject);
 	}
 
 	/**
