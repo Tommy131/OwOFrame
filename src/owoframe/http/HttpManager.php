@@ -150,12 +150,12 @@ class HttpManager implements HTTPConstant, Unit
 
 		$app = MasterManager::getInstance()->getUnit('app')->getApp($appName);
 		if($app === null) {
-			$statusCode    = 403;
+			$statusCode = 403;
 			$errorMessage = 'Cannot find any valid Application!';
 			$externalOutputErrorMessage = 'Invalid route URL!';
 		}
 		if($app::isCLIOnly()) {
-			$statusCode    = 403;
+			$statusCode = 403;
 			$errorMessage = 'This Application can only run in CLI Mode!';
 			$externalOutputErrorMessage = 'Unsupported Application in HTTP-Request-Mode, please contact the Administrator.';
 		}
@@ -206,12 +206,12 @@ class HttpManager implements HTTPConstant, Unit
 		}
 		// If not found any valid Controller;
 		if(!$controller) {
-			$statusCode    = 404;
+			$statusCode = 404;
 			$errorMessage = "Cannot find a valid Controller of Application [{$appName}]!";
 			$externalOutputErrorMessage = 'The requested Controller was not found!';
 		}
 		elseif($app->isControllerBanned($controllerName)) {
-			$statusCode    = 403;
+			$statusCode = 403;
 			$errorMessage = "Controller {$controllerName} has been banned from the Application!";
 			$title        = 'ACCESS FORBIDDEN';
 			$externalOutputErrorMessage = 'Request denied (Too low permission)';

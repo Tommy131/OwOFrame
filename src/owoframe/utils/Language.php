@@ -94,7 +94,7 @@ class Language
 	 */
 	public function get(string $tag, string $default = 'Language tag {%s} undefined') : string
 	{
-		return $this->langPack[$tag] ?? (preg_match("/\{\%s\}/i", $default)? sprintf($default, $tag) : $default);
+		return $this->langPack[$tag] ?? (preg_match("/\{\%s\}/i", $default) ? sprintf($default, $tag) : $default);
 	}
 
 	/**
