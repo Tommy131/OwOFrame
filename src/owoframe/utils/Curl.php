@@ -10,6 +10,16 @@ use owoframe\helper\Helper;
 class Curl
 {
 	/**
+	 * UserAgent in iPhone 12 Pro (Mobile)
+	 */
+	public const UA_MOBILE = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/103.0.5060.114';
+
+	/**
+	 * UserAgent in Edge (PC)
+	 */
+	public const UA_PC = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 Edg/103.0.1264.62';
+
+	/**
 	 * cURL
 	 *
 	 * @access protected
@@ -153,6 +163,7 @@ class Curl
 	public function setUA(string $ua) : Curl
 	{
 		curl_setopt($this->curl, CURLOPT_USERAGENT, $ua);
+		ini_set('user_agent', $ua);
 		return $this;
 	}
 
@@ -165,7 +176,7 @@ class Curl
 	 */
 	public function userAgentInMobile() : Curl
 	{
-		return $this->setUA('Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/103.0.5060.114');
+		return $this->setUA(self::UA_MOBILE);
 	}
 
 	/**
@@ -177,7 +188,7 @@ class Curl
 	 */
 	public function userAgentInPC() : Curl
 	{
-		return $this->setUA('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 Edg/103.0.1264.62');
+		return $this->setUA(self::UA_PC);
 	}
 
 	/**
