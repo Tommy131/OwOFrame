@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 use owoframe\constants\HTTPConstant;
 use owoframe\helper\Helper;
+use owoframe\utils\Logger;
 
 if(!defined('owohttp')) define('owohttp', 'owosuperget');
 
@@ -355,12 +356,20 @@ function changeBool2String(?bool $bool, &$done) : void
  * @since  2021-03-06
  * @param  string      $output  向CMD & SHELL输出的显示文字
  * @param  mixed       $default 默认结果
+ * @param  mixed       $useLogger 使用日志记录组件
+ * @param  mixed       $logLevel 日志记录等级
  * @return STDIN       标准输入|默认结果(当标准输入结果为空时)
  */
-function ask(string $output, $default = null, string $logLevel = 'info')
+function ask(string $output, $default = null, bool $useLogger = false, string $logLevel = 'info')
 {
-	// TODO: 加入Logger组件日志记录;
-	echo $output . (!is_null($default) ? " (Default: {$default})" : '') . PHP_EOL;
+	if(!$useLogger) {
+		echo $output . (!is_null($default) ? " (Default: {$default})" : '') . PHP_EOL;
+	} else {
+		if(!method_exists(Logger::class, $logLevel)) {
+			$logLevel = 'info';
+		}
+		Logger::getInstance()->{$logLevel}($output);
+	}
 	$_ = trim(fgets(STDIN));
 	return (strlen($_) === 0) ? $default : $_;
 }
