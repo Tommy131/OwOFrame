@@ -20,9 +20,10 @@ declare(strict_types=1);
 namespace application\index\controller;
 
 use owoframe\application\AppBase;
+use owoframe\application\View;
 use owoframe\http\FileUploader;
 
-class Upload extends \owoframe\application\ViewBase
+class Upload extends \owoframe\application\ControllerBase
 {
 	private static $uploadId = 'upload';
 
@@ -34,11 +35,12 @@ class Upload extends \owoframe\application\ViewBase
 
 	public function Upload()
 	{
-		$this->assign([
+		$view = new View();
+		$view->assign([
 			'uploadUrl' => '/index/upload/handler',
 			'uploadId'  => self::$uploadId
 		]);
-		return $this->render();
+		return $view->render();
 	}
 
 	// TODO: 处理文件上传的方法;
