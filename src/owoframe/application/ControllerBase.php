@@ -30,7 +30,7 @@ abstract class ControllerBase
 	 * @access private
 	 * @var AppBase
 	 */
-	private $app = null;
+	private $app;
 
 	/**
 	 * 若请求的Url中包含无效的请求方法, 则默认执行该方法
@@ -62,7 +62,7 @@ abstract class ControllerBase
 	 */
 	public function methodNotFound()
 	{
-		return '[MethodMissed] Requested method \'' .HttpManager::getCurrent('controllerName') . '::' . HttpManager::getCurrent('methodName') . '\' not found!';
+		return '[MethodMiss] Requested method \'' .HttpManager::getCurrent('controllerName') . '::' . HttpManager::getCurrent('methodName') . '\' not found!';
 	}
 
 	/**
@@ -76,60 +76,6 @@ abstract class ControllerBase
 	public static function showUsedTimeDiv(bool $_ = true) : void
 	{
 		static::$showUsedTimeDiv = $_;
-	}
-
-	/**
-	 * 获取公共静态资源目录
-	 *
-	 * @author HanskiJay
-	 * @since  2020-09-10
-	 * @param  string      $index 文件/文件夹索引
-	 * @return string
-	 */
-	public function getResourcePath(string $index) : string
-	{
-		return RESOURCE_PATH . $index . DIRECTORY_SEPARATOR;
-	}
-
-	/**
-	 * 获取Application局部静态资源目录
-	 *
-	 * @author HanskiJay
-	 * @since  2020-09-10
-	 * @param  string      $index 文件/文件夹索引
-	 * @return string
-	 */
-	public function getStaticPath(string $index) : string
-	{
-		return $this->getViewPath('static') . DIRECTORY_SEPARATOR . $index . DIRECTORY_SEPARATOR;
-	}
-
-	/**
-	 * 返回Views(V)显示层的路径
-	 *
-	 * @author HanskiJay
-	 * @since  2020-09-10 18:49
-	 * @param  string      $index      文件/文件夹索引
-	 * @param  bool        $selectMode 选择模式[True: 返回绝对路径|Return absolute path][False: 返回相对路径|Return relative path]](Default:true)
-	 * @return string
-	 */
-	final public function getViewPath(string $index, bool $selectMode = true) : string
-	{
-		return $this->getApp()::getAppPath($selectMode) . "view" . DIRECTORY_SEPARATOR . $index;
-	}
-
-	/**
-	 * 判断是否存在一个View(V)目录
-	 *
-	 * @author HanskiJay
-	 * @since  2020-09-10
-	 * @param  string      $index 文件/文件夹索引
-	 * @return boolean
-	 */
-	final public function hasViewPath(string $index) : bool
-	{
-		$index = explode("/", $index)[0] ?? $index;
-		return is_dir($this->getViewPath($index)) || is_file($this->getViewPath($index));
 	}
 
 	/**

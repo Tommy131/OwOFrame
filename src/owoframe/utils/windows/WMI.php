@@ -28,7 +28,7 @@ namespace owoframe\utils\windows;
 use COM;
 use Variant;
 use owoframe\helper\Helper;
-use owoframe\exception\ExtensionMissedException;
+use owoframe\exception\ExtensionMissException;
 
 class WMI
 {
@@ -74,7 +74,7 @@ class WMI
 	public function __construct(?string $script = null)
 	{
 		if((Helper::getOS() === Helper::OS_WINDOWS) && !extension_loaded('com_dotnet')) {
-			throw new ExtensionMissedException('com_dotnet');
+			throw new ExtensionMissException('com_dotnet');
 		}
 		$this->script = $script ?? $this->script;
 		$this->COM    = new COM($this->script);

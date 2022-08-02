@@ -20,7 +20,7 @@ declare(strict_types=1);
 namespace owoframe\object;
 
 use owoframe\helper\Helper;
-use owoframe\exception\FileMissedException;
+use owoframe\exception\FileMissException;
 use owoframe\exception\OwOFrameException;
 
 class Cache
@@ -225,7 +225,7 @@ class Cache
 	{
 		$path = $path . sprintf(self::FILE_NAME_FORMAT, $savedTag);
 		$error = function($message) use ($path) {
-			return new FileMissedException('Could not load file \'' . $path . '\': ' . $message);
+			return new FileMissException('Could not load file \'' . $path . '\': ' . $message);
 		};
 
 		if(!file_exists($path)) {

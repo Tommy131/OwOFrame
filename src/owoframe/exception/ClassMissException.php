@@ -19,12 +19,10 @@
 declare(strict_types=1);
 namespace owoframe\exception;
 
-class MethodMissedException extends OwOFrameException
+class ClassMissException extends OwOFrameException
 {
-
-
-	public function __construct(string $className, string $method, int $code = 0, \Throwable $previous = null)
+	public function __construct(string $className, int $code = 0, \Throwable $previous = null)
 	{
-		parent::__construct("Called an undefined method [{$className}::{$method}]!", $code, $previous);
+		parent::__construct("Cannot find class '{$className}::class'!", $code, $previous);
 	}
 }

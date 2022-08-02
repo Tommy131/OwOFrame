@@ -19,10 +19,12 @@
 declare(strict_types=1);
 namespace owoframe\exception;
 
-class ExtensionMissedException extends OwOFrameException
+class MethodMissException extends OwOFrameException
 {
-	public function __construct(string $name, int $code = 0, \Throwable $previous = null)
+
+
+	public function __construct(string $className, string $method, int $code = 0, \Throwable $previous = null)
 	{
-		parent::__construct("Missed PHP Extension: '{$name}'!", $code, $previous);
+		parent::__construct("Called an undefined method [{$className}::{$method}]!", $code, $previous);
 	}
 }

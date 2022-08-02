@@ -12,7 +12,7 @@
 - 优化了标签 `<owoScript>` 和 `<owoLink>` 的解析方法
 - 新增了方法名过滤器
 - 修复了 `ViewBase` 和  `ControllerBase` 的 `getName` 方法冲突BUG
-- 优化了 `MethodMissedException` 错误异常处理
+- 优化了 `MethodMissException` 错误异常处理
 - 修复了兼容性和删除了一些无用的代码
 - Updated CHANGELOG.md
 

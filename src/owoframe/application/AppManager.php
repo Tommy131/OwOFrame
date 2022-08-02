@@ -21,7 +21,7 @@ namespace owoframe\application;
 
 use FilesystemIterator as FI;
 use owoframe\exception\InvalidAppException;
-use owoframe\exception\ResourceMissedException;
+use owoframe\exception\ResourceMissException;
 use owoframe\helper\Helper;
 use owoframe\http\HttpManager as Http;
 use owoframe\object\INI;
@@ -57,7 +57,7 @@ class AppManager implements \owoframe\interfaces\Unit
 			if(Helper::isRunningWithCLI()) {
 				return false;
 			}
-			throw new ResourceMissedException('Class', $class);
+			throw new ResourceMissException('Class', $class);
 		}
 		if((new \ReflectionClass($class))->getParentClass()->getName() !== self::BASIC_CLASS) {
 			throw new InvalidAppException($appName, 'Parent class should be interfaced by ' . self::BASIC_CLASS);

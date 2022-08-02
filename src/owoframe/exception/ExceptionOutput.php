@@ -73,7 +73,7 @@ class ExceptionOutput
 		$type .= Helper::getShortClassName($exception);
 
 		if(Helper::isRunningWithCGI()) {
-			if(($exception instanceof MethodMissedException) && $exception->getJudgement()) {
+			if(($exception instanceof MethodMissException) && $exception->getJudgement()) {
 				$response = Http::Response($exception->getAlternativeCall());
 				$response->sendResponse();
 				Response::getRunTimeDiv($exception::toggleRunTimeDivOutput(false));

@@ -19,5 +19,10 @@
 declare(strict_types=1);
 namespace owoframe\exception;
 
-class FileMissedException extends OwOFrameException
-{}
+class ExtensionMissException extends OwOFrameException
+{
+	public function __construct(string $name, int $code = 0, \Throwable $previous = null)
+	{
+		parent::__construct("Miss PHP Extension: '{$name}'!", $code, $previous);
+	}
+}
