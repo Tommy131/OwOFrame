@@ -409,6 +409,7 @@ class Helper implements HTTPConstant, MIMETypeConstant
 	 * 返回当前对象更好的类名
 	 *
 	 * @author HanskiJay
+	 * @since  2021-01-30
 	 * @param  object      $class 实例化对象
 	 * @return string
 	 */
@@ -430,6 +431,23 @@ class Helper implements HTTPConstant, MIMETypeConstant
 		return $str = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $str);
 	}
 
+	/**
+	 * 返回HTML标签与换行
+	 *
+	 * @author HanskiJay
+	 * @since  2022-08-03
+	 * @param  string $searchString
+	 * @param  string $globalString
+	 * @return string
+	 */
+	public static function findTagNewline(string $searchString, string $globalString) : string
+	{
+		$tag = str_replace(['.', '/', '|', '$'], ['\.', '\/', '\|', '\$'], $searchString);
+		if(preg_match("/(\s*?){1}{$tag}/i", $globalString, $m)) {
+			return $m[0];
+		}
+		return $searchString;
+	}
 	/**
 	 * 当前内存使用情况
 	 *

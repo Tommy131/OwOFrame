@@ -228,19 +228,6 @@ abstract class AppBase
 	}
 
 	/**
-	 * 返回本Application的资源目录
-	 *
-	 * @author HanskiJay
-	 * @since  2021-08-14
-	 * @param  string     $option 可选参数(文件/文件夹路径)
-	 * @return string
-	 */
-	public static function getResourcePath(string $option = '') : string
-	{
-		return RESOURCE_PATH . static::getName() . DIRECTORY_SEPARATOR . $option;
-	}
-
-	/**
 	 * 返回本Application的存储目录
 	 *
 	 * @author HanskiJay
@@ -258,7 +245,7 @@ abstract class AppBase
 	 *
 	 * @author HanskiJay
 	 * @since  2020-09-09
-	 * @param  bool      $selectMode 选择模式[True: 返回绝对路径|Return absolute path][False: 返回相对路径|Return relative path]](Default:true)
+	 * @param  bool $selectMode 选择模式 [True: 返回绝对路径; False: 返回相对路径]
 	 * @return string
 	 */
 	final public static function getAppPath(bool $selectMode = true) : string

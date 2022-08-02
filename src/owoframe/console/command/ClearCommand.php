@@ -102,6 +102,6 @@ class ClearCommand extends \owoframe\console\CommandBase
 
 	public static function getDescription() : string
 	{
-		return 'Command for clear the screen or empty a log file';
+		return "Command for clear the screen or empty a log file. Usage: owo clear log|cache";
 	}
 }

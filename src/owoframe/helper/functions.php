@@ -340,13 +340,12 @@ function changeType(string $var, &$done) : void
  *
  * @author HanskiJay
  * @since  2021-01-31
- * @param  boolean|null $bool
- * @param  mixed        $done
+ * @param  boolean $bool
  * @return void
  */
-function changeBool2String(?bool $bool, &$done) : void
+function changeBool2String(bool &$bool) : void
 {
-	$done = $bool ? 'true' : 'false';
+	$bool = $bool ? 'true' : 'false';
 }
 
 /**
