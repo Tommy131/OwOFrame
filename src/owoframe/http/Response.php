@@ -19,6 +19,8 @@
 declare(strict_types=1);
 namespace owoframe\http;
 
+use Closure;
+use JsonSerializable;
 use ReflectionClass;
 
 use owoframe\MasterManager;
@@ -123,61 +125,81 @@ class Response
 		]);
 		$eventManager = \owoframe\MasterManager::getInstance()->getUnit('event');
 		$eventManager->trigger(BeforeResponseEvent::class, [$this]);
+		$isJson = false;
 
 		// If the callback is invalid;
 		if(!is_callable($this->callback)) {
 			$this->callback = [$this, 'defaultResponseMsg'];
 		}
-		// Callback method and get result;
-		$called = call_user_func_array($this->callback, $this->callParams);
 
-		// If result is an Array;
-		if(is_array($called)) {
-			if($this->callback[0] instanceof DataEncoder) {
-				$called = $this->callback[0]->encode();
-			} else {
-				$called = json_encode($called);
-			}
-			$this->header('Content-Type', MIMETypeConstant::MIMETYPE['json']);
-			$isJson = true;
+
+		// Judgement whether the callback is Closure;
+		if($this->callback instanceof Closure) {
+			$called = $this->callback;
+			$called = $called();
 		}
+		elseif($this->callback[0] instanceof JsonSerializable) {
+			$called = $this->callback[0];
+			$isJson = true;
+		} else {
+			// Callback method and get result;
+			$called = call_user_func_array($this->callback, $this->callParams);
+			if(is_array($called)) {
+				$called = json_encode($called);
+				$isJson = true;
+			} else {
+				$reflect = new ReflectionClass($this->callback[0]);
+				if($reflect->implementsInterface(StandardOutputConstant::class)) {
+					$called = $this->callback[0]->getOutput();
+				}
+			}
+		}
+
+		// Judgement whether the callback is null;
+		$called = is_null($called) ? '' : $called;
 
 		// Check whether the callback result type is String;
 		if(!is_string($called)) {
-			$reflect = new ReflectionClass($this->callback[0]);
-			if($reflect->implementsInterface(StandardOutputConstant::class)) {
-				$called = $this->callback[0]->getOutput();
-			} else {
-				$called = new DataEncoder();
-				$called->setStandardData(502, '[OwOResponseError] Cannot callback method ' . get_class($this->callback[0]) . '::' . $this->callback[1] . ' for response! (Method must be return string, ' . gettype($called) . ' is returned!', false);
-				$called = $called->encode();
-				$logger->debug($called);
-				$this->header('Content-Type', MIMETypeConstant::MIMETYPE['json']);
-				$isJson = true;
-			}
+			$json = new DataEncoder();
+			$called = $json->setStandardData(($this->code !== 200) ? $this->code : 502, 'Failed to response data.', false)->mergeData([
+				'handler'      => 'OwOResponseError',
+				'issueClass'   => get_class($this->callback[0]),
+				'issueMethod'  => $this->callback[1],
+				'expectedType' => 'string|array|null',
+				'actualType'   => gettype($called)
+			])->encode();
+			$logger->debug($called);
+			$isJson = true;
 		}
+		if($isJson) $this->header('Content-Type', MIMETypeConstant::MIMETYPE['json']);
 
+		// set HTTP-HEADER;
 		if(!headers_sent() && !empty($this->header)) {
 			foreach($this->header as $name => $val) {
 				header($name . (!is_null($val) ? ": {$val}"  : ''));
 			}
+			$length = strlen($called);
+			header('Powered-By: OwOFrame v' . FRAME_VERSION);
+			header('OwO-Author: HanskiJay');
+			header('GitHub-Page: ' . GITHUB_PAGE);
+			header('Content-Length: ' . $length);
 			HttpManager::setStatusCode($this->code);
 		}
 
 		$event = new OutputEvent($called);
 		$eventManager->trigger($event);
 		$event->output();
-		if(!isset($isJson)) {
-			if(static::$showRuntimeDiv) {
-				self::getRuntimeDiv();
-			}
+
+		// Judgement whether the output is JSON format;
+		if(!$isJson && static::$showRuntimeDiv) {
+			self::getRuntimeDiv();
 		}
 
 		if(function_exists('fastcgi_finish_request')) fastcgi_finish_request();
 		$eventManager->trigger(AfterResponseEvent::class, [$this]);
 		$this->hasSent = true;
 
-		$logger->debug("[{$this->code}] Status: Sent; Length: " . strlen($event->getOutput()));
+		$logger->debug("[{$this->code}] Status: Sent; Length: " . $length);
 		$logger->selectLogger(Logger::DEFAULT_BIND_TAG);
 	}
 

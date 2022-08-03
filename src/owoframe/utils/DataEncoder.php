@@ -103,12 +103,11 @@ class DataEncoder implements JsonSerializable, StandardOutputConstant
 	 */
 	public function setStandardData(int $code, string $msg, bool $result) : DataEncoder
 	{
-		$this->reset();
-		$this->setIndex('code',   $code);
-		$this->setIndex('msg',    $msg);
-		$this->setIndex('result', $result);
-		$this->setIndex('time',   date("Y-m-d H:i:s"));
-		return $this;
+		return $this->reset()
+			 ->setIndex('code',   $code)
+			 ->setIndex('msg',    $msg)
+			 ->setIndex('result', $result)
+			 ->setIndex('time',   date("Y-m-d H:i:s"));
 	}
 
 	/**

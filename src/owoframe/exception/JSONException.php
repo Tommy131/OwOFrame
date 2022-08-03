@@ -24,11 +24,23 @@ use owoframe\utils\DataEncoder;
 
 class JSONException extends OwOFrameException implements JsonSerializable
 {
+	/**
+	 * 响应载体
+	 *
+	 * @var DataEncoder
+	 */
+	protected $payload;
+
 	public function __construct(array $messages = [], int $code = 0, \Throwable $previous = null)
 	{
 		$this->message = $messages;
-		$data = new DataEncoder($messages);
-		die($data->encode());
+		$this->payload = new DataEncoder($messages);
+		die($this->payload->encode());
+	}
+
+	public function getPayload() : DataEncoder
+	{
+		return $this->payload;
 	}
 
 	public function jsonSerialize()
