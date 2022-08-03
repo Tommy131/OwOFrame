@@ -122,9 +122,14 @@ class View
 	{
 		// 智能获取模板文件名;
 		if($templateName === '') {
-			$templateName = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
-			array_shift($templateName);
-			$templateName = array_shift($templateName)['function'];
+			$lastCallerData = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+			array_shift($lastCallerData);
+			$lastCallerData = array_shift($lastCallerData);
+			$templateName   = $lastCallerData['function'];
+			if($templateName === '__construct') {
+				$templateName = explode('\\', $lastCallerData['class']);
+				$templateName = end($templateName);
+			}
 		} else {
 			$templateName = explode(DIRECTORY_SEPARATOR, $templateName);
 			$templateName = explode('.', end($templateName));
@@ -235,6 +240,41 @@ class View
 		return $this->bindValues[$index] ?? $default;
 	}
 
+	/**
+	 * 绑定自定义资源路径
+	 *
+	 * @author HanskiJay
+	 * @since  2021-12-24
+	 * @param  [type] $mixed
+	 * @return void
+	 */
+	public function bindCustomPath($mixed) : void
+	{
+		if(is_array($mixed)) {
+			$this->customPath = array_merge($this->customPath, $mixed);
+		} else {
+			$arg = func_get_args()[1];
+			if(is_string($mixed) && isset($arg) && is_string($arg)) {
+				$this->customPath[$mixed] = $arg;
+			}
+		}
+	}
+
+	/**
+	 * 删除一个自定义资源路径
+	 *
+	 * @author HanskiJay
+	 * @since  2021-12-24
+	 * @param  string $tag
+	 * @return void
+	 */
+	public function deleteCustomPath(string $tag) : void
+	{
+		if(isset($this->customPath[$tag])) {
+			unset($this->customPath[$tag]);
+		}
+	}
+
 
 
 	/**
@@ -330,7 +370,7 @@ class View
 	/**
 	 * 设置父级模板, 当前加载的模板将会替换为嵌套模板
 	 *
-	 * ~Usage:     模板文件需要配合使用 <owo type="childTemplate" src="--null--"/> 以进行模板更改
+	 * ~Usage:     模板文件需要配合使用 <owo type="childTemplate" /> 以进行模板更改
 	 * *Attention: 使用者需要在合适的位置及场景添加上述标签
 	 *
 	 * @author HanskiJay
@@ -341,12 +381,29 @@ class View
 	 */
 	public function setParentTemplate(string $filePath, bool $update = false) : View
 	{
-		if($this->hasChildTemplate() || $update) {
+		if(!$this->hasChildTemplate() || $update) {
 			if(is_null($this->viewTemplate)) {
 				$this->init(true);
 			}
 			$this->childTemplate = $this->viewTemplate;
-			$this->viewTemplate  = Path::getFile(Path::getViewPath($filePath), 3 * 10240); // maxSize: 30KB
+			$this->viewTemplate  = Path::getFile(Path::getViewPath($filePath));
+		}
+		return $this;
+	}
+
+	/**
+	 * 设置子级模板
+	 *
+	 * @author HanskiJay
+	 * @since  2022-08-03
+	 * @param  string  $filePath
+	 * @param  boolean $update
+	 * @return View
+	 */
+	public function setChildTemplate(string $filePath, bool $update = false) : View
+	{
+		if(!$this->hasChildTemplate() || $update) {
+			$this->childTemplate = Path::getFile(Path::getViewPath($filePath));
 		}
 		return $this;
 	}
@@ -360,7 +417,7 @@ class View
 	 */
 	public function hasChildTemplate() : bool
 	{
-		return is_null($this->childTemplate);
+		return !is_null($this->childTemplate);
 	}
 
 
@@ -409,13 +466,13 @@ class View
 		if(preg_match_all('/{\$(\w+)(\|(.*))?}/muU', $str, $matches)) {
 			$strings = $replace = [];
 			foreach($matches[1] as $k => $bindTag) {
-				$strings[$k] = $matches[0][$k];
+				$strings[] = $matches[0][$k];
 				// 从绑定变量数组中获取绑定值;
 				if(!is_null($result = $this->getAssign($bindTag))) {
-					$replace[$k] = $result;
+					$replace[] = $result;
 				} else {
 					// 判断是否存在默认值;
-					$replace[$k] = isset($matches[3][$k]) ? (($matches[3][$k] === ':null') ? '' : $matches[3][$k]) : $matches[0][$k];
+					$replace[] = isset($matches[3][$k]) ? (($matches[3][$k] === ':null') ? '' : $matches[3][$k]) : $matches[0][$k];
 				}
 			}
 			$str = str_replace($strings, $replace, $str);
@@ -437,18 +494,18 @@ class View
 		if(preg_match_all('/{\$(\w+)\.(\w+)(\|(.*))?}/muU', $str, $matches)) {
 			$strings = $replace = [];
 			foreach($matches[1] as $k => $bindTag) {
-				$strings[$k] = $matches[0][$k];
+				$strings[] = $matches[0][$k];
 				// 从绑定变量数组中获取绑定值;
 				if(!is_null($result = $this->getAssign($bindTag))) {
 					$key = $matches[2][$k];
 					if(isset($result[$key])) {
-						$replace[$k] = $result[$key];
+						$replace[] = $result[$key];
 					} else {
 						// 判断是否存在默认值;
-						$replace[$k] = (isset($matches[4][$k])) ? (($matches[4][$k] === ':null') ? '' : $matches[4][$k]) : $matches[0][$k];
+						$replace[] = (isset($matches[4][$k])) ? (($matches[4][$k] === ':null') ? '' : $matches[4][$k]) : $matches[0][$k];
 					}
 				} else {
-					$replace[$k] = '';
+					$replace[] = '';
 				}
 			}
 			$str = str_replace($strings, $replace, $str);
@@ -621,18 +678,19 @@ class View
 	 * @see    Tested picture in /tests/Function_[View-parseJudgementArea()]_test_log.png
 	 * @author HanskiJay
 	 * @since  2021-12-25
-	 * @param  string      $str   需要解析的文本
-	 * @param  integer|null    $level 循环次数
+	 * @param  string       $str   需要解析的文本
+	 * @param  integer|null $level 循环次数
 	 * @return void
 	 */
 	protected function parseJudgementArea(string &$str, ?int $level = null) : void
 	{
-		$regex = "/{{$level}if (.*)}(.*){\/{$level}if}/msuU";
-		if(preg_match_all($regex, $str, $matches)) {
+		$regex1 = "/{{$level}if (.*)}(.*){\/{$level}if}/msuU";
+		$regex2 = "/{{$level}if (.*)}(.*){else}(.*){\/{$level}if}/msuU"; //优先匹配;
+		while(preg_match_all($regex2, $str, $matches) || preg_match_all($regex1, $str, $matches)) {
 			$strings = $replace = [];
 			foreach($matches[1] as $k => $v)
 			{
-				$strings[$k] = $matches[0][$k];
+				$strings[] = $matches[0][$k];
 				$lastResult = null;
 				$lastJudge  = null;
 				while(strlen($v) > 0)
@@ -694,7 +752,7 @@ class View
 						break;
 					}
 				}
-				$replace[$k] = ($lastResult ?? $result) ? $matches[2][$k] : '';
+				$replace[] = ($lastResult ?? $result) ? $matches[2][$k] : trim($matches[3][$k] ?? '', "\r\n\t");
 			}
 			$str = str_replace($strings, $replace, $str);
 		}
@@ -703,8 +761,11 @@ class View
 	/**
 	 * 解析前端模板存在的区域控制显示语法
 	 *
-	 * ~Usage  <owo-v-display default="true" @cid="controlId">HTML-TAGS</owo-v-display>
-	 * ~Usage  <owo-v-display default="false" @cid="controlId">HTML-TAGS</owo-v-display>
+	 * ~Usage 1:  <owo-v-display default="true" @cid="controlId">HTML-TAGS</owo-v-display>
+	 * ~Usage 2:  <owo-v-display default="false" @cid="controlId">HTML-TAGS</owo-v-display>
+	 * ~Usage 3:  <owo-v-display @cid="controlId">HTML-TAGS</owo-v-display>
+	 *
+	 * *Attention: 第3种情况缺省 `default="(status: boolean)"` 则默认为不显示
 	 *
 	 * @author HanskiJay
 	 * @since  2021-12-21
@@ -713,13 +774,13 @@ class View
 	 */
 	protected function parseDisplayArea(string &$str) : void
 	{
-		if(preg_match_all('/<owo-v-display default="(true|false)"? (@cid="(\w+))?">(.*)<\/owo-v-display>/imsuU', $str, $matches)) {
+		if(preg_match_all('/<owo-v-display ?(default="(true|false)")? @cid="(\w+)">(.*)<\/owo-v-display>/imsuU', $str, $matches)) {
 			$strings = $replace = [];
-			foreach($matches[0] as $k => $v) {
+			foreach($matches[0] as $k => $area) {
 				// 区域ID绑定解析;
 				$cid = $matches[3][$k];
 				// 区域display默认状态 (布尔值);
-				$display = strtolower($matches[1][$k]);
+				$display = strtolower($matches[2][$k]);
 				$display = ($display === 'true') ? true : false;
 				if(strlen($cid) > 0) {
 					if(is_bool($value = $this->getDisplayZoneStatus($cid))) {
@@ -729,7 +790,7 @@ class View
 				// 区域原文;
 				$original = $matches[4][$k];
 				// 最终判断;
-				$strings[] = $v;
+				$strings[] = ($display) ? $area : Helper::findTagNewline($area, $str);
 				$replace[] = ($display) ? $original : '';
 			}
 			$str = str_replace($strings, $replace, $str);
@@ -790,21 +851,22 @@ class View
 	 * 解析 OwO语句
 	 *
 	 * ~Usage: <owo type="component" src="资源路径" />
+	 * ~Usage: see View->setParentTemplate($filePath: string, $update: boolean)
 	 *
 	 * @param  string $str
 	 * @return void
 	 */
 	protected function parseOwOSentence(string &$str) : void
 	{
-		$regex = '/<owo type="(\w+)" src="(.*)"[\s ]?+\/>/imU';
+		$regex = '/<owo type="(\w+)" ?(src="(.*)")?[\s ]?+\/>/imU';
 		$strings = $replace = [];
 		while(preg_match_all($regex, $str, $matches)) {
 			foreach($matches[1] as $k => $type) {
 				switch($type) {
 					case 'component':
 						$strings[] = $matches[0][$k];
-						$path      = Path::getComponentPath($matches[2][$k]);
-						$replace[] = Path::getFile($path, 512);
+						$path      = Path::getComponentPath($matches[3][$k]);
+						$replace[] = Path::getFile($path);
 					break;
 
 					case 'childComponent':
@@ -842,6 +904,8 @@ class View
 			$this->init(true);
 		}
 
+		// 第一次调用, 防止使用者在OwO模板语句中写入变量;
+		$this->replaceBindValues($this->viewTemplate);
 		// 解析OwO语句;
 		$this->parseOwOSentence($this->viewTemplate);
 		// 转换常量绑定;
@@ -859,9 +923,8 @@ class View
 		// 解析绑定数组;
 		$this->replaceBindArrays($this->viewTemplate);
 		// 解析循环语句;
-		$this->parseLoopArea($this->viewTemplate);
 		changeType(INI::_global('view.loopLevel', 3), $l);
-		for($i = 1; $i <= $l; $i++) {
+		for($i = null; $i <= $l; $i++) {
 			$this->parseLoopArea($this->viewTemplate, $i);
 		}
 		// 绑定变量;
@@ -869,9 +932,8 @@ class View
 		// 解析@display语法;
 		$this->parseDisplayArea($this->viewTemplate);
 		// 解析IF-ELSE语法区域;
-		$this->parseJudgementArea($this->viewTemplate);
 		changeType(INI::_global('view.judgementLevel', 3), $l);
-		for($i = 1; $i <= $l; $i++) {
+		for($i = null; $i <= $l; $i++) {
 			$this->parseJudgementArea($this->viewTemplate, $i);
 		}
 		// 解析模板语法之函数调用;
