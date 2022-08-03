@@ -20,7 +20,7 @@ declare(strict_types=1);
 namespace owoframe\redis;
 
 use Redis;
-use owoframe\exception\MethodMissException;
+use owoframe\exception\MethodNotFoundException;
 use owoframe\object\Config;
 
 class RedisConnector
@@ -248,7 +248,7 @@ class RedisConnector
 		if(($this->isAlive()) && method_exists($this->handler, $name)) {
 			return $this->handler->{$name}(...$args);
 		} else {
-			throw new MethodMissException(get_class($this), $name);
+			throw new MethodNotFoundException(get_class($this), $name);
 		}
 	}
 

@@ -20,7 +20,7 @@ namespace owoframe\utils;
 
 use owoframe\object\{JSON, INI};
 use owoframe\exception\OwOFrameException;
-use owoframe\exception\ResourceMissException;
+use owoframe\exception\ResourceNotFoundException;
 
 class Language
 {
@@ -61,7 +61,7 @@ class Language
 	public function __construct(string $file, string $package, array $pack, string $lang = 'en-US')
 	{
 		if(!file_exists($file)) {
-			throw new ResourceMissException('LanguagePack', $file);
+			throw new ResourceNotFoundException('LanguagePack', $file);
 		}
 		$this->package  = $package;
 		$this->file     = $file;

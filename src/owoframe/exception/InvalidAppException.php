@@ -23,6 +23,6 @@ class InvalidAppException extends OwOFrameException
 {
 	public function __construct(string $appName, string $reason, int $code = 0, \Throwable $previous = null)
 	{
-		parent::__construct("[AppExceptionHandler] Matched app '{$appName}' is failed to load, because: {$reason}!", $code, $previous);
+		parent::__construct("The matched app '{$appName}' is failed to load, because: {$reason}!", $code, $previous);
 	}
 }

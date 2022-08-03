@@ -20,7 +20,7 @@ declare(strict_types=1);
 namespace owoframe\object;
 
 use owoframe\helper\Helper;
-use owoframe\exception\FileMissException;
+use owoframe\exception\FileNotFoundException;
 use owoframe\exception\OwOFrameException;
 
 class Cache

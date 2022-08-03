@@ -19,7 +19,7 @@
 declare(strict_types=1);
 namespace owoframe\exception;
 
-class MethodMissException extends OwOFrameException
+class MethodNotFoundException extends OwOFrameException
 {
 
 

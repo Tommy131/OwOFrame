@@ -23,6 +23,6 @@ class InvalidControllerException extends OwOFrameException
 {
 	public function __construct(string $appName, string $controller, int $code = 0, \Throwable $previous = null)
 	{
-		parent::__construct("Matched app '{$appName}' is failed to load, cannot find requested controller '{$controller}'!", $code, $previous);
+		parent::__construct("The matched app '{$appName}' is failed to load, cannot find requested controller '{$controller}'!", $code, $previous);
 	}
 }

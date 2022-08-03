@@ -22,25 +22,6 @@ namespace owoframe\exception;
 class OwOFrameException extends \Exception
 {
 	/**
-	 * 备选回调方法
-	 *
-	 * @access private
-	 * @var callable
-	 */
-	private $alternativeCall = [];
-
-	/**
-	 * 判断条件结果
-	 *
-	 * @access private
-	 * @var boolean
-	 */
-	private $judgement = true;
-
-
-
-
-	/**
 	 * 获取真实文件位置
 	 *
 	 * @author HanskiJay
@@ -49,7 +30,8 @@ class OwOFrameException extends \Exception
 	 */
 	public function getRealFile() : string
 	{
-		return $this->getTrace()[1]['file'] ?? $this->getTrace()[0]['file'];
+		$trace = $this->getTrace();
+		return $trace[1]['file'] ?? $trace[0]['file'];
 	}
 
 	/**
@@ -61,7 +43,8 @@ class OwOFrameException extends \Exception
 	 */
 	public function getRealLine() : int
 	{
-		return $this->getTrace()[1]['line'] ?? $this->getTrace()[0]['line'];
+		$trace = $this->getTrace();
+		return $trace[1]['line'] ?? $trace[0]['line'];
 	}
 
 	/**
@@ -73,86 +56,7 @@ class OwOFrameException extends \Exception
 	 */
 	public function getMethod() : string
 	{
-		return $this->getTrace()[1]['function'] ?? $this->getTrace()[0]['function'];
-	}
-
-	/**
-	 * 设置备选回调方法
-	 *
-	 * @author HanskiJay
-	 * @since  2021-04-30
-	 * @param  callable      $callback
-	 */
-	public function setAlternativeCall(callable $callback) : void
-	{
-		$this->alternativeCall = $callback;
-	}
-
-	/**
-	 * 获取备选回调方法
-	 *
-	 * @author HanskiJay
-	 * @since  2021-04-30
-	 * @return callable|null
-	 */
-	public function getAlternativeCall() : ?callable
-	{
-		return $this->alternativeCall ?? null;
-	}
-
-	/**
-	 * 设置判断条件结果
-	 *
-	 * @author HanskiJay
-	 * @since  2021-04-30
-	 * @param  bool      $judgement 判断条件结果
-	 */
-	public function setJudgement(bool $judgement = true) : void
-	{
-		$this->judgement = $judgement;
-	}
-
-	/**
-	 * 获取判断条件结果
-	 *
-	 * @author HanskiJay
-	 * @since  2021-04-30
-	 * @return boolean
-	 */
-	public function getJudgement() : bool
-	{
-		return $this->judgement;
-	}
-
-	/**
-	 * 重置回调方法相关
-	 *
-	 * @author HanskiJay
-	 * @since  2021-04-30
-	 */
-	public function resetCall() : void
-	{
-		$this->alternativeCall = null;
-		$this->judgement       = true;
-	}
-
-	/**
-	 * 切换输出运行时间框
-	 *
-	 * @author HanskiJay
-	 * @since  2021-04-30
-	 * @param  bool|boolean           $update 更新输出状态
-	 * @return boolean
-	 */
-	public static function toggleRunTimeDivOutput(bool $update = true) : bool
-	{
-		static $status;
-		if(!isset($status)) {
-			$status = true;
-		}
-		if($update) {
-			$status = ($status ? false : true);
-		}
-		return $status;
+		$trace = $this->getTrace();
+		return $trace[1]['function'] ?? $trace[0]['function'];
 	}
 }

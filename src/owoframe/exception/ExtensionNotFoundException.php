@@ -17,14 +17,12 @@
 **********************************************************************/
 
 declare(strict_types=1);
-namespace owoframe\event\user;
+namespace owoframe\exception;
 
-use owoframe\user\UserManager;
-
-class UserRegisterEvent extends \owoframe\event\Event
+class ExtensionNotFoundException extends OwOFrameException
 {
-
-	public function __construct()
+	public function __construct(string $name, int $code = 0, \Throwable $previous = null)
 	{
+		parent::__construct("The required PHP extension '{$name}' could not be found.", $code, $previous);
 	}
 }

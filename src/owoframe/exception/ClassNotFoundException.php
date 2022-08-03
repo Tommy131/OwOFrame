@@ -19,10 +19,10 @@
 declare(strict_types=1);
 namespace owoframe\exception;
 
-class ResourceMissException extends OwOFrameException
+class ClassNotFoundException extends OwOFrameException
 {
-	public function __construct(string $type, string $resource, int $code = 0, \Throwable $previous = null)
+	public function __construct(string $className, int $code = 0, \Throwable $previous = null)
 	{
-		parent::__construct("Resource [{$type}] Miss | '{$resource}' not Found!", $code, $previous);
+		parent::__construct("The required class '{$className}::class' could not be found.", $code, $previous);
 	}
 }

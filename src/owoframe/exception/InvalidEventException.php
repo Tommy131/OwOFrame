@@ -23,6 +23,6 @@ class InvalidEventException extends OwOFrameException
 {
 	public function __construct(string $eventName, int $code = 0, \Throwable $previous = null)
 	{
-		parent::__construct("Event name '{$eventName}' not found!", $code, $previous);
+		parent::__construct("Attempt to call an invalid event '{$eventName}' !", $code, $previous);
 	}
 }
