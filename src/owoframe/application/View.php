@@ -21,7 +21,7 @@ namespace owoframe\application;
 
 use owoframe\exception\OwOFrameException;
 use owoframe\exception\ParameterTypeErrorException;
-use owoframe\exception\ResourceMissException;
+use owoframe\exception\ResourceNotFoundException;
 use owoframe\helper\Helper;
 use owoframe\object\INI;
 
@@ -130,31 +130,28 @@ class View
 				$templateName = explode('\\', $lastCallerData['class']);
 				$templateName = end($templateName);
 			}
+			$templateName = ucfirst(strtolower($templateName));
 		} else {
 			$templateName = explode(DIRECTORY_SEPARATOR, $templateName);
-			$templateName = explode('.', end($templateName));
+			$templateName = explode('.', array_shift($templateName));
 			$templateName = array_shift($templateName);
 		}
-		$this->templateName = $templateName = ucfirst(strtolower($templateName)) . $this->getExtensionName();
+		$this->templateName = $templateName;
 
 		// 判断文件路径是否有效;
 		if($filePath === '') {
 			$filePath = Path::getViewPath($templateName, $isExists);
 			if(!$isExists) {
-				throw new ResourceMissException('Template', $filePath);
+				throw new ResourceNotFoundException('Template', $filePath);
 			}
 		} else {
 			Path::filterPath($filePath);
-			if(!file_exists($filePath . $templateName . $this->getExtensionName())) {
-				throw new ResourceMissException('Template', $filePath);
+			$filePath = $filePath . DIRECTORY_SEPARATOR . $templateName . $this->getExtensionName();
+			if(!file_exists($filePath)) {
+				throw new ResourceNotFoundException('Template', $filePath);
 			}
 		}
 		$this->filePath = $filePath;
-
-		// Define constant in View Template;
-		$this->mergeConstants([
-			'VIEW_PATH' => Path::getViewPath('')
-		]);
 	}
 
 	/**
