@@ -174,7 +174,7 @@ class Path
 				}
 			break;
 		}
-		return $path;
+		return $path ?? "[OwOView-Error] Type {$type} not found";
 	}
 
 	/**
@@ -384,7 +384,7 @@ class Path
 	 * @param  integer $maxSize
 	 * @return string
 	 */
-	public static function getFile(string $filePath, int $maxSize = 1024) : string
+	public static function getFile(string $filePath, int $maxSize = 10240) : string
 	{
 		if(!self::exists($filePath)) {
 			return "File {$filePath} not found";
