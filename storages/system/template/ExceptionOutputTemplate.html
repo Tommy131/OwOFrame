@@ -1,113 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="description" content="OwOBlog Usercenter">
-		<meta name="author" content="OwOBlogTeam"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>程序错误机制显示页面 - OwOFrame</title>
-		<style>
-			html {
-				padding: 50px 10px;
-				font-size: 16px;
-				font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-				line-height: 1.4;
-				color: #666;
-				background: #F6F6F3;
-				-webkit-text-size-adjust: 100%;
-				-ms-text-size-adjust: 100%;
-			}
-			pre {
-				font-size: 14px;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-			}
-			.container {
-				position: relative;
-				margin: 0 auto;
-				padding: 30px 20px;
-				width: 50%;
-				border-radius: 5px;
-				box-shadow: 2px 2px 2px #eee;
-				background: #FFF;
-			}
-			p#title {
-				text-align: center;
-				padding: 10px 5px;
-				border-radius: 5px;
-				font-weight: bold;
-				background-color: #212121;
-				color: #FFFF00;
-			}
-			div#type {
-				font-weight: bold;
-				color: #FF5722;
-			}
-			div#message {
-				margin: 5px auto;
-				padding: 20px;
-				font-weight: bold;
-				border-radius: 5px;
-				background-color: #eee;
-				color: #DD2C00;
-			}
-			div#file {
-				overflow: hidden;
-				text-overflow: ellipsis;
-			}
-			span#class {
-				font-weight: bold;
-				color: #00B8D4;
-			}
-			span#line {
-				font-weight: bold;
-				color: #FF6D00;
-			}
-			span#debugMode {
-				padding: 5px 10px;
-				font-weight: bold;
-				border-radius: 5px;
-				background-color: #6e6e6e;
-				color: #ffffff;
-			}
-			span#notPassed {
-				padding: 5px 10px;
-				font-weight: bold;
-				border-radius: 5px;
-				background-color: #C51162;
-				color: white;
-			}
-			span#logged {
-				padding: 5px 10px;
-				font-weight: bold;
-				border-radius: 5px;
-				background-color: #7576d4;
-				color: white;
-			}
-			div#runTime span{
-				padding: 5px;
-				width: 150px;
-				text-align: center;
-				border-radius: 5px;
-				background-color: #6D6D82;
-				color: white;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="container">
-			<p id="title">OwOFrame Exception Handler &nbsp;{debugMode}</p>
-			<p>Status:
-				<span id="notPassed">NotPassed</span>
-			</p>
+  <head>
+  <meta charset="utf-8">
+  <meta name="description" content="OwOBlog Usercenter">
+  <meta name="author" content="OwOBlogTeam"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>异常处理程序显示页面 - ExceptionHandlerPage - OwOFrame</title>
+  <style>
+    * {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      transition: 0.3s all;
+    }
+    html {
+      padding: 50px 10px;
+      font-size: 16px;
+      line-height: 1.4;
+      color: #666;
+      background: #eee;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+    pre {
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-			<div id="type">{type}:</div>
-			<div id="message">{message}</div>
-			<div id="file">in <span id="class">{file}</span> at line <span id="line">{line}</span></div>
+    .container {
+      position: relative;
+      margin: 20px auto;
+      max-width: 100%;
+    }
+    .container > .inner, .header {
+      max-width: 40%;
+      margin: auto auto;
+      padding: 30px 20px;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+      box-shadow: 2px 2px 2px #d7d7d7;
+      background: #fff;
+    }
 
-			<p><b>Stack Trace</b>: <br/><pre>{trace}</pre></p>
-			<div id="runTime"><b>Used Time:</b> <span>{runTime}s</span></div>
-		</div>
-	</body>
+    .header {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 0;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      padding: 10px 20px;
+      background-color: #3f51b5;
+      color: #fff;
+    }
+    .header > .title {
+      margin: 15px 0;
+      font-size: 25px;
+      font-weight: bold;
+    }
+    .header > .mode {
+      padding: 15px 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+    .header > .mode:hover {
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+
+    .error-box {
+      margin: 10px 0;
+    }
+    .error-box > .type {
+      padding: 5px;
+      border-radius: 5px;
+      background-color: #3f51b5;
+      color: #fff;
+    }
+    .error-box > .type, .error-box > .subtype, .show-box > .message, .show-box > .file > .line, .debug-trace > .trace-text {
+      font-weight: bold;
+    }
+    .error-box > .subtype, .show-box > .message:hover, .show-box > .file > .line:hover {
+      color: #ff5722;
+    }
+
+    .show-box {
+      display: flex;
+      flex-direction: column;
+      margin: 0 10px 20px 0;
+      padding: 15px;
+      overflow: hidden;
+      border-radius: 5px;
+      background-color: #f5f5f5;
+    }
+    .show-box span {
+      margin-right: 5px;
+    }
+    .show-box > .message, .show-box > .file > .class {
+      word-break: break-word;
+    }
+    .show-box > .file > .class {
+      border-bottom: 1.5px solid #707070;
+    }
+    .show-box > .file > .class:hover {
+      padding: 2px 5px;
+      border-radius: 5px;
+      background-color: #707070;
+      color: #fff;
+    }
+
+    .debug-trace > .trace-text {
+      margin: 0;
+      margin-bottom: -10px;
+      font-size: 20px;
+      color: #ff9800;
+    }
+    .debug-trace pre {
+      padding: 15px 10px;
+      border-radius: 5px;
+      background-color: #f5f5f5;
+    }
+
+    .show-box:hover, .debug-trace pre:hover {
+      /* transform: scale(2); */
+      background:
+        linear-gradient(90deg, #3f51b5 50%, transparent 0) repeat-x,
+        linear-gradient(90deg, #3f51b5 50%, transparent 0) repeat-x,
+        linear-gradient(0deg, #3f51b5 50%, transparent 0) repeat-y,
+        linear-gradient(0deg, #3f51b5 50%, transparent 0) repeat-y,
+        #f5f5f5;
+      background-size: 10px 3px, 10px 3px, 3px 10px, 3px 10px;
+      background-position: 0 0, 0 100%, 0 0, 100% 0;
+
+      animation: linearGradientMove .5s infinite linear;
+    }
+    @keyframes linearGradientMove {
+      100% {
+        background-position: 10px 0, -10px 100%, 0 -10px, 100% 10px;
+      }
+    }
+
+    .outer-time-box, .time-box {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .user-agent {
+      margin: 0;
+      margin-top: 10px;
+      margin-bottom: -20px;
+      line-height: 1.25;
+      font-size: 10px;
+    }
+
+    .time-box, .user-agent {
+      margin-right: 10px;
+      padding-left: 5px;
+      font-size: 10px;
+      border-left: 3px solid #3f51b5;
+      color: #9d9d9d;
+    }
+    .time-box:hover, .user-agent:hover {
+      color: #505050;
+    }
+
+    @media screen and (max-width: 1840px) {
+      .container > .inner, .header {
+        max-width: 60%;
+      }
+    }
+    @media screen and (max-width: 1200px) {
+      .container > .inner, .header {
+        max-width: 100%;
+      }
+    }
+    @media screen and (max-width: 430px) {
+      .outer-time-box {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .time-box {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+    }
+    @media screen and (max-width: 320px) {
+      .header {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <p class="title">OwOFrame Exception Handler</p>
+      <p class="mode">{$debugMode}</p>
+    </div>
+
+    <div class="inner">
+      <div class="error-box">
+        <span class="type">{$type} Error</span>
+        <span class="subtype">{$subtype}:</span>
+      </div>
+
+      <div class="show-box">
+        <div class="message">{$message}</div>
+        <div class="file">
+          <span>in</span>
+          <span class="class">{$file}</span>
+          <span>at line</span>
+          <span class="line">{$line}</span>
+        </div>
+      </div>
+
+      <div class="debug-trace">
+        <p class="trace-text">Stack Trace</p>
+        <pre>{$trace}</pre>
+      </div>
+
+
+      <div class="outer-time-box">
+        <div class="time-box">Current Time: {date|Y-m-d H:i:s}</div>
+        <div class="time-box">Response Time: {$runTime}s
+        </div>
+      </div>
+
+      <div class="user-agent">{server|HTTP_USER_AGENT}</div>
+    </div>
+  </div>
+</body>
 </html>

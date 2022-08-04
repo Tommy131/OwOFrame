@@ -80,7 +80,7 @@ class ExceptionOutput
 		$toString = "{$errorLevel} happened: {$errorMessage} in {$errorFile} at line {$errorLine}";
 		$trace    = self::debugTrace2String();
 		self::execute([
-			'PHPError',
+			'PHP',
 			$errorLevel,
 			$errorMessage,
 			$errorFile,
@@ -106,7 +106,7 @@ class ExceptionOutput
 		}
 
 		self::execute([
-			$type ? 'OwOError' : 'PHPError',
+			$type ? 'OwO' : 'PHP',
 			Helper::getShortClassName($exception),
 			$exception->getMessage(),
 			$fileName,
@@ -122,7 +122,7 @@ class ExceptionOutput
 		if(Helper::isRunningWithCGI()) {
 			$view = self::getTemplate();
 			$view->assign([
-				'type'    => $args[0] ?? 'PHPError',
+				'type'    => $args[0] ?? 'PHP',
 				'subtype' => $args[1] ?? 'None',
 				'message' => $args[2] ?? 'None',
 				'file'    => $args[3] ?? 'None',
