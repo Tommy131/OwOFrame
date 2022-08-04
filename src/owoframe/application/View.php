@@ -107,7 +107,7 @@ class View
 	 *
 	 * @var string
 	 */
-	public $extensionName;
+	public static $extensionName;
 
 
 	/**
@@ -140,13 +140,13 @@ class View
 
 		// 判断文件路径是否有效;
 		if($filePath === '') {
-			$filePath = Path::getViewPath($templateName, $isExists);
+			$filePath = Path::getViewPath($templateName . self::getExtensionName(), $isExists);
 			if(!$isExists) {
 				throw new ResourceNotFoundException('Template', $filePath);
 			}
 		} else {
 			Path::filterPath($filePath);
-			$filePath = $filePath . DIRECTORY_SEPARATOR . $templateName . $this->getExtensionName();
+			$filePath = $filePath . DIRECTORY_SEPARATOR . $templateName . self::getExtensionName();
 			if(!file_exists($filePath)) {
 				throw new ResourceNotFoundException('Template', $filePath);
 			}
@@ -962,9 +962,9 @@ class View
 	 * @since  2022-08-02
 	 * @return string
 	 */
-	final public function getExtensionName() : string
+	final public static function getExtensionName() : string
 	{
-		return $this->extensionName ?? '.html';
+		return static::$extensionName ?? '.html';
 	}
 
 	/**

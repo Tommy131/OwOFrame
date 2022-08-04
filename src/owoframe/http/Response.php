@@ -137,15 +137,15 @@ class Response
 		if($this->callback instanceof Closure) {
 			$called = $this->callback;
 			$called = $called();
-		}
-		elseif($this->callback[0] instanceof JsonSerializable) {
-			$called = $this->callback[0];
-			$isJson = true;
 		} else {
 			// Callback method and get result;
 			$called = call_user_func_array($this->callback, $this->callParams);
-			if(is_array($called)) {
-				$called = json_encode($called);
+			if(is_array($called) || ($called instanceof JsonSerializable)) {
+				$called = json_encode($called, JSON_UNESCAPED_UNICODE);
+				$isJson = true;
+			}
+			elseif($called instanceof DataEncoder) {
+				$called = $called->encode();
 				$isJson = true;
 			} else {
 				$reflect = new ReflectionClass($this->callback[0]);
