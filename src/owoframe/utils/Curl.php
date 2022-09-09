@@ -19,6 +19,16 @@ class Curl
 	 */
 	public const UA_PC = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 Edg/103.0.1264.62';
 
+	public const DEFAULT_HEADER =
+	[
+		'Content-Type'    => 'application/x-www-form-urlencoded; charset=UTF-8',
+		'Accept'          => '*/*',
+		'Accept-Language' => 'zh-Hans-CN,zh-Hans;q=0.8,en-US;q=0.5,en;q=0.3',
+		'User-Agent'      => self::UA_PC,
+		'Connection'      => 'Keep-Alive',
+		'Pragma'          => 'no-cache',
+	];
+
 	/**
 	 * cURL
 	 *
@@ -51,22 +61,20 @@ class Curl
 	protected $content;
 
 	/**
-	 * HTTP请求头
+	 * 原始请求头
 	 *
+	 * @access protected
 	 * @var array
 	 */
-	public static $defaultHeader =
-	[
-		'Connection: Keep-Alive',
-		'Accept: text/html, application/xhtml+xml, */*',
-		'Pragma: no-cache',
-		'Accept-Language: zh-Hans-CN,zh-Hans;q=0.8,en-US;q=0.5,en;q=0.3',
-		'User-Agent: {userAgent}',
-		'CLIENT-IP: {ip}',
-		'X-FORWARDED-FOR: {ip}'
-	];
+	protected $headers = [];
 
-	public $header = [];
+	/**
+	 * 格式化后的请求头
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $formattedHeaders = [];
 
 	/**
 	 * IP组
@@ -117,6 +125,11 @@ class Curl
 	 */
 	public function exec() : Curl
 	{
+		foreach($this->headers as $index => $value) {
+			$this->formattedHeaders[] = $index . ': ' . $value;
+		}
+		curl_setopt($this->curl, CURLOPT_HTTPHEADER, $this->formattedHeaders);
+
 		$this->content = curl_exec($this->curl);
 		return $this;
 	}
@@ -131,6 +144,22 @@ class Curl
 	public function getResource()
 	{
 		return $this->curl ?? null;
+	}
+
+	/**
+	 * 使用随机IP地址
+	 *
+	 * @author HanskiJay
+	 * @since  2022-07-24
+	 * @return Curl
+	 */
+	public function useRadomIp() : Curl
+	{
+		$radomIp = Curl::getRadomIp();
+		return $this->setHeaders([
+			'CLIENT-IP'       => $radomIp,
+			'X-FORWARDED-FOR' => $radomIp
+		]);
 	}
 
 	/**
@@ -219,17 +248,40 @@ class Curl
 	}
 
 	/**
+	 * 设置Header的单个参数
+	 *
+	 * @author HanskiJay
+	 * @since  2021-09-09
+	 * @param  string $index
+	 * @param  string $value
+	 * @return Curl
+	 */
+	public function setHeader(string $index, string $value) : Curl
+	{
+		$this->headers[$index] = $value;
+		return $this;
+	}
+
+	/**
 	 * 设置HTTP Header
 	 *
 	 * @author HanskiJay
 	 * @since  2021-08-14
-	 * @param  array      $header
+	 * @param  array  $headers
 	 * @return Curl
 	 */
-	public function setHeader(array $header) : Curl
+	public function setHeaders(array $headers) : Curl
 	{
-		curl_setopt($this->curl, CURLOPT_HTTPHEADER, array_merge($header, $this->header));
+		foreach($headers as $index => $value) {
+			if(!is_string($index)) continue;
+			$this->headers[$index] = $value;
+		}
 		return $this;
+	}
+
+	public function setContentType(string $type) : Curl
+	{
+		return $this->setHeader('Content-Type', $type);
 	}
 
 	/**
