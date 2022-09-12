@@ -5,7 +5,7 @@
   <meta name="description" content="OwOBlog Usercenter">
   <meta name="author" content="OwOBlogTeam"/>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{title} - OwOFrame</title>
+  <title>{$title} - OwOFrame</title>
   <style>
     body {
       background-color: dimgray;
@@ -47,12 +47,12 @@
 <body>
   <div class="container">
     <div class="owo-box">
-      <p class="title">{title}</p>
+      <p class="title">{$title|404 PAGE NOT FOUND}</p>
       <div class="text-area">
-        {description}
+        {$description|You requested page was not found.}
       </div>
     </div>
   </div>
-  <div class="copyright">Copyright &copy; 2015-{thisYear} OwOFrame.</div>
+  <div class="copyright">Copyright &copy; 2015-{date|Y} OwOFrame.</div>
 </body>
 </html>

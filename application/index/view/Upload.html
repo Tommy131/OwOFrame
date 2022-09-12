@@ -1,78 +1,78 @@
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
-	<title>File Upload Page</title>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-	<link rel="stylesheet" href="{CSS|Upload.css}">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <title>File Upload Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="{CSS|Upload.css}">
 </head>
 <body>
 <div class="container">
-	<div class="center">
-		<div class="form-area">
-			<h3>Upload Page</h3>
-			<form enctype="multipart/form-data">
-				<div class="form-group">
-					<p>Please select a file which you want to upload it.</p>
-					<div class="file-box">
-						<span id="title">Add File</span>
-						<input type="file" name="{$uploadId}" id="{$uploadId}">
-					</div>
-					<span id="fileName"></span>
-				</div>
-				<button id="submit" type="button" class="btn btn-primary">Upload</button>
-			</form>
-		</div>
-	</div>
+    <div class="center">
+        <div class="form-area">
+            <h3>Upload Page</h3>
+            <form enctype="multipart/form-data">
+                <div class="form-group">
+                    <p>Please select a file which you want to upload it.</p>
+                    <div class="file-box">
+                        <span id="title">Add File</span>
+                        <input type="file" name="{$uploadId}" id="{$uploadId}">
+                    </div>
+                    <span id="fileName"></span>
+                </div>
+                <button id="submit" type="button" class="btn btn-primary">Upload</button>
+            </form>
+        </div>
+    </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.0.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
 <script type="text/javascript">
-	$("#submit").click(function() {
-		if($("#{$uploadId}").val() <= 0) {
-			alert("Please choose one file then push the file!");
-			return;
-		} else {
-			$.ajax({
-				type: 'post',
-				url: "{$uploadUrl}",
-				data: new FormData($("form")[0]),
-				cache: false,
-				processData: false,
-				contentType: false,
-				success: function(data){
-					alert(data);
-					console.log(data)
-				}
-			});
-		}
-	});
-	$("#{$uploadId}").change(function() {
-		file = $(this);
-		display = $("#fileName");
-		var errMsg = (file.length <= 0) ? file.text() : ((display.length <= 0) ? display.text() : (((file.length <= 0) && (display.length <= 0)) ? "file and display" : ""));
-		// if(!this.hasObj(errMsg)) return false;
+    $("#submit").click(function() {
+        if($("#{$uploadId}").val() <= 0) {
+            alert("Please choose one file then push the file!");
+            return;
+        } else {
+            $.ajax({
+                type: 'post',
+                url: "{$uploadUrl}",
+                data: new FormData($("form")[0]),
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function(data){
+                    alert(data);
+                    console.log(data)
+                }
+            });
+        }
+    });
+    $("#{$uploadId}").change(function() {
+        file = $(this);
+        display = $("#fileName");
+        var errMsg = (file.length <= 0) ? file.text() : ((display.length <= 0) ? display.text() : (((file.length <= 0) && (display.length <= 0)) ? "file and display" : ""));
+        // if(!this.hasObj(errMsg)) return false;
 
-		var fileName;
-		var path = file.val();
-		// 火狐获取的是文件名，所以pos=-1,chrome和IE获取的是文件路径;
-		var pos1 = path.lastIndexOf('/');
-		var pos2 = path.lastIndexOf('\\');
-		var pos  = Math.max(pos1, pos2)
-		if(pos < 0)
-		{
-			display.hide("slow");
-			fileName = path;
-			display.text(fileName);
-			display.attr("title",fileName);
-		}
-		else
-		{
-			display.show();
-			fileName = path.substring(pos+1);// 截取从pos+1索引到末尾;
-			display.text(fileName);
-			display.attr("title",fileName);
-		}
-	});
+        var fileName;
+        var path = file.val();
+        // 火狐获取的是文件名，所以pos=-1,chrome和IE获取的是文件路径;
+        var pos1 = path.lastIndexOf('/');
+        var pos2 = path.lastIndexOf('\\');
+        var pos  = Math.max(pos1, pos2)
+        if(pos < 0)
+        {
+            display.hide("slow");
+            fileName = path;
+            display.text(fileName);
+            display.attr("title",fileName);
+        }
+        else
+        {
+            display.show();
+            fileName = path.substring(pos+1);// 截取从pos+1索引到末尾;
+            display.text(fileName);
+            display.attr("title",fileName);
+        }
+    });
 </script>
 </body>
 </html>

@@ -1,25 +1,28 @@
 <?php
 
 /*********************************************************************
-	 _____   _          __  _____   _____   _       _____   _____
-	/  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
-	| | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
-	| | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _
-	| |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
-	\_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
+     _____   _          __  _____   _____   _       _____   _____
+    /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
+    | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
+    | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _
+    | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
+    \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
 
-	* Copyright (c) 2015-2021 OwOBlog-DGMT.
-	* Developer: HanskiJay(Tommy131)
-	* Telegram:  https://t.me/HanskiJay
-	* E-Mail:    support@owoblog.com
-	* GitHub:    https://github.com/Tommy131
+    * Copyright (c) 2015-2021 OwOBlog-DGMT.
+    * Developer: HanskiJay(Tommy131)
+    * Telegram:  https://t.me/HanskiJay
+    * E-Mail:    support@owoblog.com
+    * GitHub:    https://github.com/Tommy131
 
 **********************************************************************/
 
 require_once(__DIR__ . '/src/bootstrap.php');
-use owoframe\MasterManager;
 
-$master = new MasterManager($classLoader);
-$master->getUnit('app')->initializeApplications();
-$console = $master->getUnit('console');
-$console->monitor($argv);
+use owoframe\System;
+use owoframe\application\AppManager;
+use owoframe\console\Console;
+
+System::init($classLoader);
+AppManager::initializeApplications();
+$console = Console::getInstance();
+$console->init()->monitor($argv);

@@ -6,7 +6,7 @@ set PREFIX=[OwOTools]
 set GIT="C:\Program Files\Git\bin\git.exe"
 
 if not exist %GIT% (
-	set GIT=git
+    set GIT=git
 )
 
 echo -------------------------------------------------------------

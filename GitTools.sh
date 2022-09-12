@@ -24,39 +24,39 @@ echo -e
 
 if [ $INPUT ]
 then
-	if [ $INPUT == 0 ]
-	then
-		echo "Checking upstrem..."
-		git pull
-		echo -e
-		echo -e
-		echo -e
-	elif [ $INPUT == 1 ]
-	then
-		echo "Checking locate status..."
-		git status
-		echo -e
-		echo -e
-		echo -e
-	elif [ $INPUT == 2 ]
-	then
-		git checkout master
-	elif [ $INPUT == 3 ]
-	then
-		git checkout dev-alpha
-	elif [ $INPUT == 4 ]
-	then
-		composer install
-	elif [ $INPUT == "x" ]
-	then
-		echo -e
-		echo -e
-		echo "---------------------"
-		echo "${PREFIX} Byebye~"
-		echo "---------------------"
-		echo -e
-		exit
-	fi
+    if [ $INPUT == 0 ]
+    then
+        echo "Checking upstrem..."
+        git pull
+        echo -e
+        echo -e
+        echo -e
+    elif [ $INPUT == 1 ]
+    then
+        echo "Checking locate status..."
+        git status
+        echo -e
+        echo -e
+        echo -e
+    elif [ $INPUT == 2 ]
+    then
+        git checkout master
+    elif [ $INPUT == 3 ]
+    then
+        git checkout dev-alpha
+    elif [ $INPUT == 4 ]
+    then
+        composer install
+    elif [ $INPUT == "x" ]
+    then
+        echo -e
+        echo -e
+        echo "---------------------"
+        echo "${PREFIX} Byebye~"
+        echo "---------------------"
+        echo -e
+        exit
+    fi
 else
-	echo "${PREFIX} Error Input, stop to run this script."
+    echo "${PREFIX} Error Input, stop to run this script."
 fi

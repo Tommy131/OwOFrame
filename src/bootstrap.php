@@ -1,24 +1,24 @@
 <?php
 
 /*********************************************************************
-	 _____   _          __  _____   _____   _       _____   _____
-	/  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
-	| | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
-	| | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _
-	| |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
-	\_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
+     _____   _          __  _____   _____   _       _____   _____
+    /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
+    | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
+    | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _
+    | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
+    \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
 
-	* Copyright (c) 2015-2021 OwOBlog-DGMT.
-	* Developer: HanskiJay(Tommy131)
-	* Telegram:  https://t.me/HanskiJay
-	* E-Mail:    support@owoblog.com
-	* GitHub:    https://github.com/Tommy131
+    * Copyright (c) 2015-2021 OwOBlog-DGMT.
+    * Developer: HanskiJay(Tommy131)
+    * Telegram:  https://t.me/HanskiJay
+    * E-Mail:    support@owoblog.com
+    * GitHub:    https://github.com/Tommy131
 
 **********************************************************************/
 
 // Check PHP version;
 if(version_compare(PHP_VERSION, '7.1.0') === -1) {
-	die('[PHP_VERSION_TO_LOW] OwOWebFrame need to run at higher PHP version, minimum PHP 7.1.0.');
+    die('[PHP_VERSION_TO_LOW] OwOWebFrame need to run at higher PHP version, minimum PHP 7.1.0.');
 }
 
 // Define framework start running time;
@@ -28,7 +28,7 @@ if(!defined('START_MICROTIME'))  define('START_MICROTIME',  microtime(true));
 if(!defined('GITHUB_PAGE'))      define('GITHUB_PAGE',     'https://github.com/Tommy131/OwOFrame/');
 
 // Define OwOFrame start time;
-if(!defined('FRAME_VERSION'))    define('FRAME_VERSION',   '1.0.3-dev');
+if(!defined('FRAME_VERSION'))    define('FRAME_VERSION',   '1.0.4-dev');
 
 // Check whether the current environment supports mbstring extension;
 if(!defined('MB_SUPPORTED'))     define('MB_SUPPORTED',    extension_loaded('mbstring'));
@@ -77,7 +77,7 @@ if(!defined('RESOURCE_PATH'))    define('RESOURCE_PATH',   STORAGE_PATH . 'resou
 
 // Start to check composer status and load autoload file;
 if(!file_exists(CLASS_LOADER)) {
-	exit('[AutoLoader/ERROR] Please execute command \'composer install\' at root path \'' . ROOT_PATH . '\' at first!');
+    exit('[AutoLoader/ERROR] Please execute command \'composer install\' at root path \'' . ROOT_PATH . '\' at first!');
 }
 $classLoader = require_once(CLASS_LOADER);
 

@@ -12,7 +12,7 @@
     ],
     "autoload": {
         "files": [
-            "src/owoframe/helper/functions.php"
+            "src/functions.php"
         ],
         "psr-4": {
             "owoframe\\": "src/owoframe/"
