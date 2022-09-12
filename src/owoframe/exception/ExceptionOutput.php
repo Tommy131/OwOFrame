@@ -34,12 +34,12 @@ class ExceptionOutput
         $template = "#%d %s(%d): %s%s%s(%s)\n";
         $trace    = debug_backtrace();
         array_shift($trace); // 移除调用本函数的栈追踪;
-        $temp     = array_shift($trace);
-        $output   = sprintf($template, 0, $temp['file'], $temp['line'], $trace[0]['class'], $trace[0]['type'], $trace[0]['function'], @implode(', ', $trace[0]['args']));
+        $output = '';
         unset($trace[0], $temp);
+        $trace = array_values($trace);
 
         foreach($trace as $k => $d) {
-            $output .= sprintf($template, $k, $d['file'], $d['line'], $d['class'] ?? '', $d['type'] ?? '', $d['function'] ?? '', @implode(', ', $d['args']));
+            $output .= sprintf($template, $k, $d['file'] ?? '', $d['line'] ?? '', $d['class'] ?? '', $d['type'] ?? '', $d['function'] ?? '', @implode(', ', $d['args']));
         }
         return $output . "{main}\n";
     }

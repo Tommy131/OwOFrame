@@ -127,26 +127,26 @@ function files(string $index, bool $autoUpper = false)
  * @since  2021-03-06
  * @param  string  $index
  * @param  boolean $autoUpper
- * @return mixed
+ * @return string
  */
 function check(string $index, bool $autoUpper = false, &$method = 'NULL')
 {
     if($autoUpper) $index = strtoupper($index);
-    if(($result = get($index)) !== null) {
+    if(get($index) !== null) {
         $method = 'GET';
     }
-    elseif(($result = post($index)) !== null) {
+    elseif(post($index) !== null) {
         $method = 'POST';
     }
-    elseif(($result = put($index)) !== null) {
+    elseif(put($index) !== null) {
         $method = 'PUT';
     }
-    elseif(($result = files($index)) !== null) {
+    elseif(files($index) !== null) {
         $method = 'FILE';
     } else {
-        $result = false;
+        $method = 'GET';
     }
-    return $result;
+    return $method;
 }
 
 /**
