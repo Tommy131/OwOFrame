@@ -74,13 +74,6 @@ class Response
     ];
 
     /**
-     * 是否显示运行时间
-     *
-     * @var boolean
-     */
-    public static $showRuntimeDiv = true;
-
-    /**
      * 默认响应信息
      *
      * @var string
@@ -187,7 +180,7 @@ class Response
 
         if($isJson) $this->header('Content-Type', MIMEType::MIMETYPE['json']);
         // Judgement whether the output is JSON format;
-        self::getRuntimeDiv(!$isJson && static::$showRuntimeDiv);
+        self::getRuntimeDiv(!$isJson && HttpManager::getCurrent('controller')::$showUsedTimeDiv);
 
         // set HTTP-HEADER;
         if(!headers_sent() && !empty($this->header)) {

@@ -211,7 +211,6 @@ class HttpManager implements HttpStatusCode
         $anonymousClass->methodName = $requestMethod;
 
         $anonymousClass->response = new Response([$controller, $requestMethod]);
-        $anonymousClass->response::$showRuntimeDiv = $controller::$showUsedTimeDiv;
         $anonymousClass->response->sendResponse();
     }
 
