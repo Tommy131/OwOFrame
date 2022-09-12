@@ -184,14 +184,17 @@ class Response
             $logger->debug($called);
             $isJson = true;
         }
+
         if($isJson) $this->header('Content-Type', MIMEType::MIMETYPE['json']);
+        // Judgement whether the output is JSON format;
+        self::getRuntimeDiv(!$isJson && static::$showRuntimeDiv);
 
         // set HTTP-HEADER;
         if(!headers_sent() && !empty($this->header)) {
             foreach($this->header as $name => $val) {
                 header($name . (!is_null($val) ? ": {$val}"  : ''));
             }
-            $length = strlen($called);
+            $length = strlen($called) + strlen(ob_get_contents());
             header('Powered-By: OwOFrame v' . FRAME_VERSION);
             header('OwO-Author: HanskiJay');
             header('GitHub-Page: ' . GITHUB_PAGE);
@@ -202,11 +205,7 @@ class Response
         $event = new OutputEvent($called);
         $event->trigger();
         $event->output();
-
-        // Judgement whether the output is JSON format;
-        if(!$isJson && static::$showRuntimeDiv) {
-            self::getRuntimeDiv();
-        }
+        ob_end_flush();
 
         if(function_exists('fastcgi_finish_request')) fastcgi_finish_request();
         (new AfterResponseEvent)->trigger();
