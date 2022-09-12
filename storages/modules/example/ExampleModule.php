@@ -21,7 +21,7 @@ namespace modules\example;
 class ExampleModule extends \owoframe\module\ModuleBase
 {
 
-    public function onLoad() : void
+    public function onEnable() : void
     {
         // echo "I'm loaded!";
     }

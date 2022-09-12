@@ -21,6 +21,7 @@ namespace owoframe\module;
 
 use owoframe\System;
 use owoframe\object\INI;
+use owoframe\object\Priority;
 
 class ModuleLoader
 {
@@ -37,6 +38,13 @@ class ModuleLoader
      */
     private static $modulePool = [];
 
+    /**
+     * 优先级加载列表
+     *
+     * @var array
+     */
+    private static $priorityLoadList = [];
+
 
     /**
      * 自动从加载路径加载模块
@@ -47,22 +55,40 @@ class ModuleLoader
      */
     public static function autoLoad() : void
     {
-        // try {
-            $dirArray = scandir(MODULE_PATH);
-            // unset dots and pathname;
-            unset($dirArray[array_search('.', $dirArray)], $dirArray[array_search('..', $dirArray)]);
-            $path = [];
-            foreach($dirArray as $name) {
-                if(is_dir($dir = MODULE_PATH . $name . DIRECTORY_SEPARATOR) && is_file($dir . self::IDENTIFY_FILE_NAME)) {
-                    $path[$name] = $dir;
-                }
+        $dirArray = scandir(MODULE_PATH);
+        // unset dots and pathname;
+        unset($dirArray[array_search('.', $dirArray)], $dirArray[array_search('..', $dirArray)]);
+        $path = [];
+        foreach($dirArray as $name) {
+            if(is_dir($dir = MODULE_PATH . $name . DIRECTORY_SEPARATOR) && is_file($dir . self::IDENTIFY_FILE_NAME)) {
+                $path[$name] = $dir;
             }
-            foreach($path as $name => $dir) {
-                self::loadModule($dir, $name);
-            }
-        // } catch(\Throwable $e) {
+        }
+        foreach($path as $name => $dir) {
+            self::loadModule($dir, $name);
+        }
 
-        // }
+        $_ = static::$priorityLoadList[Priority::ABS_HIGHEST] ?? null;
+        if($_ && (count($_) > 1)) {
+            System::getLogger()->error('ModuleLoader > Failed to load all modules! Priority level [ABS_HIGHEST] only one module is allowed!', true);
+            return;
+        }
+        unset(static::$priorityLoadList[Priority::ABS_HIGHEST]);
+
+        $module = array_shift($_);
+        $module = self::getModule($module);
+        $module->onEnable();
+        $module->setEnabled();
+
+        sort(static::$priorityLoadList);
+        foreach(static::$priorityLoadList as $priority => $list) {
+            shuffle($list);
+            foreach($list as $name) {
+                $module = self::getModule($name);
+                $module->onEnable();
+                $module->setEnabled();
+            }
+        }
     }
 
     /**
@@ -74,15 +100,15 @@ class ModuleLoader
      */
     public static function existsModule(string $name, &$info = null) : bool
     {
-        if(isset(self::$modulePool[strtolower($name)])) return true;
+        if(self::getModule($name)) return true;
         // Start judgment;
         $hisPath = MODULE_PATH . $name . DIRECTORY_SEPARATOR;
-        if(!is_dir($hisPath)) return false;
-        if(!file_exists($ic = $hisPath . self::IDENTIFY_FILE_NAME)) return false;
+        if(!is_dir($hisPath) || !file_exists($ic = $hisPath . self::IDENTIFY_FILE_NAME)) return false;
         $info = new INI($ic);
         if(!self::checkInfo($info->getAll())) return false;
         $info = $info->obj(); // Format to JSON Object;
-        if(!file_exists($hisPath .$info->className . '.php')) return false;
+        if(!Priority::has((int) $info->priority)) return false;
+        if(!file_exists($hisPath . $info->className . '.php')) return false;
         /*$info->className = str_replace('/', '\\', trim($info->className));
         if(!class_exists($info->className)) return false;
         if(is_bool($c = (new \ReflectionClass($info->className))->getParentClass())) return false;
@@ -102,7 +128,7 @@ class ModuleLoader
      */
     public static function getModule(string $name) : ?ModuleBase
     {
-        return self::$modulePool[strtolower($name)] ?? null;
+        return static::$modulePool[strtolower($name)] ?? null;
     }
 
     /**
@@ -122,9 +148,9 @@ class ModuleLoader
             $class     = $namespace . '\\' . $info->className;
 
             if(class_exists($class)) {
-                $class = self::$modulePool[strtolower($info->name)] = new $class($dir, $info);
+                static::$priorityLoadList[$info->priority][] = strtolower($info->name);
+                $class = static::$modulePool[strtolower($info->name)] = new $class($dir, $info);
                 $class->onLoad();
-                $class->setEnabled();
                 return true;
             } else {
                 System::getLogger()->error("ModuleLoader > Load module '{$info->name}' failed: The NameSpace or ClassName may incorrect!");
@@ -147,9 +173,9 @@ class ModuleLoader
     {
         $name = strtolower($name);
         if(($module = self::getModule($name)) !== null) {
-            self::$modulePool[$name]->onDisable();
-            self::$modulePool[$name]->setDisabled();
-            unset(self::$modulePool[$name]);
+            $module->onDisable();
+            $module->setDisabled();
+            unset(static::$modulePool[$name]);
         }
         return false;
     }

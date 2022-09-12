@@ -56,7 +56,7 @@ abstract class ModuleBase
      * @param  object      $moduleInfo 插件信息配置文件
      * @return void
      */
-    public final function __construct(string $loadPath, object $moduleInfo)
+    final public function __construct(string $loadPath, object $moduleInfo)
     {
         $this->loadPath   = $loadPath;
         $this->moduleInfo = $moduleInfo;
@@ -64,15 +64,29 @@ abstract class ModuleBase
 
 
     /**
-     * 插件加载时自动调用此方法
+     * 插件加载时自动调用此方法: 正确加载时
+     *
+     * @return void
+     */
+    public function onLoad() : void
+    {}
+
+    /**
+     * 插件加载时自动调用此方法: 正确启动时
      *
      * @author HanskiJay
      * @since  2021-01-23
      * @return void
      */
-    abstract public function onLoad() : void;
+    abstract public function onEnable() : void;
 
-
+    /**
+     * 插件卸载时的处理方法
+     *
+     * @return void
+     */
+    public function onDisable() : void
+    {}
 
     /**
      * 获取插件信息对象
@@ -81,7 +95,7 @@ abstract class ModuleBase
      * @since  2021-01-23
      * @return object
      */
-    public final function getInfos() : object
+    final public function getInfos() : object
     {
         return $this->moduleInfo;
     }
@@ -93,7 +107,7 @@ abstract class ModuleBase
      * @since  2021-01-23
      * @return string
      */
-    public final function getPath() : string
+    final public function getPath() : string
     {
         return $this->loadPath;
     }
