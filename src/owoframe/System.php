@@ -21,7 +21,6 @@ namespace owoframe;
 
 use Composer\Autoload\ClassLoader;
 
-use owoframe\database\DbConfig;
 use owoframe\exception\ExceptionOutput;
 use owoframe\module\ModuleLoader;
 use owoframe\object\INI;
@@ -100,10 +99,6 @@ final class System
         // Define Timezone;
         define('TIME_ZONE', (INI::_global('owo.timeZone', 'Europe/Berlin')));
         date_default_timezone_set(TIME_ZONE);
-
-        if(INI::_global('system.autoInitDatabase', true) == true) {
-            DbConfig::init();
-        }
         ModuleLoader::autoLoad();
     }
 
