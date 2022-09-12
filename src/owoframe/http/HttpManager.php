@@ -185,7 +185,6 @@ class HttpManager implements HttpStatusCode
                 $anonymousClass->urlParameters = $urlParameters;
             }
         }
-        $anonymousClass->methodName = $requestMethod;
 
         // Initialize Controller;
         if(!($controller = $app->getController($controllerName))) {
@@ -206,7 +205,10 @@ class HttpManager implements HttpStatusCode
         if(isset($errorMessage, $externalOutputErrorMessage, $statusCode)) {
             $externalError($errorMessage, $title ?? '', $externalOutputErrorMessage, $statusCode);
         }
+
         $anonymousClass->controllerName = $controller->getName();
+        $requestMethod = method_exists($controller, $requestMethod) ? $requestMethod : $controller->getDefaultHandlerMethod();
+        $anonymousClass->methodName = $requestMethod;
 
         $anonymousClass->response = new Response([$controller, $requestMethod]);
         $anonymousClass->response::$showRuntimeDiv = $controller::$showUsedTimeDiv;

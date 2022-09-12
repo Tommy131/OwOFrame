@@ -48,6 +48,16 @@ abstract class ControllerBase
     }
 
     /**
+     * 返回默认处理请求的方法
+     *
+     * @return string|null
+     */
+    public function getDefaultHandlerMethod() : ?string
+    {
+        return null;
+    }
+
+    /**
      * 开启或关闭 UsedTimeDiv (Default:true)
      *
      * @author HanskiJay
