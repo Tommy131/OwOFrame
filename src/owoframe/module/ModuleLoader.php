@@ -75,10 +75,12 @@ class ModuleLoader
         }
         unset(static::$priorityLoadList[Priority::ABS_HIGHEST]);
 
-        $module = array_shift($_);
-        $module = self::getModule($module);
-        $module->onEnable();
-        $module->setEnabled();
+        if($_) {
+            $module = array_shift($_);
+            $module = self::getModule($module);
+            $module->onEnable();
+            $module->setEnabled();
+        }
 
         sort(static::$priorityLoadList);
         foreach(static::$priorityLoadList as $priority => $list) {
@@ -107,6 +109,7 @@ class ModuleLoader
         $info = new INI($ic);
         if(!self::checkInfo($info->getAll())) return false;
         $info = $info->obj(); // Format to JSON Object;
+        if($info->skipLoading) return false;
         if(!Priority::has((int) $info->priority)) return false;
         if(!file_exists($hisPath . $info->className . '.php')) return false;
         /*$info->className = str_replace('/', '\\', trim($info->className));
@@ -143,7 +146,6 @@ class ModuleLoader
     public static function loadModule(string $dir, string $name) : bool
     {
         if(self::existsModule($name, $info)) {
-            // include_once($dir . $info->className . '.php');
             $namespace = $info->namespace ?? '';
             $class     = $namespace . '\\' . $info->className;
 
@@ -190,6 +192,6 @@ class ModuleLoader
      */
     public static function checkInfo(array $info, string &$missParam = '') : bool
     {
-        return checkArrayValid($info, ['author', 'className', 'name', 'description', 'version', 'priority'], $missParam);
+        return checkArrayValid($info, ['author', 'className', 'name', 'description', 'version', 'priority', 'skipLoading'], true, $missParam);
     }
 }

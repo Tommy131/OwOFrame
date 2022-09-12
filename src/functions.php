@@ -247,14 +247,15 @@ function compareType($p1, $p2, &$types = []) : bool
  *
  * @author HanskiJay
  * @since  2021-01-10
- * @param  array       $data      需要检查的数组
- * @param  array       $needle    需要检查的键名
- * @param  string      $missParam 返回缺少的参数
+ * @param  array       $data       需要检查的数组
+ * @param  array       $needle     需要检查的键名
+ * @param  string      $allowEmpty 允许空元素
+ * @param  string      $missParam  返回缺少的参数
  * @return boolean
  */
-function checkArrayValid(array $data, array $needle, &$missParam = null) : bool
+function checkArrayValid(array $data, array $needle, bool $allowEmpty = true, &$missParam = null) : bool
 {
-    $data = array_filter($data);
+    if(!$allowEmpty) $data = array_filter($data);
     $result = false;
     while(count($needle) > 0)
     {
