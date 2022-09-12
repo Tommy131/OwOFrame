@@ -19,9 +19,12 @@
 declare(strict_types=1);
 namespace owoframe\utils;
 
+use Throwable;
+
 use owoframe\System;
 use owoframe\object\INI;
 use owoframe\utils\TextFormat;
+use owoframe\exception\OwOLogException;
 
 class Logger
 {
@@ -137,6 +140,15 @@ class Logger
         }
         $message = array_shift($arguments) ?? '';
         $this->write((string) $message, $level, self::getColor($level));
+
+        $throwMessage = array_shift($arguments) ?? false;
+        if($throwMessage) {
+            $throwable = array_shift($arguments) ?? null;
+            if(!$throwable instanceof Throwable) {
+                $throwable = new OwOLogException($message);
+            }
+            throw $throwable;
+        }
     }
 }
 ?>
