@@ -1,4 +1,4 @@
 *
 !.gitignore
-!/example
-!/example/*
+!/DBManager
+!/DBManager/*

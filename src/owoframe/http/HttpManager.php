@@ -32,7 +32,6 @@ use owoframe\event\http\BeforeRouteEvent;
 use owoframe\event\http\PageErrorEvent;
 
 use owoframe\exception\InvalidRouterException;
-use owoframe\object\INI;
 
 use owoframe\utils\Str;
 
@@ -123,12 +122,12 @@ class HttpManager implements HttpStatusCode
 
         // Check the valid of the name;
         if(is_null($appName) || !Str::isOnlyLettersAndNumbers($appName)) {
-            $appName = INI::_global('owo.defaultApp');
+            $appName = _global('owo.defaultApp');
         }
         $appName = strtolower($appName);
 
         // Judge whether the Application is in the banned list;
-        if(in_array($appName, explode(',', INI::_global('owo.denyList')))) {
+        if(in_array($appName, explode(',', _global('owo.denyList')))) {
             $statusCode = 403;
            System::getLogger()->notice("[{$code}] Client '{$clientIP}' -> Application[denyList]='{$appName}', request is blocked.");
             self::setStatusCode($code);

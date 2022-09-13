@@ -22,7 +22,6 @@ namespace owoframe\utils;
 use Throwable;
 
 use owoframe\System;
-use owoframe\object\INI;
 use owoframe\utils\TextFormat;
 use owoframe\exception\OwOLogException;
 
@@ -93,7 +92,7 @@ class Logger
         if(System::isRunningWithCLI()) {
             echo TextFormat::parse($message);
         }
-        if(INI::_global('owo.enableLog', true)) {
+        if(_global('owo.enableLog', true)) {
             file_put_contents(LOG_PATH . $this->fileName, TextFormat::clean($message), FILE_APPEND | LOCK_EX);
         }
     }

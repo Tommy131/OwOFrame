@@ -19,10 +19,9 @@
 declare(strict_types=1);
 namespace owoframe\database;
 
-use owoframe\exception\OwOFrameException;
-use owoframe\object\INI;
-
 use think\facade\Db;
+
+use owoframe\exception\OwOFrameException;
 
 class DbConfig extends Db
 {
@@ -47,27 +46,27 @@ class DbConfig extends Db
 	{
 		static::$dbConfig =
 		[
-			'default' => INI::_global('mysql.default', 'mysql'),
+			'default' => _global('mysql.default', 'mysql'),
 			'connections' =>
 			[
-				INI::_global('mysql.default', 'mysql') =>
+				_global('mysql.default', 'mysql') =>
 				[
 					// 数据库类型
-					'type'     => INI::_global('mysql.type', 'mysql'),
+					'type'     => _global('mysql.type', 'mysql'),
 					// 主机地址
-					'hostname' => INI::_global('mysql.hostname', '127.0.0.1'),
+					'hostname' => _global('mysql.hostname', '127.0.0.1'),
 					// 用户名
-					'username' => INI::_global('mysql.username', 'root'),
+					'username' => _global('mysql.username', 'root'),
 					// 密码
-					'password' => INI::_global('mysql.password', '123456'),
+					'password' => _global('mysql.password', '123456'),
 					// 数据库名
-					'database' => INI::_global('mysql.database', 'owocloud'),
+					'database' => _global('mysql.database', 'owocloud'),
 					// 数据库编码默认采用utf8mb4
-					'charset'  => INI::_global('mysql.charset', 'utf8mb4'),
+					'charset'  => _global('mysql.charset', 'utf8mb4'),
 					// 数据库表前缀
-					'prefix'   => INI::_global('mysql.prefix', 'owo_'),
+					'prefix'   => _global('mysql.prefix', 'owo_'),
 					// 数据库调试模式
-					'debug'    => INI::_global('mysql.debugMode', true)
+					'debug'    => _global('mysql.debugMode', true)
 				]
 			]
 		];

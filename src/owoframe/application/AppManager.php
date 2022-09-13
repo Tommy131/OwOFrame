@@ -28,8 +28,6 @@ use owoframe\exception\ClassNotFoundException;
 
 use owoframe\http\HttpManager as Http;
 
-use owoframe\object\INI;
-
 class AppManager
 {
     /**
@@ -78,7 +76,7 @@ class AppManager
      */
     public static function getDefaultApp() : ?AppBase
     {
-        return self::getApp(INI::_global('owo.defaultApp'));
+        return self::getApp(_global('owo.defaultApp'));
     }
 
     /**

@@ -19,7 +19,7 @@
 declare(strict_types=1);
 
 use owoframe\http\HttpStatusCode;
-
+use owoframe\object\INI;
 use owoframe\System;
 
 if(!defined('owohttp')) define('owohttp', 'owosuperget');
@@ -203,6 +203,21 @@ function requestMode() : int
 function fetch() : ?string
 {
     return file_get_contents('php://input') ?? null;
+}
+
+/**
+ * 读取全局配置文件 | get global configuration
+ *
+ * @author HanskiJay
+ * @since  2021-01-09
+ * @param  string $index
+ * @param  mixed  $default 默认返回值
+ * @return mixed
+ */
+function _global(string $index, $default = null)
+{
+    global $_global;
+    return ($_global instanceof INI) ? $_global->get($index, $default) : $default;
 }
 
 

@@ -97,7 +97,7 @@ final class System
         set_exception_handler([ExceptionOutput::class, 'ExceptionHandler']);
 
         // Define Timezone;
-        define('TIME_ZONE', (INI::_global('owo.timeZone', 'Europe/Berlin')));
+        define('TIME_ZONE', (_global('owo.timeZone', 'Europe/Berlin')));
         date_default_timezone_set(TIME_ZONE);
         ModuleLoader::autoLoad();
     }
@@ -341,7 +341,7 @@ final class System
      */
     public static function isDebugMode() : bool
     {
-        return changeStr2Bool(INI::_global('owo.debugMode', true));
+        return changeStr2Bool(_global('owo.debugMode', true));
     }
 
     /**

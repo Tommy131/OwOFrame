@@ -19,6 +19,9 @@
 declare(strict_types=1);
 namespace owoframe\module;
 
+use owoframe\System;
+use owoframe\utils\Logger;
+
 abstract class ModuleBase
 {
     /**
@@ -78,7 +81,8 @@ abstract class ModuleBase
      * @since  2021-01-23
      * @return void
      */
-    abstract public function onEnable() : void;
+    public function onEnable() : void
+    {}
 
     /**
      * 插件卸载时的处理方法
@@ -150,5 +154,10 @@ abstract class ModuleBase
         if($this->isEnabled()) {
             $this->isEnabled = false;
         }
+    }
+
+    public function getLogger() : Logger
+    {
+        return System::getLogger();
     }
 }

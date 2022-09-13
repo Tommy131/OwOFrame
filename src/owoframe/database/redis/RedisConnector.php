@@ -199,7 +199,7 @@ class RedisConnector
      *
      * @author HanskiJay
      * @since  2021-02-14
-     * @return Redis
+     * @return RedisConnector
      */
     public static function getInstance() : RedisConnector
     {
