@@ -76,11 +76,23 @@ class PageErrorEvent extends Event
      */
     public static function render() : void
     {
-        static::$view->assign([
+        static::create()->assign([
             'title'       => static::$title,
             'description' => static::$output
         ]);
         $response = new Response([static::$view, 'render']);
         $response->setResponseCode(static::$statusCode)->sendResponse();
+    }
+
+    /**
+     * 重置输出区
+     *
+     * @return void
+     */
+    public static function reset() : void
+    {
+        static::$view   = null;
+        static::$title  = null;
+        static::$output = null;
     }
 }

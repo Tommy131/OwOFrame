@@ -134,13 +134,16 @@ class HttpManager implements HttpStatusCode
             return;
         }
 
+        if(!AppManager::hasApp($appName) && !System::isDebugMode()) {
+            $appName = _global('owo.defaultApp');
+        }
         $app = AppManager::getApp($appName);
         if($app === null) {
             $statusCode = 403;
             $errorMessage = 'Cannot find any valid Application!';
             $externalOutputErrorMessage = 'Invalid route URL!';
         }
-        if($app::isCLIOnly()) {
+        elseif($app::isCLIOnly()) {
             $statusCode = 403;
             $errorMessage = 'This Application can only run in CLI Mode!';
             $externalOutputErrorMessage = 'Unsupported Application in HTTP-Request-Mode, please contact the Administrator.';
@@ -210,6 +213,7 @@ class HttpManager implements HttpStatusCode
         $anonymousClass->methodName = $requestMethod;
 
         $anonymousClass->response = new Response([$controller, $requestMethod]);
+        $anonymousClass->response->appFounded(true);
         $anonymousClass->response->sendResponse();
     }
 
@@ -447,10 +451,10 @@ class HttpManager implements HttpStatusCode
 
             case 'app':
             case 'application':
-                return AppManager::getApp($closure->appName);
+                return AppManager::getApp(self::getCurrent('appName'));
 
             case 'controller':
-                return AppManager::getApp($closure->appName)->getController($closure->controllerName);
+                return self::getCurrent('app')->getController($closure->controllerName);
 
             case 'param':
             case 'params':
