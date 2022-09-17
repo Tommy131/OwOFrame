@@ -210,6 +210,7 @@ class HttpManager implements HttpStatusCode
 
         $anonymousClass->controllerName = $controller->getName();
         $requestMethod = method_exists($controller, $requestMethod) ? $requestMethod : $controller->getDefaultHandlerMethod();
+        $requestMethod = is_null($requestMethod) ? $controller->getName() : $requestMethod;
         $anonymousClass->methodName = $requestMethod;
 
         $anonymousClass->response = new Response([$controller, $requestMethod]);

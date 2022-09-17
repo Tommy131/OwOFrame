@@ -543,7 +543,7 @@ class View
 
             $data = $this->getAssign($bindTag);
             if(!is_array($data)) {
-                throw new OwOFrameException("[View-LoopParserError] Cannot find bindTag {\${$bindTag}} !");
+                throw new OwOFrameException("[View-LoopParserError] Cannot find bindTag \${$bindTag} !");
             }
 
             $data = array_filter($data);

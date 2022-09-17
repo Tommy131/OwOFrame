@@ -62,6 +62,20 @@ class DBManager extends \owoframe\module\ModuleBase
 	}
 
 	/**
+	 * 通过指定的字段和值返回一条字段数据
+	 *
+	 * @author HanskiJay
+	 * @since  2021-12-25
+	 * @param  string $where
+	 * @param  mixed  $v
+	 * @return mixed
+	 */
+	public static function getValue(string $where, $v, string $searched)
+	{
+		return self::db()->where($where, $v)->value($searched);
+	}
+
+	/**
 	 * 将以数组的形式返回当前的数据表数据转
 	 *
 	 * @author HanskiJay
