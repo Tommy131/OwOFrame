@@ -31,7 +31,7 @@ class DbConfig extends Db
 	 * @access private
 	 * @var array
 	 */
-	private static $dbConfig = [];
+    private static $dbConfig = [];
 
 
 
@@ -42,14 +42,14 @@ class DbConfig extends Db
 	 * @since  2020-09-10
 	 * @return void
 	 */
-	public static function init() : void
+    public static function init() : void
 	{
-		static::$dbConfig =
+	    static::$dbConfig =
 		[
 			'default' => _global('mysql.default', 'mysql'),
 			'connections' =>
 			[
-				_global('mysql.default', 'mysql') =>
+			    _global('mysql.default', 'mysql') =>
 				[
 					// 数据库类型
 					'type'     => _global('mysql.type', 'mysql'),
@@ -70,10 +70,10 @@ class DbConfig extends Db
 				]
 			]
 		];
-		self::setConfig(static::$dbConfig);
+	    self::setConfig(static::$dbConfig);
 		// 定义初始化标识;
-		if(!defined('DB_INIT')) {
-			define('DB_INIT', true);
+	    if(!defined('DB_INIT')) {
+		    define('DB_INIT', true);
 		}
 	}
 
@@ -85,12 +85,12 @@ class DbConfig extends Db
 	 * @param  string      $tag 配置文件标识
 	 * @return void
 	 */
-	public static function setDefaultConfig(string $tag) : void
+    public static function setDefaultConfig(string $tag) : void
 	{
-		if(self::hasDbConfig($tag)) {
-			static::$dbConfig['default'] = $tag;
+	    if(self::hasDbConfig($tag)) {
+		    static::$dbConfig['default'] = $tag;
 		}
-		throw new OwOFrameException("Database configuration '{$tag}' doesn't exists!");
+	    throw new OwOFrameException("Database configuration '{$tag}' doesn't exists!");
 	}
 
 	/**
@@ -102,9 +102,9 @@ class DbConfig extends Db
 	 * @param  mixed       $default 默认返回值
 	 * @return mixed
 	 */
-	public static function getIndexFromDefault(string $index, $default = '')
+    public static function getIndexFromDefault(string $index, $default = '')
 	{
-		return static::$dbConfig['connections'][static::$dbConfig['default']][$index] ?? $default;
+	    return static::$dbConfig['connections'][static::$dbConfig['default']][$index] ?? $default;
 	}
 
 	/**
@@ -117,9 +117,9 @@ class DbConfig extends Db
 	 * @param  string      $value 更新值
 	 * @return void
 	 */
-	public static function setIndex(string $tag, string $index, string $value) : void
+    public static function setIndex(string $tag, string $index, string $value) : void
 	{
-		static::$dbConfig['connections'][$tag][$index] = $value;
+	    static::$dbConfig['connections'][$tag][$index] = $value;
 	}
 
 	/**
@@ -132,9 +132,9 @@ class DbConfig extends Db
 	 * @param  string      $default 默认返回值
 	 * @return string
 	 */
-	public static function getIndex(string $tag, string $index, string $default = '') : string
+    public static function getIndex(string $tag, string $index, string $default = '') : string
 	{
-		return static::$dbConfig['connections'][$tag][$index] ?? $default;
+	    return static::$dbConfig['connections'][$tag][$index] ?? $default;
 	}
 
 	/**
@@ -144,9 +144,9 @@ class DbConfig extends Db
 	 * @since  2020-09-19
 	 * @return string
 	 */
-	public static function getAll() : array
+    public static function getAll() : array
 	{
-		return static::$dbConfig;
+	    return static::$dbConfig;
 	}
 
 	/**
@@ -157,9 +157,9 @@ class DbConfig extends Db
 	 * @param  string      $tag 配置文件标识
 	 * @return boolean
 	 */
-	public static function hasDbConfig(string $tag) : bool
+    public static function hasDbConfig(string $tag) : bool
 	{
-		return isset(static::$dbConfig['connections'][$tag]);
+	    return isset(static::$dbConfig['connections'][$tag]);
 	}
 
 	/**
@@ -169,9 +169,9 @@ class DbConfig extends Db
 	 * @since  2021-12-27
 	 * @return string
 	 */
-	public static function getDefaultTag() : string
+    public static function getDefaultTag() : string
 	{
-		return static::$dbConfig['default'];
+	    return static::$dbConfig['default'];
 	}
 
 	/**
@@ -183,9 +183,9 @@ class DbConfig extends Db
 	 * @param  array       $dbConfig 传入的数据
 	 * @return void
 	 */
-	public static function addConfig(string $tag, array $dbConfig) : void
+    public static function addConfig(string $tag, array $dbConfig) : void
 	{
-		static::$dbConfig['connections'][$tag] = $dbConfig;
+	    static::$dbConfig['connections'][$tag] = $dbConfig;
 	}
 
 }

@@ -30,7 +30,7 @@ class DBManager extends \owoframe\module\ModuleBase
 	 *
 	 * @var string
 	 */
-	public static $TABLE_NAME = 'owo_test';
+    public static $TABLE_NAME = 'owo_test';
 
 
     /**
@@ -56,9 +56,9 @@ class DBManager extends \owoframe\module\ModuleBase
 	 * @param  mixed  $v
 	 * @return array|null
 	 */
-	public static function get(string $where, $v) : ?array
+    public static function get(string $where, $v) : ?array
 	{
-		return self::db()->where($where, $v)->findOrEmpty();
+	    return self::db()->where($where, $v)->findOrEmpty();
 	}
 
 	/**
@@ -70,9 +70,9 @@ class DBManager extends \owoframe\module\ModuleBase
 	 * @param  mixed  $v
 	 * @return mixed
 	 */
-	public static function getValue(string $where, $v, string $searched)
+    public static function getValue(string $where, $v, string $searched)
 	{
-		return self::db()->where($where, $v)->value($searched);
+	    return self::db()->where($where, $v)->value($searched);
 	}
 
 	/**
@@ -82,9 +82,9 @@ class DBManager extends \owoframe\module\ModuleBase
 	 * @since  2021-12-27
 	 * @return array
 	 */
-	public static function getAll() : array
+    public static function getAll() : array
 	{
-		return self::db()->select()->toArray();
+	    return self::db()->select()->toArray();
 	}
 
 	/**
@@ -96,9 +96,9 @@ class DBManager extends \owoframe\module\ModuleBase
 	 * @param  mixed   $searched
 	 * @return boolean
 	 */
-	public static function exists(string $where, $searched) : bool
+    public static function exists(string $where, $searched) : bool
 	{
-		return !empty(self::get($where, $searched));
+	    return !empty(self::get($where, $searched));
 	}
 
 
@@ -110,12 +110,12 @@ class DBManager extends \owoframe\module\ModuleBase
 	 * @param  string $table_name
 	 * @return boolean
 	 */
-	public static function isTableExists(?string $table_name = null) : bool
+    public static function isTableExists(?string $table_name = null) : bool
 	{
-		if(is_null($table_name)) {
+	    if(is_null($table_name)) {
 			$table_name = static::$TABLE_NAME;
 		}
-		return count(Db::query('select table_name from information_schema.TABLES where table_name = \'' . $table_name . '\'')) > 0;
+	    return count(Db::query('select table_name from information_schema.TABLES where table_name = \'' . $table_name . '\'')) > 0;
 	}
 
 	/**
@@ -126,9 +126,9 @@ class DBManager extends \owoframe\module\ModuleBase
 	 * @param  integer $count
 	 * @return Query
 	 */
-	public static function selectWithLimit(int $count) : Query
+    public static function selectWithLimit(int $count) : Query
 	{
-		return self::db()->limit($count);
+	    return self::db()->limit($count);
 	}
 
 	/**
@@ -140,9 +140,9 @@ class DBManager extends \owoframe\module\ModuleBase
 	 * @param  string|null      $table 查询表名(默认从本类静态变量$table获取)
 	 * @return  \think\db\Query
 	 */
-	public static function db(?string $table = null, int $mode = 0) : Query
+    public static function db(?string $table = null, int $mode = 0) : Query
 	{
 		$method = ($mode === 0) ? 'table' : 'name';
-		return Db::{$method}($table ?? static::$TABLE_NAME);
+	    return Db::{$method}($table ?? static::$TABLE_NAME);
 	}
 }

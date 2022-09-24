@@ -31,29 +31,29 @@ abstract class ApiControllerBase extends ControllerBase
 	 * @access protected
 	 * @var boolean
 	 */
-	protected $withVersionControl = true;
+    protected $withVersionControl = true;
 
 	/**
 	 * 初始化方法
 	 *
 	 * @return mixed
 	 */
-	public function init()
+    public function init()
 	{
 		$params = HttpManager::getParameters(2);
-		if($this->withVersionControl) {
-			if(empty($params) || !$this->checkApiVersionValidity(array_shift($params))) {
-				return $this->responseErrorStatus(403, 'Current requested Api-Version is not allowed');
+	    if($this->withVersionControl) {
+		    if(empty($params) || !$this->checkApiVersionValidity(array_shift($params))) {
+			    return $this->responseErrorStatus(403, 'Current requested Api-Version is not allowed');
 			}
 		}
 
 		$requestMethod = array_shift($params);
-		if(!is_string($requestMethod) || !method_exists($this, $requestMethod) || !$this->isRequestAllowed($requestMethod, $errorMessage)) {
-			return $this->responseErrorStatus(403, $errorMessage ?? 'Access Denied');
+	    if(!is_string($requestMethod) || !method_exists($this, $requestMethod) || !$this->isRequestAllowed($requestMethod, $errorMessage)) {
+		    return $this->responseErrorStatus(403, $errorMessage ?? 'Access Denied');
 		}
 
 		$reflection = new ReflectionMethod($this, $requestMethod);
-		return $reflection->isStatic() ? static::{$requestMethod}() : $this->{$requestMethod}();
+	    return $reflection->isStatic() ? static::{$requestMethod}() : $this->{$requestMethod}();
 	}
 
 	/**
@@ -63,16 +63,16 @@ abstract class ApiControllerBase extends ControllerBase
 	 * @param  &string $errorMessage
 	 * @return boolean
 	 */
-	public function isRequestAllowed(string $method, &$errorMessage = null) : bool
+    public function isRequestAllowed(string $method, &$errorMessage = null) : bool
 	{
 		$rule = $this->getRules()[$method] ?? null;
-		if(is_null($rule)) {
+	    if(is_null($rule)) {
 			$errorMessage = "Method {$method} not found";
 		}
-		elseif(stripos(check($method), $rule) !== false) {
+	    elseif(stripos(check($method), $rule) !== false) {
 			$errorMessage = "Method {$method} should be request in {$rule} mode(s)";
 		}
-		return is_null($errorMessage);
+	    return is_null($errorMessage);
 	}
 
 	/**
@@ -80,9 +80,9 @@ abstract class ApiControllerBase extends ControllerBase
 	 *
 	 * @return array
 	 */
-	abstract public function getRules() : array;
+    abstract public function getRules() : array;
 	/* {
-		return [
+	    return [
 			'test' => 'get, post'
 		];
 	} */
@@ -93,9 +93,9 @@ abstract class ApiControllerBase extends ControllerBase
 	 * @param  string  $version
 	 * @return boolean
 	 */
-	abstract public function checkApiVersionValidity(string $version) : bool;
+    abstract public function checkApiVersionValidity(string $version) : bool;
 	/* {
-		return in_array($version, ['v1']);
+	    return in_array($version, ['v1']);
 	} */
 }
 ?>
