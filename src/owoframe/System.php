@@ -99,6 +99,11 @@ final class System
         // Define Timezone;
         define('TIME_ZONE', (_global('owo.timeZone', 'Europe/Berlin')));
         date_default_timezone_set(TIME_ZONE);
+
+        if(!ob_get_level() && self::isRunningWithCGI()) {
+            ob_start();
+        }
+
         ModuleLoader::autoLoad();
     }
 

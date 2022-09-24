@@ -80,8 +80,4 @@ if(!file_exists(CLASS_LOADER)) {
     exit('[AutoLoader/ERROR] Please execute command \'composer install\' at root path \'' . ROOT_PATH . '\' at first!');
 }
 
-if(!ob_get_level()) {
-    ob_start();
-}
 $classLoader = require_once(CLASS_LOADER);
-
