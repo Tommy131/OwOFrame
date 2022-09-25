@@ -53,7 +53,7 @@ abstract class ApiControllerBase extends ControllerBase
 		}
 
 		$reflection = new ReflectionMethod($this, $requestMethod);
-	    return $reflection->isStatic() ? static::{$requestMethod}() : $this->{$requestMethod}();
+	    return $reflection->isPublic() ? ($reflection->isStatic() ? static::{$requestMethod}() : $this->{$requestMethod}()) : $this->responseErrorStatus(403, 'Access Denied');
 	}
 
 	/**

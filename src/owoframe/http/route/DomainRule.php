@@ -40,7 +40,7 @@ class DomainRule
      *
      * @var array
      */
-    private static $bind = [];
+    protected static $bind = [];
 
 
     /**

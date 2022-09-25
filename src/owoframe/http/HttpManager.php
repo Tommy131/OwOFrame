@@ -99,25 +99,24 @@ class HttpManager implements HttpStatusCode
             exit;
         };
 
-        $pathInfo = self::getParameters(-1);
-        $appName  = array_shift($pathInfo);
+        $pathInfo = self::getParameters(0);
 
         // Check Domain bind rules;
-        include_once(config_path('router.php'));
+        if(is_file($config = config_path('router.php'))) include_once($config);
         if($to = DomainRule::get(server('HTTP_HOST'), $bindType)) {
             switch($bindType) {
                 case DomainRule::TAG_BIND_TO_URL:
                     $parsed = parse_url($to);
                     self::setPathInfo($parsed['path']);
-                    $pathInfo = self::getParameters(-1);
                     $appName  = array_shift($pathInfo);
                 break;
 
                 case DomainRule::TAG_BIND_TO_APPLICATION:
-                    $pathInfo = self::getParameters(-1);
                     $appName = $to;
                 break;
             }
+        } else {
+            $appName = array_shift($pathInfo);
         }
 
         // Check the valid of the name;
@@ -400,10 +399,11 @@ class HttpManager implements HttpStatusCode
      *
      * @author HanskiJay
      * @since  2020-09-09 18:03
-     * @param  int      $getFrom 从第几个参数开始获取
-     *                       1:       返回 ApplicationName 之后的参数;
-     *                       2:       返回 ControllerName 之后的参数;
-     *                       3:       返回 RequestMethodName 之后的参数;
+     * @param  int  $getFrom 从第几个参数开始获取
+     *              0: 返回全路径
+     *              1: 返回 ApplicationName 之后的参数
+     *              2: 返回 ControllerName 之后的参数
+     *              3: 返回 RequestMethodName 之后的参数
      * @return array
      */
     public static function getParameters(int $getFrom = 1) : array
@@ -412,11 +412,7 @@ class HttpManager implements HttpStatusCode
         # URI->@/index.php/{ApplicationName}/{ControllerName}/{RequestMethodName}/[GET]...
         #
         $param = array_filter(explode('/', self::getPathInfo()));
-        if(($getFrom >= 1) && ($getFrom <= 3)) {
-            return array_slice($param, $getFrom);
-        } else {
-            return $param;
-        }
+        return array_slice($param, $getFrom);
     }
 
 

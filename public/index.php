@@ -22,7 +22,7 @@ use owoframe\http\HttpManager;
 require_once('../src/bootstrap.php');
 System::init($classLoader);
 
-$parser = HttpManager::getParameters(-1);
+$parser = HttpManager::getParameters(0);
 $mode   = array_shift($parser);
 
 if($mode === 'static.owo')

@@ -24,7 +24,7 @@ class IndexApp extends \owoframe\application\AppBase
 {
     public function initialize() : void
     {
-        // $this->setDefaultController("Index");
+        $this->setDefaultController("Index");
     }
 
     public static function isCLIOnly() : bool
