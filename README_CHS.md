@@ -23,7 +23,7 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 - [x] `Logger`              支持最基础的日志记录
 - [x] `Redis`               支持基本Redis操作
 - [x] `RouterManager`       路由管理器
-- [ ] `BetterRouter`        更好的路由控制器(更加个性化的路由绑定设置)
+- [x] `BetterRouter`        更好的路由控制器(更加个性化的路由绑定设置)
 - [x] `Template`            后端渲染模板(基本功能已经完成, 龟速开发进阶功能o(*￣▽￣*)o)
 - [x] `TextFormat`          支持ANSI控制码在CMD&Shell输出色彩
 - [x] `WMI`                 针对Windows系统编写的WMI操作类
@@ -58,7 +58,7 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 #### 是否需要修改Web环境?
 需要. Nginx的修改方法参考下方:
 
-```nginx
+``` nginx
 # Set your web root path to /public (Example);
 root /www/owoframe/public;
 
@@ -69,13 +69,13 @@ location / {
 ```
 
 #### 如何在CLI模式下运行OwOFrame?
-打开命令行 `CMD` 或Linux的 `Shell` 之后, 进入OwOFrame的工程路径, 在控制台输入 `owo [command]` 即可.<br/>
-Linux用户需使用 `./owo.sh [command]` 执行注册的命令.
+打开命令行 `CMD` 或任意终端之后, 进入OwOFrame的工程路径, 在控制台输入 `owo [command]` 即可.<br/>
+![截图展示](.repo-data/Linux_owo_command.png)
 
 ------
 
 ## 项目声明
-&copy; 2016-2021 [`OwOBlog-DGMT`](https://www.owoblog.com). Please comply with the open source license of this project for modification, derivative or commercial use of this project.
+&copy; 2016-2023 [`OwOBlog-DGMT`](https://www.owoblog.com). Please comply with the open source license of this project for modification, derivative or commercial use of this project.
 
 > My Contacts:
 - Website: [`HanskiJay`](https://www.owoblog.com)
