@@ -47,8 +47,8 @@ class Logger
         'info'      => TextFormat::WHITE,
         'notice'    => TextFormat::AQUA,
         'warning'   => TextFormat::GOLD,
-        'error'     => TextFormat::LIGHT_RED,
-        'alert'     => TextFormat::RED,
+        'error'     => TextFormat::RED,
+        'alert'     => TextFormat::LIGHT_RED,
         'emergency' => TextFormat::STRONG_RED
     ];
 
