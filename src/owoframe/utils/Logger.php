@@ -28,18 +28,28 @@ use owoframe\exception\OwOLogException;
 class Logger
 {
     /**
+     * 复制区域开始识别标签
+     */
+    public const COPY_LINE_START = '--- COPY LINE BEGIN hntQrT1QfAvCe8RFFmcP ---';
+
+    /**
+     * 复制区域结束识别标签
+     */
+    public const COPY_LINE_END = '--- COPY LINE END hntQrT1QfAvCe8RFFmcP ---';
+
+    /**
      * 日志等级 (对应输出的颜色)
      */
     public const LOG_LEVELS =
     [
+        'debug'     => TextFormat::GRAY,
         'success'   => TextFormat::GREEN,
         'info'      => TextFormat::WHITE,
         'notice'    => TextFormat::AQUA,
         'warning'   => TextFormat::GOLD,
-        'alert'     => TextFormat::RED,
         'error'     => TextFormat::LIGHT_RED,
-        'emergency' => TextFormat::STRONG_RED,
-        'debug'     => TextFormat::GRAY
+        'alert'     => TextFormat::RED,
+        'emergency' => TextFormat::STRONG_RED
     ];
 
     /**
@@ -93,10 +103,63 @@ class Logger
             echo TextFormat::parse($message);
         }
         if(_global('owo.enableLog', true)) {
-            file_put_contents(LOG_PATH . $this->fileName, TextFormat::clean($message), FILE_APPEND | LOCK_EX);
+            $this->writeToFile(TextFormat::clean($message));
         }
     }
 
+    /**
+     * 插入复制区域标签
+     *
+     * @param  boolean $isStart
+     * @return void
+     */
+    public function insertCopyLine(bool $isStart = true) : void
+    {
+        $this->writeToFile(($isStart ? self::COPY_LINE_START : self::COPY_LINE_END) . PHP_EOL);
+    }
+
+    /**
+     * 将复制区域的日志记录粘贴到新的文件内
+     *
+     * @param  string  $filePath
+     * @param  boolean $deleteArea
+     * @return void
+     */
+    public function copyAreaToNewFile(string $filePath, bool $deleteArea = false) : void
+    {
+        $mainFile = LOG_PATH . $this->fileName;
+        if(!file_exists($mainFile)) {
+            throw new OwOLogException("Log file {$mainFile} not found!");
+        }
+
+        $start = self::COPY_LINE_START;
+        $end   = self::COPY_LINE_END;
+
+        if(!preg_match("/{$start}(.*){$end}/s", $file = file_get_contents($mainFile), $lines)) {
+            return;
+        }
+        $lines = $lines[0];
+
+        $lines = explode("\n", $lines);
+        $count = count($lines);
+        unset($lines[0], $lines[$count - 1]);
+        $lines = implode("\n", $lines);
+
+        // 替换删除行;
+        if($deleteArea) {
+            $file = str_replace($lines, "The following {$count} lines has been moved to the new log file {$filePath}.", $file);
+        }
+        $file = str_replace([ PHP_EOL . $start, $end . PHP_EOL], '', $file);
+        file_put_contents($mainFile, $file);
+
+        $this->writeToFile($lines, $filePath);
+    }
+
+    /**
+     * 发送空行
+     *
+     * @return void
+     */
     public function sendEmpty() : void
     {
         echo PHP_EOL;
@@ -122,6 +185,16 @@ class Logger
     public static function getColor(string $level) : string
     {
         return self::hasLevel($level) ? self::LOG_LEVELS[$level] : TextFormat::GRAY;
+    }
+
+    /**
+     * 写入日志到文件
+     *
+     * @return void
+     */
+    private function writeToFile(string $message, ?string $filePath = null) : void
+    {
+        file_put_contents($filePath ?? LOG_PATH . $this->fileName, $message, FILE_APPEND | LOCK_EX);
     }
 
     /**
