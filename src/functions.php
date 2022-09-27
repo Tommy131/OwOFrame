@@ -224,20 +224,6 @@ function _global(string $index, $default = null)
 /**
  * 系统基本方法
  */
-/**
- * 如果存在则获取数组中的元素值否之返回默认设定值
- *
- * @author HanskiJay
- * @since  2021-01-10
- * @param  array       array   所需数组
- * @param  string      key     搜索的键名
- * @param  mixed       default 默认返回值
- * @return mixed
- */
-function arrayGet(array $array, string $key, $default = '')
-{
-    return $array[$key] ?? $default;
-}
 
 /**
  * 比较两个参数的类型是否相等
@@ -383,7 +369,7 @@ function changeInt2Bool(int $num) : ?bool
  */
 function changeStr2Bool(string $num) : ?bool
 {
-    return ($num === '0') ? false : (($num === '1') ? true : null);
+    return (($num === '0') || ($num === 'false')) ? false : ((($num === '1') || ($num === 'true')) ? true : null);
 }
 
 /**
@@ -399,8 +385,9 @@ function changeStr2Bool(string $num) : ?bool
  */
 function ask(string $output, $default = null, bool $useLogger = false, string $logLevel = 'info')
 {
+    $output .= !is_null($default) ? " (Default: {$default})" : '';
     if(!$useLogger) {
-        echo $output . (!is_null($default) ? " (Default: {$default})" : '') . PHP_EOL;
+        echo $output . PHP_EOL;
     } else {
         System::getLogger()->{$logLevel}($output);
     }
@@ -419,6 +406,16 @@ function ask(string $output, $default = null, bool $useLogger = false, string $l
 function config_path(string $fileName) : string
 {
     return CONFIG_PATH . $fileName;
+}
+
+/**
+ * 判断数据库是否已经初始化
+ *
+ * @return boolean
+ */
+function is_database_initialized() : bool
+{
+    return defined('DB_INIT') && (DB_INIT === true);
 }
 
 /**

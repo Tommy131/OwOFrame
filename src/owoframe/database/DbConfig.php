@@ -44,6 +44,10 @@ class DbConfig extends Db
 	 */
     public static function init() : void
 	{
+	    if(is_database_initialized()) {
+			return;
+		}
+
 	    static::$dbConfig =
 		[
 			'default' => _global('mysql.default', 'mysql'),
@@ -71,10 +75,9 @@ class DbConfig extends Db
 			]
 		];
 	    self::setConfig(static::$dbConfig);
+
 		// 定义初始化标识;
-	    if(!defined('DB_INIT')) {
-		    define('DB_INIT', true);
-		}
+		define('DB_INIT', true);
 	}
 
 	/**
