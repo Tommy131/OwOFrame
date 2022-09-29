@@ -66,6 +66,8 @@ location / {
 
 #### How to running my Application in CLI-Mode with OwOFrame?
 In the OwOFrame, I built the Command Manager. You can customize the registration management of the implementation Commands, and you can also modify the entry file in the CLI-Mode to touch your project requirements. The basically usage will be called in the root path like `owo [command]`.<br/>
+> Note: The premise of using the `owo` command directly is that the root directory path of the current project folder has been set in the system's global environment ($PATH) variables.
+
 ![Show](.repo-data/Linux_owo_command.png)
 
 ------

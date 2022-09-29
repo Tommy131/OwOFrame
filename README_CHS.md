@@ -70,6 +70,8 @@ location / {
 
 #### 如何在CLI模式下运行OwOFrame?
 打开命令行 `CMD` 或任意终端之后, 进入OwOFrame的工程路径, 在控制台输入 `owo [command]` 即可.<br/>
+> 注意: 直接使用 `owo` 指令的前提是, 当前项目文件夹的根目录路径已经在系统的全局环境变量中设置.
+
 ![截图展示](.repo-data/Linux_owo_command.png)
 
 ------
