@@ -209,7 +209,7 @@ class TextFormat
                 break;
 
                 case self::BLUE:
-                    $output .= sprintf($form, '6');
+                    $output .= sprintf($form, '12');
                 break;
 
                 case self::GOLD:

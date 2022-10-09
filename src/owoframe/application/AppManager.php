@@ -21,14 +21,10 @@ namespace owoframe\application;
 
 use FilesystemIterator as FI;
 
-use owoframe\System;
-
 use owoframe\exception\InvalidAppException;
 use owoframe\exception\ClassNotFoundException;
 
 use owoframe\http\HttpManager as Http;
-
-use owoframe\object\INI;
 
 class AppManager
 {
@@ -58,10 +54,7 @@ class AppManager
         $class   = "\\application\\{$name}\\{$appName}" . 'App';
 
         if(!class_exists($class)) {
-            if(System::isRunningWithCLI()) {
-                return false;
-            }
-            throw new ClassNotFoundException($class);
+            return false;
         }
         if((new \ReflectionClass($class))->getParentClass()->getName() !== self::BASIC_CLASS) {
             throw new InvalidAppException($appName, 'Parent class should be interfaced by ' . self::BASIC_CLASS);
@@ -78,7 +71,7 @@ class AppManager
      */
     public static function getDefaultApp() : ?AppBase
     {
-        return self::getApp(INI::_global('owo.defaultApp'));
+        return self::getApp(_global('owo.defaultApp'));
     }
 
     /**

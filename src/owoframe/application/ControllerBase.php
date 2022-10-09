@@ -101,11 +101,11 @@ abstract class ControllerBase
 	 * @param  integer $responseCode
 	 * @return DataEncoder
 	 */
-	protected function responseErrorStatus(int $responseCode = 502) : DataEncoder
+    protected function responseErrorStatus(int $responseCode = 502) : DataEncoder
 	{
-		HttpManager::getCurrent('response')->setResponseCode($responseCode);
+	    HttpManager::getCurrent('response')->setResponseCode($responseCode);
 		$args = func_get_args();
-		return (new DataEncoder)->setStandardData($responseCode, $args[1] ?? 'Unknown error happened from Server', false)->setIndex('ip', server('REMOTE_ADDR'));
+	    return (new DataEncoder)->setStandardData($responseCode, $args[1] ?? 'Unknown error happened from Server', false)->setIndex('ip', server('REMOTE_ADDR'));
 	}
 
 	/**
@@ -115,9 +115,9 @@ abstract class ControllerBase
 	 * @param  array  $arguments
 	 * @return void
 	 */
-	public function __call(string $name, array $arguments)
+    public function __call(string $name, array $arguments)
 	{
-		return $this->responseErrorStatus(502, 'Attempt to request undefined method ' . __CLASS__ . '::' . $name);
+	    return $this->responseErrorStatus(502, 'Attempt to request undefined method ' . __CLASS__ . '::' . $name);
 	}
 }
 ?>

@@ -19,10 +19,9 @@
 declare(strict_types=1);
 namespace owoframe\database;
 
-use owoframe\exception\OwOFrameException;
-use owoframe\object\INI;
-
 use think\facade\Db;
+
+use owoframe\exception\OwOFrameException;
 
 class DbConfig extends Db
 {
@@ -32,7 +31,7 @@ class DbConfig extends Db
 	 * @access private
 	 * @var array
 	 */
-	private static $dbConfig = [];
+    private static $dbConfig = [];
 
 
 
@@ -43,39 +42,42 @@ class DbConfig extends Db
 	 * @since  2020-09-10
 	 * @return void
 	 */
-	public static function init() : void
+    public static function init() : void
 	{
-		static::$dbConfig =
+	    if(is_database_initialized()) {
+			return;
+		}
+
+	    static::$dbConfig =
 		[
-			'default' => INI::_global('mysql.default', 'mysql'),
+			'default' => _global('mysql.default', 'mysql'),
 			'connections' =>
 			[
-				INI::_global('mysql.default', 'mysql') =>
+			    _global('mysql.default', 'mysql') =>
 				[
 					// 数据库类型
-					'type'     => INI::_global('mysql.type', 'mysql'),
+					'type'     => _global('mysql.type', 'mysql'),
 					// 主机地址
-					'hostname' => INI::_global('mysql.hostname', '127.0.0.1'),
+					'hostname' => _global('mysql.hostname', '127.0.0.1'),
 					// 用户名
-					'username' => INI::_global('mysql.username', 'root'),
+					'username' => _global('mysql.username', 'root'),
 					// 密码
-					'password' => INI::_global('mysql.password', '123456'),
+					'password' => _global('mysql.password', '123456'),
 					// 数据库名
-					'database' => INI::_global('mysql.database', 'owocloud'),
+					'database' => _global('mysql.database', 'owocloud'),
 					// 数据库编码默认采用utf8mb4
-					'charset'  => INI::_global('mysql.charset', 'utf8mb4'),
+					'charset'  => _global('mysql.charset', 'utf8mb4'),
 					// 数据库表前缀
-					'prefix'   => INI::_global('mysql.prefix', 'owo_'),
+					'prefix'   => _global('mysql.prefix', 'owo_'),
 					// 数据库调试模式
-					'debug'    => INI::_global('mysql.debugMode', true)
+					'debug'    => _global('mysql.debugMode', true)
 				]
 			]
 		];
-		self::setConfig(static::$dbConfig);
+	    self::setConfig(static::$dbConfig);
+
 		// 定义初始化标识;
-		if(!defined('DB_INIT')) {
-			define('DB_INIT', true);
-		}
+		define('DB_INIT', true);
 	}
 
 	/**
@@ -86,12 +88,12 @@ class DbConfig extends Db
 	 * @param  string      $tag 配置文件标识
 	 * @return void
 	 */
-	public static function setDefaultConfig(string $tag) : void
+    public static function setDefaultConfig(string $tag) : void
 	{
-		if(self::hasDbConfig($tag)) {
-			static::$dbConfig['default'] = $tag;
+	    if(self::hasDbConfig($tag)) {
+		    static::$dbConfig['default'] = $tag;
 		}
-		throw new OwOFrameException("Database configuration '{$tag}' doesn't exists!");
+	    throw new OwOFrameException("Database configuration '{$tag}' doesn't exists!");
 	}
 
 	/**
@@ -103,9 +105,9 @@ class DbConfig extends Db
 	 * @param  mixed       $default 默认返回值
 	 * @return mixed
 	 */
-	public static function getIndexFromDefault(string $index, $default = '')
+    public static function getIndexFromDefault(string $index, $default = '')
 	{
-		return static::$dbConfig['connections'][static::$dbConfig['default']][$index] ?? $default;
+	    return static::$dbConfig['connections'][static::$dbConfig['default']][$index] ?? $default;
 	}
 
 	/**
@@ -118,9 +120,9 @@ class DbConfig extends Db
 	 * @param  string      $value 更新值
 	 * @return void
 	 */
-	public static function setIndex(string $tag, string $index, string $value) : void
+    public static function setIndex(string $tag, string $index, string $value) : void
 	{
-		static::$dbConfig['connections'][$tag][$index] = $value;
+	    static::$dbConfig['connections'][$tag][$index] = $value;
 	}
 
 	/**
@@ -133,9 +135,9 @@ class DbConfig extends Db
 	 * @param  string      $default 默认返回值
 	 * @return string
 	 */
-	public static function getIndex(string $tag, string $index, string $default = '') : string
+    public static function getIndex(string $tag, string $index, string $default = '') : string
 	{
-		return static::$dbConfig['connections'][$tag][$index] ?? $default;
+	    return static::$dbConfig['connections'][$tag][$index] ?? $default;
 	}
 
 	/**
@@ -145,9 +147,9 @@ class DbConfig extends Db
 	 * @since  2020-09-19
 	 * @return string
 	 */
-	public static function getAll() : array
+    public static function getAll() : array
 	{
-		return static::$dbConfig;
+	    return static::$dbConfig;
 	}
 
 	/**
@@ -158,9 +160,9 @@ class DbConfig extends Db
 	 * @param  string      $tag 配置文件标识
 	 * @return boolean
 	 */
-	public static function hasDbConfig(string $tag) : bool
+    public static function hasDbConfig(string $tag) : bool
 	{
-		return isset(static::$dbConfig['connections'][$tag]);
+	    return isset(static::$dbConfig['connections'][$tag]);
 	}
 
 	/**
@@ -170,9 +172,9 @@ class DbConfig extends Db
 	 * @since  2021-12-27
 	 * @return string
 	 */
-	public static function getDefaultTag() : string
+    public static function getDefaultTag() : string
 	{
-		return static::$dbConfig['default'];
+	    return static::$dbConfig['default'];
 	}
 
 	/**
@@ -184,9 +186,9 @@ class DbConfig extends Db
 	 * @param  array       $dbConfig 传入的数据
 	 * @return void
 	 */
-	public static function addConfig(string $tag, array $dbConfig) : void
+    public static function addConfig(string $tag, array $dbConfig) : void
 	{
-		static::$dbConfig['connections'][$tag] = $dbConfig;
+	    static::$dbConfig['connections'][$tag] = $dbConfig;
 	}
 
 }

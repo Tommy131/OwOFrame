@@ -22,7 +22,6 @@ namespace owoframe\application;
 use owoframe\exception\OwOFrameException;
 use owoframe\exception\ParameterTypeErrorException;
 use owoframe\exception\ResourceNotFoundException;
-use owoframe\object\INI;
 use owoframe\utils\Str;
 
 class View
@@ -544,7 +543,7 @@ class View
 
             $data = $this->getAssign($bindTag);
             if(!is_array($data)) {
-                throw new OwOFrameException("[View-LoopParserError] Cannot find bindTag {\${$bindTag}} !");
+                throw new OwOFrameException("[View-LoopParserError] Cannot find bindTag \${$bindTag} !");
             }
 
             $data = array_filter($data);
@@ -920,7 +919,7 @@ class View
         // 解析绑定数组;
         $this->replaceBindArrays($this->viewTemplate);
         // 解析循环语句;
-        changeType(INI::_global('view.loopLevel', 3), $l);
+        changeType(_global('view.loopLevel', 3), $l);
         for($i = null; $i <= $l; $i++) {
             $this->parseLoopArea($this->viewTemplate, $i);
         }
@@ -929,7 +928,7 @@ class View
         // 解析@display语法;
         $this->parseDisplayArea($this->viewTemplate);
         // 解析IF-ELSE语法区域;
-        changeType(INI::_global('view.judgementLevel', 3), $l);
+        changeType(_global('view.judgementLevel', 3), $l);
         for($i = null; $i <= $l; $i++) {
             $this->parseJudgementArea($this->viewTemplate, $i);
         }
