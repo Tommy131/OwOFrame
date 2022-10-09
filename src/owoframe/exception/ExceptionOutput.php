@@ -39,7 +39,11 @@ class ExceptionOutput
         $trace = array_values($trace);
 
         foreach($trace as $k => $d) {
-            $output .= sprintf($template, $k, $d['file'] ?? '', $d['line'] ?? '', $d['class'] ?? '', $d['type'] ?? '', $d['function'] ?? '', @implode(', ', $d['args']));
+            $args = [];
+            foreach($d['args'] as $arg) {
+                $args[] = (gettype($arg) === 'object') ? (array) $arg : $arg;
+            }
+            $output .= sprintf($template, $k, $d['file'] ?? '', $d['line'] ?? '', $d['class'] ?? '', $d['type'] ?? '', $d['function'] ?? '', @implode(', ', $args));
         }
         return $output . "{main}\n";
     }
