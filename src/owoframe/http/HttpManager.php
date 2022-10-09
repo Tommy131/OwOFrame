@@ -32,7 +32,6 @@ use owoframe\event\http\BeforeRouteEvent;
 use owoframe\event\http\PageErrorEvent;
 
 use owoframe\exception\InvalidRouterException;
-use owoframe\object\INI;
 
 use owoframe\utils\Str;
 
@@ -100,48 +99,50 @@ class HttpManager implements HttpStatusCode
             exit;
         };
 
-        $pathInfo = self::getParameters(-1);
-        $appName  = array_shift($pathInfo);
+        $pathInfo = self::getParameters(0);
 
         // Check Domain bind rules;
-        include_once(config_path('router.php'));
+        if(is_file($config = config_path('router.php'))) include_once($config);
         if($to = DomainRule::get(server('HTTP_HOST'), $bindType)) {
             switch($bindType) {
                 case DomainRule::TAG_BIND_TO_URL:
                     $parsed = parse_url($to);
                     self::setPathInfo($parsed['path']);
-                    $pathInfo = self::getParameters(-1);
                     $appName  = array_shift($pathInfo);
                 break;
 
                 case DomainRule::TAG_BIND_TO_APPLICATION:
-                    $pathInfo = self::getParameters(-1);
                     $appName = $to;
                 break;
             }
+        } else {
+            $appName = array_shift($pathInfo);
         }
 
         // Check the valid of the name;
         if(is_null($appName) || !Str::isOnlyLettersAndNumbers($appName)) {
-            $appName = INI::_global('owo.defaultApp');
+            $appName = _global('owo.defaultApp');
         }
         $appName = strtolower($appName);
 
         // Judge whether the Application is in the banned list;
-        if(in_array($appName, explode(',', INI::_global('owo.denyList')))) {
+        if(in_array($appName, explode(',', _global('owo.denyList')))) {
             $statusCode = 403;
            System::getLogger()->notice("[{$code}] Client '{$clientIP}' -> Application[denyList]='{$appName}', request is blocked.");
             self::setStatusCode($code);
             return;
         }
 
+        if(!AppManager::hasApp($appName) && !System::isDebugMode()) {
+            $appName = _global('owo.defaultApp');
+        }
         $app = AppManager::getApp($appName);
         if($app === null) {
             $statusCode = 403;
             $errorMessage = 'Cannot find any valid Application!';
             $externalOutputErrorMessage = 'Invalid route URL!';
         }
-        if($app::isCLIOnly()) {
+        elseif($app::isCLIOnly()) {
             $statusCode = 403;
             $errorMessage = 'This Application can only run in CLI Mode!';
             $externalOutputErrorMessage = 'Unsupported Application in HTTP-Request-Mode, please contact the Administrator.';
@@ -208,9 +209,11 @@ class HttpManager implements HttpStatusCode
 
         $anonymousClass->controllerName = $controller->getName();
         $requestMethod = method_exists($controller, $requestMethod) ? $requestMethod : $controller->getDefaultHandlerMethod();
+        $requestMethod = is_null($requestMethod) ? $controller->getName() : $requestMethod;
         $anonymousClass->methodName = $requestMethod;
 
         $anonymousClass->response = new Response([$controller, $requestMethod]);
+        $anonymousClass->response->appFounded(true);
         $anonymousClass->response->sendResponse();
     }
 
@@ -396,10 +399,11 @@ class HttpManager implements HttpStatusCode
      *
      * @author HanskiJay
      * @since  2020-09-09 18:03
-     * @param  int      $getFrom 从第几个参数开始获取
-     *                       1:       返回 ApplicationName 之后的参数;
-     *                       2:       返回 ControllerName 之后的参数;
-     *                       3:       返回 RequestMethodName 之后的参数;
+     * @param  int  $getFrom 从第几个参数开始获取
+     *              0: 返回全路径
+     *              1: 返回 ApplicationName 之后的参数
+     *              2: 返回 ControllerName 之后的参数
+     *              3: 返回 RequestMethodName 之后的参数
      * @return array
      */
     public static function getParameters(int $getFrom = 1) : array
@@ -408,11 +412,7 @@ class HttpManager implements HttpStatusCode
         # URI->@/index.php/{ApplicationName}/{ControllerName}/{RequestMethodName}/[GET]...
         #
         $param = array_filter(explode('/', self::getPathInfo()));
-        if(($getFrom >= 1) && ($getFrom <= 3)) {
-            return array_slice($param, $getFrom);
-        } else {
-            return $param;
-        }
+        return array_slice($param, $getFrom);
     }
 
 
@@ -448,10 +448,10 @@ class HttpManager implements HttpStatusCode
 
             case 'app':
             case 'application':
-                return AppManager::getApp($closure->appName);
+                return AppManager::getApp(self::getCurrent('appName'));
 
             case 'controller':
-                return AppManager::getApp($closure->appName)->getController($closure->controllerName);
+                return self::getCurrent('app')->getController($closure->controllerName);
 
             case 'param':
             case 'params':

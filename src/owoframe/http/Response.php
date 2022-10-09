@@ -45,6 +45,14 @@ class Response
     private $hasSent = false;
 
     /**
+     * 由HttpManager传回参数
+     *
+     * @access private
+     * @var boolean
+     */
+    private $appFounded = false;
+
+    /**
      * 回调参数(可以输出数据的回调方法)
      *
      * @access private
@@ -119,6 +127,12 @@ class Response
         return $this;
     }
 
+    public function appFounded(bool $_ = false) : Response
+    {
+        $this->appFounded = $_;
+        return $this;
+    }
+
     /**
      * 发送响应头
      *
@@ -180,7 +194,8 @@ class Response
 
         if($isJson) $this->header('Content-Type', MIMEType::MIMETYPE['json']);
         // Judgement whether the output is JSON format;
-        self::getRuntimeDiv(!$isJson && HttpManager::getCurrent('controller')::$showUsedTimeDiv);
+        $_ = $this->appFounded ? HttpManager::getCurrent('controller')::$showUsedTimeDiv : false;
+        self::getRuntimeDiv(!$isJson && $_);
 
         // set HTTP-HEADER;
         if(!headers_sent() && !empty($this->header)) {
