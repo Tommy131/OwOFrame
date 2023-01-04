@@ -369,7 +369,7 @@ function changeInt2Bool(int $num) : ?bool
  */
 function changeStr2Bool(string $num) : ?bool
 {
-    return (($num === '0') || ($num === 'false')) ? false : ((($num === '1') || ($num === 'true')) ? true : null);
+    return (($num === '') || ($num === '0') || ($num === 'false')) ? false : ((($num === '1') || ($num === 'true')) ? true : null);
 }
 
 /**

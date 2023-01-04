@@ -19,6 +19,7 @@
 declare(strict_types=1);
 namespace application\index;
 
+use owoframe\application\AppManager;
 
 class IndexApp extends \owoframe\application\AppBase
 {
@@ -27,9 +28,9 @@ class IndexApp extends \owoframe\application\AppBase
         $this->setDefaultController("Index");
     }
 
-    public static function isCLIOnly() : bool
+    public static function enableLoadMode(): array
     {
-        return false;
+        return [AppManager::CGI_MODE, AppManager::CLI_MODE];
     }
 
     public static function getName() : string

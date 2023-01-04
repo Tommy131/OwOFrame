@@ -61,6 +61,14 @@ class Response
     private $callback;
 
     /**
+     * 携带的参数
+     *
+     * @access private
+     * @var array
+     */
+    private $callParams;
+
+    /**
      * HTTP响应代码(Default:200)
      *
      * @access protected

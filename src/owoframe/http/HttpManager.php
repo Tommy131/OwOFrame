@@ -81,7 +81,7 @@ class HttpManager implements HttpStatusCode
         // Closure Method for throw or display an error;
         $externalError = function(string $errorMessage, string $title = '', string $outputMessage = '', int $statusCode = 404) : void {
             $clientIP = server('REMOTE_ADDR');
-           System::getLogger()->error("[{$statusCode}] Client @{$clientIP} -> URL='" . self::getCompleteUrl() . "', error cause: {$errorMessage}");
+            System::getLogger()->error("[{$statusCode}] Client @{$clientIP} -> URL='" . self::getCompleteUrl() . "', error cause: {$errorMessage}");
 
             if(System::isDebugMode()) {
                 throw new InvalidRouterException($errorMessage);
@@ -142,11 +142,6 @@ class HttpManager implements HttpStatusCode
             $errorMessage = 'Cannot find any valid Application!';
             $externalOutputErrorMessage = 'Invalid route URL!';
         }
-        elseif($app::isCLIOnly()) {
-            $statusCode = 403;
-            $errorMessage = 'This Application can only run in CLI Mode!';
-            $externalOutputErrorMessage = 'Unsupported Application in HTTP-Request-Mode, please contact the Administrator.';
-        }
         if(isset($errorMessage, $externalOutputErrorMessage, $statusCode)) {
             $externalError($errorMessage, $title ?? '', $externalOutputErrorMessage, $statusCode);
         }
@@ -170,7 +165,7 @@ class HttpManager implements HttpStatusCode
 
             // If $pathInfo still exceeds 1 parameter;
             if(count($pathInfo) >= 1) {
-                $requestMethod = array_shift($pathInfo);
+                $requestMethod = current($pathInfo);
                 // Judge whether the path is legal;
                 if(!Str::isOnlyLettersAndNumbers($requestMethod)) {
                     $requestMethod = $controllerName;
@@ -212,7 +207,7 @@ class HttpManager implements HttpStatusCode
         $requestMethod = is_null($requestMethod) ? $controller->getName() : $requestMethod;
         $anonymousClass->methodName = $requestMethod;
 
-        $anonymousClass->response = new Response([$controller, $requestMethod]);
+        $anonymousClass->response = new Response([$controller, $requestMethod], $pathInfo);
         $anonymousClass->response->appFounded(true);
         $anonymousClass->response->sendResponse();
     }

@@ -32,14 +32,6 @@ abstract class AppBase
     protected static $instance = null;
 
     /**
-     * 当前的App访问地址
-     *
-     * @access protected
-     * @var string
-     */
-    protected $currentSiteUrl = null;
-
-    /**
      * 默认控制其名称
      *
      * @access protected
@@ -57,12 +49,11 @@ abstract class AppBase
 
 
 
-    public function __construct(string $siteUrl)
+    public function __construct()
     {
         if(static::$instance === null) {
             static::$instance = $this;
         }
-        $this->currentSiteUrl = $siteUrl;
         $this->initialize();
     }
 
@@ -267,18 +258,6 @@ abstract class AppBase
     }
 
     /**
-     * 返回当前站点Url
-     *
-     * @author HanskiJay
-     * @since  2020-08-08
-     * @return string
-     */
-    public function getCurrentSiteUrl() : string
-    {
-        return $this->currentSiteUrl;
-    }
-
-    /**
      * 返回本类实例
      *
      * @author HanskiJay
@@ -288,6 +267,16 @@ abstract class AppBase
     public static function getInstance() : ?AppBase
     {
         return static::$instance ?? null;
+    }
+
+    /**
+     * 返回允许加载App的模式
+     *
+     * @return array
+     */
+    public static function enableLoadMode() : array
+    {
+        return [AppManager::CGI_MODE, AppManager::CLI_MODE];
     }
 
 
@@ -302,15 +291,6 @@ abstract class AppBase
      * @return void
      */
     abstract public function initialize() : void;
-
-    /**
-     * 判断此Application是否仅允许在CLI模式下加载
-     *
-     * @author HanskiJay
-     * @since  2022-02-27
-     * @return boolean
-     */
-    abstract public static function isCLIOnly() : bool;
 
     /**
      * 告知路由组件是否自动跳转到404页面(如果指定)

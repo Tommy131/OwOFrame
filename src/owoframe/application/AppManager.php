@@ -22,12 +22,13 @@ namespace owoframe\application;
 use FilesystemIterator as FI;
 
 use owoframe\exception\InvalidAppException;
-use owoframe\exception\ClassNotFoundException;
-
-use owoframe\http\HttpManager as Http;
+use owoframe\System;
 
 class AppManager
 {
+    public const CGI_MODE = 0;
+    public const CLI_MODE = 1;
+
     /**
      * AppBase basic namespace
      */
@@ -90,7 +91,10 @@ class AppManager
         }
 
         if(self::hasApp($appName, $class)) {
-            return $application[$appName] = new $class(Http::getCompleteUrl());
+            $mode = System::isRunningWithCGI() ? self::CGI_MODE : self::CLI_MODE;
+            if(in_array($mode, $class::enableLoadMode())) {
+                return $application[$appName] = new $class();
+            }
         }
         return null;
     }
