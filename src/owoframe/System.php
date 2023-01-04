@@ -21,6 +21,7 @@ namespace owoframe;
 
 use Composer\Autoload\ClassLoader;
 
+use owoframe\database\ThinkDB;
 use owoframe\exception\ExceptionOutput;
 use owoframe\module\ModuleLoader;
 use owoframe\object\INI;
@@ -103,7 +104,7 @@ final class System
         if(!ob_get_level() && self::isRunningWithCGI()) {
             ob_start();
         }
-
+        ThinkDB::init();
         ModuleLoader::autoLoad();
     }
 
