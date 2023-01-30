@@ -161,34 +161,52 @@ function requestMode() : int
     $httpMode = strtolower($_SERVER['REQUEST_METHOD']);
     $ajaxMode = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
 
-    if($ajaxMode) {
-        switch($httpMode) {
-            default:
-            return HttpStatusCode::AJAX_MODE;
+    switch($httpMode) {
+        default:
+        return -1;
 
-            case 'get':
-            return HttpStatusCode::AJAX_P_GET_MODE;
-            return -1;
+        case 'get':
+        return $ajaxMode ? HttpStatusCode::AJAX_GET_MODE : HttpStatusCode::GET_MODE;
 
-            case 'post':
-            return HttpStatusCode::AJAX_P_POST_MODE;
-        }
-    } else {
-        switch($httpMode) {
-            default:
-            return -1;
+        case 'post':
+        return $ajaxMode ? HttpStatusCode::AJAX_POST_MODE : HttpStatusCode::POST_MODE;
 
-            case 'get':
-            return HttpStatusCode::GET_MODE;
-            return -1;
-
-            case 'post':
-            return HttpStatusCode::POST_MODE;
-
-            case 'put':
-            return HttpStatusCode::PUT_MODE;
-        }
+        case 'put':
+        return $ajaxMode ? HttpStatusCode::AJAX_PUT_MODE : HttpStatusCode::PUT_MODE;
     }
+}
+
+/**
+ * 判断当前HTTP请求模式是否为 Get
+ *
+ * @author HanskiJay
+ * @return boolean
+ */
+function isGet(bool $allowAjax = true) : bool
+{
+    return (requestMode() === HttpStatusCode::GET_MODE) || ($allowAjax && (requestMode() === HttpStatusCode::AJAX_GET_MODE));
+}
+
+/**
+ * 判断当前HTTP请求模式是否为 Post
+ *
+ * @author HanskiJay
+ * @return boolean
+ */
+function isPost(bool $allowAjax = true) : bool
+{
+    return (requestMode() === HttpStatusCode::POST_MODE) || ($allowAjax && (requestMode() === HttpStatusCode::AJAX_POST_MODE));
+}
+
+/**
+ * 判断当前HTTP请求模式是否为 Put
+ *
+ * @author HanskiJay
+ * @return boolean
+ */
+function isPut(bool $allowAjax = true) : bool
+{
+    return (requestMode() === HttpStatusCode::PUT_MODE) || ($allowAjax && (requestMode() === HttpStatusCode::AJAX_PUT_MODE));
 }
 
 /**

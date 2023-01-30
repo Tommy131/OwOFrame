@@ -39,19 +39,19 @@ interface HttpStatusCode
     public const PUT_MODE = 2;
 
     /**
-     * HTTP AJAX请求模式
-     */
-    public const AJAX_MODE = 3;
-
-    /**
      * HTTP AJAX + GET请求模式
      */
-    public const AJAX_P_GET_MODE = 4;
+    public const AJAX_GET_MODE = 3;
 
     /**
      *  HTTP AJAX + POST请求模式
      */
-    public const AJAX_P_POST_MODE = 5;
+    public const AJAX_POST_MODE = 4;
+
+    /**
+     * HTTP AJAX + PUT 请求模式
+     */
+    public const AJAX_PUT_MODE = 5;
 
     /**
      * HTTP状态响应码常量数组

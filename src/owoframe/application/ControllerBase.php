@@ -101,7 +101,7 @@ abstract class ControllerBase
 	 * @param  integer $responseCode
 	 * @return DataEncoder
 	 */
-    protected function responseErrorStatus(int $responseCode = 502) : DataEncoder
+    public static function responseErrorStatus(int $responseCode = 502) : DataEncoder
 	{
 	    HttpManager::getCurrent('response')->setResponseCode($responseCode);
 		$args = func_get_args();
@@ -117,7 +117,7 @@ abstract class ControllerBase
 	 */
     public function __call(string $name, array $arguments)
 	{
-	    return $this->responseErrorStatus(502, 'Attempt to request undefined method ' . __CLASS__ . '::' . $name);
+	    return self::responseErrorStatus(502, 'Attempt to request undefined method ' . __CLASS__ . '::' . $name);
 	}
 }
 ?>

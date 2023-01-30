@@ -33,8 +33,19 @@ abstract class ApiControllerBase extends ControllerBase
 	 */
     protected $withVersionControl = true;
 
+
+	/**
+	 * 禁用 RunTime 显示框
+	*/
+	public function __construct(AppBase $app)
+	{
+		parent::__construct($app);
+        self::showUsedTimeDiv(false);
+	}
+
 	/**
 	 * 初始化方法
+	 * 返回 URL 中请求的方法处理结果
 	 *
 	 * @return mixed
 	 */
@@ -43,17 +54,17 @@ abstract class ApiControllerBase extends ControllerBase
 		$params = HttpManager::getParameters(2);
 	    if($this->withVersionControl) {
 		    if(empty($params) || !$this->checkApiVersionValidity(array_shift($params))) {
-			    return $this->responseErrorStatus(403, 'Current requested Api-Version is not allowed');
+			    return self::responseErrorStatus(403, 'Current requested Api-Version is not allowed');
 			}
 		}
 
 		$requestMethod = array_shift($params);
 	    if(!is_string($requestMethod) || !method_exists($this, $requestMethod) || !$this->isRequestAllowed($requestMethod, $errorMessage)) {
-		    return $this->responseErrorStatus(403, $errorMessage ?? 'Access Denied');
+		    return self::responseErrorStatus(403, $errorMessage ?? 'Access Denied');
 		}
 
 		$reflection = new ReflectionMethod($this, $requestMethod);
-	    return $reflection->isPublic() ? ($reflection->isStatic() ? static::{$requestMethod}() : $this->{$requestMethod}()) : $this->responseErrorStatus(403, 'Access Denied');
+	    return $reflection->isPublic() ? ($reflection->isStatic() ? static::{$requestMethod}() : $this->{$requestMethod}()) : self::responseErrorStatus(403, 'Access Denied');
 	}
 
 	/**
