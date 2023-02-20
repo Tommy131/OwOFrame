@@ -111,7 +111,8 @@ abstract class Application
     public function unbanController(string $name, bool $force = false) : Application
     {
         if($this->isControllerBanned($name)) {
-            if($force && (count($_ =& $this->controllerBanList[$name]) === 0)) {
+            $_ =& $this->controllerBanList[$name];
+            if($force && (count($_) === 0)) {
                 unset($_);
             }
         }

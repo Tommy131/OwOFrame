@@ -104,11 +104,9 @@ class WebSocket
         static $isRunning;
         if(!$this->created) {
             throw new ErrorException('Invalid Socket! Error message: ' . socket_strerror(socket_last_error()));
-            return;
         }
         if($isRunning) {
             throw new ErrorException('Do not call twice this method when WebSocket Server is running!');
-            return;
         }
         if(!isset($isRunning)) {
             $clients[] = $this->socket;
@@ -123,9 +121,9 @@ class WebSocket
                 // 判断是不是新接入的客户端
                 if($this->socket == $client)
                 {
-                    if(!($newClient = socket_accept($client))) {
+                    $newClient = socket_accept($client);
+                    if(!($newClient)) {
                         throw new ErrorException('Failed to accept socket: ' . socket_strerror(socket_last_error($client)));
-                        continue;
                     }
                     $this->handshaking($newClient, trim(socket_read($newClient, 1024)), $data);
                     socket_getpeername($newClient, $ip);

@@ -379,8 +379,9 @@ class Template
                 $function = $matches[1][$k];
                 if(!function_exists($function))
                 {
-                    if(function_exists($_ = '\\owo\\' . $function)) {
-                        $function = $_;
+                    $tmp = '\\owo\\' . $function;
+                    if(function_exists($tmp)) {
+                        $function = $tmp;
                     } else {
                         continue;
                     }
@@ -474,7 +475,8 @@ class Template
                             $parseArray = explode('.', $matchedTag); // 解析并分级绑定标签
                             array_shift($parseArray);                // 去除第一级原始绑定标签
 
-                            if((count($parseArray) === 0) && (($cnum = count($data)) > 1)) {
+                            $cnum = count($data);
+                            if((count($parseArray) === 0) && ($cnum > 1)) {
                                 $complied[$k][$n] = str_replace($bindElement . $matchedTag . $bindElement, "Array(n:{$bindElement}{$bindTag})[{$cnum}]", $line);
                             } else {
                                 $current = $v;

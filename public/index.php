@@ -38,7 +38,8 @@ $route->get('/static.owo/$type/$hashTag', function(array $obj)
     $response = $obj->response;
     // 解压参数
     extract($params);
-    if(empty($params) || !isset($type, $hashTag) || !file_exists($file = owo\cache_path("{$type}/{$hashTag}.php"))) {
+    $file = owo\cache_path("{$type}/{$hashTag}.php");
+    if(empty($params) || !isset($type, $hashTag) || !file_exists($file)) {
         $response->setResponseCode(403);
         return ['msg' => 'Access Denied'];
     }

@@ -441,7 +441,8 @@ class Route
         {
             if(is_a($handler, Controller::class, true)) {
                 $handler = new $handler;
-                if(method_exists($handler, $method = $handler->getDefaultHandlerMethod() ?? $handler->getName())) {
+                $method  = $handler->getDefaultHandlerMethod() ?? $handler->getName();
+                if(method_exists($handler, $method)) {
                     return call_user_func_array([$handler, $method], $params) ?? true;
                 }
             }
@@ -455,7 +456,8 @@ class Route
 
                 $controller = $handler->getDefaultController();
                 if($controller instanceof Controller) {
-                    if(method_exists($controller, $method = $controller->getDefaultHandlerMethod() ?? $controller->getName())) {
+                    $method = $controller->getDefaultHandlerMethod() ?? $controller->getName();
+                    if(method_exists($controller, $method)) {
                         return call_user_func_array([$controller, $method], $params) ?? true;
                     }
                 }

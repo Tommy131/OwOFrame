@@ -229,7 +229,8 @@ class View extends Template
                 $display = strtolower($matches[2][$k]);
                 $display = ($display === 'true') ? true : false;
                 if(strlen($cid) > 0) {
-                    if(is_bool($value = $this->getDisplayZoneStatus($cid))) {
+                    $value = $this->getDisplayZoneStatus($cid);
+                    if(is_bool($value)) {
                         $display = $value;
                     }
                 }
