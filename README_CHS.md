@@ -1,43 +1,41 @@
 # OwOFrame
 
-开源许可证: ![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg) [Learn More](https://opensource.org/licenses/Apache-2.0)
+![CodeFactor](https://www.codefactor.io/repository/github/tommy131/owoframe/badge) ![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg) [Learn More](https://opensource.org/licenses/Apache-2.0)
 
-OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模式开发, 框架的制定标准借鉴了 `ThinkPHP` ~~和 `Laravel`~~(框架太大了), 因此有部分方法的命名规则看起来与其有相似之处. 此项目仅为我个人的练习项目.
+OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模式开发, 框架的制定标准一定程度借鉴了 目前流行的PHP-MVC框架. 此项目仅为我个人的练习项目.  
 
 如果您觉得本项目对您有帮助, 请给本项目一颗小小的 `Star` 呗QWQ
+
+[英文版简介请点这里](README.md)
 
 ## 我能做什么?
 
 OwOFrame 是我利用个人的空闲时间以及数不尽多少天熬夜开发出来的小框架, 当然也有很多不足之处. 本框架目前支持的功能请参见下列:
 
-## 基础系统组件
+### 基础系统组件
 
-- [x] `!!!IDE友好!!!`       所有注释都能在 `Visual Studio Code` 中获得良好的显示效果, 全为手动注释 :)
-- [x] ~~`ApiProcessor`      一个独立的API处理模块, 用于分离与AppManager的区别~~ (在 [`dev@v1.0.1-ALPHA27`](https://github.com/Tommy131/OwOFrame/commit/317ec78fa53b5a684a899cb664e486d1fc8ae971) 中已被移除)
-- [x] `AppManager`          本框架为多应用共存框架, 通过HTTP_URI识别当前的应用
-- [x] `CommandManager`      支持在CLI端通过CommandLine方法实现一些操作
-- [x] `ConfigurationParser` 配置文件解析器
-- [x] `EventManager`        事件管理器(钩子方法)
-- [x] `Exception`           错误异常抓取及Stack输出(我知道高级的框架都拥有且比我的更好QAQ)
-- [x] `PluginLoader`        插件加载器(独立于Application之外的可灵活更改的一种支持方法)
-- [x] `Language`            自定义语言包支持
+- [x] `!!!IDE友好!!!`       所有注释都能在 `Visual Studio Code` 中获得良好的显示效果
+- [x] `Application`         本框架为多应用共存框架, 通过 `HTTP_URI` 识别当前的应用
+- [x] `Console`             支持在终端通过 `CommandLine` 实现一些操作
+- [x] `Config`              配置文件解析类
+- [x] `EventManager`        事件管理器 (钩子方法)
+- [x] `Exception`           错误异常抓取及Stack输出
+- [x] `ModuleLoader`        模块加载器 (独立于应用程序之外且可灵活管理, 处于全局模式下)
+- [x] `Language`            ~~自定义语言包支持~~ (重写中)
 - [x] `Logger`              支持最基础的日志记录
-- [x] `Redis`               支持基本Redis操作
-- [x] `RouterManager`       路由管理器
-- [x] `BetterRouter`        更好的路由控制器(更加个性化的路由绑定设置)
-- [x] `Template`            后端渲染模板(基本功能已经完成, 龟速开发进阶功能o(*￣▽￣*)o)
-- [x] `TextFormat`          支持ANSI控制码在CMD&Shell输出色彩
+- [x] `Redis`               ~~支持基本Redis操作~~ (重写中)
+- [x] `Route`               路由解析/管理 (个性化的路由绑定设置)
+- [x] `Template`            后端渲染模板 (基本功能已经完成, 龟速开发进阶功能o(*￣▽￣*)o)
+- [x] `TextColorOutput`     支持ANSI控制码在CMD & Shell输出色彩
 - [x] `WMI`                 针对Windows系统编写的WMI操作类
+- [x] `Cookie`              一个普通的Cookie处理类
+- [x] `Session`             一个普通的Session处理类
+- [x] `EmptyAppGenerator`   一键生成新的应用程序模板
+- [x] `FileUploader`        文件上传类支持
+- [x] `systemFunctions`     一个集成了系统底层的文件函数 (具体请看源代码)
+- [x] `httpFunctions`       一个集成了HTTP底层的文件函数 (具体请看源代码)
 
-## 基础功能组件
-
-- [x] `CookieClass`         一个普通的Cookie处理类
-- [x] `EmptyAppGenerator`   一键生成新的Application模板
-- [x] `FileUploadClass`     文件上传类支持
-- [x] `Helper`              一个集成化的方法类(具体请看源代码)
-- [x] `SessionClass`        一个普通的Session处理类
-
-## 第三方资源
+### 第三方资源
 
 - [x] [`PasswordHash`](http://www.openwall.com/phpass/) 在此项目中包含/集成了该类库
 - [x] [`Think-ORM`](https://github.com/top-think/think-orm) 使用此项目达到了OwOFrame的ModelBase目的实现
@@ -57,7 +55,6 @@ OwOFrame 是我利用个人的空闲时间以及数不尽多少天熬夜开发�
 ### §3 目录格式
 
 - 引导文件为根目录下的 `/public/index.php`, 通过此文件初始化框架.
-- TODO
 
 ### 是否需要修改Web环境?
 

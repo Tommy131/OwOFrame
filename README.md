@@ -1,8 +1,8 @@
 # OwOFrame
 
-Open source license : ![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg) [Learn More](https://opensource.org/licenses/Apache-2.0)
+![CodeFactor](https://www.codefactor.io/repository/github/tommy131/owoframe/badge) ![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg) [Learn More](https://opensource.org/licenses/Apache-2.0)
 
-OwO! `OwOFrame` is developed based on the `MVC (Model-Views-Controller)` model. The framework's standard formulation draws on `ThinkPHP`, so the naming rules for some methods seem There are similarities. This repository is just my personal practice repository.
+OwO! `OwOFrame` is developed based on the `MVC (Model-Views-Controller)` model. The standard of the framework is drawn from the current popular PHP-MVC framework to a certain extent. This project is only my personal practice project.
 
 If you think this repository is helpful to you, please give this repository a `Star` QWQ
 
@@ -12,33 +12,30 @@ If you think this repository is helpful to you, please give this repository a `S
 
 OwOFrame is a small framework that I developed using my free time. Of course, there are many shortcomings. The functions currently supported by this framework are listed below:
 
-## Basic System Components
+### Basic System Components
 
-- [x] `!!!IDE Friendly!!!`  All comments can be displayed well in `Visual Studio Code`, all are manual comments :)
-- [x] `AppManager`          Judge the corresponding routing controller by identifying `HTTP_URI` and assign it to the corresponding Application
-- [x] `CommandManager`      Support some operations through the Command Line method on the CLI
-- [x] `ConfigurationParser` Configuration Parser
-- [x] `EventManager`        Event Manager(Hooks Module)
-- [x] `Exception`           Error capture and Stack output (I know that advanced frameworks have them and are better than mine QAQ)
-- [x] `PluginLoader`        Plug-in loader (a support method that can be flexibly changed independent of Application)
-- [x] `Language`            Custom languages packages supported
+- [x] `!!!IDE Friendly!!!`  All comments display nicely in `Visual Studio Code`
+- [x] `Application`         This framework is a multi-application coexistence framework, and the current application is identified by `HTTP_URI`
+- [x] `Console`             Support some operations in the terminal through `CommandLine`
+- [x] `Config`              Configuration file parsing class
+- [x] `EventManager`        Event Manager (hook method)
+- [x] `Exception`           Error and exception capture and Stack output
+- [x] `ModuleLoader`        Module loader (Application independent and flexible management, in global mode)
+- [x] `Language`            ~~Custom language pack support~~ (rewriting)
 - [x] `Logger`              Support the most basic logging
-- [x] `Redis`               Support basic Redis operations
-- [x] `RouterManager`       Router Manager
-- [x] `BetterRouter`        Better Router (More personalized routing binding settings)
-- [x] `Template`            Back-end rendering template (basic functions have been completed, turtle speed development advanced functions o(*￣▽￣*)o)
-- [x] `TextFormat`          Support ANSI control code output color in CMD & Shell
+- [x] `Redis`               ~~Support basic Redis operations~~ (rewriting)
+- [x] `Route`               Route analysis/management (personalized route binding settings)
+- [x] `Template`            Back-end rendering template (basic functions have been completed, and advanced functions have been developed quickly o(*￣▽￣*)o)
+- [x] `TextColorOutput`     Support ANSI control code output color in CMD & Shell
 - [x] `WMI`                 WMI operation class written for Windows system
+- [x] `Cookie`              A common cookie processing class
+- [x] `Session`             A common Session processing class
+- [x] `EmptyAppGenerator`   One-click generation of new application templates
+- [x] `FileUploader`        File upload class support
+- [x] `systemFunctions`     A file function that integrates the bottom layer of the system (see the source code for details)
+- [x] `httpFunctions`       A file function that integrates the bottom layer of HTTP (see the source code for details)
 
-## Basic Util Components
-
-- [x] `CookieClass`         A common Cookie class
-- [x] `EmptyAppGenerator`   Generate a new Application template with one click
-- [x] `FileUploadClass`     File upload support
-- [x] `Helper`              An integrated method class (see the source code for details)
-- [x] `SessionClass`        A common Session class
-
-## Third Party Resources
+### Third Party Resources
 
 - [x] [`PasswordHash`](http://www.openwall.com/phpass/)
 - [x] [`Think-ORM`](https://github.com/top-think/think-orm)
