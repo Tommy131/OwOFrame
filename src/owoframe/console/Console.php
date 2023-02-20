@@ -108,7 +108,7 @@ class Console
 
         if($command instanceof CommandBase) {
             if(!$command->execute($input)) {
-                $command->getUsage();
+                System::getMainLogger()->info($command->getUsage());
                 // System::getMainLogger()->debug("Command '{$inputCommand}' may not execute successfully, please check the issue.");
             }
         } else {

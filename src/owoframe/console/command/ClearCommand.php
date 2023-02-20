@@ -52,6 +52,11 @@ class ClearCommand extends CommandBase
                         $this->getLogger()->info($param);
                     } else {
                         $files = iterator_to_array(new FI(\owo\log_path(), FI::CURRENT_AS_PATHNAME | FI::SKIP_DOTS), false);
+                        if(count($files) === 1) {
+                            $this->getLogger()->info('No files to delete.');
+                            return true;
+                        }
+
                         foreach($files as $file) {
                             $baseName = basename($file);
                             $ext = @end(explode('.', $baseName));

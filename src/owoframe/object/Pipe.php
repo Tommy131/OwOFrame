@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-20 03:05:15
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-20 04:19:27
+ * @LastEditTime : 2023-02-20 06:18:41
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -107,6 +107,17 @@ class Pipe
     }
 
     /**
+     * 立刻执行此操作, 不检测
+     *
+     * @return Pipe
+     */
+    public function do(callable $callback) : Pipe
+    {
+        $this->lastResult = $callback($this);
+        return $this;
+    }
+
+    /**
      * 最终执行方法
      *
      * @param  callable $callback
@@ -114,7 +125,11 @@ class Pipe
      */
     public function finally(callable $callback) : Pipe
     {
-        $this->finalResult = $callback($this);
+        if($this->isContinue()) {
+            $this->finalResult = $callback($this);
+        } else {
+            $this->lastResult = null;
+        }
         return $this;
     }
 

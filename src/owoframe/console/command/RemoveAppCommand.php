@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-15 18:49:38
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-15 19:29:40
+ * @LastEditTime : 2023-02-20 05:56:08
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -22,6 +22,7 @@ namespace owoframe\console\command;
 
 
 use owoframe\console\CommandBase;
+use owoframe\object\Pipe;
 use owoframe\System;
 
 class RemoveAppCommand extends CommandBase
@@ -39,15 +40,19 @@ class RemoveAppCommand extends CommandBase
             return true;
         }
 
-        $answer = (string) \owo\ask('ARE YOU SURE THAT YOU WANT TO DELETE/REMOVE THIS APPLICATION? THIS OPERATION IS IRREVERSIBLE! [Y/N]', 'N', '[WARNING] ');
-        if(strtolower($answer) === 'y') {
-            $this->getLogger()->warning('Now will remove this application forever...');
-            if(\owo\remove_dir(\owo\application_path(strtolower($appName)))) {
-                $this->getLogger()->success("Removed Application '{$appName}' successfully.");
+        \owo\pipe_ask('ARE YOU SURE THAT YOU WANT TO DELETE/REMOVE THIS APPLICATION? THIS OPERATION IS IRREVERSIBLE! [Y/N]', ['y', 'Y', 'yes', 'YES'])
+        ->do(function(Pipe $object) use ($appName) {
+            if($object->isContinue()) {
+                $this->getLogger()->warning('Now will remove this application forever...');
+                if(\owo\remove_dir(\owo\application_path(strtolower($appName)))) {
+                    $this->getLogger()->success("Removed Application '{$appName}' successfully.");
+                } else {
+                    $this->getLogger()->error('Somewhere was wrong that cannot remove this application!');
+                }
             } else {
-                $this->getLogger()->error('Somewhere was wrong that cannot remove this application!');
+                $this->getLogger()->info('Cancelled.');
             }
-        }
+        });
         return true;
     }
 

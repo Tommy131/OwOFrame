@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-01 20:34:03
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-20 04:04:18
+ * @LastEditTime : 2023-02-20 06:13:56
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -581,11 +581,17 @@ namespace owo
                 if(!is_array($expect)) {
                     return (is_string($expect) && is_string($result) && str_is_regex($expect) && preg_match_all($expect, $result)) ? true : ($result === $expect) || (is_string($expect) && (strtolower($expect) === $allowAll));
                 } else {
-                    return isset($expect[array_search($result, $expect)]);
+                    return in_array($result, $expect);
                 }
             });
         }
-        $object->setExpectingResults($expect)->then($question);
+
+        if(is_array($expect)) {
+            $object->setExpectingResults($expect);
+        } else {
+            $object->setExpectingResult($expect);
+        }
+        $object->then($question);
         return $object;
     }
 
