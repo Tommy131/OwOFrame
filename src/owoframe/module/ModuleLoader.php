@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-02 21:05:15
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-04 00:05:51
+ * @LastEditTime : 2023-02-20 19:37:34
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -24,7 +24,7 @@ namespace owoframe\module;
 use FilesystemIterator as FI;
 use SplFileInfo;
 use ErrorException;
-use owoframe\object\Priority;
+use owoframe\Priority;
 
 class ModuleLoader
 {

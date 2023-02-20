@@ -99,3 +99,4 @@ class ClearCommand extends CommandBase
         return "Command for clear the screen or empty a log file. Usage: owo clear log|cache";
     }
 }
+?>

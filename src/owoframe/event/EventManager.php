@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-03 23:51:38
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-04 00:19:13
+ * @LastEditTime : 2023-02-20 20:04:41
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -75,12 +75,14 @@ class EventManager
         if(!self::isEvent($eventName)) {
             throw new ReflectionException("Attempt to register an none-exists Event ({$eventName})");
         }
-        $splId   = spl_object_hash($listener);
-        $hashTag = $splId . '@' . $method;
-        // 创建映射关系;
-        $this->registeredListener[$splId][$method] = $eventName;
-        // 注册事件;
-        $this->handlerList[$eventName][$splId][$hashTag] = [$listener, $method];
+
+        $class = get_class($listener);
+        $tag   = $class . '@' . $method;
+
+        // 创建映射关系
+        $this->registeredListener[$class][$method] = $eventName;
+        // 注册事件
+        $this->handlerList[$eventName][$listener::priority()][$class][$tag] = [$listener, $method];
     }
 
     /**
@@ -92,19 +94,36 @@ class EventManager
      */
     public function deleteTriggerCallback(Listener $listener, string $method) : void
     {
-        $splId   = spl_object_hash($listener);
-        $hashTag = $splId . '@' . $method;
-        $_       =& $this->registeredListener[$splId];
+        $class = get_class($listener);
+        $tag   = $class . '@' . $method;
+
+        if(!$this->hasListener($listener)) {
+            return;
+        }
+        $_ =& $this->registeredListener[$class];
 
         if(isset($_[$method])) {
             $eventName = $_[$method];
-            $__        =& $this->handlerList[$eventName][$splId];
-            unset($__[$hashTag], $_[$method]);
-            // 判断当前监听者是否存在事件回调;
+            $__        =& $this->handlerList[$eventName][$listener::priority()][$class];
+            unset($__[$tag], $_[$method]);
+
+            // 判断当前监听者是否存在其他的事件回调
             if(empty($_)) {
                 unset($_, $__);
             }
         }
+    }
+
+    /**
+     * 判断是否存在一个监听者
+     *
+     * @param  Listener|string $listener
+     * @return boolean
+     */
+    public function hasListener($listener) : bool
+    {
+        $listener = ($listener instanceof Listener) ? get_class($listener) : (is_string($listener) ? $listener : null);
+        return isset($this->registeredListener[$listener]);
     }
 
     /**

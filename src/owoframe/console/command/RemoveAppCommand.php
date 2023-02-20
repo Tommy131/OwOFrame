@@ -71,3 +71,4 @@ class RemoveAppCommand extends CommandBase
         return 'Look the version the OwOFrame.';
     }
 }
+?>

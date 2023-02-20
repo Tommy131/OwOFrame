@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-15 18:49:38
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-15 19:29:40
+ * @LastEditTime : 2023-02-20 22:02:07
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -20,30 +20,45 @@ declare(strict_types=1);
 namespace owoframe\console\command;
 
 
-
+use ZipArchive;
 use owoframe\console\CommandBase;
 
-class VersionCommand extends CommandBase
+class AddExampleModuleCommand extends CommandBase
 {
     public function execute(array $params) : bool
     {
-        $this->getLogger()->info("Welcome to use OwOFrame :) Current version is: " . OWO_VERSION);
+        $path = \owo\module_path('');
+        $to   = 'ExampleModule.zip';
+        if(!is_dir($path . 'example') && copy(\owo\owo_path('module/example.zip'), $path . $to)) {
+            if(!class_exists(ZipArchive::class) && !extension_loaded('zip')) {
+                $this->getLogger()->notice("Added §3{$to}§6 in path §3{$path}§6, ZipArchive::class not found, you have to unzip by yourself.");
+            } else {
+                $zip = new ZipArchive;
+                $zip->open($path. $to);
+                $zip->extractTo($path);
+                $zip->close();
+                unlink($path. $to);
+                $this->getLogger()->success("Added §3{$to}§5 in path §3{$path}§5 successfully.");
+            }
+        } else {
+            $this->getLogger()->error('Error! Cannot add example module.');
+        }
         return true;
     }
 
     public static function getAliases() : array
     {
-        return ['v', '-v', '-ver'];
+        return ['addm', '-addm'];
     }
 
     public static function getName() : string
     {
-        return 'version';
+        return 'addmodule';
     }
 
     public static function getDescription() : string
     {
-        return 'Look the version the OwOFrame.';
+        return 'Add a example module.';
     }
 }
 ?>

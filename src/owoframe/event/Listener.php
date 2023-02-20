@@ -20,5 +20,7 @@ declare(strict_types=1);
 namespace owoframe\event;
 
 interface Listener
-{}
+{
+    public static function priority() : int;
+}
 ?>

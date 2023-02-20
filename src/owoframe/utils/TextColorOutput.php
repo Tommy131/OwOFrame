@@ -155,12 +155,12 @@ class TextColorOutput
         foreach(self::split($input) as $v) {
             switch($v)
             {
-                // When did not match;
+                // When did not match
                 default:
                     $output .= $v;
                 break;
 
-                // Match Colors;
+                // Match Colors
                 case self::BLACK:
                     $output .= sprintf($form, '16');
                 break;
@@ -219,7 +219,7 @@ class TextColorOutput
                     $output .= sprintf($form, '13');
                 break;
 
-                // Match Symbols;
+                // Match Symbols
                 case self::BOLD:
                     $output .= "\033[1m";
                 break;

@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-05 23:08:56
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-18 06:26:25
+ * @LastEditTime : 2023-02-20 19:41:19
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -223,9 +223,9 @@ class View extends Template
         if(preg_match_all('/<owo-v-display ?(default="(true|false)")? @cid="(\w+)">(.*)<\/owo-v-display>/imsuU', $str, $matches)) {
             $strings = $replace = [];
             foreach($matches[0] as $k => $area) {
-                // 区域ID绑定解析;
+                // 区域ID绑定解析
                 $cid = $matches[3][$k];
-                // 区域display默认状态 (布尔值);
+                // 区域display默认状态 (布尔值)
                 $display = strtolower($matches[2][$k]);
                 $display = ($display === 'true') ? true : false;
                 if(strlen($cid) > 0) {
@@ -234,9 +234,9 @@ class View extends Template
                         $display = $value;
                     }
                 }
-                // 区域原文;
+                // 区域原文
                 $original = $matches[4][$k];
-                // 最终判断;
+                // 最终判断
                 $strings[] = ($display) ? $area : \owo\get_new_line($area, $str);
                 $replace[] = ($display) ? $original : '';
             }

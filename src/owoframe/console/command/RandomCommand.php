@@ -86,3 +86,4 @@ class RandomCommand extends CommandBase
         'Usage: ' . parent::getUsage() . ' -n (count: integer) number(s) from 0-99999 (default maximum: 99999)';
     }
 }
+?>

@@ -52,3 +52,4 @@ class WebSocketCommand extends CommandBase
         return 'Command for WebSocket';
     }
 }
+?>

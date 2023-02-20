@@ -71,7 +71,7 @@ class ThinkDB extends Db
 			]
 		]);
 
-		// 定义初始化标识;
+		// 定义初始化标识
 		define('DB_INIT', true);
 	}
 

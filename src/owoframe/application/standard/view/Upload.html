@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
@@ -129,7 +128,7 @@
 
         var fileName;
         var path = file.val();
-        // 火狐获取的是文件名，所以pos=-1,chrome和IE获取的是文件路径;
+        // 火狐获取的是文件名，所以pos=-1,chrome和IE获取的是文件路径
         var pos1 = path.lastIndexOf('/');
         var pos2 = path.lastIndexOf('\\');
         var pos = Math.max(pos1, pos2)
@@ -141,7 +140,7 @@
         }
         else {
             display.show();
-            fileName = path.substring(pos + 1);// 截取从pos+1索引到末尾;
+            fileName = path.substring(pos + 1); // 截取从pos+1索引到末尾
             display.text(fileName);
             display.attr("title", fileName);
         }

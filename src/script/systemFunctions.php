@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-01 20:34:03
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-20 06:13:56
+ * @LastEditTime : 2023-02-20 21:53:30
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -549,10 +549,10 @@ namespace owo
 
         $output .= $default ? " (Default: {$default})  " : '  ';
 
-        global $newLine;
-        $newLine = false;
+        global $owo_system_output_allowNewLine;
+        $owo_system_output_allowNewLine = false;
         color_output($output);
-        $newLine = true;
+        $owo_system_output_allowNewLine = true;
 
         $_ = fgets(STDIN);
         return ($_ && (strlen($_) > 0)) ? trim($_) : $default;
@@ -915,25 +915,23 @@ namespace owo
     /**
      * 输出内容
      *
-     * @global boolean $newLine
      * @return void
      */
     function output() : void
     {
-        global $newLine;
-        echo implode(PHP_EOL, func_get_args()) . ($newLine ? PHP_EOL : '');
+        global $owo_system_output_allowNewLine;
+        echo implode(PHP_EOL, func_get_args()) . ($owo_system_output_allowNewLine ? PHP_EOL : '');
     }
 
     /**
      * 输出彩色内容
      *
-     * @global boolean $newLine
      * @return void
      */
     function color_output() : void
 	{
-        global $newLine;
-		echo TCO::parse(implode(PHP_EOL, func_get_args())) . ($newLine ? PHP_EOL : '');
+        global $owo_system_output_allowNewLine;
+		echo TCO::parse(implode(PHP_EOL, func_get_args())) . ($owo_system_output_allowNewLine ? PHP_EOL : '');
 	}
 }
 ?>

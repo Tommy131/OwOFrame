@@ -73,3 +73,4 @@ class HelpCommand extends CommandBase
         return TCO::AQUA . parent::getUsage() . TCO::GOLD . '[string:commandName]';
     }
 }
+?>

@@ -11,13 +11,13 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-02 18:49:33
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-02 18:49:33
+ * @LastEditTime : 2023-02-20 19:35:19
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
  */
 declare(strict_types=1);
-namespace owoframe\object;
+namespace owoframe;
 
 
 

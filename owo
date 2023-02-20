@@ -12,7 +12,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-14 18:01:56
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-20 04:19:42
+ * @LastEditTime : 2023-02-20 21:40:43
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -28,6 +28,6 @@ require_once(__DIR__ . '/src/script/httpFunctions.php');
 use owoframe\System;
 use owoframe\console\Console;
 
-System::init($classLoader);
+System::init();
 System::initializeApplications();
 Console::getInstance()->init()->monitor($argv);
