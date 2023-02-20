@@ -1,72 +1,87 @@
 <?php
-
-/*********************************************************************
-     _____   _          __  _____   _____   _       _____   _____
-    /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
-    | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
-    | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _
-    | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
-    \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
-
-    * Copyright (c) 2015-2021 OwOBlog-DGMT.
-    * Developer: HanskiJay(Tommy131)
-    * Telegram:  https://t.me/HanskiJay
-    * E-Mail:    support@owoblog.com
-    * GitHub:    https://github.com/Tommy131
-
-**********************************************************************/
-
+/*
+ *       _____   _          __  _____   _____   _       _____   _____
+ *     /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
+ *     | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
+ *     | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |   _
+ *     | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
+ *     \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
+ *
+ * Copyright (c) 2023 by OwOTeam-DGMT (OwOBlog).
+ * @Author       : HanskiJay
+ * @Date         : 2023-02-03 23:51:38
+ * @LastEditors  : HanskiJay
+ * @LastEditTime : 2023-02-17 22:22:24
+ * @E-Mail       : support@owoblog.com
+ * @Telegram     : https://t.me/HanskiJay
+ * @GitHub       : https://github.com/Tommy131
+ */
 declare(strict_types=1);
 namespace owoframe\event\http;
 
-use owoframe\application\View;
+
+
 use owoframe\event\Event;
+use owoframe\template\View;
 use owoframe\http\Response;
 
 class PageErrorEvent extends Event
 {
-
     /**
      * 标题
      *
      * @var string
      */
-    public static $title = '404 PAGE NOT FOUND';
+    public $title = '404 PAGE NOT FOUND';
 
     /**
      * 错误响应代码
      *
      * @var integer
      */
-    public static $statusCode = 400;
+    public $statusCode = 400;
 
     /**
      * 输出内容
      *
      * @var string
      */
-    public static $output = 'You requested page was not found.';
+    public $output = 'You requested page was not found.';
 
     /**
      * 模板渲染缓存
      *
      * @var View
      */
-    public static $view;
+    public $template;
+
 
     /**
      * 创建View视图实例
      *
-     * @param  string  $fileName
-     * @param  string  $filePath
+     * @param  string      $fileName
+     * @param  string|null $filePath
+     * @return void
+     */
+    public function __construct(string $fileName = 'Error.html', ?string $filePath = null)
+    {
+        if(!$this->template instanceof View) {
+            $this->template = new View($fileName, $filePath);
+        }
+        $this->template->assign([
+            'title'       => $this->title,
+            'description' => $this->output
+        ]);
+    }
+
+    /**
+     * 返回视图对象
+     *
      * @return View
      */
-    public static function create(string $fileName = 'Error.html', string $filePath = FRAMEWORK_PATH . 'template') : View
+    public function template() : View
     {
-        if(!static::$view instanceof View) {
-            static::$view = new View($fileName, $filePath);
-        }
-        return static::$view;
+        return $this->template;
     }
 
     /**
@@ -74,14 +89,10 @@ class PageErrorEvent extends Event
      *
      * @return void
      */
-    public static function render() : void
+    public function render() : void
     {
-        static::create()->assign([
-            'title'       => static::$title,
-            'description' => static::$output
-        ]);
-        $response = new Response([static::$view, 'render']);
-        $response->setResponseCode(static::$statusCode)->sendResponse();
+        $response = new Response([$this->template, 'render']);
+        $response->setResponseCode($this->statusCode)->send();
     }
 
     /**
@@ -89,10 +100,11 @@ class PageErrorEvent extends Event
      *
      * @return void
      */
-    public static function reset() : void
+    public function reset() : void
     {
-        static::$view   = null;
-        static::$title  = null;
-        static::$output = null;
+        $this->template = null;
+        $this->title    = null;
+        $this->output   = null;
     }
 }
+?>

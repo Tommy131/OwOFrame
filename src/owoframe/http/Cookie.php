@@ -1,27 +1,28 @@
 <?php
-
-/*********************************************************************
-     _____   _          __  _____   _____   _       _____   _____
-    /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
-    | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
-    | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _
-    | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
-    \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
-
-    * Copyright (c) 2015-2021 OwOBlog-DGMT.
-    * Developer: HanskiJay(Tommy131)
-    * Telegram:  https://t.me/HanskiJay
-    * E-Mail:    support@owoblog.com
-    * GitHub:    https://github.com/Tommy131
-
-**********************************************************************/
-
+/*
+ *       _____   _          __  _____   _____   _       _____   _____
+ *     /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
+ *     | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
+ *     | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |   _
+ *     | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
+ *     \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
+ *
+ * Copyright (c) 2023 by OwOTeam-DGMT (OwOBlog).
+ * @Author       : HanskiJay
+ * @Date         : 2023-02-09 22:22:28
+ * @LastEditors  : HanskiJay
+ * @LastEditTime : 2023-02-09 22:22:36
+ * @E-Mail       : support@owoblog.com
+ * @Telegram     : https://t.me/HanskiJay
+ * @GitHub       : https://github.com/Tommy131
+ */
 declare(strict_types=1);
 namespace owoframe\http;
 
+
+
 class Cookie
 {
-
     /**
      * Cookie前缀
      *
@@ -39,13 +40,10 @@ class Cookie
     private static $_path = '/';
 
 
-
     /**
      * 设置Cookie前缀
      *
-     * @author HanskiJay
-     * @since  2021-03-06
-     * @param  string      $url 地址
+     * @param  string $url 地址
      * @return void
      */
     public static function setPrefix(string $url) : void
@@ -60,8 +58,6 @@ class Cookie
     /**
      * 返回Cookie前缀设置
      *
-     * @author HanskiJay
-     * @since  2021-03-06
      * @return string
      */
     public static function getPrefix() : string
@@ -72,8 +68,6 @@ class Cookie
     /**
      * 返回Cookie路径设置
      *
-     * @author HanskiJay
-     * @since  2021-03-06
      * @return string
      */
     public static function getPath() : string
@@ -84,8 +78,6 @@ class Cookie
     /**
      * 返回所有Cookies
      *
-     * @author HanskiJay
-     * @since  2021-03-06
      * @return array
      */
     public static function getAll() : array
@@ -94,27 +86,9 @@ class Cookie
     }
 
     /**
-     * 获取一个Cookie
-     *
-     * @author HanskiJay
-     * @since  2021-03-06
-     * @param  string      $key     键名
-     * @param  mixed       $default 默认返回结果
-     * @return mixed
-     */
-    public static function get(string $key, $default = NULL)
-    {
-        $key = self::$_prefix . $key;
-        $value = isset($_COOKIE[$key]) ? $_COOKIE[$key] : (isset($_POST[$key]) ? $_POST[$key] : $default);
-        return is_array($value) ? $default : $value;
-    }
-
-    /**
      * 判断是否存在一个Cookie
      *
-     * @author HanskiJay
-     * @since  2021-03-06
-     * @param  string      $key 键名
+     * @param  string $key 键名
      * @return boolean
      */
     public static function has(string $key) : bool
@@ -123,13 +97,26 @@ class Cookie
     }
 
     /**
+     * 获取一个Cookie
+     *
+     * @param  string $key     键名
+     * @param  mixed  $default 默认返回结果
+     * @return mixed
+     */
+    public static function get(string $key, $default = NULL)
+    {
+        $key   = self::$_prefix . $key;
+        $value = $_COOKIE[$key] ?? ($_POST[$key] ?? $default);
+        return is_array($value) ? $default : $value;
+    }
+
+    /**
      * 设置一个Cookie
      *
-     * @author HanskiJay
-     * @since  2021-03-06
-     * @param  string      $key    键名
-     * @param  mixed       $value  键值
-     * @param  integer     $expire 过期时间
+     * @param  string  $key    键名
+     * @param  mixed   $value  键值
+     * @param  integer $expire 过期时间
+     * @return void
      */
     public static function set(string $key, $value, $expire = 0) : void
     {
@@ -141,15 +128,13 @@ class Cookie
     /**
      * 删除一个Cookie
      *
-     * @author HanskiJay
-     * @since  2021-03-06
-     * @param  string      $key 键名
+     * @param  string  $key 键名
      * @return boolean
      */
     public static function delete(string $key) : bool
     {
         $key = self::$_prefix . $key;
-        if (!isset($_COOKIE[$key])) {
+        if (!self::has($key)) {
             return false;
         }
 

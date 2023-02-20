@@ -12,7 +12,6 @@
     ],
     "autoload": {
         "files": [
-            "src/functions.php"
         ],
         "psr-4": {
             "owoframe\\": "src/owoframe/"
@@ -21,6 +20,7 @@
     "require": {
         "php": ">=7.2",
         "topthink/think-orm": "^2.0",
-        "bshaffer/oauth2-server-php": "^1.11"
+        "bshaffer/oauth2-server-php": "^1.11",
+        "owoblogteam/phpass": "9999999-dev"
     }
 }

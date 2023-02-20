@@ -1,307 +1,121 @@
 <?php
-
-/*********************************************************************
-     _____   _          __  _____   _____   _       _____   _____
-    /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
-    | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
-    | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _
-    | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
-    \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
-
-    * Copyright (c) 2015-2021 OwOBlog-DGMT.
-    * Developer: HanskiJay(Tommy131)
-    * Telegram:  https://t.me/HanskiJay
-    * E-Mail:    support@owoblog.com
-    * GitHub:    https://github.com/Tommy131
-
-**********************************************************************/
-
+/*
+ *       _____   _          __  _____   _____   _       _____   _____
+ *     /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
+ *     | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
+ *     | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |   _
+ *     | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
+ *     \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
+ *
+ * Copyright (c) 2023 by OwOTeam-DGMT (OwOBlog).
+ * @Author       : HanskiJay
+ * @Date         : 2023-02-02 16:07:57
+ * @LastEditors  : HanskiJay
+ * @LastEditTime : 2023-02-19 04:07:43
+ * @E-Mail       : support@owoblog.com
+ * @Telegram     : https://t.me/HanskiJay
+ * @GitHub       : https://github.com/Tommy131
+ */
 declare(strict_types=1);
 namespace owoframe;
 
-use Composer\Autoload\ClassLoader;
+use Throwable;
+use FilesystemIterator as FI;
 
-use owoframe\database\ThinkDB;
-use owoframe\exception\ExceptionOutput;
+use owoframe\application\Application;
+use owoframe\application\standard\DefaultApp;
+use owoframe\event\system\OutputEvent;
+use owoframe\exception\OwOFrameException;
 use owoframe\module\ModuleLoader;
 use owoframe\object\INI;
+use owoframe\template\View;
 use owoframe\utils\Logger;
 
 final class System
 {
-
     /**
-     * Android系统标识
+     * PHP错误常量转换
      */
-    public const OS_ANDROID = 'android';
+    public const ERROR_CONVERSION =
+    [
+        E_ERROR             => 'E_ERROR',
+        E_WARNING           => 'E_WARNING',
+        E_PARSE             => 'E_PARSE',
+        E_NOTICE            => 'E_NOTICE',
+        E_CORE_ERROR        => 'E_CORE_ERROR',
+        E_CORE_WARNING      => 'E_CORE_WARNING',
+        E_COMPILE_ERROR     => 'E_COMPILE_ERROR',
+        E_COMPILE_WARNING   => 'E_COMPILE_WARNING',
+        E_USER_ERROR        => 'E_USER_ERROR',
+        E_USER_WARNING      => 'E_USER_WARNING',
+        E_USER_NOTICE       => 'E_USER_NOTICE',
+        E_STRICT            => 'E_STRICT',
+        E_RECOVERABLE_ERROR => 'E_RECOVERABLE_ERROR',
+        E_DEPRECATED        => 'E_DEPRECATED',
+        E_USER_DEPRECATED   => 'E_USER_DEPRECATED'
+    ];
 
     /**
-     * Linux系统标识
-     */
-    public const OS_LINUX   = 'linux';
-
-    /**
-     * Windows系统标识
-     */
-    public const OS_WINDOWS = 'windows';
-
-    /**
-     * Mac系统标识
-     */
-    public const OS_MACOS   = 'mac';
-
-    /**
-     * BSD系统标识
-     */
-    public const OS_BSD     = 'bsd';
-
-    /**
-     * 未识别的系统标识
-     */
-    public const OS_UNKNOWN = 'unknown';
-
-    /**
-     * ClassLoader实例
+     * 已加载的应用程序列表
      *
-     * @access private
-     * @var ClassLoader
+     * @var array
      */
-    private static $classLoader = null;
+    public static $loadedApplications = [];
+
 
     private function __construct()
     {
     }
 
     /**
-     * 构造函数
+     * 初始化函数
      *
-     * @author HanskiJay
-     * @since  2021-03-06
-     * @param  ClassLoader|null $classLoader
-     */
-    public static function init(?ClassLoader $classLoader = null)
-    {
-        if($classLoader !== null) {
-            static::$classLoader = $classLoader;
-            $classLoader->addPsr4('application\\', APP_PATH);
-            $classLoader->addPsr4('modules\\',     MODULE_PATH);
-        }
-
-        // Initialize storages directory folder;
-        self::createStorageDirectory();
-
-        // Generate global configuration file;
-        self::generateConfig();
-
-        // Set up exception crawling;
-        set_error_handler([ExceptionOutput::class, 'ErrorHandler'], E_ALL);
-        set_exception_handler([ExceptionOutput::class, 'ExceptionHandler']);
-
-        // Define Timezone;
-        define('TIME_ZONE', (_global('owo.timeZone', 'Europe/Berlin')));
-        date_default_timezone_set(TIME_ZONE);
-
-        if(!ob_get_level() && self::isRunningWithCGI()) {
-            ob_start();
-        }
-        ThinkDB::init();
-        ModuleLoader::autoLoad();
-    }
-
-    /**
-     * 获取客户端信息
-     *
-     * @author HanskiJay
-     * @since  2021-01-10
-     * @return string
-     */
-    public static function getClientBrowser() : string
-    {
-        if(!empty(server('HTTP_USER_AGENT')))
-        {
-            $br = server('HTTP_USER_AGENT');
-            if(preg_match('/MSIE/i',$br))        $br = 'MSIE';
-            elseif(preg_match('/Firefox/i',$br)) $br = 'Firefox';
-            elseif(preg_match('/Chrome/i',$br))  $br = 'Chrome';
-            elseif(preg_match('/Safari/i',$br))  $br = 'Safari';
-            elseif(preg_match('/Opera/i',$br))   $br = 'Opera';
-            else $br = 'Other';
-            return $br;
-        }
-        else return '获取浏览器信息失败!';
-    }
-
-    /**
-     * 获取客户端IP
-     *
-     * @author HanskiJay
-     * @since  2021-01-10
-     * @return string
-     */
-    public static function getClientIp() : string
-    {
-        if(server('HTTP_CLIENT_IP'))           $ip = server('HTTP_CLIENT_IP');
-        elseif(server('HTTP_X_FORWARDED_FOR')) $ip = server('HTTP_X_FORWARDED_FOR');
-        elseif(server('REMOTE_ADDR'))          $ip = server('REMOTE_ADDR');
-        else                                   $ip = 'Unknown';
-        return $ip;
-    }
-
-    /**
-     * 返回当前系统类型
-     *
-     * @author HanskiJay
-     * @since  2021-02-18
-     * @return string
-     */
-    public static function getOS() : string
-    {
-        $r  = null;
-        $os = php_uname('s');
-        if(stripos($os, 'linux') !== false) {
-            $r = @file_exists('/system/build.prop') ? self::OS_ANDROID : self::OS_LINUX;
-        }
-        elseif(stripos($os, 'windows') !== false) {
-            $r = self::OS_WINDOWS;
-        }
-        elseif((stripos($os, 'mac') !== false) || (stripos($os, 'darwin') !== false)) {
-            $r = self::OS_MACOS;
-        }
-        elseif(stripos($os, 'bsd') !== false) {
-            $r = self::OS_BSD;
-        }
-        return $r ?? self::OS_UNKNOWN;
-    }
-
-    /**
-     * 获取当前PHP的运行模式
-     *
-     * @author HanskiJay
-     * @since  2021-01-30
-     * @return string
-     */
-    public static function getMode() : string
-    {
-        $sapi = php_sapi_name();
-        return !is_string($sapi) ? 'error' : $sapi;
-    }
-
-    /**
-     * 判断当前的运行模式是否为CLI
-     *
-     * @author HanskiJay
-     * @since  2021-01-30
-     * @return boolean
-     */
-    public static function isRunningWithCLI() : bool
-    {
-        return strpos(self::getMode(), 'cli') !== false;
-    }
-
-    /**
-     * 判断当前的运行模式是否为CGI
-     *
-     * @author HanskiJay
-     * @since  2021-01-30
-     * @return boolean
-     */
-    public static function isRunningWithCGI() : bool
-    {
-        return strpos(self::getMode(), 'cgi') !== false;
-    }
-
-    /**
-     * 返回指定对象更好的类名
-     *
-     * @author HanskiJay
-     * @since  2021-01-30
-     * @param  object      $class 实例化对象
-     * @return string
-     */
-    public static function getShortClassName(object $class) : string
-    {
-        return basename(str_replace('\\', '/', get_class($class)));
-    }
-
-    /**
-     * 当前内存使用情况
-     *
-     * @author HanskiJay
-     * @since  2021-11-05
-     * @param  boolean $round 四舍五入
-     * @param  integer $to    到小数点后面几位
-     * @return float
-     */
-    public static function getCurrentMemoryUsage(bool $round = true, int $to = 2) : float
-    {
-        $memory = memory_get_usage();
-        return $round ? round($memory / 1024 / 1024, $to) : $memory;
-    }
-
-    /**
-     * 删除文件夹 (包含嵌套)
-     *
-     * @author HanskiJay
-     * @since  2021-04-17
-     * @param  string $path 文件夹路径
-     * @return boolean
-     */
-    public static function removeDir(string $path) : bool
-    {
-        if(!is_dir($path)) return false;
-        $path = $path . DIRECTORY_SEPARATOR;
-        $dirArray = scandir($path);
-        unset($dirArray[array_search('.', $dirArray)], $dirArray[array_search('..', $dirArray)]);
-
-        foreach($dirArray as $fileName) {
-            if(is_dir($path . $fileName)) {
-                self::removeDir($path . $fileName);
-                if(is_dir($path . $fileName)) {
-                    rmdir($path . $fileName);
-                }
-            } else {
-                unlink($path . $fileName);
-            }
-        }
-        rmdir($path);
-        return is_dir($path);
-    }
-
-
-
-
-
-    /**
-     * 管理区
-     */
-
-    /**
-     * 创建存储目录文件夹
-     *
-     * @author HanskiJay
-     * @since  2021-03-06
      * @return void
      */
-    public static function createStorageDirectory() : void
+    public static function init() : void
     {
-        if(!is_dir(F_CACHE_PATH))  mkdir(F_CACHE_PATH,  755, true);
-        if(!is_dir(CONFIG_PATH))   mkdir(CONFIG_PATH,   755, true);
-        if(!is_dir(LOG_PATH))      mkdir(LOG_PATH,      755, true);
-        if(!is_dir(A_CACHE_PATH))  mkdir(A_CACHE_PATH,  755, true);
-        if(!is_dir(RESOURCE_PATH)) mkdir(RESOURCE_PATH, 755, true);
-        if(!is_dir(MODULE_PATH))   mkdir(MODULE_PATH,   755, true);
+        if(defined('SYSTEM_INITIALIZED')) {
+            return;
+        }
+        // Set up exception crawling
+        set_error_handler([System::class, 'ErrorHandler'], E_ALL);
+        set_exception_handler([System::class, 'ExceptionHandler']);
+
+        // initialize system paths
+        \owo\get_class_loader()->addPsr4('application\\', \owo\application_path());
+        \owo\get_class_loader()->addPsr4('module\\',      \owo\module_path());
+        \owo\create_paths();
+
+
+        // Generate global configuration file
+        self::generateConfig();
+
+        // Define Timezone
+        if(!defined('TIME_ZONE')) {
+            define('TIME_ZONE', (\owo\_global('owo.timeZone', 'Europe/Berlin')));
+        }
+        date_default_timezone_set(TIME_ZONE);
+
+        // Use output buffer | 启用输出缓冲区
+        if(!ob_get_level() && \owo\_global('system.useOutputBuffer', true) && !\owo\php_is_cli()) {
+            ob_start();
+        }
+
+        // Load Module(s)
+        ModuleLoader::autoLoad(\owo\module_path());
+
+        // 定义系统已经初始化
+        define('SYSTEM_INITIALIZED', true);
     }
 
     /**
-     * 创建存储目录文件夹
+     * 创建配置文件
      *
-     * @author HanskiJay
-     * @since  2022-05-08
      * @return void
      */
     public static function generateConfig() : void
     {
-        $ini = new INI(config_path('global.ini'), [
+        $ini = new INI(\owo\config_path('global.ini'), [
             'owo' => [
                 'debugMode'  => true,
                 'enableLog'  => false,
@@ -311,6 +125,10 @@ final class System
                 # If you need deny more than 1 Application, please use comma to split (do not use space)
                 # e.g.|例子: index,test,config
                 'denyList'   => null
+            ],
+            'view' => [
+                'loopLevel'      => 3,
+                'judgementLevel' => 3
             ],
             'mysql' => [
                 'default'  => 'mysql',
@@ -331,13 +149,9 @@ final class System
             ],
             'system' => [
                 'autoInitDatabase' => true
-            ],
-            'view' => [
-                'loopLevel'      => 3,
-                'judgementLevel' => 3
             ]
         ], true);
-        INI::loadObject2Global($ini);
+        INI::toGlobal($ini);
     }
 
     /**
@@ -347,65 +161,197 @@ final class System
      */
     public static function isDebugMode() : bool
     {
-        return changeStr2Bool(_global('owo.debugMode', true));
+        $debugMode = \owo\_global('owo.debugMode', true);
+        return \owo\str2bool($debugMode);
     }
 
+
+
+    #-------------------------------------------------------------#
+    #                     Application管理方法                     #
+    #-------------------------------------------------------------#
     /**
-     * 返回系统初始化到调用此函数的总共运行时间
+     * 判断是否存在一个应用程序
      *
-     * @author HanskiJay
-     * @since  2021-03-06
-     * @return float
+     * @param  string $appName
+     * @param  string $class
+     * @return boolean
      */
-    public static function getRunTime() : float
+    public static function hasApplication(string $appName, &$class = null) : bool
     {
-        return round(microtime(true) - START_MICROTIME, 7);
+        $name    = strtolower($appName);
+        $appName = ucfirst($name);
+        $class   = "\\application\\{$name}\\{$appName}" . 'App';
+        return class_exists($class) && is_a($class, Application::class, true);
     }
 
     /**
-     * 返回类加载器
+     * 获取指定应用程序
      *
-     * @author HanskiJay
-     * @since  2021-03-06
-     * @return ClassLoader|null
+     * @param  string $appName
+     * @return Application|null
      */
-    public static function getClassLoader() : ?ClassLoader
+    public static function getApplication(string $appName) : ?Application
     {
-        return static::$classLoader;
+        if(isset(self::$loadedApplications[$appName])) {
+            return self::$loadedApplications[$appName];
+        }
+        if(self::hasApplication($appName, $class) && in_array(\owo\php_current(), $class::config('loadMode'))) {
+            return self::$loadedApplications[$appName] = new $class();
+        }
+        return null;
     }
 
     /**
-     * 设置类加载器
+     * 获取默认应用程序
      *
-     * @author HanskiJay
-     * @since  2022-05-27
-     * @param  ClassLoader $classLoader
-     * @param  boolean     $forceUpdate
+     * @param  boolean $allowNull
+     * @return Application|null
+     */
+    public static function getDefaultApplication(bool $allowNull = false) : ?Application
+    {
+        return self::getApplication(\owo\_global('owo.defaultApp')) ?? ($allowNull ? null : (new DefaultApp));
+    }
+
+    /**
+     * 初始化所有应用程序
+     *
      * @return void
      */
-    public static function setClassLoader(ClassLoader $classLoader, bool $forceUpdate = false) : void
+    public static function initializeApplications() : void
     {
-        if(($classLoader === null) || $forceUpdate) {
-            static::$classLoader = $classLoader;
+        $path = new FI(\owo\application_path(), FI::KEY_AS_FILENAME | FI::SKIP_DOTS);
+        foreach($path as $info) {
+            if(is_dir($info->getPathName())) {
+                $appName = $info->getFileName();
+                // 过滤文件名
+                if(!preg_match('/[a-z0-9]+/i', $appName)) continue;
+                self::getApplication($appName);
+            }
         }
     }
 
+
+
+    #-------------------------------------------------------------#
+    #                       异常输出渲染方法                       #
+    #-------------------------------------------------------------#
     /**
-     * 返回全局默认的日志记录器
+     * 返回主日志实例
      *
      * @return Logger
      */
-    public static function getLogger() : Logger
+    public static function getMainLogger() : Logger
     {
         static $logger;
         if(!$logger instanceof Logger) {
             $logger = new Logger;
         }
-        if(self::isRunningWithCLI()) {
-            $logger->fileName = 'owoblog_cli_run.log';
-            $logger->logPrefix = 'Console';
-        }
+        $logger->fileName  = 'owoblog_run_' . \owo\php_current() . '.log';
         return $logger;
     }
 
+    /**
+     * 返回错误日志实例
+     *
+     * @return Logger
+     */
+    public static function getErrorLogger() : Logger
+    {
+        static $logger;
+        if(!$logger instanceof Logger) {
+            $logger = new Logger;
+            $logger->logPrefix = 'OwOError';
+        }
+        $logger->fileName  = 'owoblog_error_' . \owo\php_current() . '.log';
+        return $logger;
+    }
+
+    /**
+     * 返回渲染完成的模板
+     *
+     * @param  array $args
+     * @return void
+     */
+    private static function execute(array $args) : void
+    {
+        if(\owo\php_is_cgi()) {
+            $view = new View('ExceptionHandlerTemplate.html', \owo\s_template_path());
+            $args = array_map(function($v) {return $v ?? 'NONE';}, $args);
+            $view->assign([
+                'type'      => $args[0],
+                'subtype'   => $args[1],
+                'message'   => $args[2],
+                'file'      => $args[3],
+                'line'      => $args[4],
+                'trace'     => $args[5],
+                'runTime'   => \owo\runtime(),
+                'debugMode' => self::isDebugMode() ? '<span id="debugMode">DebugMode</span>' : ''
+            ]);
+            $output = new OutputEvent($view->render());
+            $output->trigger();
+            $output->output();
+        }
+    }
+
+    /**
+     * 更好的 DEBUG 追踪
+     *
+     * @return string
+     */
+    private static function betterTrace() : string
+    {
+        $output   = '';
+        $template = "#%d %s(%d): %s%s%s(%s)\n";
+        $trace    = debug_backtrace();
+        unset($trace[0]);
+        $trace = array_values($trace);
+
+        foreach($trace as $k => $d) {
+            $args = [];
+            foreach($d['args'] ?? [] as $arg) {
+                $args[] = (gettype($arg) === 'object') ? (array) $arg : $arg;
+            }
+            $output .= sprintf($template, $k, $d['file'] ?? '', $d['line'] ?? '', $d['class'] ?? '', $d['type'] ?? '', $d['function'] ?? '', @implode(', ', $args));
+        }
+        return $output . "{main}\n";
+    }
+
+    /**
+     * 错误处理方法
+     *
+     * @return void
+     */
+    public static function ErrorHandler(int $level, string $message, string $file, int $line) : void
+    {
+        if(error_reporting() === 0) return;
+        $level = self::ERROR_CONVERSION[$level] ?? $level;
+        $trace = self::betterTrace();
+        self::execute(['PHP', $level, $message, $file, $line, $trace]);
+        self::getErrorLogger()->emergency("{$level} happened: {$message} in {$file} at line {$line}\nStack trace:\n{$trace}");
+        exit(500);
+    }
+
+    /**
+     * 异常处理方法
+     *
+     * @param  Throwable $exception
+     * @return void
+     */
+    public static function ExceptionHandler(Throwable $exception) : void
+    {
+        $type = 'PHP';
+        if($exception instanceof OwOFrameException) {
+            $fileName = $exception->getRealFile();
+            $realName = $exception->getRealLine();
+            $type = 'OwO';
+        } else {
+            $fileName = $exception->getFile();
+            $realName = $exception->getLine();
+        }
+        self::execute([$type, \owo\class_short_name($exception), $exception->getMessage(), $fileName, $realName, $exception->getTraceAsString()]);
+        self::getErrorLogger()->emergency($exception);
+        exit(500);
+    }
 }
+?>

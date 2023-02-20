@@ -1,30 +1,32 @@
 <?php
-
-/*********************************************************************
-     _____   _          __  _____   _____   _       _____   _____
-    /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
-    | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
-    | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _
-    | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
-    \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
-
-    * Copyright (c) 2015-2021 OwOBlog-DGMT.
-    * Developer: HanskiJay(Tommy131)
-    * Telegram:  https://t.me/HanskiJay
-    * E-Mail:    support@owoblog.com
-    * GitHub:    https://github.com/Tommy131
-
-**********************************************************************/
-
+/*
+ *       _____   _          __  _____   _____   _       _____   _____
+ *     /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
+ *     | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
+ *     | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |   _
+ *     | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
+ *     \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
+ *
+ * Copyright (c) 2023 by OwOTeam-DGMT (OwOBlog).
+ * @Author       : HanskiJay
+ * @Date         : 2023-02-02 16:49:57
+ * @LastEditors  : HanskiJay
+ * @LastEditTime : 2023-02-02 16:50:05
+ * @E-Mail       : support@owoblog.com
+ * @Telegram     : https://t.me/HanskiJay
+ * @GitHub       : https://github.com/Tommy131
+ */
 declare(strict_types=1);
 namespace owoframe\utils;
+
+
 
 class MIMEType
 {
     /**
      * MIME类型常量数组
      */
-    public const MIMETYPE =
+    public const ALL =
     [
         'ez' => 'application/andrew-inset',
         'csm' => 'application/cu-seeme',
@@ -347,7 +349,7 @@ class MIMEType
      * @param  string  $fileName
      * @return string
      */
-    public static function get(string $fileName) : string
+    public static function file(string $fileName) : string
     {
         if(function_exists('mime_content_type')) {
             return mime_content_type($fileName);
@@ -362,13 +364,19 @@ class MIMEType
             }
         }
 
-        $part = explode('.', $fileName);
-        $size = count($part);
-        if($size > 1) {
-            $ext = $part[$size - 1];
-            if(self::exists($ext)) return self::MIMETYPE[$ext];
-        }
-        return 'application/octet-stream';
+        $part = explode('.', strtolower($fileName));
+        return self::ALL[end($part)] ?? 'application/octet-stream';
+    }
+
+    /**
+     * 通过文件后缀返回详细类型
+     *
+     * @param  string  $type
+     * @return string
+     */
+    public static function get(string $type, string $default = 'text/plain') : string
+    {
+        return self::ALL[$type] ?? $default;
     }
 
     /**
@@ -379,6 +387,7 @@ class MIMEType
      */
     public static function exists(string $type) : bool
     {
-        return isset(self::MIMETYPE[$type]);
+        return isset(self::ALL[$type]);
     }
 }
+?>

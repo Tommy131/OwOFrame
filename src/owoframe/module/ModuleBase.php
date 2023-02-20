@@ -1,26 +1,25 @@
 <?php
-
-/*********************************************************************
-     _____   _          __  _____   _____   _       _____   _____
-    /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
-    | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
-    | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _
-    | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
-    \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
-
-    * Copyright (c) 2015-2021 OwOBlog-DGMT.
-    * Developer: HanskiJay(Tommy131)
-    * Telegram:  https://t.me/HanskiJay
-    * E-Mail:    support@owoblog.com
-    * GitHub:    https://github.com/Tommy131
-
-**********************************************************************/
-
+/*
+ *       _____   _          __  _____   _____   _       _____   _____
+ *     /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
+ *     | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
+ *     | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |   _
+ *     | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
+ *     \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
+ *
+ * Copyright (c) 2023 by OwOTeam-DGMT (OwOBlog).
+ * @Author       : HanskiJay
+ * @Date         : 2023-02-02 20:50:25
+ * @LastEditors  : HanskiJay
+ * @LastEditTime : 2023-02-02 20:50:34
+ * @E-Mail       : support@owoblog.com
+ * @Telegram     : https://t.me/HanskiJay
+ * @GitHub       : https://github.com/Tommy131
+ */
 declare(strict_types=1);
 namespace owoframe\module;
 
-use owoframe\System;
-use owoframe\utils\Logger;
+
 
 abstract class ModuleBase
 {
@@ -33,7 +32,7 @@ abstract class ModuleBase
     private $loadPath;
 
     /**
-     * 插件信息配置文件(JSON对象传入) | Plugin Information Configuration (Json Format Object)
+     * 插件信息配置文件
      *
      * @access private
      * @var object
@@ -53,8 +52,6 @@ abstract class ModuleBase
     /**
      * 实例化插件时的构造函数
      *
-     * @author HanskiJay
-     * @since  2021-01-23
      * @param  string      $loadPath   插件加载路径
      * @param  object      $moduleInfo 插件信息配置文件
      * @return void
@@ -77,8 +74,6 @@ abstract class ModuleBase
     /**
      * 插件加载时自动调用此方法: 正确启动时
      *
-     * @author HanskiJay
-     * @since  2021-01-23
      * @return void
      */
     public function onEnable() : void
@@ -93,34 +88,8 @@ abstract class ModuleBase
     {}
 
     /**
-     * 获取插件信息对象
-     *
-     * @author HanskiJay
-     * @since  2021-01-23
-     * @return object
-     */
-    final public function getInfos() : object
-    {
-        return $this->moduleInfo;
-    }
-
-    /**
-     * 获取插件加载路径
-     *
-     * @author HanskiJay
-     * @since  2021-01-23
-     * @return string
-     */
-    final public function getPath() : string
-    {
-        return $this->loadPath;
-    }
-
-    /**
      * 返回插件加载状态
      *
-     * @author HanskiJay
-     * @since  2021-03-02
      * @return boolean
      */
     public function isEnabled() : bool
@@ -131,8 +100,6 @@ abstract class ModuleBase
     /**
      * 设置插件加载状态为已加载
      *
-     * @author HanskiJay
-     * @since  2021-03-02
      * @return void
      */
     public function setEnabled() : void
@@ -145,8 +112,6 @@ abstract class ModuleBase
     /**
      * 设置插件加载状态为禁用
      *
-     * @author HanskiJay
-     * @since  2021-03-02
      * @return void
      */
     public function setDisabled() : void
@@ -156,8 +121,24 @@ abstract class ModuleBase
         }
     }
 
-    public function getLogger() : Logger
+    /**
+     * 获取插件信息对象
+     *
+     * @return object
+     */
+    final public function getInfo() : object
     {
-        return System::getLogger();
+        return $this->moduleInfo;
+    }
+
+    /**
+     * 获取插件加载路径
+     *
+     * @return string
+     */
+    final public function getLoadPath() : string
+    {
+        return $this->loadPath;
     }
 }
+?>

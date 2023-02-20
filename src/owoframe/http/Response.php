@@ -1,80 +1,69 @@
 <?php
-
-/*********************************************************************
-     _____   _          __  _____   _____   _       _____   _____
-    /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
-    | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
-    | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _
-    | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
-    \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
-
-    * Copyright (c) 2015-2021 OwOBlog-DGMT.
-    * Developer: HanskiJay(Tommy131)
-    * Telegram:  https://t.me/HanskiJay
-    * E-Mail:    support@owoblog.com
-    * GitHub:    https://github.com/Tommy131
-
-**********************************************************************/
-
+/*
+ *       _____   _          __  _____   _____   _       _____   _____
+ *     /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
+ *     | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
+ *     | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |   _
+ *     | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
+ *     \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
+ *
+ * Copyright (c) 2023 by OwOTeam-DGMT (OwOBlog).
+ * @Author       : HanskiJay
+ * @Date         : 2023-02-14 15:03:49
+ * @LastEditors  : HanskiJay
+ * @LastEditTime : 2023-02-19 23:23:44
+ * @E-Mail       : support@owoblog.com
+ * @Telegram     : https://t.me/HanskiJay
+ * @GitHub       : https://github.com/Tommy131
+ */
 declare(strict_types=1);
 namespace owoframe\http;
 
+
+
 use Closure;
 use JsonSerializable;
-use ReflectionClass;
-
-use owoframe\System;
-
-use owoframe\utils\MIMEType;
 
 use owoframe\event\http\BeforeResponseEvent;
 use owoframe\event\http\AfterResponseEvent;
 use owoframe\event\system\OutputEvent;
-
+use owoframe\http\HttpCode;
 use owoframe\utils\DataEncoder;
-use owoframe\utils\Logger;
+use owoframe\utils\MIMEType;
 
 class Response
 {
     /**
      * 响应 & 数据发送状态
      *
-     * @access private
+     * @access protected
      * @var boolean
      */
-    private $hasSent = false;
-
-    /**
-     * 由HttpManager传回参数
-     *
-     * @access private
-     * @var boolean
-     */
-    private $appFounded = false;
+    protected $hasSent = false;
 
     /**
      * 回调参数(可以输出数据的回调方法)
      *
-     * @access private
-     * @var callable
+     * @access protected
+     * @var callable|null
      */
-    private $callback;
+    protected $callback;
 
     /**
      * 携带的参数
      *
-     * @access private
+     * @access protected
      * @var array
      */
-    private $callParams;
+    protected $callParams;
 
     /**
-     * HTTP响应代码(Default:200)
+     * HTTP响应代码
      *
      * @access protected
      * @var integer
      */
-    protected $code = 200;
+    protected $code = 502;
 
     /**
      * HTTP header参数设置
@@ -90,226 +79,250 @@ class Response
     ];
 
     /**
-     * 默认响应信息
+     * 准备发送的字符串数据
      *
-     * @var string
+     * @access protected
+     * @var array|string
      */
-    public $defaultResponseMsg = '[OwOResponseError] Unknown Error...';
+    protected $prepareSendData = null;
 
 
-
-    public function __construct(?callable $callback, array $params = [])
+    /**
+     * 返回回调方法的有效性
+     *
+     * @return boolean
+     */
+    public function isCallable() : bool
     {
-        $this->callback   = $callback;
-        $this->callParams = $params;
+        return is_callable($this->callback);
     }
 
     /**
      * 设置回调
      *
-     * @author HanskiJay
-     * @since  2021-04-16
-     * @param  callable   $callback 可回调参数
-     * @param  array      $params   回调参数传递
+     * @param  callable|null $callback
+     * @param  array         $params
+     * @return void
+     */
+    public function __construct(?callable $callback = null, array $params = [])
+    {
+        $this->setCallback($callback, $params);
+    }
+
+    /**
+     * 设置回调
+     *
+     * @param  callable|null $callback
+     * @param  array         $params
      * @return Response
      */
-    public function setCallback(callable $callback, array $params = []) : Response
+    public function setCallback(?callable $callback = null, array $params = []) : Response
     {
-        $this->__construct($callback, $params);
+        $this->callback   = $callback;
+        $this->callParams = $params;
         return $this;
     }
 
     /**
-     * 设置HTTP响应代码
+     * 设置准备发送的字符串数据
      *
-     * @author HanskiJay
-     * @since  2020-09-10 18:49
-     * @param  int      $code 响应代码
+     * @param  array|string $prepareSendData
+     * @return Response
+     */
+    public function setPrepareSendData($prepareSendData) : Response
+    {
+        $this->prepareSendData = $prepareSendData;
+        return $this;
+    }
+
+    /**
+     * 返回相应代码
+     *
+     * @return integer
+     */
+    public function getResponseCode() : int
+    {
+        return $this->code;
+    }
+
+    /**
+     * 设置响应代码
+     *
+     * @param  integer  $code
      * @return Response
      */
     public function setResponseCode(int $code) : Response
     {
-        if(isset(HttpManager::HTTP_CODE[$code])) {
+        if(HttpCode::has($code)) {
             $this->code = $code;
         }
         return $this;
     }
 
-    public function appFounded(bool $_ = false) : Response
+    /**
+     * 设置响应头参数
+     *
+     * @param  string   $name
+     * @param  mixed    $value
+     * @return Response
+     */
+    public function setHeader(string $name, $value) : Response
     {
-        $this->appFounded = $_;
+        $this->header[$name] = $value;
         return $this;
     }
 
     /**
-     * 发送响应头
+     * 设置响应头参数
      *
-     * @author HanskiJay
-     * @since  2021-02-09
-     * @return void
+     * @param  array    $header
+     * @return Response
      */
-    public function sendResponse() : void
+    public function mergeHeader(array $header) : Response
     {
-        $logger = new Logger;
-        $logger->logPrefix = 'HTTP/Response';
-        (new BeforeResponseEvent)->trigger();
-        $isJson = false;
-
-        // If the callback is invalid;
-        if(!is_callable($this->callback)) {
-            $this->callback = [$this, 'defaultResponseMsg'];
-        }
-
-
-        // Judgement whether the callback is Closure;
-        if($this->callback instanceof Closure) {
-            $called = $this->callback;
-            $called = $called();
-        } else {
-            // Callback method and get result;
-            $called = call_user_func_array($this->callback, $this->callParams);
-            if(is_array($called) || ($called instanceof JsonSerializable)) {
-                $called = json_encode($called, JSON_UNESCAPED_UNICODE);
-                $isJson = true;
-            }
-            elseif($called instanceof DataEncoder) {
-                $called = $called->encode();
-                $isJson = true;
-            } else {
-                $reflect = new ReflectionClass($this->callback[0]);
-                if($reflect->implementsInterface(StandardOutputConstant::class)) {
-                    $called = $this->callback[0]->getOutput();
-                }
-            }
-        }
-
-        // Judgement whether the callback is null;
-        $called = is_null($called) ? '' : $called;
-
-        // Check whether the callback result type is String;
-        if(!is_string($called)) {
-            $json = new DataEncoder();
-            $called = $json->setStandardData(($this->code !== 200) ? $this->code : 502, 'Failed to response data.', false)->mergeData([
-                'handler'      => 'OwOResponseError',
-                'issueClass'   => get_class($this->callback[0]),
-                'issueMethod'  => $this->callback[1],
-                'expectedType' => 'string|array|null',
-                'actualType'   => gettype($called)
-            ])->encode();
-            $logger->debug($called);
-            $isJson = true;
-        }
-
-        if($isJson) $this->header('Content-Type', MIMEType::MIMETYPE['json']);
-        // Judgement whether the output is JSON format;
-        $_ = $this->appFounded ? HttpManager::getCurrent('controller')::$showUsedTimeDiv : false;
-        self::getRuntimeDiv(!$isJson && $_);
-
-        // set HTTP-HEADER;
-        if(!headers_sent() && !empty($this->header)) {
-            foreach($this->header as $name => $val) {
-                header($name . (!is_null($val) ? ": {$val}"  : ''));
-            }
-            $length = strlen($called) + strlen(ob_get_contents());
-            header('Powered-By: OwOFrame v' . FRAME_VERSION);
-            header('OwO-Author: HanskiJay');
-            header('GitHub-Page: ' . GITHUB_PAGE);
-            header('Content-Length: ' . $length);
-            HttpManager::setStatusCode($this->code);
-        }
-
-        $event = new OutputEvent($called);
-        $event->trigger();
-        $event->output();
-        ob_end_flush();
-
-        if(function_exists('fastcgi_finish_request')) fastcgi_finish_request();
-        (new AfterResponseEvent)->trigger();
-        $this->hasSent = true;
-
-        $logger->debug("[{$this->code}] Status: Sent; Length: " . $length);
+        $this->header = array_merge($this->header, $header);
+        return $this;
     }
 
     /**
-     * 获取当前设置的HTTP响应代码
+     * 设置响应内容格式
      *
-     * @author HanskiJay
-     * @since  2020-09-10 18:49
-     * @param  int      $code 响应代码
-     * @return int
+     * @param  string   $type
+     * @return Response
      */
-    public function getResponseCode(int $code = 403) : int
+    public function setContentType(string $type) : Response
     {
-        return $this->code ?: $code;
-    }
-
-    /**
-     * 设置HTTP_HEADER
-     *
-     * @author HanskiJay
-     * @since  2020-09-10 18:49
-     * @param  string      $index 文件/文件夹索引
-     * @param  string      $val 值
-     * @return mixed
-     */
-    public function &header(string $name, string $val = '')
-    {
-        if(($name === '') && ($val === '')) {
-            return $this->header;
-        }
-        elseif(isset($this->header[$name])) {
-            $splitStr = '@';
-            $vars     = explode($splitStr, $val);
-            $val      = array_shift($vars);
-            $mode     = strtolower(array_shift($vars) ?? 'set');
-            if(($mode === 'set') || ($mode === 'update')) {
-                $this->header[$name] = $val;
-                return $this->header[$name];
-            } else {
-                return $this->header[$name];
-            }
-        } else {
-            $this->header[$name] = $val;
-            return $this->header[$name];
-        }
+        $this->setHeader('Content-Type', $type);
+        return $this;
     }
 
     /**
      * 返回响应状态
      *
-     * @author HanskiJay
-     * @since  2021-03-21
      * @return boolean
      */
     public function hasSent() : bool
     {
-        return $this->hasSent;
+        return $this->hasSent || headers_sent();
     }
 
     /**
-     * 默认响应信息
+     * 发送响应头
      *
-     * @author HanskiJay
-     * @since  2021-03-21
-     * @return string
+     * @return boolean
      */
-    public function defaultResponseMsg() : string
+    protected function sendHeader(int $length = 0, bool $isJson = false) : bool
     {
-        return $this->defaultResponseMsg;
-    }
-
-    /**
-     * 输出运行时间框
-     *
-     * @author HanskiJay
-     * @since  2021-04-30
-     * @param  boolean      $condition
-     * @return void
-     */
-    public static function getRuntimeDiv(bool $condition = true) : void
-    {
-        if($condition) {
-            echo str_replace('{runTime}', (string) System::getRunTime(), base64_decode('PGRpdiBzdHlsZT0icG9zaXRpb246IGFic29sdXRlOyB6LWluZGV4OiA5OTk5OTk7IGJvdHRvbTogMDsgcmlnaHQ6IDA7IG1hcmdpbjogNXB4OyBwYWRkaW5nOiA1cHg7IGJhY2tncm91bmQtY29sb3I6ICNhYWFhYWE7IGJvcmRlci1yYWRpdXM6IDVweDsiPgoJPGRpdj5Vc2VkVGltZTogPGI+e3J1blRpbWV9czwvYj48L2Rpdj4KPC9kaXY+'));
+        if($this->hasSent()) {
+            return false;
         }
+
+        // 发送头部信息
+        foreach($this->header as $k => $v) {
+            header("{$k}: {$v}");
+        }
+
+        if($isJson) {
+            header('Content-Type: ' . MIMEType::get('json'));
+        }
+
+        $length += strlen(ob_get_contents() ?? '');
+        header('Powered-By: OwOFrame v' . OWO_VERSION);
+        header('GitHub-Page: ' . GITHUB_PAGE);
+        header('Content-Length: ' . $length);
+
+        if(HttpCode::has($this->code)) {
+            header((\owo\server('SERVER_PROTOCOL') ?? 'HTTP/1.1') . " {$this->code} " . HttpCode::ALL[$this->code], true, $this->code);
+            http_response_code($this->code);
+        }
+        return true;
+    }
+
+    /**
+     * 返回调用响应值
+     *
+     * @param  $isJson
+     * @return string|null
+     */
+    public function call(&$isJson) : ?string
+    {
+        $isJson = false;
+        $called = null;
+        if(!is_callable($this->callback)) {
+            if(is_array($this->prepareSendData)) {
+                $called = json_encode($this->prepareSendData, JSON_UNESCAPED_UNICODE);
+                $isJson = true;
+            }
+            elseif(is_string($this->prepareSendData)) {
+                $called = $this->prepareSendData;
+            }
+        }
+        elseif($this->callback instanceof Closure) {
+            $called = $this->callback;
+            $called = (string) $called(...$this->callParams);
+        } else {
+            $called = call_user_func_array($this->callback, $this->callParams);
+            if(is_array($called) || ($called instanceof JsonSerializable)) {
+                $called = json_encode($called, JSON_UNESCAPED_UNICODE);
+                $isJson = true;
+            }
+        }
+
+        if(!is_string($called)) {
+            $called = new DataEncoder;
+            $called = $called->setStandardData(500, 'No output', false)->encode();
+            $isJson = true;
+        }
+        return $called ?? null;
+    }
+
+    /**
+     * 发送响应载体
+     *
+     * @param  boolean  $showRuntime
+     * @return Response
+     */
+    public function send(bool $showRuntime = false) : Response
+    {
+        // 触发发送响应载体前事件
+        (new BeforeResponseEvent)->trigger();
+
+        // 输出运行时间 (如果允许)
+        if($showRuntime) {
+            \owo\html_runtime();
+        }
+        $data = $this->call($isJson);
+
+        if($this->sendHeader(strlen($data), $isJson))
+        {
+            $event = new OutputEvent($data);
+            $event->trigger();
+            $event->output();
+
+            while (ob_get_level() > 0) {
+                ob_end_flush();
+            }
+
+            if(function_exists('fastcgi_finish_request')) {
+                fastcgi_finish_request();
+            }
+            $this->hasSent = true;
+
+            // 触发发送响应载体后事件
+            (new AfterResponseEvent)->trigger();
+        }
+        return $this;
+    }
+
+    /**
+     * 魔术方法
+     *
+     * @param  string $name
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        return $this->header[$name] ?? null;
     }
 }
+?>

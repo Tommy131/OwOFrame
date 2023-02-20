@@ -1,37 +1,34 @@
 <?php
-
-/*********************************************************************
-     _____   _          __  _____   _____   _       _____   _____
-    /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
-    | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
-    | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _
-    | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
-    \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
-
-    * Copyright (c) 2015-2021 OwOBlog-DGMT.
-    * Developer: HanskiJay(Tommy131)
-    * Telegram:  https://t.me/HanskiJay
-    * E-Mail:    support@owoblog.com
-    * GitHub:    https://github.com/Tommy131
-
-**********************************************************************/
-
+/*
+ *       _____   _          __  _____   _____   _       _____   _____
+ *     /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
+ *     | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
+ *     | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |   _
+ *     | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
+ *     \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
+ *
+ * Copyright (c) 2023 by OwOTeam-DGMT (OwOBlog).
+ * @Author       : HanskiJay
+ * @Date         : 2023-02-15 18:22:59
+ * @LastEditors  : HanskiJay
+ * @LastEditTime : 2023-02-15 18:22:59
+ * @E-Mail       : support@owoblog.com
+ * @Telegram     : https://t.me/HanskiJay
+ * @GitHub       : https://github.com/Tommy131
+ */
 declare(strict_types=1);
 namespace owoframe\console;
+
 
 use owoframe\System;
 use owoframe\utils\Logger;
 
 abstract class CommandBase
 {
-
-
     /**
      * 触发该指令时调用此方法执行指令
      *
-     * @author HanskiJay
-     * @since  2021-01-26
-     * @param  array      $params 传入的参数
+     * @param  array   $params
      * @return boolean
      */
     abstract public function execute(array $params) : bool;
@@ -39,8 +36,6 @@ abstract class CommandBase
     /**
      * 返回该指令的所有别名
      *
-     * @author HanskiJay
-     * @since  2021-01-26
      * @return array
      */
     abstract public static function getAliases() : array;
@@ -48,8 +43,6 @@ abstract class CommandBase
     /**
      * 返回指令名称
      *
-     * @author HanskiJay
-     * @since  2021-01-26
      * @return string
      */
     abstract public static function getName() : string;
@@ -57,8 +50,6 @@ abstract class CommandBase
     /**
      * 返回至零点描述
      *
-     * @author HanskiJay
-     * @since  2021-01-26
      * @return string
      */
     abstract public static function getDescription() : string;
@@ -66,32 +57,16 @@ abstract class CommandBase
     /**
      * 返回使用描述
      *
-     * @author HanskiJay
-     * @since  2021-01-26
      * @return string
      */
     public static function getUsage() : string
     {
-        return 'php owo ' . static::getName();
-    }
-
-    /**
-     * 自定义输出使用信息 (当指令未正确执行时)
-     *
-     * @author HanskiJay
-     * @since  2022-05-27
-     * @return void
-     */
-    public function sendUsage() : void
-    {
-        return;
+        return 'owo ' . static::getName();
     }
 
     /**
      * 给出加载器获悉是否自动加载并注册此指令
      *
-     * @author HanskiJay
-     * @since  2021-01-26
      * @return boolean
      */
     public static function autoLoad() : bool
@@ -100,14 +75,13 @@ abstract class CommandBase
     }
 
     /**
-     * 返回日志记录容器实例
+     * 返回日志实例
      *
-     * @author HanskiJay
-     * @since  2022-05-09
      * @return Logger
      */
     public function getLogger() : Logger
     {
-        return System::getLogger();
+        return System::getMainLogger();
     }
 }
+?>

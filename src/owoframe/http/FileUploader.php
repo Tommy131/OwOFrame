@@ -1,23 +1,25 @@
 <?php
-
-/*********************************************************************
-     _____   _          __  _____   _____   _       _____   _____
-    /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
-    | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
-    | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _
-    | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
-    \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
-
-    * Copyright (c) 2015-2021 OwOBlog-DGMT.
-    * Developer: HanskiJay(Tommy131)
-    * Telegram:  https://t.me/HanskiJay
-    * E-Mail:    support@owoblog.com
-    * GitHub:    https://github.com/Tommy131
-
-**********************************************************************/
-
+/*
+ *       _____   _          __  _____   _____   _       _____   _____
+ *     /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
+ *     | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
+ *     | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |   _
+ *     | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
+ *     \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
+ *
+ * Copyright (c) 2023 by OwOTeam-DGMT (OwOBlog).
+ * @Author       : HanskiJay
+ * @Date         : 2023-02-09 19:27:44
+ * @LastEditors  : HanskiJay
+ * @LastEditTime : 2023-02-14 17:26:12
+ * @E-Mail       : support@owoblog.com
+ * @Telegram     : https://t.me/HanskiJay
+ * @GitHub       : https://github.com/Tommy131
+ */
 declare(strict_types=1);
 namespace owoframe\http;
+
+
 
 use owoframe\utils\MIMEType;
 use owoframe\exception\JSONException;
@@ -45,16 +47,17 @@ class FileUploader
      *
      * !注意! ==> 如果有必要的话, 数据返回可以使用JSON;
      *
-     * @author HanskiJay
-     * @since  2020-09-10
-     * @param  string  $uploadId  上传ID
-     * @param  string  $savedPath 保存到文件路径
-     * @param  int     $maxSize   允许的最大上传大小
+     * @param  string  $uploadId 上传ID
+     * @param  string  $savePath 保存到文件路径
+     * @param  int     $maxSize  允许的最大上传大小
      * @return array
      */
-    public function checkUploadFile(string $uploadId, ?string $savedPath = STORAGE_PATH . 'upload/', int $maxSize = 10) : array
+    public function checkUploadFile(string $uploadId, ?string $savePath = null, int $maxSize = 10) : array
     {
-        $fileInfo = files($uploadId);
+        if(!$savePath) {
+            $savePath = \owo\storage_path('upload', true);
+        }
+        $fileInfo = \owo\files($uploadId);
         $fileInfo = empty($fileInfo)
         ? ['name' =>'', 'type' => '', 'size' => '', 'tmp_name' => '', 'error' => UPLOAD_ERR_NO_FILE]
         : $fileInfo;
@@ -68,10 +71,10 @@ class FileUploader
             throw new JSONException(['code' => 40002, 'msg' => "[40002] File size '{$name}' is too large than the server allowed (max. {$maxSize} MB)!"]);
         }
         if($this->canUpload(@end(explode('.', $name)))) {
-            if(($savedPath !== null) && !is_dir($savedPath)) {
-                mkdir($savedPath, 755, true);
+            if(($savePath !== null) && !is_dir($savePath)) {
+                mkdir($savePath, 755, true);
             }
-            move_uploaded_file($tmp_name, $savedPath . $name);
+            move_uploaded_file($fileInfo['tmp_name'], $savePath . $name);
         } else {
             throw new JSONException(['code' => 40003, 'msg' => '[40003] File cannot be upload because the server denied the extension!']);
         }
@@ -81,9 +84,7 @@ class FileUploader
     /**
      * 添加一个文件类型到允许上传的文件类型列表
      *
-     * @author HanskiJay
-     * @since  2020-09-10 18:49
-     * @param  string  $ext 文件类型
+     * @param  string $ext
      * @return void
      */
     public function addAllowedExt(string $ext) : void
@@ -96,9 +97,7 @@ class FileUploader
     /**
      * 添加一个文件类型到允许上传的文件类型列表
      *
-     * @author HanskiJay
-     * @since  2020-09-10 18:49
-     * @param  string  $ext 文件类型
+     * @param  string $ext
      * @return void
      */
     public function delAllowedExt(string $ext) : void
@@ -112,22 +111,18 @@ class FileUploader
     /**
      * 检测文件类型是否允许上传到服务器
      *
-     * @author HanskiJay
-     * @since  2020-09-10 18:49
-     * @param  string  $ext 文件类型
+     * @param  string $ext
      * @return boolean
      */
     public function canUpload(string $ext) : bool
     {
-        return isset(MIMEType::MIMETYPE[$ext]) && in_array($ext, $this->getAllowedExts());
+        return isset(MIMEType::ALL[$ext]) && in_array($ext, $this->getAllowedExts());
     }
 
     /**
      * 检测文件类型是否允许上传到服务器
      *
-     * @author HanskiJay
-     * @since  2020-09-10 18:49
-     * @param  string  $ext 文件类型
+     * @param  string $ext
      * @return array
      */
     public function getAllowedExts() : array
@@ -135,3 +130,4 @@ class FileUploader
         return $this->allowedExts;
     }
 }
+?>

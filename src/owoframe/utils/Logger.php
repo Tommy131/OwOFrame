@@ -1,29 +1,29 @@
 <?php
-
-/*********************************************************************
-     _____   _          __  _____   _____   _       _____   _____
-    /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
-    | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
-    | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _
-    | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
-    \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
-
-    * Copyright (c) 2015-2021 OwOBlog-DGMT.
-    * Developer: HanskiJay(Tommy131)
-    * Telegram:  https://t.me/HanskiJay
-    * E-Mail:    support@owoblog.com
-    * GitHub:    https://github.com/Tommy131
-
-**********************************************************************/
-
+/*
+ *       _____   _          __  _____   _____   _       _____   _____
+ *     /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
+ *     | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
+ *     | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |   _
+ *     | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
+ *     \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
+ *
+ * Copyright (c) 2023 by OwOTeam-DGMT (OwOBlog).
+ * @Author       : HanskiJay
+ * @Date         : 2023-02-15 19:36:28
+ * @LastEditors  : HanskiJay
+ * @LastEditTime : 2023-02-15 20:10:46
+ * @E-Mail       : support@owoblog.com
+ * @Telegram     : https://t.me/HanskiJay
+ * @GitHub       : https://github.com/Tommy131
+ */
 declare(strict_types=1);
 namespace owoframe\utils;
 
+
+
 use Throwable;
 
-use owoframe\System;
-use owoframe\utils\TextFormat;
-use owoframe\exception\OwOLogException;
+use owoframe\utils\TextColorOutput as TCO;
 
 class Logger
 {
@@ -42,14 +42,14 @@ class Logger
      */
     public const LOG_LEVELS =
     [
-        'debug'     => TextFormat::GRAY,
-        'success'   => TextFormat::GREEN,
-        'info'      => TextFormat::WHITE,
-        'notice'    => TextFormat::AQUA,
-        'warning'   => TextFormat::GOLD,
-        'error'     => TextFormat::RED,
-        'alert'     => TextFormat::LIGHT_RED,
-        'emergency' => TextFormat::STRONG_RED
+        'debug'     => TCO::GRAY,
+        'success'   => TCO::GREEN,
+        'info'      => TCO::WHITE,
+        'notice'    => TCO::AQUA,
+        'warning'   => TCO::GOLD,
+        'error'     => TCO::RED,
+        'alert'     => TCO::LIGHT_RED,
+        'emergency' => TCO::STRONG_RED
     ];
 
     /**
@@ -89,21 +89,22 @@ class Logger
      * @param  string $color
      * @return void
      */
-    public function write(string $message, string $level = 'DEBUG', string $color = TextFormat::WHITE) : void
+    public function write(string $message, string $level = 'DEBUG', string $color = TCO::WHITE) : void
     {
-        // Check currently log file size;
+        // Check currently log file size
         if(is_file($this->fileName) && (filesize($this->fileName) >= ($this->maximumSize * 1000))) {
             rename($this->fileName, str_replace('.log', '', $this->fileName) . date('_Y_m_d') . '.log');
         }
 
-        // Format output message;
+        // Format output message
         $message = $color . sprintf($this->logFormat, date('Y-m-d'), date('H:i:s'), $this->logPrefix, strtoupper($level), $message) . PHP_EOL;
 
-        if(System::isRunningWithCLI()) {
-            echo TextFormat::parse($message);
+        if(\owo\php_is_cli()) {
+            echo TCO::parse($message);
         }
-        if(_global('owo.enableLog', true)) {
-            $this->writeToFile(TextFormat::clean($message));
+
+        if(\owo\_global('owo.enableLog', true)) {
+            $this->writeToFile(TCO::clean($message));
         }
     }
 
@@ -127,15 +128,13 @@ class Logger
      */
     public function copyAreaToNewFile(string $filePath, bool $deleteArea = false) : void
     {
-        $mainFile = LOG_PATH . $this->fileName;
-        if(!file_exists($mainFile)) {
-            throw new OwOLogException("Log file {$mainFile} not found!");
-        }
+        $mainFile = $this->fileName;
+        $start    = self::COPY_LINE_START;
+        $end      = self::COPY_LINE_END;
+        $file     = file_get_contents($mainFile);
+        $file     = $file ? $file : '';
 
-        $start = self::COPY_LINE_START;
-        $end   = self::COPY_LINE_END;
-
-        if(!preg_match("/{$start}(.*){$end}/s", $file = file_get_contents($mainFile), $lines)) {
+        if(!preg_match("/{$start}(.*){$end}/s", $file, $lines)) {
             return;
         }
         $lines = $lines[0];
@@ -145,7 +144,7 @@ class Logger
         unset($lines[0], $lines[$count - 1]);
         $lines = implode("\n", $lines);
 
-        // 替换删除行;
+        // 替换删除行
         if($deleteArea) {
             $file = str_replace($lines, "The following {$count} lines has been moved to the new log file {$filePath}.", $file);
         }
@@ -184,7 +183,7 @@ class Logger
      */
     public static function getColor(string $level) : string
     {
-        return self::hasLevel($level) ? self::LOG_LEVELS[$level] : TextFormat::GRAY;
+        return self::hasLevel($level) ? self::LOG_LEVELS[$level] : TCO::GRAY;
     }
 
     /**
@@ -194,7 +193,7 @@ class Logger
      */
     private function writeToFile(string $message, ?string $filePath = null) : void
     {
-        file_put_contents($filePath ?? LOG_PATH . $this->fileName, $message, FILE_APPEND | LOCK_EX);
+        file_put_contents($filePath ?? \owo\log_path($this->fileName), $message, FILE_APPEND | LOCK_EX);
     }
 
     /**
@@ -211,16 +210,15 @@ class Logger
             $level = 'debug';
         }
         $message = array_shift($arguments) ?? '';
-        $this->write((string) $message, $level, self::getColor($level));
 
-        $throwMessage = array_shift($arguments) ?? false;
-        if($throwMessage) {
-            $throwable = array_shift($arguments) ?? null;
-            if(!$throwable instanceof Throwable) {
-                $throwable = new OwOLogException($message);
-            }
-            throw $throwable;
+        if($message instanceof Throwable) {
+            $message = $message->__toString();
         }
+        elseif(!is_string($message)) {
+            $message = (string) $message;
+        }
+
+        $this->write($message, $level, self::getColor($level));
     }
 }
 ?>

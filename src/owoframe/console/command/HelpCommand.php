@@ -1,50 +1,53 @@
 <?php
-
-/*********************************************************************
-     _____   _          __  _____   _____   _       _____   _____
-    /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
-    | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
-    | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _
-    | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
-    \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
-
-    * Copyright (c) 2015-2021 OwOBlog-DGMT.
-    * Developer: HanskiJay(Tommy131)
-    * Telegram:  https://t.me/HanskiJay
-    * E-Mail:    support@owoblog.com
-    * GitHub:    https://github.com/Tommy131
-
-**********************************************************************/
-
+/*
+ *       _____   _          __  _____   _____   _       _____   _____
+ *     /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
+ *     | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
+ *     | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |   _
+ *     | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
+ *     \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
+ *
+ * Copyright (c) 2023 by OwOTeam-DGMT (OwOBlog).
+ * @Author       : HanskiJay
+ * @Date         : 2023-02-15 18:49:38
+ * @LastEditors  : HanskiJay
+ * @LastEditTime : 2023-02-15 19:21:36
+ * @E-Mail       : support@owoblog.com
+ * @Telegram     : https://t.me/HanskiJay
+ * @GitHub       : https://github.com/Tommy131
+ */
 declare(strict_types=1);
 namespace owoframe\console\command;
 
-use owoframe\console\Console;
-use owoframe\utils\TextFormat as TF;
 
-class HelpCommand extends \owoframe\console\CommandBase
+
+use owoframe\console\CommandBase;
+use owoframe\console\Console;
+use owoframe\utils\TextColorOutput as TCO;
+
+class HelpCommand extends CommandBase
 {
     public function execute(array $params) : bool
     {
         $commands = Console::getInstance()->getCommands();
         ksort($commands, SORT_NATURAL | SORT_FLAG_CASE);
         if(count($params) <= 0) {
-            $this->getLogger()->info(TF::GOLD . '---------- Registered Commands: ' . TF::GREEN . count($commands) . TF::GOLD . ' ----------');
+            $this->getLogger()->info(TCO::GOLD . '---------- Registered Commands: ' . TCO::GREEN . count($commands) . TCO::GOLD . ' ----------');
             foreach($commands as $command => $class) {
-                $this->getLogger()->info(TF::GREEN . $command . ': ' . TF::WHITE . $class->getDescription());
+                $this->getLogger()->info(TCO::GREEN . $command . ': ' . TCO::WHITE . $class->getDescription());
             }
-            $this->getLogger()->info(TF::WHITE . 'Use \'' . self::getUsage() . TF::WHITE . '\' to look details.');
+            $this->getLogger()->info(TCO::WHITE . 'Use \'' . self::getUsage() . TCO::WHITE . '\' to look details.');
         } else {
             $command = strtolower(array_shift($params));
             if(!isset($commands[$command])) {
-                $this->getLogger()->info(TF::RED . 'Command ' . TF::GOLD . $command . TF::RED . ' does not exists!');
+                $this->getLogger()->info(TCO::RED . 'Command ' . TCO::GOLD . $command . TCO::RED . ' does not exists!');
             } else {
                 $command = $commands[$command];
-                $this->getLogger()->info(TF::WHITE . '---[Details@' . TF::GREEN . $command->getName() . TF::WHITE . ']---');
-                $this->getLogger()->info(TF::WHITE . 'CommandName: ' . $command->getName());
-                $this->getLogger()->info(TF::WHITE . 'AliasName:   ' . implode(', ', $command->getAliases()));
-                $this->getLogger()->info(TF::WHITE . 'Usage:       ' . $command->getUsage());
-                $this->getLogger()->info(TF::WHITE . 'Description: ' . $command->getDescription());
+                $this->getLogger()->info(TCO::WHITE . '---[Details@' . TCO::GREEN . $command->getName() . TCO::WHITE . ']---');
+                $this->getLogger()->info(TCO::WHITE . 'CommandName: ' . $command->getName());
+                $this->getLogger()->info(TCO::WHITE . 'AliasName:   ' . implode(', ', $command->getAliases()));
+                $this->getLogger()->info(TCO::WHITE . 'Usage:       ' . $command->getUsage());
+                $this->getLogger()->info(TCO::WHITE . 'Description: ' . $command->getDescription());
             }
         }
         return true;
@@ -67,6 +70,6 @@ class HelpCommand extends \owoframe\console\CommandBase
 
     public static function getUsage() : string
     {
-        return TF::AQUA . 'php owo help ' . TF::GOLD . '[<string> commandName]';
+        return TCO::AQUA . parent::getUsage() . TCO::GOLD . '[string:commandName]';
     }
 }

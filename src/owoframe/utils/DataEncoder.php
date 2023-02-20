@@ -1,23 +1,25 @@
 <?php
-
-/*********************************************************************
-     _____   _          __  _____   _____   _       _____   _____
-    /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
-    | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
-    | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _
-    | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
-    \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
-
-    * Copyright (c) 2015-2021 OwOBlog-DGMT.
-    * Developer: HanskiJay(Tommy131)
-    * Telegram:  https://t.me/HanskiJay
-    * E-Mail:    support@owoblog.com
-    * GitHub:    https://github.com/Tommy131
-
-**********************************************************************/
-
+/*
+ *       _____   _          __  _____   _____   _       _____   _____
+ *     /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
+ *     | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
+ *     | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |   _
+ *     | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
+ *     \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
+ *
+ * Copyright (c) 2023 by OwOTeam-DGMT (OwOBlog).
+ * @Author       : HanskiJay
+ * @Date         : 2023-02-02 17:12:36
+ * @LastEditors  : HanskiJay
+ * @LastEditTime : 2023-02-09 19:26:49
+ * @E-Mail       : support@owoblog.com
+ * @Telegram     : https://t.me/HanskiJay
+ * @GitHub       : https://github.com/Tommy131
+ */
 declare(strict_types=1);
 namespace owoframe\utils;
+
+
 
 use JsonSerializable;
 
@@ -47,10 +49,20 @@ class DataEncoder implements JsonSerializable
     }
 
     /**
+     * 设置原始数据
+     *
+     * @param  array $data 原始数据
+     * @return DataEncoder
+     */
+    public function setData(array $data) : DataEncoder
+    {
+        $this->originData = $data;
+        return $this;
+    }
+
+    /**
      * 以键名方式添加数据
      *
-     * @author HanskiJay
-     * @since  2021-02-11
      * @param  mixed $key 键名
      * @param  mixed $val 键值
      * @return DataEncoder
@@ -62,58 +74,52 @@ class DataEncoder implements JsonSerializable
     }
 
     /**
-     * 设置原始数据
+     * 通过键名删除一则数据
      *
-     * @author HanskiJay
-     * @since  2021-02-11
-     * @param  array $data 原始数据
+     * @param  mixed $key
      * @return DataEncoder
      */
-    public function setData(array $data) : DataEncoder
+    public function unsetIndex($key) : DataEncoder
     {
-        $this->originData = $data;
+        if(isset($this->originData[$key])) {
+            unset($this->originData[$key]);
+        }
         return $this;
     }
 
     /**
      * 合并自定义输出信息到全集
      *
-     * @author HanskiJay
-     * @since  2021-02-11
-     * @param  array $array 新的数据数组
+     * @param  array $data 新的数据数组
      * @return DataEncoder
      */
-    public function mergeData(array $array) : DataEncoder
+    public function mergeData(array $data) : DataEncoder
     {
-        $this->originData = array_merge($this->originData, $array);
+        # @see https://www.php.net/manual/zh/function.array-merge.php
+        $this->originData = array_merge($this->originData, $data);
         return $this;
     }
 
     /**
      * 设置标准信息并且自动返回实例(此方法将会清空原本存在的数据)
      *
-     * @author HanskiJay
-     * @since  2021-02-11
-     * @param  int    $code    状态码
-     * @param  string $message 返回信息
-     * @param  bool   $status  执行结果
+     * @param  int    $code      状态码
+     * @param  string $message   返回信息
+     * @param  bool   $microtime 使用时间戳
      * @return DataEncoder
      */
-    public function setStandardData(int $code, string $message, bool $status) : DataEncoder
+    public function setStandardData(int $code, string $message, bool $microtime = false) : DataEncoder
     {
         return $this->reset()->setData([
             'code'    => $code,
             'message' => $message,
-            'status'  => $status,
-            'time'    => date('Y-m-d H:i:s')
+            'time'    => $microtime ? microtime() : date('Y-m-d H:i:s')
         ]);
     }
 
     /**
      * 使用JSON编码数据格式
      *
-     * @author HanskiJay
-     * @since  2021-02-11
      * @return string
      */
     public function encode() : string
@@ -124,25 +130,26 @@ class DataEncoder implements JsonSerializable
     /**
      * 解码JSON数据格式
      *
-     * @author HanskiJay
-     * @since  2021-02-11
+     * @param  array $reload 将解码的数据覆盖到原始数据
      * @return array
      */
-    public function decode() : array
+    public function decode(bool $reload = false) : array
     {
-        return json_decode($this->output, true);
+        $decoded = json_decode($this->output, true);
+        if($reload) {
+            $this->originData = $decoded;
+        }
+        return $decoded;
     }
 
     /**
      * 返回查找的键名的值
      *
-     * @author HanskiJay
-     * @since  2021-02-11
-     * @param  mixed      $key     键名
-     * @param  mixed      $default 默认返回值
+     * @param  mixed $key     键名
+     * @param  mixed $default 默认返回值
      * @return mixed
      */
-    public function getIndex($key, $default = '')
+    public function getIndex($key, $default = null)
     {
         return $this->originData[$key] ?? $default;
     }
@@ -150,8 +157,6 @@ class DataEncoder implements JsonSerializable
     /**
      * 获取原始数据
      *
-     * @author HanskiJay
-     * @since  2021-02-11
      * @return array
      */
     public function getOriginData() : array
@@ -162,8 +167,6 @@ class DataEncoder implements JsonSerializable
     /**
      * 获取输出数据
      *
-     * @author HanskiJay
-     * @since  2021-02-11
      * @return string
      */
     public function getOutput() : string
@@ -174,8 +177,6 @@ class DataEncoder implements JsonSerializable
     /**
      * 重置数据
      *
-     * @author HanskiJay
-     * @since  2021-02-11
      * @return DataEncoder
      */
     public function reset() : DataEncoder
@@ -188,12 +189,32 @@ class DataEncoder implements JsonSerializable
     /**
      * JsonSerializable接口规定方法
      *
-     * @author HanskiJay
-     * @since  2021-03-21
      * @return mixed
      */
     public function jsonSerialize()
     {
         return $this->originData;
     }
+
+    /**
+     * 魔术方法
+     *
+     * @param mixed $name
+     * @param mixed $value
+     */
+    public function __set($name, $value)
+    {
+        $this->setIndex($name, $value);
+    }
+
+    /**
+     * 魔术方法
+     *
+     * @param mixed $nam
+     */
+    public function __unset($name)
+    {
+        $this->unsetIndex($name);
+    }
 }
+?>

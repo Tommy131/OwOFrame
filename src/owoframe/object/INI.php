@@ -1,31 +1,31 @@
 <?php
-
-/*********************************************************************
-     _____   _          __  _____   _____   _       _____   _____
-    /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
-    | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
-    | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _
-    | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
-    \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
-
-    * Copyright (c) 2015-2021 OwOBlog-DGMT.
-    * Developer: HanskiJay(Tommy131)
-    * Telegram:  https://t.me/HanskiJay
-    * E-Mail:    support@owoblog.com
-    * GitHub:    https://github.com/Tommy131
-
-**********************************************************************/
-
+/*
+ *       _____   _          __  _____   _____   _       _____   _____
+ *     /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
+ *     | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
+ *     | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |   _
+ *     | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
+ *     \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
+ *
+ * Copyright (c) 2023 by OwOTeam-DGMT (OwOBlog).
+ * @Author       : HanskiJay
+ * @Date         : 2023-02-02 18:52:12
+ * @LastEditors  : HanskiJay
+ * @LastEditTime : 2023-02-02 18:59:05
+ * @E-Mail       : support@owoblog.com
+ * @Telegram     : https://t.me/HanskiJay
+ * @GitHub       : https://github.com/Tommy131
+ */
 declare(strict_types=1);
 namespace owoframe\object;
+
+
 
 class INI extends Config
 {
     /**
-     * 从配置文件到全局
+     * 从配置文件加载到全局
      *
-     * @author HanskiJay
-     * @since  2021-01-09
      * @param  string  $file
      * @param  array   $defaultData
      * @param  boolean $autoSave
@@ -40,10 +40,10 @@ class INI extends Config
     /**
      * 从配置文件实例加载到全局
      *
-     * @param  INI  $object
+     * @param  INI $object
      * @return void
      */
-    public static function loadObject2Global(INI $object) : void
+    public static function toGlobal(INI $object) : void
     {
         global $_global;
         $_global = $object;
@@ -52,10 +52,8 @@ class INI extends Config
     /**
      * 读取全局配置文件 | get global configuration
      *
-     * @author HanskiJay
-     * @since  2021-01-09
      * @param  string $index
-     * @param  mixed  $default 默认返回值
+     * @param  mixed  $default
      * @return mixed
      */
     public static function _global(string $index, $default = null)
@@ -67,9 +65,7 @@ class INI extends Config
     /**
      * 保存配置文件
      *
-     * @author HanskiJay
-     * @since  2021-01-30
-     * @param  string|null $file 文件
+     * @param  string|null $file
      * @return void
      */
     public function save(?string $file = null) : void
@@ -104,26 +100,23 @@ class INI extends Config
             }
             $text .= PHP_EOL;
         }
-        file_put_contents($file ?? $this->getFullPath(), trim($text));
+        file_put_contents($file ?? $this->getFullName(), trim($text));
     }
 
     /**
      * 重新读取配置文件
      *
-     * @author HanskiJay
-     * @since  2021-01-30
-     * @return void
+     * @return boolean
      */
-    protected function reloadCallback() : void
+    protected function reloadCallback() : bool
     {
-        $this->config = parse_ini_file($this->getFullPath(), true);
+        $this->config = parse_ini_file($this->getFullName(), true);
+        return true;
     }
 
     /**
      * 返回配置文件扩展名称
      *
-     * @author HanskiJay
-     * @since  2021-11-05
      * @return string
      */
     public function getExtensionName() : string
@@ -131,11 +124,8 @@ class INI extends Config
         return '.ini';
     }
 
-
     /**
      * 解析配置文件数据
-     * @author HanskiJay
-     * @since  2021-05-04
      * Base64 encoded:
      * CXB1YmxpYyBmdW5jdGlvbiBwYXJzZVJhd0RhdGEoKSA6IHZvaWQNCgl7DQoJCSR0aGlzLSZndDtjb25maWcgPSBwYXJzZV9pbmlfZm
      * lsZSgkdGhpcy0mZ3Q7ZmlsZVBhdGggLiAkdGhpcy0mZ3Q7ZmlsZU5hbWUsIHRydWUpOw0KCQlmb3JlYWNoKCR0aGlzLSZndDtjb25m
@@ -147,3 +137,4 @@ class INI extends Config
      * 7DQoJCQkJdW5zZXQoJHRoaXMtJmd0O2NvbmZpZ1skZ3JvdXBdWyRuYW1lXSk7DQoJCQl9DQoJCX0NCgl9
      */
 }
+?>

@@ -1,25 +1,25 @@
 <?php
-
-/*********************************************************************
-     _____   _          __  _____   _____   _       _____   _____
-    /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
-    | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
-    | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _
-    | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
-    \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
-
-    * Copyright (c) 2015-2021 OwOBlog-DGMT.
-    * Developer: HanskiJay(Tommy131)
-    * Telegram:  https://t.me/HanskiJay
-    * E-Mail:    support@owoblog.com
-    * GitHub:    https://github.com/Tommy131
-
-**********************************************************************/
-
+/*
+ *       _____   _          __  _____   _____   _       _____   _____
+ *     /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
+ *     | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
+ *     | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |   _
+ *     | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
+ *     \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
+ *
+ * Copyright (c) 2023 by OwOTeam-DGMT (OwOBlog).
+ * @Author       : HanskiJay
+ * @Date         : 2023-02-02 17:33:55
+ * @LastEditors  : HanskiJay
+ * @LastEditTime : 2023-02-02 18:48:56
+ * @E-Mail       : support@owoblog.com
+ * @Telegram     : https://t.me/HanskiJay
+ * @GitHub       : https://github.com/Tommy131
+ */
 declare(strict_types=1);
 namespace owoframe\object;
 
-use owoframe\System;
+
 
 abstract class Config
 {
@@ -70,8 +70,8 @@ abstract class Config
         if(!is_dir($this->filePath)) {
             mkdir($this->filePath, 755, true);
         }
-        $fileName       = explode('.', basename($file)); // e.g. abc.json | abc;
-        $fileName       = array_shift($fileName);  // if yes, then shift 'abc' to $file;
+        $fileName       = explode('.', basename($file)); // e.g. abc.json | abc
+        $fileName       = array_shift($fileName) ?? '';  // if yes, then shift 'abc' to $file
         $this->fileName = str_replace($this->filePath, '', $fileName);
 
 
@@ -86,8 +86,6 @@ abstract class Config
     /**
      * 获取配置文件项目
      *
-     * @author HanskiJay
-     * @since  2021-01-30
      * @param  string $index   键值
      * @param  mixed  $default 默认返回值
      * @return mixed
@@ -122,8 +120,6 @@ abstract class Config
     /**
      * 向对象设置属性
      *
-     * @author HanskiJay
-     * @since  2021-01-30
      * @param  string $index 键值
      * @param  mixed  $value 数据
      * @return void
@@ -160,8 +156,6 @@ abstract class Config
     /**
      * 向对象设置属性
      *
-     * @author HanskiJay
-     * @since  2021-01-30
      * @param  array $data 数据
      * @return void
      */
@@ -174,8 +168,6 @@ abstract class Config
     /**
      * 移除变量值
      *
-     * @author HanskiJay
-     * @since  2021-05-04
      * @param  string $index 键名
      * @return void
      */
@@ -189,8 +181,7 @@ abstract class Config
 
     /**
      * 保存配置文件
-     * @author HanskiJay
-     * @since  2021-01-30
+     *
      * @param  string|null $file 文件
      * @return void
      */
@@ -199,33 +190,26 @@ abstract class Config
     /**
      * 重新读取配置文件
      *
-     * @author HanskiJay
-     * @since  2021-01-30
-     * @return void
+     * @return bool
      */
-    abstract protected function reloadCallback() : void;
+    abstract protected function reloadCallback() : bool;
 
     /**
      * 重新读取配置文件
      *
-     * @author HanskiJay
-     * @since  2021-01-30
-     * @return void
+     * @return bool
      */
-    public function reload() : void
+    public function reload() : bool
     {
-        if(is_file($this->getFullPath())) {
-            $this->reloadCallback();
-        } else {
-            System::getLogger()->error("Cannot reload Config::{$this->getFileName()}, because the file does not exists!");
+        if(is_file($this->getFullName())) {
+            return $this->reloadCallback();
         }
+        return false;
     }
 
     /**
      * 备份配置文件
      *
-     * @author HanskiJay
-     * @since  2021-01-30
      * @param  string $backupPath 备份路径
      * @return void
      */
@@ -234,14 +218,12 @@ abstract class Config
         if(!is_dir($backupPath)) {
             $backupPath = $this->getFilePath();
         }
-        $this->save($backupPath . $this->getFileName() . '_' . date('Y_m_d_H_i_s') . $this->getExtensionName());
+        $this->save($backupPath . $this->getFileName() . '_' . date('Ymd_His') . $this->getExtensionName());
     }
 
     /**
      * 判断键值是否存在
      *
-     * @author HanskiJay
-     * @since  2021-01-30
      * @param  string $index 键值
      * @return boolean
      */
@@ -253,8 +235,6 @@ abstract class Config
     /**
      * 返回配置文件
      *
-     * @author HanskiJay
-     * @since  2021-01-30
      * @return array
      */
     public function getAll() : array
@@ -265,8 +245,6 @@ abstract class Config
     /**
      * 将当前的数据转换成对象 | Formatting currently data($this->config) to Object
      *
-     * @author HanskiJay
-     * @since  2021-01-31
      * @return object
      */
     public function obj() : object
@@ -277,8 +255,6 @@ abstract class Config
     /**
      * 返回当前配置文件名称
      *
-     * @author HanskiJay
-     * @since  2021-11-05
      * @return string
      */
     public function getFileName() : string
@@ -289,8 +265,6 @@ abstract class Config
     /**
      * 返回当前配置文件路径
      *
-     * @author HanskiJay
-     * @since  2021-11-05
      * @return string
      */
     public function getFilePath() : string
@@ -301,11 +275,9 @@ abstract class Config
     /**
      * 返回配置文件完整路径
      *
-     * @author HanskiJay
-     * @since  2021-11-05
      * @return string
      */
-    public function getFullPath() : string
+    public function getFullName() : string
     {
         return $this->filePath . $this->fileName . $this->getExtensionName();
     }
@@ -313,9 +285,8 @@ abstract class Config
     /**
      * 返回配置文件扩展名称
      *
-     * @author HanskiJay
-     * @since  2021-11-05
      * @return string
      */
     abstract public function getExtensionName() : string;
 }
+?>

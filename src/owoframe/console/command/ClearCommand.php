@@ -1,35 +1,38 @@
 <?php
-
-/*********************************************************************
-     _____   _          __  _____   _____   _       _____   _____
-    /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
-    | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
-    | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |  _
-    | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
-    \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
-
-    * Copyright (c) 2015-2021 OwOBlog-DGMT.
-    * Developer: HanskiJay(Tommy131)
-    * Telegram:  https://t.me/HanskiJay
-    * E-Mail:    support@owoblog.com
-    * GitHub:    https://github.com/Tommy131
-
-**********************************************************************/
-
+/*
+ *       _____   _          __  _____   _____   _       _____   _____
+ *     /  _  \ | |        / / /  _  \ |  _  \ | |     /  _  \ /  ___|
+ *     | | | | | |  __   / /  | | | | | |_| | | |     | | | | | |
+ *     | | | | | | /  | / /   | | | | |  _  { | |     | | | | | |   _
+ *     | |_| | | |/   |/ /    | |_| | | |_| | | |___  | |_| | | |_| |
+ *     \_____/ |___/|___/     \_____/ |_____/ |_____| \_____/ \_____/
+ *
+ * Copyright (c) 2023 by OwOTeam-DGMT (OwOBlog).
+ * @Author       : HanskiJay
+ * @Date         : 2023-02-15 18:49:38
+ * @LastEditors  : HanskiJay
+ * @LastEditTime : 2023-02-19 05:33:14
+ * @E-Mail       : support@owoblog.com
+ * @Telegram     : https://t.me/HanskiJay
+ * @GitHub       : https://github.com/Tommy131
+ */
 declare(strict_types=1);
 namespace owoframe\console\command;
 
-use FilesystemIterator as FI;
-use owoframe\helper\Helper;
-use owoframe\utils\TextFormat as TF;
 
-class ClearCommand extends \owoframe\console\CommandBase
+
+use FilesystemIterator as FI;
+
+use owoframe\console\CommandBase;
+use owoframe\utils\TextColorOutput as TCO;
+
+class ClearCommand extends CommandBase
 {
     public function execute(array $params) : bool
     {
         if(count($params) <= 0) {
-            TF::sendClear();
-            echo TF::background('[SUCCESS]', 42) . '  Screen cleared.' . PHP_EOL . PHP_EOL;
+            TCO::sendClear();
+            echo TCO::background('[SUCCESS]', 42) . '  Screen cleared.' . PHP_EOL . PHP_EOL;
         } else {
             switch(strtolower(array_shift($params))) {
                 default:
@@ -37,52 +40,38 @@ class ClearCommand extends \owoframe\console\CommandBase
                 break;
 
                 case 'log':
-                    if(($param = array_shift($params)) !== null) {
-                        $param = strtolower($param);
-                        $param = ($param === 'cli') ? $param . '_run' : (($param === 'cgi') ? '_run' : $param);
-                        $param = 'owoblog_' . $param . '.log';
-                        if(is_file(LOG_PATH . $param)) {
-                            unlink(LOG_PATH . $param);
-                            $param = TF::GREEN . 'Removed log file ' . TF::GOLD . $param . TF::GREEN . ' successfully.';
+                    $param = array_shift($params) ?? null;
+                    if($param) {
+                        $param = strtolower($param) . $param . '.log';
+                        if(is_file(\owo\log_path($param))) {
+                            unlink(\owo\log_path($param));
+                            $param = TCO::GREEN . 'Removed log file ' . TCO::GOLD . $param . TCO::GREEN . ' successfully.';
                         } else {
-                            $param = TF::LIGHT_RED . 'Cannot find log file ' . TF::GOLD . $param . TF::LIGHT_RED . '!';
+                            $param = TCO::LIGHT_RED . 'Cannot find log file ' . TCO::GOLD . $param . TCO::LIGHT_RED . '!';
                         }
                         $this->getLogger()->info($param);
                     } else {
-                        $files = iterator_to_array(new FI(LOG_PATH, FI::CURRENT_AS_PATHNAME | FI::SKIP_DOTS), false);
+                        $files = iterator_to_array(new FI(\owo\log_path(), FI::CURRENT_AS_PATHNAME | FI::SKIP_DOTS), false);
                         foreach($files as $file) {
                             $baseName = basename($file);
                             $ext = @end(explode('.', $baseName));
                             if(strtolower($ext) === 'log') {
                                 unlink($file);
-                                $this->getLogger()->success(TF::GREEN . 'Removed log file ' . TF::GOLD . $baseName . TF::GREEN . ' successfully.');
+                                $this->getLogger()->success(TCO::GREEN . 'Removed log file ' . TCO::GOLD . $baseName . TCO::GREEN . ' successfully.');
                             }
                         }
                     }
                 break;
 
                 case 'cache':
-                    if(($path = array_shift($params)) !== null) {
-                        $path = strtolower($path);
-                        $path = ($path === 'app') ? A_CACHE_PATH : F_CACHE_PATH;
-
-                        if(($next = array_shift($params)) !== null) {
-                            if(is_dir($path . $next)) {
-                                Helper::removeDir($path . $next);
-                                $this->getLogger()->success(TF::GREEN . 'Removed Cache path ' . TF::GOLD . $path . $next . TF::GREEN . ' successfully.');
-                            }
-                            elseif(is_file($path . $next)) {
-                                unlink($path . $next);
-                                $this->getLogger()->success(TF::GREEN . 'Removed Cache file ' . TF::GOLD . $path . $next . TF::GREEN . ' successfully.');
-                            }
-                        } else {
-                            Helper::removeDir($path);
-                            mkdir($path);
-                            file_put_contents($path . '.gitignore', base64_decode('KgohLmdpdGlnbm9yZQ=='));
-                            $this->getLogger()->success(TF::GREEN . 'Removed Cache path ' . TF::GOLD . $path . TF::GREEN . ' successfully.');
-                        }
+                    $path = array_shift($params) ?? '';
+                    $path = \owo\cache_path(strtolower($path));
+                    if(\owo\remove_dir($path)) {
+                        mkdir($path);
+                        \owo\add_gitignore($path);
+                        $this->getLogger()->success(TCO::GREEN . 'Removed Cache path ' . TCO::GOLD . $path . TCO::GREEN . ' successfully.');
                     } else {
-                        $this->getLogger()->info(TF::LIGHT_RED . 'Please choose a cache folder to delete: ' . TF::GOLD . '(app|framework)');
+                        $this->getLogger()->error('Delete Cache path failed!');
                     }
                 break;
             }

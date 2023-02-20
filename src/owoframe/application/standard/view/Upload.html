@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <title>File Upload Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+        body {
+            height: 100vh;
+            background-image: linear-gradient(141deg, #aa00c9 0%, #c3c941 51%, #00baff 80%);
+        }
+
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-area {
+            padding: 20px;
+            background-color: #fff;
+            /*border: 1px solid #eee;
+            border-radius: 3px;
+            box-shadow: 2px 2px 20px #888888;*/
+        }
+
+        .form-area h3 {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            font-weight: 900;
+        }
+
+        .form-area p {
+            font-size: 1.75em;
+            font-weight: 300;
+        }
+
+        .form-area .file-box {
+            position: relative;
+            overflow: hidden;
+            margin-right: 4px;
+            display: inline-block;
+            padding: 6px 10px;
+            line-height: 18px;
+            text-align: center;
+            vertical-align: middle;
+            cursor: pointer;
+            background: #3b7954;
+            border-radius: 4px;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+        }
+
+        .form-area .file-box span#title {
+            color: #fff;
+        }
+
+        .form-area input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 0;
+            border: solid transparent;
+            opacity: 0;
+            filter: alpha(opacity=0);
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="center">
+            <div class="form-area">
+                <h3>Upload Page</h3>
+                <form enctype="multipart/form-data">
+                    <div class="form-group">
+                        <p>Please select a file which you want to upload it.</p>
+                        <div class="file-box">
+                            <span id="title">Add File</span>
+                            <input type="file" name="{$uploadId}" id="{$uploadId}">
+                        </div>
+                        <span id="fileName"></span>
+                    </div>
+                    <button id="submit" type="button" class="btn btn-primary">Upload</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.5.0.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    $("#submit").click(function () {
+        if ($("#{$uploadId}").val() <= 0) {
+            alert("Please choose one file then push the file!");
+            return;
+        } else {
+            $.ajax({
+                type: 'post',
+                url: "{$uploadUrl}",
+                data: new FormData($("form")[0]),
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    alert(data);
+                    console.log(data)
+                }
+            });
+        }
+    });
+    $("#{$uploadId}").change(function () {
+        file = $(this);
+        display = $("#fileName");
+        var errMsg = (file.length <= 0) ? file.text() : ((display.length <= 0) ? display.text() : (((file.length <= 0) && (display.length <= 0)) ? "file and display" : ""));
+        // if(!this.hasObj(errMsg)) return false;
+
+        var fileName;
+        var path = file.val();
+        // 火狐获取的是文件名，所以pos=-1,chrome和IE获取的是文件路径;
+        var pos1 = path.lastIndexOf('/');
+        var pos2 = path.lastIndexOf('\\');
+        var pos = Math.max(pos1, pos2)
+        if (pos < 0) {
+            display.hide("slow");
+            fileName = path;
+            display.text(fileName);
+            display.attr("title", fileName);
+        }
+        else {
+            display.show();
+            fileName = path.substring(pos + 1);// 截取从pos+1索引到末尾;
+            display.text(fileName);
+            display.attr("title", fileName);
+        }
+    });
+</script>
+</html>
