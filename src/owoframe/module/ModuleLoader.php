@@ -217,8 +217,9 @@ class ModuleLoader
      */
     public static function disableModule(string $name) : bool
     {
-        $name = strtolower($name);
-        if(($module = self::getModule($name)) !== null) {
+        $name   = strtolower($name);
+        $module = self::getModule($name);
+        if($module !== null) {
             $module->onDisable();
             $module->setDisabled();
             unset(static::$modulePool[$name]);

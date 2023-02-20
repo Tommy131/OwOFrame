@@ -97,7 +97,8 @@ class Console
         }
         $inputCommand = strtolower(array_shift($input));
 
-        if(($command = $this->getCommand($inputCommand)) === null) {
+        $command = $this->getCommand($inputCommand);
+        if($command === null) {
             foreach($this->commandPool as $command => $class) {
                 if(in_array($inputCommand, $class->getAliases())) {
                     $command = $class;

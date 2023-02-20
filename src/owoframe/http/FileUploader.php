@@ -103,7 +103,8 @@ class FileUploader
     public function delAllowedExt(string $ext) : void
     {
         $ext = strtolower($ext);
-        if($this->canUpload($ext) && (($key = array_search($ext, $this->allowedExts)) !== false)) {
+        $key = array_search($ext, $this->allowedExts);
+        if($this->canUpload($ext) && ($key !== false)) {
             unset($this->allowedExts[$key]);
         }
     }
