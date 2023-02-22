@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-01 20:34:03
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-20 21:53:30
+ * @LastEditTime : 2023-02-22 01:17:37
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -102,7 +102,7 @@ namespace owo
      */
     function php_current() : string
     {
-        $sapi = array_filter(explode('-', php_sapi_name()));
+        $sapi = str_split(php_sapi_name(), null, '-');
         $sapi = array_shift($sapi);
         return !is_string($sapi) ? 'error' : $sapi;
     }
@@ -208,6 +208,25 @@ namespace owo
         }
         $uuid = rtrim($uuid, '-');
         return $uuid;
+    }
+
+    /**
+     * 获取变量名称
+     *
+     * @param  variable   $var
+     * @param  array|null $scope
+     * @return void
+     */
+    function get_variable_name(&$var, ?array $scope = null)
+    {
+        $scope = ($scope === null) ? $GLOBALS : $scope;
+        $___OWO_TEMP_VARIABLE___ = $var;
+
+        $var  = 'tmp_value_' . mt_rand();
+        $name = array_search($var, $scope, true);
+
+        $var = $___OWO_TEMP_VARIABLE___;
+        return $name;
     }
 
 
@@ -750,6 +769,53 @@ namespace owo
             $encode = mb_detect_encoding($str, ['ASCII', 'UTF-8', 'GB2312', 'GBK', 'BIG5']);
             $str = ($encode === 'UTF-8') ? $str : mb_convert_encoding($str, 'UTF-8', $encode);
         }
+    }
+
+    /**
+     * 智能识别字符串长度 (支持中文和德语)
+     * Intelligent identification of string length (support Chinese and German)
+     *
+     * @param  string  $str
+     * @return integer
+     */
+    function str_length(string $str) : int
+    {
+        $length = strlen($str);
+        // ~ Tested on https://regex101.com/r/JEp2kQ/1 (Support Chinese and German)
+        if((bool) preg_match_all('/[^a-z0-9x00-xff\!@#\$%\^&\*\(\)_\+\[\]\{\}\|\\\\\/"\'\,\.\-\s]+/ui', $str, $_)) {
+            $notUnicode = strlen(str_replace($_[0], '', $str));
+            $length    -= $notUnicode;
+            $_          = array_sum(str_split((string) $length));
+
+            if(($length % 2 === 0) || ($_ % 2 === 0)) {
+                $length = $length / 2 + $notUnicode;
+            } elseif($_ % 3 === 0) {
+                $length = $length / 3 + $notUnicode + $length;
+            }
+        }
+        return (int) $length;
+    }
+
+    /**
+     * 自动填充字符串到指定长度
+     *
+     * @param  string  $str
+     * @param  integer $length
+     * @param  string  $fillWith
+     * @return string
+     */
+    function str_fill_length(string $str, int $length, string $fillWith = ' ') : string
+    {
+        $oLength = str_length($str);
+        if($oLength < $length) {
+            if(strlen($fillWith) === 0) {
+                $fillWith = ' ';
+            }
+            for($i = $oLength; $i < $length; $i++) {
+                $str .= $fillWith;
+            }
+        }
+        return $str;
     }
 
     /**
