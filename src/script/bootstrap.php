@@ -41,6 +41,11 @@ define('GITHUB_PAGE', 'https://github.com/Tommy131/OwOFrame/');
 define('OWO_VERSION', '1.0.5-dev');
 
 /**
+ * Define OwOFrame version
+ */
+define('OWO_AUTHOR', 'HanskiJay');
+
+/**
  * Define OwOFrame Codename
  */
 define('OWO_CODE', 'Neuschwamm');

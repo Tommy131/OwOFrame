@@ -233,7 +233,11 @@ class Graphql
     public function query(bool $autoQuery = true) : Graphql
     {
         // 初始化Curl请求
-        $this->getCurl(true)->setUrl($this->url)->setTimeOut($this->timeout)->setContentType('application/json; charset=UTF-8')->setPostDataRaw($this->encode());
+        $this->getCurl(true)
+        ->setUrl($this->url)
+        ->setTimeOut($this->timeout)
+        ->setContentType('application/json; charset=UTF-8')
+        ->setPostDataRaw($this->encode());
 
         // 调用回调
         if(is_callable($this->callback)) {

@@ -21,6 +21,7 @@ namespace owoframe\console;
 
 
 
+use owoframe\exception\OwOFrameException;
 use owoframe\System;
 use owoframe\utils\TextColorOutput as TCO;
 
@@ -52,6 +53,9 @@ class Console
 
     private function __construct()
     {
+        if(!\owo\php_is_cli()) {
+            throw new OwOFrameException('Console can only instance on PHP-CLI Mode!');
+        }
     }
 
     /**

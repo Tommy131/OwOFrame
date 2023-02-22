@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-02 17:33:55
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-02 18:48:56
+ * @LastEditTime : 2023-02-22 01:54:47
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -122,9 +122,9 @@ abstract class Config
      *
      * @param  string $index 键值
      * @param  mixed  $value 数据
-     * @return void
+     * @return Config
      */
-    public function set(string $index, $value) : void
+    public function set(string $index, $value) : Config
     {
         $arr = explode('.', $index);
         if(count($arr) > 1) {
@@ -135,7 +135,7 @@ abstract class Config
 
             $base =& $this->config[$base];
             if(!is_array($base)) {
-                return;
+                return $this;
             }
 
             while(count($arr) > 0) {
@@ -151,32 +151,35 @@ abstract class Config
             $this->config[$index] = $value;
         }
         if($this->autoSave) $this->save();
+        return $this;
     }
 
     /**
      * 向对象设置属性
      *
      * @param  array $data 数据
-     * @return void
+     * @return Config
      */
-    public function setAll(array $data) : void
+    public function setAll(array $data) : Config
     {
         $this->config = $data;
         if($this->autoSave) $this->save();
+        return $this;
     }
 
     /**
      * 移除变量值
      *
      * @param  string $index 键名
-     * @return void
+     * @return Config
      */
-    public function remove(string $index) : void
+    public function remove(string $index) : Config
     {
         if($this->exists($index)) {
             unset($this->config[$index]);
             if($this->autoSave) $this->save();
         }
+        return $this;
     }
 
     /**
@@ -240,6 +243,16 @@ abstract class Config
     public function getAll() : array
     {
         return $this->config;
+    }
+
+    /**
+     * 返回数组长度
+     *
+     * @return integer
+     */
+    public function length() : int
+    {
+        return count($this->config);
     }
 
     /**
