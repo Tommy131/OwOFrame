@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-02 21:05:15
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-20 19:37:34
+ * @LastEditTime : 2023-02-21 17:36:32
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -23,7 +23,6 @@ namespace owoframe\module;
 
 use FilesystemIterator as FI;
 use SplFileInfo;
-use ErrorException;
 use owoframe\Priority;
 
 class ModuleLoader
@@ -91,17 +90,16 @@ class ModuleLoader
     public static function checkValidity(object &$info) : bool
     {
         // 检查配置文件是否存在关键值
-        if(!\owo\array_check_validity((array) $info, ['namespace', 'class', 'skipLoad', 'allowedIn', 'compatible', 'path', 'php'])) {
+        if(!\owo\array_check_validity((array) $info, ['class', 'skipLoad', 'allowedIn', 'compatible', 'path'])) {
             return false;
         }
         // 检查配置文件的有效性
-        if(!file_exists($info->php) || $info->skipLoad || !in_array(OWO_VERSION, $info->compatible) || !in_array(\owo\php_current(), $info->allowedIn)) {
+        if($info->skipLoad || !in_array(OWO_VERSION, $info->compatible) || !in_array(\owo\php_current(), $info->allowedIn)) {
             return false;
         }
-        require_once $info->php;
 
-        $info->fullClass = trim($info->namespace, '/\\') . '\\'  . $info->class;
-        if(!class_exists($info->fullClass) || !is_a($info->fullClass, ModuleBase::class, true)) {
+        $info->class = str_replace(['{namespace}', 'namespace'], $info->namespace, $info->class);
+        if(!class_exists($info->class) && !is_a($info->class, ModuleBase::class, true)) {
             return false;
         }
         return true;
@@ -124,8 +122,13 @@ class ModuleLoader
         if(self::getModule($name)) return true;
 
         // 写入模块路径到信息
-        $info->path = $fi->getPath();
-        $info->php  = $fi->getPath() . DIRECTORY_SEPARATOR . $info->class . '.php';
+        $info->path = $fi->getPath() . DIRECTORY_SEPARATOR;
+
+        // 利用 Composer 的 ClassLoader 自动加载类
+        $info->namespace = $info->namespace ?? \owo\str_split($info->path, null, DIRECTORY_SEPARATOR);
+        $info->namespace = is_array($info->namespace) ? end($info->namespace) : $info->namespace;
+        $info->namespace = "module\\{$info->namespace}\\";
+        \owo\get_class_loader()->addPsr4($info->namespace, $info->path . 'src/');
 
         // 检查有效性
         if(self::checkValidity($info))
@@ -133,7 +136,7 @@ class ModuleLoader
             $priority =& static::$priorityLoadList;
 
             $priority[$info->priority ?? self::DEFAULT_PRIORITY][] = $name;
-            $class = $info->fullClass;
+            $class = $info->class;
             $class = static::$modulePool[$name] = new $class($info->path, $info);
             $class->onLoad();
             return true;
@@ -165,6 +168,11 @@ class ModuleLoader
 
         foreach($path as $info)
         {
+            // 过滤 .(.*) | LICENSE | README(.*).* 文件
+            if(preg_match('/^\..*|LICENSE|README\w+\.md$/iuU', $info->getFilename())) {
+                continue;
+            }
+
             if($info->isDir()) {
                 self::init($info->getRealPath());
             } else {
@@ -184,18 +192,7 @@ class ModuleLoader
     public static function autoLoad(?string $path = null) : void
     {
         self::init($path);
-
         $_  =& static::$priorityLoadList;
-        $__ = $_[Priority::ABS_HIGHEST] ?? [];
-        if(count($__) > 1) {
-            throw new ErrorException('The absolutely priority is already used!');
-        }
-        elseif(count($__) === 1) {
-            $module = array_slice($__, 0, 1);
-            $module = self::getModule($module);
-            $module->onEnable();
-            $module->setEnabled();
-        }
 
         ksort($_);
         foreach($_ as $list)

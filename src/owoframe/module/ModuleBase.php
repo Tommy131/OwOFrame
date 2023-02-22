@@ -21,6 +21,9 @@ namespace owoframe\module;
 
 
 
+use owoframe\System;
+use owoframe\utils\Logger;
+
 abstract class ModuleBase
 {
     /**
@@ -139,6 +142,16 @@ abstract class ModuleBase
     final public function getLoadPath() : string
     {
         return $this->loadPath;
+    }
+
+    /**
+     * 返回日志实例
+     *
+     * @return Logger
+     */
+    public function getLogger() : Logger
+    {
+        return System::getMainLogger();
     }
 }
 ?>
