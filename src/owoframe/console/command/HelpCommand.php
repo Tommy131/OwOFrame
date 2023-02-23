@@ -45,9 +45,9 @@ class HelpCommand extends CommandBase
                 $command = $commands[$command];
                 $this->getLogger()->info(TCO::WHITE . '---[Details@' . TCO::GREEN . $command->getName() . TCO::WHITE . ']---');
                 $this->getLogger()->info(TCO::WHITE . 'CommandName: ' . $command->getName());
-                $this->getLogger()->info(TCO::WHITE . 'AliasName:   ' . implode(', ', $command->getAliases()));
-                $this->getLogger()->info(TCO::WHITE . 'Usage:       ' . $command->getUsage());
+                $this->getLogger()->info(TCO::WHITE . 'AliasName  : ' . implode(', ', $command->getAliases()));
                 $this->getLogger()->info(TCO::WHITE . 'Description: ' . $command->getDescription());
+                $this->getLogger()->info(TCO::WHITE . 'Usage      : ' . $command->getUsage());
             }
         }
         return true;

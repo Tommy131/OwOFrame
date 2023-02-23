@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-15 18:22:59
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-15 18:22:59
+ * @LastEditTime : 2023-02-22 20:49:14
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -61,7 +61,7 @@ abstract class CommandBase
      */
     public static function getUsage() : string
     {
-        return 'owo ' . static::getName();
+        return '(php) owo ' . static::getName();
     }
 
     /**

@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-01 20:34:03
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-22 01:17:37
+ * @LastEditTime : 2023-02-22 21:01:39
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -307,11 +307,11 @@ namespace owo
      * @param  boolean $backSlash
      * @return string
      */
-    function path_proxy(string $root, string $name = '', bool $backSlash = false) : string
+    function path_proxy(string $path, string $name = '', bool $backSlash = false) : string
     {
-        str_escape($root);
+        str_escape($path);
         str_escape($name);
-        return $root . DIRECTORY_SEPARATOR . $name . ($backSlash ? DIRECTORY_SEPARATOR : '');
+        return $path . DIRECTORY_SEPARATOR . $name . ($backSlash ? DIRECTORY_SEPARATOR : '');
     }
 
     /**
@@ -802,17 +802,25 @@ namespace owo
      * @param  string  $str
      * @param  integer $length
      * @param  string  $fillWith
+     * @param  integer $mode     0: 从左边添加 | 1: 从右边添加 (默认)
      * @return string
      */
-    function str_fill_length(string $str, int $length, string $fillWith = ' ') : string
+    function str_fill_length(string $str, int $length, string $fillWith = ' ', int $mode = 1) : string
     {
         $oLength = str_length($str);
         if($oLength < $length) {
             if(strlen($fillWith) === 0) {
                 $fillWith = ' ';
             }
+
+            $filled = '';
             for($i = $oLength; $i < $length; $i++) {
-                $str .= $fillWith;
+                $filled .= $fillWith;
+            }
+            if($mode === 1) {
+                $str .= $filled;
+            } else {
+                $str = $filled . $str;
             }
         }
         return $str;
@@ -997,7 +1005,7 @@ namespace owo
     function color_output() : void
 	{
         global $owo_system_output_allowNewLine;
-		echo TCO::parse(implode(PHP_EOL, func_get_args())) . ($owo_system_output_allowNewLine ? PHP_EOL : '');
+		echo TCO::parse(TCO::WHITE . implode(PHP_EOL, func_get_args())) . ($owo_system_output_allowNewLine ? PHP_EOL : '');
 	}
 }
 ?>

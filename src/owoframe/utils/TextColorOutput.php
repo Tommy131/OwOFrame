@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-02 16:41:33
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-02 17:26:44
+ * @LastEditTime : 2023-02-22 23:43:41
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -152,6 +152,14 @@ class TextColorOutput
     {
         $form   = "\033[38;5;%sm";
         $output = '';
+
+        if(preg_match_all('/c\[([0-9]+)\]/iu', $input, $matched)) {
+            $output .= str_replace($matched[0], array_map(function($_) use ($form) {
+                return sprintf($form, $_);
+            }, $matched[1]), $input);
+            return $output . "\033[0m";
+        }
+
         foreach(self::split($input) as $v) {
             switch($v)
             {
@@ -186,7 +194,7 @@ class TextColorOutput
                 break;
 
                 case self::ORANGE:
-                    $output .= sprintf($form, '3');
+                    $output .= sprintf($form, '214');
                 break;
 
                 case self::YELLOW:

@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-01 20:16:11
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-01 22:17:52
+ * @LastEditTime : 2023-02-23 03:59:09
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -19,6 +19,11 @@
 declare(strict_types=1);
 
 
+
+// PHP Version Control
+if(!version_compare(PHP_VERSION, '7.2', '>')) {
+    exit('[OwOFrame] Your PHP Version is too low! OwOFrame must run with PHP Version at least 7.2, Please update your PHP.');
+}
 
 /**
  * Define framework start running time
@@ -72,7 +77,7 @@ define('CLASS_LOADER', ROOT_PATH . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.ph
 
 // Start to check composer status and load autoload file
 if(!file_exists(CLASS_LOADER)) {
-    exit("Initialized failed: PHP-Composer isn't installed. Please run the command 'composer install' on '" . ROOT_PATH . "' first!");
+    exit("[OwOFrame] Initialized failed: PHP-Composer isn't installed. Please run the command 'composer install' on '" . ROOT_PATH . "' first!");
 }
 $classLoader = require_once(CLASS_LOADER);
 ?>

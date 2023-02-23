@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-15 18:23:55
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-15 18:43:03
+ * @LastEditTime : 2023-02-22 21:17:53
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -96,7 +96,7 @@ class Console
         // Remove first parameter 'php'
         array_shift($input);
         if(count($input) <= 0) {
-            System::getMainLogger()->info("Hi there, welcome to use OwOFrame :) You can use command like '".TCO::GOLD."php owo help".TCO::WHITE."' to display the Helper.");
+            System::getMainLogger()->info("Hi there, welcome to use OwOFrame :) You can use command like '".TCO::GOLD."(php) owo help".TCO::WHITE."' to display the Helper.");
             return;
         }
         $inputCommand = strtolower(array_shift($input));
@@ -113,7 +113,7 @@ class Console
 
         if($command instanceof CommandBase) {
             if(!$command->execute($input)) {
-                System::getMainLogger()->info($command->getUsage());
+                System::getMainLogger()->info('Usage: ' . $command->getUsage());
                 // System::getMainLogger()->debug("Command '{$inputCommand}' may not execute successfully, please check the issue.");
             }
         } else {
