@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-02 18:41:51
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-02 18:41:51
+ * @LastEditTime : 2023-02-23 07:12:56
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -23,6 +23,36 @@ namespace owoframe\object;
 
 class JSON extends Config
 {
+    /**
+     * 以对象方式加载
+     *
+     * @var boolean
+     */
+    protected $objectMode = false;
+
+
+    /**
+     * 判断当前模式是否以对象加载
+     *
+     * @return boolean
+     */
+    public function isObjectMode() : bool
+    {
+        return $this->objectMode;
+    }
+
+    /**
+     * 设置加载方式
+     *
+     * @param  boolean $_
+     * @return JSON
+     */
+    public function setObjectMode(bool $_ = false) : JSON
+    {
+        $this->objectMode = $_;
+        return $this;
+    }
+
     /**
      * 保存配置文件
      *
@@ -45,7 +75,7 @@ class JSON extends Config
     protected function reloadCallback() : bool
     {
         $this->nestedCache = [];
-        $this->config = json_decode(file_get_contents($this->getFullName()), true) ?? [];
+        $this->config = json_decode(file_get_contents($this->getFullName()), !$this->objectMode) ?? [];
         return true;
     }
 

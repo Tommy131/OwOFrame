@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-02 17:33:55
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-22 01:54:47
+ * @LastEditTime : 2023-02-23 07:14:37
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -242,7 +242,7 @@ abstract class Config
      */
     public function getAll() : array
     {
-        return $this->config;
+        return (array) $this->config;
     }
 
     /**

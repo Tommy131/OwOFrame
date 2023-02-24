@@ -37,7 +37,7 @@ class AddExampleModuleCommand extends CommandBase
                 $zip->open($path. $to);
                 $zip->extractTo($path);
                 $zip->close();
-                unlink($path. $to);
+                unlink($path . $to);
                 $this->getLogger()->success("Added §3{$to}§5 in path §3{$path}§5 successfully.");
             }
         } else {

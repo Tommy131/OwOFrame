@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-01 20:34:03
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-22 21:01:39
+ * @LastEditTime : 2023-02-24 03:24:00
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -60,6 +60,19 @@ namespace owo
             $os = OS_BSD;
         }
         return $os ?? OS_UNKNOWN;
+    }
+
+    /**
+     * 打开文件按路径
+     *
+     * @param  string $path
+     * @return void
+     */
+    function open(string $path) : void
+    {
+        if(file_exists($path) && (get_os() === OS_WINDOWS)) {
+            system('start ' . $path);
+        }
     }
 
     /**
@@ -772,7 +785,7 @@ namespace owo
     }
 
     /**
-     * 智能识别字符串长度 (支持中文和德语)
+     * 智能识别字符在CLI模式下的占位 (支持中文和德语)
      * Intelligent identification of string length (support Chinese and German)
      *
      * @param  string  $str
@@ -780,18 +793,21 @@ namespace owo
      */
     function str_length(string $str) : int
     {
-        $length = strlen($str);
-        // ~ Tested on https://regex101.com/r/JEp2kQ/1 (Support Chinese and German)
-        if((bool) preg_match_all('/[^a-z0-9x00-xff\!@#\$%\^&\*\(\)_\+\[\]\{\}\|\\\\\/"\'\,\.\-\s]+/ui', $str, $_)) {
-            $notUnicode = strlen(str_replace($_[0], '', $str));
-            $length    -= $notUnicode;
-            $_          = array_sum(str_split((string) $length));
+        // 仅删除 ASCII 字符
+        $_str   = preg_replace('/[\x00-\x7F]+/', '', $str);
+        // 仅保留 ASCII 字符
+        $__str  = preg_replace('/[^\x00-\x7F]+/', '', $str);
+        $length = strlen($__str);
 
-            if(($length % 2 === 0) || ($_ % 2 === 0)) {
-                $length = $length / 2 + $notUnicode;
-            } elseif($_ % 3 === 0) {
-                $length = $length / 3 + $notUnicode + $length;
-            }
+        // 获取所有 3 Bytes 字符 (e.g. 中文)
+        if(preg_match_all('/[^\x00-\xff]/ium', $_str, $matched)) {
+            $length += 2 * count($matched[0]);
+        }
+        // 支持德语特殊字符
+        elseif(preg_match_all('/[äöüÄÖÜß]/ium', $_str, $matched)) {
+            $length += count($matched[0]);
+        } else {
+            $length += strlen($_str);
         }
         return (int) $length;
     }

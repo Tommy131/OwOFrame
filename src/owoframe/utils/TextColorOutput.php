@@ -154,10 +154,9 @@ class TextColorOutput
         $output = '';
 
         if(preg_match_all('/c\[([0-9]+)\]/iu', $input, $matched)) {
-            $output .= str_replace($matched[0], array_map(function($_) use ($form) {
+            $input = str_replace($matched[0], array_map(function($_) use ($form) {
                 return sprintf($form, $_);
             }, $matched[1]), $input);
-            return $output . "\033[0m";
         }
 
         foreach(self::split($input) as $v) {
