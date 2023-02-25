@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-15 21:20:17
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-18 05:41:02
+ * @LastEditTime : 2023-02-25 16:04:52
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -32,6 +32,8 @@ use function owo\class_short_name;
 class Route
 {
     use StandardParser;
+
+    public const TAG_STATIC_ROUTE = 'static.owo';
 
     /**
      * 全局路由标识
@@ -519,7 +521,7 @@ class Route
                 };
 
                 $rule = $parsed[$k] ?? '';
-                if(($rule === self::TAG_GLOBAL_ROUTE) || ($p === $rule) || self::test($rule, $p) || self::easyTest($rule, $p)) {
+                if(($rule === self::TAG_GLOBAL_ROUTE) || ($p === $rule) || $this->getAlias($p) || self::test($rule, $p) || self::easyTest($rule, $p)) {
                     $status(true);
                 }
                 elseif(\owo\stri_has($rule, '$')) {

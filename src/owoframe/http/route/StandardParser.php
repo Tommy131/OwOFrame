@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-17 23:02:00
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-20 00:02:02
+ * @LastEditTime : 2023-02-25 16:05:31
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -61,6 +61,73 @@ trait StandardParser
      */
     protected $restPath = [];
 
+    /**
+     * 路由別名
+     *
+     * @var array
+     */
+    protected $alias = [];
+
+
+    /**
+     * 获取路径别名
+     *
+     * @return array
+     */
+    public function getAliases() : array
+    {
+        return $this->alias;
+    }
+
+    /**
+     * 设置路径别名
+     *
+     * @param  string $alias
+     * @param  string $name
+     * @return Route
+     */
+    public function setAlias(string $alias, string $name) : Route
+    {
+        $this->alias[$alias] = $name;
+        return $this;
+    }
+
+    /**
+     * 获取路径别名
+     *
+     * @param  string      $alias
+     * @return string|null
+     */
+    public function getAlias(string $alias) : ?string
+    {
+        return $this->alias[$alias] ?? null;
+    }
+
+    /**
+     * 移除一个路径别名
+     *
+     * @param  string $alias
+     * @return Route
+     */
+    public function removeAlias(string $alias) : Route
+    {
+        if($this->getAlias($alias)) {
+            unset($this->alias[$alias]);
+        }
+        return $this;
+    }
+
+    /**
+     * 合并别名组
+     *
+     * @param  array $aliases
+     * @return Route
+     */
+    public function mergeAlias(array $aliases) : Route
+    {
+        $this->alias = array_merge($this->alias, $aliases);
+        return $this;
+    }
 
     /**
      * 解析路径
@@ -120,6 +187,10 @@ trait StandardParser
     public function check(&$controller = null, &$method = null) : bool
     {
         $this->parse();
+        $this->appName        = $this->getAlias($this->appName) ?? $this->appName;
+        $this->controllerName = $this->getAlias($this->controllerName) ?? $this->controllerName;
+        $this->methodName     = $this->getAlias($this->methodName) ?? $this->methodName;
+
         $app = System::getApplication($this->appName) ?? System::getDefaultApplication();
         if(!$app) {
             return false;

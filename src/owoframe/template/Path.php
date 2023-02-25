@@ -21,6 +21,7 @@ namespace owoframe\template;
 
 
 
+use owoframe\http\route\Route;
 use owoframe\utils\MIMEType;
 
 class Path
@@ -258,7 +259,7 @@ class Path
                     file_put_contents($basePath, $proxyFile);
                 }
             }
-            $filePath = "/static.owo/{$type}/{$hashTag}";
+            $filePath = '/' . Route::TAG_STATIC_ROUTE . "/{$type}/{$hashTag}";
         } else {
             $filePath = null;
         }

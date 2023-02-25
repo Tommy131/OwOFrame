@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-01 19:53:21
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-19 23:46:28
+ * @LastEditTime : 2023-02-25 15:53:17
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -28,10 +28,10 @@ use owoframe\http\route\Route;
 use owoframe\http\route\RulesRegex;
 
 System::init();
-$route = new Route;
+$finalRoute = new Route;
 
 // 添加全局静态路由
-$route->get('/static.owo/$type/$hashTag', function(array $obj)
+$finalRoute->get('/' . Route::TAG_STATIC_ROUTE . '/$type/$hashTag', function(array $obj)
 {
     $obj      = (object) $obj;
     $params   = $obj->parameters;
@@ -64,5 +64,16 @@ $route->get('/static.owo/$type/$hashTag', function(array $obj)
     'hashTag' => RulesRegex::ONLY_MIXED_LETTERS_AND_NUMBERS
 ])->get('/*', DefaultApp::class);
 
-$route->dispatch();
+// 寻找自定义路由
+$routeFile = owo\_global('system.customRouteFileName', 'route_10380WH9DH520495AD3347M32126');
+$routeFile = "./{$routeFile}.php";
+if(is_file($routeFile)) {
+    $customRoute = require_once($routeFile);
+    if($customRoute instanceof Route) {
+        $finalRoute->merge($customRoute->getRoutingTable());
+        $finalRoute->mergeAlias($customRoute->getAliases());
+    }
+}
+
+$finalRoute->dispatch();
 ?>
