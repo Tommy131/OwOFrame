@@ -46,7 +46,7 @@ class ThinkDB extends Db
 		}
 
 		self::setConfig([
-			'default' => \owo\_global('mysql.default', 'mysql'),
+			'default'     => \owo\_global('mysql.default', 'mysql'),
 			'connections' =>
 			[
 			    \owo\_global('mysql.default', 'mysql') =>
@@ -76,10 +76,24 @@ class ThinkDB extends Db
 	}
 
 	/**
+	 * 新增数据库连接配置
+	 *
+	 * @param  string $name
+	 * @param  array  $_config
+	 * @return void
+	 */
+	public static function addConnection(string $name, array $_config) : void
+	{
+		$config = self::getConfig();
+		$config['connections'][$name] = $_config;
+		self::setConfig($config);
+	}
+
+	/**
 	 * 通过指定字段和值返回所有匹配条件的数据
 	 *
-	 * @param  string $where
-	 * @param  mixed  $v
+	 * @param  string     $where
+	 * @param  mixed      $v
 	 * @return array|null
 	 */
     public static function get(string $where, $v) : ?array
@@ -125,7 +139,7 @@ class ThinkDB extends Db
 	/**
 	 * 判断当前数据表是否存在
 	 *
-	 * @param  string $table_name
+	 * @param  string  $table_name
 	 * @return boolean
 	 */
     public static function isTableExists(?string $table_name = null) : bool
@@ -148,11 +162,11 @@ class ThinkDB extends Db
 	}
 
 	/**
-	 * 返回 ThinkPHP-ORM 种的 Query 对象
+	 * 实例化数据库
 	 *
-	 * @param  int|integer      $mode       选择表模式(0: 带前缀选择 1: 从配置系统文件的前缀选择)
-	 * @param  string|null      $table_name 查询表名(默认从本类静态变量 $table_name 获取)
-	 * @return  Query
+	 * @param  int|integer $mode       选择表模式 (0: 带前缀选择 | 1: 从配置系统文件的前缀选择)
+	 * @param  string|null $table_name 查询表名 (默认从本类静态变量 $table_name 获取)
+	 * @return  Query                  返回 ThinkPHP-ORM 种的 Query 对象
 	 */
     public static function db(?string $table_name = null, int $mode = 0) : Query
 	{

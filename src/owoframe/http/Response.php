@@ -284,6 +284,10 @@ class Response
      */
     public function send(bool $showRuntime = false) : Response
     {
+        if($this->hasSent()) {
+            return $this;
+        }
+
         // 触发发送响应载体前事件
         (new BeforeResponseEvent)->trigger();
 
