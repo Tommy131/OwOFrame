@@ -76,6 +76,17 @@ namespace owo
     }
 
     /**
+     * 检查文件的有效性
+     *
+     * @param  string  $fileName
+     * @return boolean
+     */
+    function check_file(string $fileName) : bool
+    {
+        return is_file($fileName) && (filesize($fileName) > 0);
+    }
+
+    /**
      * 返回类加载器
      *
      * @param  boolean $name
