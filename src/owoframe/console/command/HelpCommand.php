@@ -70,7 +70,7 @@ class HelpCommand extends CommandBase
 
     public static function getUsage() : string
     {
-        return TCO::AQUA . parent::getUsage() . TCO::GOLD . '[string:commandName]';
+        return TCO::AQUA . parent::getUsage() . TCO::GOLD . ' [string:commandName]';
     }
 }
 ?>

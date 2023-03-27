@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-01 20:34:03
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-24 03:24:00
+ * @LastEditTime : 2023-03-27 15:03:19
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -335,6 +335,10 @@ namespace owo
     {
         str_escape($path);
         str_escape($name);
+
+        if(get_os() !== OS_WINDOWS) {
+            $path = DIRECTORY_SEPARATOR . $path;
+        }
         return $path . DIRECTORY_SEPARATOR . $name . ($backSlash ? DIRECTORY_SEPARATOR : '');
     }
 
