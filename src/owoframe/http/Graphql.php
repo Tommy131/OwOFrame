@@ -244,7 +244,7 @@ class Graphql
             $content = call_user_func_array($this->callback, [$this]) ?? null;
         }
 
-        if(!$content || ($autoQuery && !$this->processed())) {
+        if(!isset($content) || ($autoQuery && !$this->processed())) {
             $content = $this->getCurl()->exec()->getContent($h);
         }
 
