@@ -2,6 +2,7 @@
 set TITLE=OwOFrame Git ToolScript
 title %TITLE%
 set VERSION=v1.0.1
+set OWO_VERSION=1.0.5-dev
 set PREFIX=[OwOTools]
 set GIT="C:\Program Files\Git\bin\git.exe"
 
@@ -24,7 +25,7 @@ echo Please choose one selection (Default=[4]):
 echo [0] git pull                 Get current branch latest changes from GitHub upstream
 echo [1] git status               Get the change status of the current local branch
 echo [2] git checkout master      To change current branch to "master"
-echo [3] git checkout dev-alpha   To change current branch to "dev-alpha"
+echo [3] git checkout %OWO_VERSION%   To change current branch to "%OWO_VERSION%"
 echo [4] cmd                      Run normal CMD in current path
 echo [5] composer install         To install OwOFrame in current path
 echo [x] exit                     Exit the toolbox
@@ -70,7 +71,7 @@ goto x
 
 
 :3
-%GIT% checkout dev-alpha
+%GIT% checkout %OWO_VERSION%
 goto x
 
 
