@@ -152,9 +152,7 @@ trait StandardParser
             break;
 
             case 3:
-                $this->appName        = array_shift($this->restPath);
-                $this->controllerName = array_shift($this->restPath);
-                $this->methodName     = array_shift($this->restPath);
+                [$this->appName, $this->controllerName, $this->methodName] = $this->restPath;
             break;
 
             default:
@@ -198,6 +196,12 @@ trait StandardParser
         // 获取控制器
         $controller = $app->getController($this->controllerName);
         $controller = !$controller ? $app->getDefaultController() : $controller;
+
+        // 检查控制器有效性
+        if(!$controller || $app->isControllerBanned($controller->getName())) {
+            return false;
+        }
+
         // ~ 第二次检测: 当请求的方法不存在于控制器中
         if(empty($this->restPath) && !method_exists($controller, $this->methodName)) {
             $this->restPath[] = $this->methodName;
@@ -209,10 +213,6 @@ trait StandardParser
                 $this->restPath[]     = $this->controllerName;
                 $this->controllerName = $this->appName;
             }
-        }
-        // 检查控制器有效性
-        if(!$controller || $app->isControllerBanned($controller->getName())) {
-            return false;
         }
         // 检查方法是否存在
         foreach([$this->methodName, $controller->getName(), $controller->getDefaultHandlerMethod()] as $_) {

@@ -32,7 +32,7 @@ class Session
     {
         if(!self::isStarted()) {
             // 设置PHP_SESSION自动过期时间
-            ini_set('session.gc_maxlifetime', (string) (constant('SESSION_EXPIRE_TIME') ?? '10800'));
+            ini_set('session.gc_maxlifetime', (string) (@constant('SESSION_EXPIRE_TIME') ?? '10800'));
             session_start();
         }
     }
