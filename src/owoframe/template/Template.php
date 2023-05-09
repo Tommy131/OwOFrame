@@ -450,7 +450,7 @@ class Template
 
             $data = $this->{$bindTag};
             if(!is_array($data)) {
-                $loopArea = '';
+                $loopArea = str_replace($matched[0], '', $loopArea);
                 return;
                 // throw new OwOFrameException("[View-LoopParserError] Cannot find bindTag \${$bindTag} !");
             }
