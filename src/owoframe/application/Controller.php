@@ -19,8 +19,7 @@
 declare(strict_types=1);
 namespace owoframe\application;
 
-
-
+use owoframe\http\Response;
 use owoframe\utils\DataEncoder;
 
 abstract class Controller
@@ -33,6 +32,13 @@ abstract class Controller
      */
     private $app;
 
+    /**
+     * 响应对象
+     *
+     * @var Response
+     */
+    protected $response;
+
 
 	/**
 	 * 构造函数
@@ -42,6 +48,27 @@ abstract class Controller
     public function __construct(?Application $app = null)
     {
         $this->app = $app;
+    }
+
+    /**
+     * 设置响应对象
+     *
+     * @param  Response $response
+     * @return void
+     */
+    public function setResponse(Response $response) : void
+    {
+        $this->response = $response;
+    }
+
+    /**
+     * 返回响应对象
+     *
+     * @return Response|null
+     */
+    public function getResponse() : ?Response
+    {
+        return $this->response ?? null;
     }
 
     /**

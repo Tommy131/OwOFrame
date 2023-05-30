@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-05 15:25:18
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-09 20:45:51
+ * @LastEditTime : 2023-05-30 18:47:12
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -440,7 +440,6 @@ class Template
         if(!preg_match_all($loopRegex, $loopArea, $matched, PREG_SET_ORDER, 0)) {
             return;
         }
-        $currentKey = 1;
         foreach($matched as $num => $loopGroup) {
             $bindTag  = trim($loopGroup[2]);                // 绑定的数组变量到模板
             $defined  = trim($loopGroup[1]);                // 定义的变量到模板
@@ -455,13 +454,20 @@ class Template
                 // throw new OwOFrameException("[View-LoopParserError] Cannot find bindTag \${$bindTag} !");
             }
 
-            $data = array_filter($data);
-            $complied = [];
-            $finally   = '';
+            $currentKey   = 1;
+            $data         = array_filter($data);
+            $complied     = [];
+            $finally      = '';
+
+            $key_reversed = [];
+            for($i = count($data); $i > 0; --$i) {
+                $key_reversed[] = "-{$i}";
+            }
+
             foreach($data as $k => $v) {
-                if(!is_array($v)) {
+                /* if(!is_array($v)) {
                     throw new OwOFrameException('Illegal usage caused in Template->parseLoopArea() at line ' . __LINE__);
-                }
+                } */
 
                 foreach($loop as $n => $line) {
                     if(preg_match("/({$loopEnd}|{$loopHead})/im", $line)) {
@@ -497,8 +503,18 @@ class Template
                         $complied[$k][$n] = $line;
                     }
                     if(preg_match_all("/{$bindElement}currentKey{$bindElement}/", $line, $match)) {
-                        $complied[$k][$n] = str_replace($bindElement . 'currentKey' . $bindElement, (string) $currentKey++, $complied[$k][$n] ?? $line);
+                        $complied[$k][$n] = str_replace($bindElement . 'currentKey' . $bindElement, (string) $currentKey, $complied[$k][$n] ?? $line);
                     }
+                    if(preg_match_all("/{$bindElement}currentRealKey{$bindElement}/", $line, $match)) {
+                        $complied[$k][$n] = str_replace($bindElement . 'currentRealKey' . $bindElement, (string) $k, $complied[$k][$n] ?? $line);
+                    }
+                    if(preg_match_all("/{$bindElement}currentValue{$bindElement}/", $line, $match)) {
+                        $complied[$k][$n] = str_replace($bindElement . 'currentValue' . $bindElement, $v, $complied[$k][$n] ?? $line);
+                    }
+                    if(preg_match_all("/{$bindElement}currentKey_reversed{$bindElement}/", $line, $match)) {
+                        $complied[$k][$n] = str_replace($bindElement . 'currentKey_reversed' . $bindElement, $key_reversed[$currentKey - 1], $complied[$k][$n] ?? $line);
+                    }
+                    $currentKey++;
                 }
                 ksort($complied[$k]);
                 foreach($complied[$k] as $result) {

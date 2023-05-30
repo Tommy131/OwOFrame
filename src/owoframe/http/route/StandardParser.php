@@ -240,6 +240,7 @@ trait StandardParser
         $_ = $this->check($controller, $method);
         if($_) {
             $this->response = new Response([$controller, $method], $this->restPath);
+            $controller->setResponse($this->response);
             $code = 200;
         } else {
             $this->response = new Response;

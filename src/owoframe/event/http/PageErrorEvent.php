@@ -59,14 +59,14 @@ class PageErrorEvent extends Event
     /**
      * 创建View视图实例
      *
-     * @param  string      $fileName
+     * @param  string|null $fileName
      * @param  string|null $filePath
      * @return void
      */
-    public function __construct(string $fileName = 'Error.html', ?string $filePath = null)
+    public function __construct(?string $fileName = null, ?string $filePath = null)
     {
         if(!$this->template instanceof View) {
-            $this->template = new View($fileName, $filePath);
+            $this->template = new View($fileName ?? 'Error.html', $filePath ?? \owo\s_template_path());
         }
         $this->template->assign([
             'title'       => $this->title,
