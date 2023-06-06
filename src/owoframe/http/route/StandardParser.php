@@ -11,7 +11,7 @@
  * @Author       : HanskiJay
  * @Date         : 2023-02-17 23:02:00
  * @LastEditors  : HanskiJay
- * @LastEditTime : 2023-02-25 16:05:31
+ * @LastEditTime : 2023-06-06 16:24:39
  * @E-Mail       : support@owoblog.com
  * @Telegram     : https://t.me/HanskiJay
  * @GitHub       : https://github.com/Tommy131
@@ -153,6 +153,7 @@ trait StandardParser
 
             case 3:
                 [$this->appName, $this->controllerName, $this->methodName] = $this->restPath;
+                $this->restPath = array_slice($this->restPath, 3, $length - 1);
             break;
 
             default:
@@ -160,20 +161,6 @@ trait StandardParser
                     $this->parse(3);
                 }
             break;
-        }
-
-        // ~ 第一次检测: 当不存在剩余路径时, 根据已解析的数据再解析
-        if(empty($this->restPath) && ($length > 1)) {
-            $_ = [$this->methodName, $this->controllerName, $this->appName];
-            $_ = array_map(function($v) use (&$_) {
-                if(is_numeric($v)) {
-                    $this->restPath[] = $v;
-                    return !is_null(key($_)) ? next($_) : $v;
-                }
-                return $v;
-            }, $_);
-            $this->restPath = array_reverse($this->restPath);
-            [$this->methodName, $this->controllerName, $this->appName] = $_;
         }
     }
 
@@ -202,21 +189,13 @@ trait StandardParser
             return false;
         }
 
-        // ~ 第二次检测: 当请求的方法不存在于控制器中
+        // 检查方法是否存在
         if(empty($this->restPath) && !method_exists($controller, $this->methodName)) {
             $this->restPath[] = $this->methodName;
             $this->methodName = $this->controllerName;
         }
-        // ~ 第三次检测: 当请求的控制器不存在于请求的应用程序中
-        if(empty($this->restPath)) {
-            if($app && !$app->hasController($this->controllerName)) {
-                $this->restPath[]     = $this->controllerName;
-                $this->controllerName = $this->appName;
-            }
-        }
-        // 检查方法是否存在
         foreach([$this->methodName, $controller->getName(), $controller->getDefaultHandlerMethod()] as $_) {
-            if(method_exists($controller, $_)) {
+            if(is_string($_) && method_exists($controller, $_)) {
                 $method = $_;
                 break;
             }
