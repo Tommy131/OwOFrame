@@ -6,6 +6,8 @@ OwO! 欢迎来到本项目. `OwOFrame` 基于 `MVC (Model-Views-Controller)` 模
 
 如果您觉得本项目对您有帮助, 请给本项目一颗小小的 `Star` 呗QWQ
 
+项目打赏/捐赠地址: <https://owoblog.com/donation/>
+
 [英文版简介请点这里](README.md)
 
 ## 我能做什么?
